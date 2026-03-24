@@ -183,7 +183,8 @@ function showMoreRows() {
     for (var i = _hmDisplayed; i < end; i++) {
         var r = source[i];
         html += '<tr>';
-        html += '<td class="root-cell"><a href="/?q=' + encodeURIComponent(r.root_translit) + '" style="text-decoration:none;color:inherit">' + r.root + '</a></td>';
+        var vizKey = r.root_translit.replace(/'/g, 'A');
+        html += '<td class="root-cell"><a href="/visualize/' + vizKey + '" style="text-decoration:none;color:inherit" title="Visualize ' + r.root_translit + '">' + r.root + '</a></td>';
         html += '<td class="translit-cell">' + r.root_translit + '</td>';
         html += '<td>' + (r.gloss || '') + '</td>';
         html += '<td class="count-cell"><strong>' + r.total + '</strong></td>';

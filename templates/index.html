@@ -193,7 +193,9 @@ document.getElementById('rootSearchForm').addEventListener('submit', async (e) =
         html += `</div>`;
     }
 
+    const vizKey = data.root_transliteration.replace(/ /g, '-').replace(/'/g, 'A');
     html += `<div class="root-header-nav">
+            <a href="/visualize/${vizKey}?lang=${currentLang}" class="root-tab viz-btn" style="text-decoration:none"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">hub</span> Visualize</a>
             <button class="root-tab active" data-tab="peshitta" onclick="switchResultTab(this)">Occurrences (${data.total_occurrences})</button>
             <button class="root-tab" data-tab="hebrew" onclick="switchResultTab(this)">Hebrew Cognates</button>
             <button class="root-tab" data-tab="arabic" onclick="switchResultTab(this)">Arabic Cognates</button>
