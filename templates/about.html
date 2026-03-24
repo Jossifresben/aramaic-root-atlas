@@ -113,6 +113,17 @@
         font-size: 0.92rem;
         line-height: 1.5;
     }
+    .feature-example-link {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--accent, #b8860b);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .feature-example-link:hover {
+        text-decoration: underline;
+    }
     .use-case-list {
         list-style: none;
         padding: 0;
@@ -359,12 +370,14 @@
             <div class="feature-card">
                 <h4>{% if lang == 'es' %}B&uacute;squeda de ra&iacute;ces{% elif lang == 'he' %}חיפוש שורשים{% elif lang == 'ar' %}البحث عن الجذور{% else %}Root Search{% endif %}</h4>
                 <p>{% if lang == 'es' %}Ingrese una ra&iacute;z en lat&iacute;n (SH-L-M), siríaco, hebreo o &aacute;rabe. Devuelve todas las formas atestiguadas, glosas, cognados y referencias por vers&iacute;culo en todos los corpus, con autocompletado en vivo.{% elif lang == 'he' %}הזינו שורש בלטינית (SH-L-M), סורית, עברית או ערבית. מחזיר את כל הצורות המעידות, פירושים, קוגנטים והפניות פסוקים בכל הקורפוסים, עם השלמה אוטומטית.{% elif lang == 'ar' %}أدخل جذراً بالحرف اللاتيني (SH-L-M) أو بالسريانية أو العبرية أو العربية. يُعيد جميع الصيغ المشهودة والترجمات والمشتركات والإحالات الآياتية عبر كل المدوّنات، مع إكمال تلقائي.{% else %}Enter a root in Latin (SH-L-M), Syriac, Hebrew, or Arabic. Returns all attested forms, glosses, cognates, and verse references across corpora, with live autocomplete.{% endif %}</p>
+                <a href="/?q=SH-L-M&lang={{ lang }}" class="feature-example-link">{% if lang == 'es' %}Ejemplo: SH-L-M{% elif lang == 'he' %}דוגמה: SH-L-M{% elif lang == 'ar' %}مثال: SH-L-M{% else %}Example: SH-L-M{% endif %} &rarr;</a>
             </div>
 
             {# Root Family Visualizer #}
             <div class="feature-card">
                 <h4>{% if lang == 'es' %}Visualizador de familias{% elif lang == 'he' %}מחזיר משפחת שורשים{% elif lang == 'ar' %}عارض عائلة الجذر{% else %}Root Family Visualizer{% endif %}</h4>
                 <p>{% if lang == 'es' %}Grafo de fuerza D3.js que muestra la familia de un ra&iacute;z: formas siríacas atestiguadas, cognados hebreos y &aacute;rabes, ra&iacute;ces hermanas, puentes sem&aacute;nticos y un vers&iacute;culo paradigm&aacute;tico.{% elif lang == 'he' %}גרף כוחות D3.js המציג את משפחת השורש: צורות סוריות מעידות, קוגנטים עבריים וערביים, שורשים אחיים, גשרים סמנטיים ופסוק פרדיגמטי.{% elif lang == 'ar' %}رسم بياني قوّي D3.js يعرض عائلة الجذر: الصيغ السريانية المشهودة، والمشتركات العبرية والعربية، والجذور الشقيقة، والجسور الدلالية، وآية نموذجية.{% else %}D3.js force-directed graph showing a root's word family: attested Syriac forms, Hebrew and Arabic cognates, sister roots, semantic bridges, and a paradigmatic key verse.{% endif %}</p>
+                <a href="/visualize/SH-L-M?lang={{ lang }}" class="feature-example-link">{% if lang == 'es' %}Ejemplo: SH-L-M{% elif lang == 'he' %}דוגמה: SH-L-M{% elif lang == 'ar' %}مثال: SH-L-M{% else %}Example: SH-L-M{% endif %} &rarr;</a>
             </div>
 
             {# Passage Constellation #}
@@ -377,12 +390,14 @@
             <div class="feature-card">
                 <h4>{% if lang == 'es' %}Visor paralelo{% elif lang == 'he' %}מציג מקביל{% elif lang == 'ar' %}العارض المتوازي{% else %}Parallel Viewer{% endif %}</h4>
                 <p>{% if lang == 'es' %}Comparaci&oacute;n lado a lado del mismo pasaje en diferentes corpus (Peshitta AT &harr; T&aacute;rgum Onkelos). Revela elecciones interpretativas entre tradiciones arameas.{% elif lang == 'he' %}השוואה זו-לצד-זו של אותו קטע בקורפוסים שונים (פשיטתא תנ"ך &harr; תרגום אונקלוס). חושפת בחירות פרשניות בין מסורות ארמיות.{% elif lang == 'ar' %}مقارنة جنباً إلى جنب للنص ذاته عبر مدوّنات مختلفة (الپشيطتا &harr; ترجوم أونكيلوس). تكشف الخيارات التفسيرية بين التقاليد الآرامية.{% else %}Side-by-side comparison of the same passage across corpora (Peshitta OT &harr; Targum Onkelos). Reveals interpretive choices between Aramaic traditions.{% endif %}</p>
+                <a href="/parallel?lang={{ lang }}" class="feature-example-link">{% if lang == 'es' %}Ver: G&eacute;nesis 1{% elif lang == 'he' %}ראו: בראשית א{% elif lang == 'ar' %}شاهد: تكوين ١{% else %}See: Genesis 1{% endif %} &rarr;</a>
             </div>
 
             {# Heat Map #}
             <div class="feature-card">
                 <h4>{% if lang == 'es' %}Mapa de calor de ra&iacute;ces{% elif lang == 'he' %}מפת חום שורשים{% elif lang == 'ar' %}خريطة حرارة الجذور{% else %}Root Frequency Heat Map{% endif %}</h4>
                 <p>{% if lang == 'es' %}Tabla ordenable de frecuencia de ra&iacute;ces en todos los corpus con filtro, exportaci&oacute;n a CSV/JSON. Revela patrones de distribuci&oacute;n: ra&iacute;ces panarameas frente a las espec&iacute;ficas de un corpus.{% elif lang == 'he' %}טבלה ניתנת למיון של תדירות שורשים בכל הקורפוסים עם סינון וייצוא ל-CSV/JSON. חושפת דפוסי תפוצה: שורשים כל-ארמיים לעומת ספציפיים לקורפוס.{% elif lang == 'ar' %}جدول قابل للفرز لتواتر الجذور عبر كل المدوّنات مع تصفية وتصدير إلى CSV/JSON. يكشف أنماط التوزيع: جذور عابرة للآرامية مقابل جذور خاصة بمدوّنة واحدة.{% else %}Sortable table of root frequency across all corpora with filter and CSV/JSON export. Reveals distribution patterns: pan-Aramaic roots versus corpus-specific ones.{% endif %}</p>
+                <a href="/heatmap?lang={{ lang }}" class="feature-example-link">{% if lang == 'es' %}Explorar mapa{% elif lang == 'he' %}חקור מפה{% elif lang == 'ar' %}استكشاف الخريطة{% else %}Explore map{% endif %} &rarr;</a>
             </div>
 
             {# KWIC Search #}
