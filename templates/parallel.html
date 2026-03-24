@@ -141,11 +141,16 @@
     </select>
 </div>
 
+<div class="parallel-nav" id="parallel-nav-top" style="display:none">
+    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t('prev', lang) != 'prev' else 'Previous' }}</a>
+    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t('next', lang) != 'next' else 'Next' }} &#9654;</a>
+</div>
+
 <div id="parallel-results"></div>
 
-<div class="parallel-nav" id="parallel-nav" style="display:none">
-    <a href="#" id="par-prev" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t('prev', lang) != 'prev' else 'Previous' }}</a>
-    <a href="#" id="par-next" onclick="navChapter(1); return false;">{{ t('next', lang) if t('next', lang) != 'next' else 'Next' }} &#9654;</a>
+<div class="parallel-nav" id="parallel-nav-bottom" style="display:none">
+    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t('prev', lang) != 'prev' else 'Previous' }}</a>
+    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t('next', lang) != 'next' else 'Next' }} &#9654;</a>
 </div>
 {% endblock %}
 
@@ -269,7 +274,17 @@ async function loadParallel() {
 
     html += '</div>';
     el.innerHTML = html;
-    document.getElementById('parallel-nav').style.display = 'flex';
+    // Show/hide nav buttons
+    var ch = parseInt(chapter);
+    var maxCh = document.getElementById('par-chapter').options.length;
+    document.querySelectorAll('.par-prev-btn').forEach(function(btn) {
+        btn.style.display = ch > 1 ? '' : 'none';
+    });
+    document.querySelectorAll('.par-next-btn').forEach(function(btn) {
+        btn.style.display = ch < maxCh ? '' : 'none';
+    });
+    document.getElementById('parallel-nav-top').style.display = 'flex';
+    document.getElementById('parallel-nav-bottom').style.display = 'flex';
 
     // Update URL
     history.replaceState(null, '', '/parallel?book=' + encodeURIComponent(book) + '&chapter=' + chapter + '&lang=' + LANG);
