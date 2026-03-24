@@ -419,6 +419,7 @@ body {
 .corpus-badge.corpus-peshitta_nt { background: #1a4d6b; }
 .corpus-badge.corpus-peshitta_ot { background: #6b5a1a; }
 .corpus-badge.corpus-biblical_aramaic { background: #5a1a6b; }
+.corpus-badge.corpus-targum_onkelos { background: #1a6b4d; }
 .root-header-nav {
     display: flex;
     gap: 8px;

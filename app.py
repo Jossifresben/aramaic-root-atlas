@@ -74,6 +74,10 @@ def _init():
         if os.path.exists(ba_path):
             _corpus.add_corpus('biblical_aramaic', 'Biblical Aramaic', ba_path)
 
+        to_path = os.path.join(CORPORA_DIR, 'targum_onkelos.csv')
+        if os.path.exists(to_path):
+            _corpus.add_corpus('targum_onkelos', 'Targum Onkelos', to_path)
+
         _corpus.load()
 
         # Build root index
