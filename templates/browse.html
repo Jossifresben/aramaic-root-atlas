@@ -6,9 +6,11 @@
 <h1>Browse Corpora</h1>
 
 <div class="corpus-filter-bar">
-    <a href="/browse?lang={{ lang }}" class="{% if not corpus_filter %}active{% endif %}">All</a>
+    <a href="/browse?lang={{ lang }}" class="{% if not corpus_filter %}active{% endif %}">{{ t('all', lang) if t else 'All' }}</a>
     <a href="/browse?lang={{ lang }}&corpus=peshitta_nt" class="{% if corpus_filter == 'peshitta_nt' %}active{% endif %}">Peshitta NT</a>
     <a href="/browse?lang={{ lang }}&corpus=peshitta_ot" class="{% if corpus_filter == 'peshitta_ot' %}active{% endif %}">Peshitta OT</a>
+    <a href="/browse?lang={{ lang }}&corpus=biblical_aramaic" class="{% if corpus_filter == 'biblical_aramaic' %}active{% endif %}">Biblical Aramaic</a>
+    <a href="/browse?lang={{ lang }}&corpus=targum_onkelos" class="{% if corpus_filter == 'targum_onkelos' %}active{% endif %}">Targum Onkelos</a>
 </div>
 
 <div class="books-grid">
