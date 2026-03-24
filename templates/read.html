@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book }} {{ chapter }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<div class="reader-header">
+    <h1>{{ book }} — Chapter {{ chapter }}</h1>
+    <div class="reader-nav">
+        {% if chapter > 1 %}
+        <a href="/read/{{ book }}/{{ chapter - 1 }}?lang={{ lang }}&trans={{ trans }}">&larr; Ch {{ chapter - 1 }}</a>
+        {% endif %}
+        <a href="/browse?lang={{ lang }}">All Books</a>
+        {% set max_ch = 0 %}
+        {% for b, ch in books %}{% if b == book %}{% set max_ch = ch %}{% endif %}{% endfor %}
+        {% if chapter < max_ch %}
+        <a href="/read/{{ book }}/{{ chapter + 1 }}?lang={{ lang }}&trans={{ trans }}">Ch {{ chapter + 1 }} &rarr;</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="translation-selector">
+    <label>Translation:</label>
+    <a href="/read/{{ book }}/{{ chapter }}?lang={{ lang }}&trans=en" class="{% if trans == 'en' %}active{% endif %}">EN</a>
+    <a href="/read/{{ book }}/{{ chapter }}?lang={{ lang }}&trans=es" class="{% if trans == 'es' %}active{% endif %}">ES</a>
+    <a href="/read/{{ book }}/{{ chapter }}?lang={{ lang }}&trans=he" class="{% if trans == 'he' %}active{% endif %}">HE</a>
+</div>
+
+<div class="verses">
+    {% for v in verses %}
+    <div class="verse-row" id="v{{ v.verse }}">
+        <span class="verse-num">{{ v.verse }}</span>
+        <div class="verse-content">
+            <div class="verse-syriac" dir="rtl">{{ v.syriac }}</div>
+            {% if v.translation %}
+            <div class="verse-translation">{{ v.translation }}</div>
+            {% endif %}
+            <span class="corpus-badge">{{ v.corpus_id }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}About — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<h1>About the Aramaic Root Atlas</h1>
+
+<div class="about-content">
+    <p>The Aramaic Root Atlas is a cross-corpus triliteral root explorer spanning
+    centuries of Aramaic literary history. It allows scholars to trace a single
+    Semitic root from the Peshitta through Biblical Aramaic, Targum, and Syriac
+    patristic literature — with Hebrew, Arabic, and Greek cognates visible at
+    every layer.</p>
+
+    <h2>Corpora</h2>
+    <ul>
+        <li><strong>Peshitta NT</strong> — The Syriac New Testament (7,957 verses)</li>
+        <li><strong>Peshitta OT</strong> — Selected Old Testament books: Psalms, Proverbs, Isaiah, Ezekiel (5,930 verses)</li>
+        <li><em>Biblical Aramaic, Targum Onkelos, Ephrem's Hymns</em> — Coming soon</li>
+    </ul>
+
+    <h2>How It Works</h2>
+    <p>The engine extracts triliteral consonantal roots from unvocalized Syriac text
+    using morphological analysis (prefix/suffix stripping) and a known-root dictionary.
+    Roots are normalized to a shared Latin key (e.g., k-t-b) enabling cross-script
+    comparison with Hebrew and Arabic cognates.</p>
+
+    <h2>Credits</h2>
+    <p>Built by Jossif Fresco. Evolved from the
+    <a href="https://peshitta-roots.onrender.com">Peshitta Root Finder</a>.</p>
+    <p>Syriac text source: ETCBC/Leiden Peshitta Institute.</p>
+</div>
+{% endblock %}

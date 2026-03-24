@@ -1,0 +1,378 @@
+/* Aramaic Root Atlas — Base Styles */
+
+:root {
+    --bg: #faf9f6;
+    --fg: #1a1a1a;
+    --accent: #2c5f7c;
+    --accent-light: #e8f1f5;
+    --border: #d4d0c8;
+    --card-bg: #ffffff;
+    --muted: #6b6560;
+    --nt-color: #2c5f7c;
+    --ot-color: #7c5f2c;
+    --ba-color: #5f2c7c;
+    --radius: 6px;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-syriac: 'Noto Sans Syriac', 'Estrangelo Edessa', serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+}
+
+/* Nav */
+.nav {
+    background: var(--accent);
+    color: white;
+    padding: 0.75rem 1.5rem;
+}
+.nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.nav-brand {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.nav-links a {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-size: 0.95rem;
+}
+.nav-links a:hover { color: white; }
+.lang-toggle {
+    border: 1px solid rgba(255,255,255,0.5);
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius);
+}
+
+/* Main */
+.main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+/* Hero */
+.hero {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+.hero h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+.subtitle {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Search */
+.search-form { max-width: 700px; margin: 0 auto; }
+.search-row {
+    display: flex;
+    gap: 0.5rem;
+}
+.search-row input[type="text"] {
+    flex: 1;
+    padding: 0.65rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+}
+.search-row input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+.search-row select {
+    padding: 0.65rem 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+    font-size: 0.9rem;
+}
+.search-row button {
+    padding: 0.65rem 1.5rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    cursor: pointer;
+}
+.search-row button:hover { opacity: 0.9; }
+
+/* Stats */
+.stats { margin-bottom: 2.5rem; }
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: center;
+}
+.stat-card-accent {
+    border-color: var(--accent);
+    background: var(--accent-light);
+}
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+.stat-detail {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+/* Intro */
+.intro {
+    max-width: 700px;
+    margin: 0 auto 2rem;
+}
+.intro h2 { margin-bottom: 0.5rem; }
+.intro p { margin-bottom: 0.75rem; color: var(--muted); }
+
+/* Root Card */
+.root-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+.root-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+.root-syriac {
+    font-family: var(--font-syriac);
+    font-size: 2rem;
+    direction: rtl;
+}
+.root-translit { font-size: 1.2rem; color: var(--muted); }
+.root-academic { font-size: 1rem; color: var(--accent); }
+.root-occurrences { color: var(--muted); margin-bottom: 1rem; }
+
+/* Cognates */
+.cognate-section {
+    background: var(--accent-light);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.root-gloss { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+.sabor-raiz { font-style: italic; color: var(--muted); margin-bottom: 0.75rem; }
+.cognate-list { margin-bottom: 0.5rem; }
+.cognate-word { white-space: nowrap; }
+
+/* Matches table */
+.matches-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.75rem;
+}
+.matches-table th {
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.matches-table td {
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+.matches-table .syriac {
+    font-family: var(--font-syriac);
+    font-size: 1.2rem;
+    direction: rtl;
+    text-align: right;
+}
+
+/* Browse */
+.corpus-filter-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+.corpus-filter-bar a {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--fg);
+    font-size: 0.9rem;
+}
+.corpus-filter-bar a.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+.book-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+.book-card h3 { margin-bottom: 0.5rem; }
+.book-card h3 a { color: var(--accent); text-decoration: none; }
+.book-card h3 a:hover { text-decoration: underline; }
+.chapter-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+.chapter-links a {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    text-decoration: none;
+    color: var(--fg);
+    font-size: 0.85rem;
+}
+.chapter-links a:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+/* Reader */
+.reader-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.reader-nav { display: flex; gap: 1rem; }
+.reader-nav a { color: var(--accent); text-decoration: none; }
+.reader-nav a:hover { text-decoration: underline; }
+
+.translation-selector {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.translation-selector label { color: var(--muted); font-size: 0.9rem; }
+.translation-selector a {
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--fg);
+    font-size: 0.85rem;
+}
+.translation-selector a.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.verses { max-width: 800px; }
+.verse-row {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+}
+.verse-num {
+    min-width: 2rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: right;
+    padding-top: 0.2rem;
+}
+.verse-content { flex: 1; }
+.verse-syriac {
+    font-family: var(--font-syriac);
+    font-size: 1.3rem;
+    line-height: 1.8;
+    margin-bottom: 0.25rem;
+}
+.verse-translation {
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+.corpus-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    background: var(--accent-light);
+    color: var(--accent);
+    margin-top: 0.25rem;
+}
+
+/* About */
+.about-content { max-width: 700px; }
+.about-content h2 { margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.about-content p, .about-content li { margin-bottom: 0.5rem; }
+.about-content a { color: var(--accent); }
+
+/* Error */
+.error {
+    background: #ffeaea;
+    border: 1px solid #e8a0a0;
+    padding: 1rem;
+    border-radius: var(--radius);
+    color: #8b2020;
+    margin-top: 1rem;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .hero h1 { font-size: 1.6rem; }
+    .search-row { flex-direction: column; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .root-header { flex-wrap: wrap; }
+    .nav-inner { flex-direction: column; gap: 0.5rem; }
+}

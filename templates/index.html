@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Aramaic Root Atlas — Cross-Corpus Root Explorer{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Aramaic Root Atlas</h1>
+    <p class="subtitle">Trace triliteral roots across centuries of Aramaic literature</p>
+
+    <form class="search-form" action="/api/roots" method="get" id="rootSearchForm">
+        <div class="search-row">
+            <input type="text" name="q" id="rootInput"
+                   placeholder="Enter a root: SH-L-M, K-T-B, or ܫܠܡ"
+                   autocomplete="off" autofocus>
+            <select name="corpus" id="corpusFilter">
+                <option value="">All Corpora</option>
+                {% for c in corpora %}
+                <option value="{{ c.id }}">{{ c.label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Search</button>
+        </div>
+    </form>
+</section>
+
+<section class="stats">
+    <div class="stat-grid">
+        {% for c in corpora %}
+        <div class="stat-card">
+            <div class="stat-label">{{ c.label }}</div>
+            <div class="stat-value">{{ "{:,}".format(c.verses) }} verses</div>
+            <div class="stat-detail">{{ "{:,}".format(c.words) }} words</div>
+        </div>
+        {% endfor %}
+        <div class="stat-card stat-card-accent">
+            <div class="stat-label">Roots Indexed</div>
+            <div class="stat-value">{{ "{:,}".format(root_count) }}</div>
+            <div class="stat-detail">across all corpora</div>
+        </div>
+    </div>
+</section>
+
+<section class="intro">
+    <h2>What is this?</h2>
+    <p>The Aramaic Root Atlas lets you search for any Semitic triliteral root and see
+    every word form derived from it across multiple Aramaic corpora — from the Peshitta
+    New Testament and Old Testament to Biblical Aramaic and beyond.</p>
+    <p>Each root card shows Hebrew and Arabic cognates, semantic bridges between
+    related roots, and bilingual glosses in English and Spanish.</p>
+</section>
+
+<div id="results"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('rootSearchForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const q = document.getElementById('rootInput').value.trim();
+    const corpus = document.getElementById('corpusFilter').value;
+    if (!q) return;
+
+    const params = new URLSearchParams({q, lang: '{{ lang }}'});
+    if (corpus) params.set('corpus', corpus);
+
+    const res = await fetch('/api/roots?' + params);
+    const data = await res.json();
+    const el = document.getElementById('results');
+
+    if (data.error) {
+        el.innerHTML = `<div class="error">${data.error}</div>`;
+        return;
+    }
+
+    let html = `<div class="root-card">
+        <h2 class="root-header">
+            <span class="root-syriac">${data.root}</span>
+            <span class="root-translit">${data.root_transliteration}</span>
+            <span class="root-academic">${data.root_academic}</span>
+        </h2>
+        <div class="root-occurrences">${data.total_occurrences} occurrences</div>`;
+
+    if (data.cognates) {
+        const c = data.cognates;
+        const lang = '{{ lang }}';
+        const gloss = lang === 'es' ? c.gloss_es : c.gloss_en;
+        const sabor = lang === 'es' ? c.sabor_raiz_es : c.sabor_raiz_en;
+        html += `<div class="cognate-section">
+            <div class="root-gloss">${gloss}</div>`;
+        if (sabor) html += `<div class="sabor-raiz">${sabor}</div>`;
+
+        if (c.hebrew.length) {
+            html += `<div class="cognate-list"><strong>Hebrew:</strong> `;
+            html += c.hebrew.map(h => `<span class="cognate-word">${h.word} (${h.transliteration}) — ${lang === 'es' ? h.meaning_es : h.meaning_en}</span>`).join(', ');
+            html += `</div>`;
+        }
+        if (c.arabic.length) {
+            html += `<div class="cognate-list"><strong>Arabic:</strong> `;
+            html += c.arabic.map(a => `<span class="cognate-word">${a.word} (${a.transliteration}) — ${lang === 'es' ? a.meaning_es : a.meaning_en}</span>`).join(', ');
+            html += `</div>`;
+        }
+        html += `</div>`;
+    }
+
+    html += `<div class="matches-section"><h3>Word Forms</h3><table class="matches-table">
+        <thead><tr><th>Form</th><th>Transliteration</th><th>Gloss</th><th>Count</th></tr></thead><tbody>`;
+    const glossKey = '{{ lang }}' === 'es' ? 'gloss_es' : 'gloss_en';
+    for (const m of data.matches) {
+        html += `<tr>
+            <td class="syriac">${m.form}</td>
+            <td>${m.transliteration}</td>
+            <td>${m[glossKey] || ''}</td>
+            <td>${m.count}</td>
+        </tr>`;
+    }
+    html += `</tbody></table></div></div>`;
+    el.innerHTML = html;
+});
+</script>
+{% endblock %}

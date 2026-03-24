@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aramaic Root Atlas{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/?lang={{ lang }}" class="nav-brand">Aramaic Root Atlas</a>
+            <div class="nav-links">
+                <a href="/browse?lang={{ lang }}">{{ t('browse', lang) if t else 'Browse' }}</a>
+                <a href="/about?lang={{ lang }}">{{ t('about', lang) if t else 'About' }}</a>
+                {% if lang == 'es' %}
+                    <a href="?lang=en" class="lang-toggle">EN</a>
+                {% else %}
+                    <a href="?lang=es" class="lang-toggle">ES</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Aramaic Root Atlas &mdash; A cross-corpus triliteral root explorer</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
