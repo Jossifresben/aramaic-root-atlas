@@ -32,6 +32,9 @@
     cursor: pointer;
     user-select: none;
     white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 .heatmap-table th:hover { opacity: 0.9; }
 .heatmap-table th .sort-arrow { margin-left: 4px; font-size: 0.7em; }
@@ -76,6 +79,25 @@
     cursor: pointer;
     font-size: 0.85rem;
 }
+.show-more-wrap {
+    text-align: center;
+    margin: 20px 0;
+}
+.show-more-btn {
+    padding: 10px 32px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+.show-more-btn:hover { opacity: 0.9; }
+.show-more-info {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 6px;
+}
 </style>
 {% endblock %}
 
@@ -84,14 +106,6 @@
 <p class="heatmap-info">{{ t('heatmap_desc', lang) }}</p>
 
 <div class="heatmap-controls">
-    <label>{{ t('show', lang) }}:</label>
-    <select id="hm-limit" onchange="loadHeatmap()">
-        <option value="50">50</option>
-        <option value="100" selected>100</option>
-        <option value="200">200</option>
-        <option value="500">500</option>
-    </select>
-    <label>roots</label>
     <div class="heatmap-export">
         <button onclick="exportHeatmapCSV()"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">download</span> CSV</button>
         <button onclick="exportHeatmapJSON()"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">download</span> JSON</button>
@@ -104,6 +118,12 @@
 {% block scripts %}
 <script>
 var _hmData = null;
+var _hmAllRoots = [];
+var _hmCorpora = [];
+var _hmMaxCounts = {};
+var _hmDisplayed = 0;
+var _hmPageSize = 100;
+var _hmSort = 'total';
 
 var CORPUS_LABELS = {
     'peshitta_nt': 'Peshitta NT',
@@ -113,49 +133,70 @@ var CORPUS_LABELS = {
 };
 
 async function loadHeatmap(sortCol) {
-    var limit = document.getElementById('hm-limit').value;
-    var sort = sortCol || 'total';
+    if (sortCol) _hmSort = sortCol;
     var el = document.getElementById('heatmap-results');
     el.innerHTML = '<p>Loading...</p>';
 
-    var res = await fetch('/api/heatmap?limit=' + limit + '&sort=' + sort);
+    var res = await fetch('/api/heatmap?limit=0&sort=' + _hmSort);
     var data = await res.json();
     _hmData = data;
+    _hmAllRoots = data.roots;
+    _hmCorpora = data.corpora;
+    _hmDisplayed = 0;
 
-    var corpora = data.corpora;
-    var maxCounts = {};
-    for (var c of corpora) {
-        maxCounts[c] = Math.max.apply(null, data.roots.map(function(r) { return r[c] || 0; }));
+    _hmMaxCounts = {};
+    for (var c of _hmCorpora) {
+        _hmMaxCounts[c] = Math.max.apply(null, _hmAllRoots.map(function(r) { return r[c] || 0; }));
     }
 
     var html = '<table class="heatmap-table"><thead><tr>';
-    html += '<th onclick="loadHeatmap(\'root\')">Root <span class="sort-arrow">' + (sort === 'root' ? '▼' : '') + '</span></th>';
+    html += '<th onclick="loadHeatmap(\'root\')">Root <span class="sort-arrow">' + (_hmSort === 'root' ? '▼' : '') + '</span></th>';
     html += '<th>Translit</th>';
     html += '<th>Gloss</th>';
-    html += '<th onclick="loadHeatmap(\'total\')">Total <span class="sort-arrow">' + (sort === 'total' ? '▼' : '') + '</span></th>';
-    for (var c of corpora) {
-        html += '<th onclick="loadHeatmap(\'' + c + '\')">' + (CORPUS_LABELS[c] || c) + ' <span class="sort-arrow">' + (sort === c ? '▼' : '') + '</span></th>';
+    html += '<th onclick="loadHeatmap(\'total\')">Total <span class="sort-arrow">' + (_hmSort === 'total' ? '▼' : '') + '</span></th>';
+    for (var c of _hmCorpora) {
+        html += '<th onclick="loadHeatmap(\'' + c + '\')">' + (CORPUS_LABELS[c] || c) + ' <span class="sort-arrow">' + (_hmSort === c ? '▼' : '') + '</span></th>';
     }
-    html += '</tr></thead><tbody>';
+    html += '</tr></thead><tbody id="hm-tbody"></tbody></table>';
+    html += '<div id="hm-show-more"></div>';
+    el.innerHTML = html;
 
-    for (var r of data.roots) {
+    showMoreRows();
+}
+
+function showMoreRows() {
+    var tbody = document.getElementById('hm-tbody');
+    var end = Math.min(_hmDisplayed + _hmPageSize, _hmAllRoots.length);
+
+    var html = '';
+    for (var i = _hmDisplayed; i < end; i++) {
+        var r = _hmAllRoots[i];
         html += '<tr>';
         html += '<td class="root-cell"><a href="/?q=' + encodeURIComponent(r.root_translit) + '" style="text-decoration:none;color:inherit">' + r.root + '</a></td>';
         html += '<td class="translit-cell">' + r.root_translit + '</td>';
         html += '<td>' + (r.gloss || '') + '</td>';
         html += '<td class="count-cell"><strong>' + r.total + '</strong></td>';
-        for (var c of corpora) {
+        for (var c of _hmCorpora) {
             var count = r[c] || 0;
-            var max = maxCounts[c] || 1;
+            var max = _hmMaxCounts[c] || 1;
             var level = count === 0 ? 0 : Math.min(5, Math.ceil((count / max) * 5));
             html += '<td class="count-cell heat-' + level + '">' + (count || '—') + '</td>';
         }
         html += '</tr>';
     }
+    tbody.insertAdjacentHTML('beforeend', html);
+    _hmDisplayed = end;
 
-    html += '</tbody></table>';
-    html += '<p class="heatmap-info">Showing ' + data.roots.length + ' of ' + data.total_roots + ' roots</p>';
-    el.innerHTML = html;
+    var moreEl = document.getElementById('hm-show-more');
+    if (_hmDisplayed < _hmAllRoots.length) {
+        var remaining = _hmAllRoots.length - _hmDisplayed;
+        moreEl.innerHTML = '<div class="show-more-wrap">' +
+            '<button class="show-more-btn" onclick="showMoreRows()">Show more</button>' +
+            '<div class="show-more-info">Showing ' + _hmDisplayed + ' of ' + _hmAllRoots.length + ' roots (' + remaining + ' remaining)</div>' +
+            '</div>';
+    } else {
+        moreEl.innerHTML = '<p class="heatmap-info" style="text-align:center">Showing all ' + _hmAllRoots.length + ' roots</p>';
+    }
 }
 
 function exportHeatmapCSV() {

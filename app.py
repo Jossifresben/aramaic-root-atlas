@@ -904,7 +904,7 @@ def api_heatmap():
 
     return jsonify({
         'corpora': corpus_ids,
-        'roots': rows[:limit],
+        'roots': rows if limit == 0 else rows[:limit],
         'total_roots': len(rows),
     })
 
