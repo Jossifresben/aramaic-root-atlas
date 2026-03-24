@@ -867,7 +867,7 @@ def api_heatmap():
     roots = _extractor.get_all_roots()
 
     rows = []
-    for entry in roots[:500]:  # cap processing
+    for entry in roots:
         corpus_counts = {}
         for m in entry.matches:
             for ref in m.references:
