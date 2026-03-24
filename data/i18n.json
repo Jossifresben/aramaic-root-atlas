@@ -350,7 +350,8 @@
     "next": "Siguiente",
     "heatmap_title": "Mapa de Frecuencia de Raíces",
     "heatmap_desc": "Compare la frecuencia de raíces en todos los corpus. Haga clic en los encabezados para ordenar.",
-    "show": "Mostrar"
+    "show": "Mostrar",
+    "heat_map": "Mapa de calor"
   },
   "en": {
     "app_title": "Peshitta Constellations",
@@ -703,7 +704,8 @@
     "next": "Next",
     "heatmap_title": "Root Frequency Heat Map",
     "heatmap_desc": "Compare root frequency across all corpora. Click column headers to sort.",
-    "show": "Show"
+    "show": "Show",
+    "heat_map": "Heat Map"
   },
   "he": {
     "app_title": "קונסטלציות הפשיטתא",
@@ -1056,7 +1058,8 @@
     "next": "הבא",
     "heatmap_title": "מפת חום של שורשים",
     "heatmap_desc": "השוו תדירות שורשים בין כל המאגרים. לחצו על כותרות העמודות למיון.",
-    "show": "הצג"
+    "show": "הצג",
+    "heat_map": "מפת חום"
   },
   "ar": {
     "app_title": "أبراج الپشيطتا",
@@ -1409,12 +1412,7 @@
     "next": "التالي",
     "heatmap_title": "خريطة حرارية لتكرار الجذور",
     "heatmap_desc": "قارن تكرار الجذور عبر جميع المجموعات. انقر على رؤوس الأعمدة للترتيب.",
-    "show": "عرض"
-  },
-  "heat_map": {
-    "en": "Heat Map",
-    "es": "Mapa de calor",
-    "he": "מפת חום",
-    "ar": "خريطة حرارية"
+    "show": "عرض",
+    "heat_map": "خريطة حرارية"
   }
 }
