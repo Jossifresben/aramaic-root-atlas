@@ -52,7 +52,6 @@
 .parallel-row {
     display: grid;
     gap: 0;
-    border-bottom: 1px solid var(--border);
     align-items: start;
 }
 .parallel-row:last-child { border-bottom: none; }
@@ -61,9 +60,6 @@
     padding: 10px 14px;
     border-right: 1px solid var(--border);
     line-height: 1.8;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
 .parallel-cell:last-child { border-right: none; }
 .parallel-cell.verse-num {
@@ -98,8 +94,22 @@
     border-top: 1px solid var(--border);
     padding-top: 4px;
 }
+.parallel-row + .parallel-translit-row {
+    border-top: none;
+}
+.parallel-translit-row {
+    border-bottom: none;
+}
+.parallel-translit-row .parallel-cell {
+    padding-top: 0;
+    padding-bottom: 6px;
+}
+.script-cell {
+    padding-bottom: 4px;
+}
 .parallel-translation-row {
     padding: 6px 14px 10px;
+    border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     text-align: center;
 }
@@ -263,31 +273,41 @@ async function loadParallel() {
 
     // Rows
     var verseNums = Object.keys(verseMap).map(Number).sort(function(a,b) { return a - b; });
+    var colSpanAll = numCols;
     for (var vn of verseNums) {
-        // Script + transliteration row
+        var translation = '';
+        // Script row
         html += '<div class="parallel-row" style="grid-template-columns: ' + gridCols + '">';
         html += '<div class="parallel-cell verse-num">' + vn + '</div>';
-        var translation = '';
         for (var c of corpora) {
             var v = verseMap[vn][c];
             if (v) {
                 var isHebrew = v.syriac && v.syriac.charCodeAt(0) >= 0x0590 && v.syriac.charCodeAt(0) <= 0x05FF;
                 var textClass = isHebrew ? 'hebrew-text' : 'syriac-text';
-                html += '<div class="parallel-cell">';
-                html += '<div class="' + textClass + '">' + (v.syriac || '') + '</div>';
-                if (v.translit) {
-                    html += '<div class="translit-text">' + v.translit + '</div>';
-                }
-                html += '</div>';
+                html += '<div class="parallel-cell script-cell"><div class="' + textClass + '">' + (v.syriac || '') + '</div></div>';
                 if (!translation && v.translation) translation = v.translation;
             } else {
                 html += '<div class="parallel-cell empty">—</div>';
             }
         }
         html += '</div>';
-        // Translation row spanning all columns
+        // Transliteration row (separate, so always aligned)
+        var hasTranslit = false;
+        for (var c of corpora) { if (verseMap[vn][c] && verseMap[vn][c].translit) hasTranslit = true; }
+        if (hasTranslit) {
+            html += '<div class="parallel-row parallel-translit-row" style="grid-template-columns: ' + gridCols + '">';
+            html += '<div class="parallel-cell"></div>'; // empty under verse num
+            for (var c of corpora) {
+                var v = verseMap[vn][c];
+                html += '<div class="parallel-cell translit-cell">';
+                if (v && v.translit) html += '<div class="translit-text">' + v.translit + '</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+        }
+        // Translation row
         if (translation) {
-            html += '<div class="parallel-translation-row" style="grid-column: 1 / -1">';
+            html += '<div class="parallel-translation-row">';
             html += '<div class="translation-text">' + translation + '</div>';
             html += '</div>';
         }
