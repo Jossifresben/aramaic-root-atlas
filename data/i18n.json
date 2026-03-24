@@ -347,7 +347,10 @@
     "parallel_desc": "Compare el mismo pasaje en diferentes corpus arameos lado a lado.",
     "book": "Libro",
     "prev": "Anterior",
-    "next": "Siguiente"
+    "next": "Siguiente",
+    "heatmap_title": "Mapa de Frecuencia de Raíces",
+    "heatmap_desc": "Compare la frecuencia de raíces en todos los corpus. Haga clic en los encabezados para ordenar.",
+    "show": "Mostrar"
   },
   "en": {
     "app_title": "Peshitta Constellations",
@@ -697,7 +700,10 @@
     "parallel_desc": "Compare the same passage across different Aramaic corpora side by side.",
     "book": "Book",
     "prev": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "heatmap_title": "Root Frequency Heat Map",
+    "heatmap_desc": "Compare root frequency across all corpora. Click column headers to sort.",
+    "show": "Show"
   },
   "he": {
     "app_title": "קונסטלציות הפשיטתא",
@@ -1047,7 +1053,10 @@
     "parallel_desc": "השווה את אותו קטע במאגרים ארמיים שונים זה לצד זה.",
     "book": "ספר",
     "prev": "הקודם",
-    "next": "הבא"
+    "next": "הבא",
+    "heatmap_title": "מפת חום של שורשים",
+    "heatmap_desc": "השוו תדירות שורשים בין כל המאגרים. לחצו על כותרות העמודות למיון.",
+    "show": "הצג"
   },
   "ar": {
     "app_title": "أبراج الپشيطتا",
@@ -1397,6 +1406,9 @@
     "parallel_desc": "قارن نفس المقطع عبر مجموعات آرامية مختلفة جنبًا إلى جنب.",
     "book": "سفر",
     "prev": "السابق",
-    "next": "التالي"
+    "next": "التالي",
+    "heatmap_title": "خريطة حرارية لتكرار الجذور",
+    "heatmap_desc": "قارن تكرار الجذور عبر جميع المجموعات. انقر على رؤوس الأعمدة للترتيب.",
+    "show": "عرض"
   }
 }

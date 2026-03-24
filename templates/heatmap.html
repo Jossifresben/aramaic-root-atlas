@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('heatmap_title', lang) }} — Aramaic Root Atlas{% endblock %}
+
+{% block head %}
+<style>
+.heatmap-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+.heatmap-controls label { font-weight: 500; }
+.heatmap-controls select, .heatmap-controls input {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg);
+}
+.heatmap-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.heatmap-table th {
+    background: var(--accent);
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+.heatmap-table th:hover { opacity: 0.9; }
+.heatmap-table th .sort-arrow { margin-left: 4px; font-size: 0.7em; }
+.heatmap-table td {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+}
+.heatmap-table tr:hover { background: var(--accent-light); }
+.heatmap-table .root-cell {
+    font-family: var(--syriac-font);
+    font-size: 1.1rem;
+    direction: rtl;
+}
+.heatmap-table .translit-cell {
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+.heatmap-table .count-cell {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.heat-0 { color: var(--muted); }
+.heat-1 { background: rgba(44,95,124,0.08); }
+.heat-2 { background: rgba(44,95,124,0.18); }
+.heat-3 { background: rgba(44,95,124,0.30); }
+.heat-4 { background: rgba(44,95,124,0.45); color: #fff; }
+.heat-5 { background: rgba(44,95,124,0.65); color: #fff; }
+.heatmap-info {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+.heatmap-export {
+    margin-left: auto;
+}
+.heatmap-export button {
+    padding: 6px 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 4px;">{{ t('heatmap_title', lang) }}</h1>
+<p class="heatmap-info">{{ t('heatmap_desc', lang) }}</p>
+
+<div class="heatmap-controls">
+    <label>{{ t('show', lang) }}:</label>
+    <select id="hm-limit" onchange="loadHeatmap()">
+        <option value="50">50</option>
+        <option value="100" selected>100</option>
+        <option value="200">200</option>
+        <option value="500">500</option>
+    </select>
+    <label>roots</label>
+    <div class="heatmap-export">
+        <button onclick="exportHeatmapCSV()"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">download</span> CSV</button>
+        <button onclick="exportHeatmapJSON()"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">download</span> JSON</button>
+    </div>
+</div>
+
+<div id="heatmap-results"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var _hmData = null;
+
+var CORPUS_LABELS = {
+    'peshitta_nt': 'Peshitta NT',
+    'peshitta_ot': 'Peshitta OT',
+    'biblical_aramaic': 'Biblical Aramaic',
+    'targum_onkelos': 'Targum Onkelos'
+};
+
+async function loadHeatmap(sortCol) {
+    var limit = document.getElementById('hm-limit').value;
+    var sort = sortCol || 'total';
+    var el = document.getElementById('heatmap-results');
+    el.innerHTML = '<p>Loading...</p>';
+
+    var res = await fetch('/api/heatmap?limit=' + limit + '&sort=' + sort);
+    var data = await res.json();
+    _hmData = data;
+
+    var corpora = data.corpora;
+    var maxCounts = {};
+    for (var c of corpora) {
+        maxCounts[c] = Math.max.apply(null, data.roots.map(function(r) { return r[c] || 0; }));
+    }
+
+    var html = '<table class="heatmap-table"><thead><tr>';
+    html += '<th onclick="loadHeatmap(\'root\')">Root <span class="sort-arrow">' + (sort === 'root' ? '▼' : '') + '</span></th>';
+    html += '<th>Translit</th>';
+    html += '<th onclick="loadHeatmap(\'total\')">Total <span class="sort-arrow">' + (sort === 'total' ? '▼' : '') + '</span></th>';
+    for (var c of corpora) {
+        html += '<th onclick="loadHeatmap(\'' + c + '\')">' + (CORPUS_LABELS[c] || c) + ' <span class="sort-arrow">' + (sort === c ? '▼' : '') + '</span></th>';
+    }
+    html += '</tr></thead><tbody>';
+
+    for (var r of data.roots) {
+        html += '<tr>';
+        html += '<td class="root-cell"><a href="/?q=' + encodeURIComponent(r.root_translit) + '" style="text-decoration:none;color:inherit">' + r.root + '</a></td>';
+        html += '<td class="translit-cell">' + r.root_translit + '</td>';
+        html += '<td class="count-cell"><strong>' + r.total + '</strong></td>';
+        for (var c of corpora) {
+            var count = r[c] || 0;
+            var max = maxCounts[c] || 1;
+            var level = count === 0 ? 0 : Math.min(5, Math.ceil((count / max) * 5));
+            html += '<td class="count-cell heat-' + level + '">' + (count || '—') + '</td>';
+        }
+        html += '</tr>';
+    }
+
+    html += '</tbody></table>';
+    html += '<p class="heatmap-info">Showing ' + data.roots.length + ' of ' + data.total_roots + ' roots</p>';
+    el.innerHTML = html;
+}
+
+function exportHeatmapCSV() {
+    if (!_hmData) return;
+    var corpora = _hmData.corpora;
+    var csv = 'Root,Transliteration,Total,' + corpora.map(function(c) { return CORPUS_LABELS[c] || c; }).join(',') + '\n';
+    for (var r of _hmData.roots) {
+        csv += '"' + r.root + '","' + r.root_translit + '",' + r.total;
+        for (var c of corpora) csv += ',' + (r[c] || 0);
+        csv += '\n';
+    }
+    var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'root_heatmap.csv';
+    a.click();
+}
+
+function exportHeatmapJSON() {
+    if (!_hmData) return;
+    var blob = new Blob([JSON.stringify(_hmData, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'root_heatmap.json';
+    a.click();
+}
+
+loadHeatmap();
+</script>
+{% endblock %}

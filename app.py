@@ -857,5 +857,57 @@ def constellation():
                            book=book, chapter=chapter, v_start=v_start, v_end=v_end)
 
 
+@app.route('/api/heatmap')
+def api_heatmap():
+    """Return root frequency across corpora for heat map display."""
+    limit = request.args.get('limit', 100, type=int)
+    sort = request.args.get('sort', 'total')  # total, root, or corpus_id
+
+    corpus_ids = _corpus.get_corpus_ids()
+    roots = _extractor.get_all_roots()
+
+    rows = []
+    for entry in roots[:500]:  # cap processing
+        corpus_counts = {}
+        for m in entry.matches:
+            for ref in m.references:
+                cid = _corpus.get_verse_corpus(ref)
+                corpus_counts[cid] = corpus_counts.get(cid, 0) + 1
+
+        if len(corpus_counts) < 1:
+            continue
+
+        row = {
+            'root': entry.root,
+            'root_translit': _translit_to_dash(entry.root),
+            'total': entry.total_occurrences,
+        }
+        for cid in corpus_ids:
+            row[cid] = corpus_counts.get(cid, 0)
+        rows.append(row)
+
+    # Sort
+    if sort == 'root':
+        rows.sort(key=lambda r: r['root_translit'])
+    elif sort in corpus_ids:
+        rows.sort(key=lambda r: r.get(sort, 0), reverse=True)
+    else:
+        rows.sort(key=lambda r: r['total'], reverse=True)
+
+    return jsonify({
+        'corpora': corpus_ids,
+        'roots': rows[:limit],
+        'total_roots': len(rows),
+    })
+
+
+@app.route('/heatmap')
+def heatmap():
+    """Root frequency heat map page."""
+    lang = _get_lang()
+    return render_template('heatmap.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn)
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
