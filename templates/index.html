@@ -41,6 +41,12 @@
             <div class="stat-detail">across all corpora</div>
         </div>
     </div>
+    <div style="text-align:center; margin-top:1.5rem;">
+        <a href="/browse?lang={{ lang }}" class="browse-btn">
+            <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">menu_book</span>
+            {{ t('browse', lang) if t else 'Browse' }} &amp; {{ t('read', lang) if t else 'Read' }}
+        </a>
+    </div>
 </section>
 
 <section class="intro">
