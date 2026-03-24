@@ -131,6 +131,7 @@ async function loadHeatmap(sortCol) {
     var html = '<table class="heatmap-table"><thead><tr>';
     html += '<th onclick="loadHeatmap(\'root\')">Root <span class="sort-arrow">' + (sort === 'root' ? '▼' : '') + '</span></th>';
     html += '<th>Translit</th>';
+    html += '<th>Gloss</th>';
     html += '<th onclick="loadHeatmap(\'total\')">Total <span class="sort-arrow">' + (sort === 'total' ? '▼' : '') + '</span></th>';
     for (var c of corpora) {
         html += '<th onclick="loadHeatmap(\'' + c + '\')">' + (CORPUS_LABELS[c] || c) + ' <span class="sort-arrow">' + (sort === c ? '▼' : '') + '</span></th>';
@@ -141,6 +142,7 @@ async function loadHeatmap(sortCol) {
         html += '<tr>';
         html += '<td class="root-cell"><a href="/?q=' + encodeURIComponent(r.root_translit) + '" style="text-decoration:none;color:inherit">' + r.root + '</a></td>';
         html += '<td class="translit-cell">' + r.root_translit + '</td>';
+        html += '<td>' + (r.gloss || '') + '</td>';
         html += '<td class="count-cell"><strong>' + r.total + '</strong></td>';
         for (var c of corpora) {
             var count = r[c] || 0;
@@ -159,9 +161,9 @@ async function loadHeatmap(sortCol) {
 function exportHeatmapCSV() {
     if (!_hmData) return;
     var corpora = _hmData.corpora;
-    var csv = 'Root,Transliteration,Total,' + corpora.map(function(c) { return CORPUS_LABELS[c] || c; }).join(',') + '\n';
+    var csv = 'Root,Transliteration,Gloss,Total,' + corpora.map(function(c) { return CORPUS_LABELS[c] || c; }).join(',') + '\n';
     for (var r of _hmData.roots) {
-        csv += '"' + r.root + '","' + r.root_translit + '",' + r.total;
+        csv += '"' + r.root + '","' + r.root_translit + '","' + (r.gloss || '').replace(/"/g, '""') + '",' + r.total;
         for (var c of corpora) csv += ',' + (r[c] || 0);
         csv += '\n';
     }

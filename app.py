@@ -877,9 +877,17 @@ def api_heatmap():
         if len(corpus_counts) < 1:
             continue
 
+        cognate = _cognate_lookup.lookup(entry.root)
+        gloss = ''
+        if cognate:
+            gloss = cognate.gloss_en
+        if not gloss:
+            gloss = _extractor.get_root_gloss(entry.root)
+
         row = {
             'root': entry.root,
             'root_translit': _translit_to_dash(entry.root),
+            'gloss': gloss,
             'total': entry.total_occurrences,
         }
         for cid in corpus_ids:
