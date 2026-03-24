@@ -17,6 +17,18 @@
     --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-syriac: 'Noto Sans Syriac', 'Estrangelo Edessa', serif;
     --syriac-font: 'Noto Sans Syriac', 'Estrangelo Edessa', serif;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b6560;
+    --bg-card: #ffffff;
+    --bg-ref: #f5f3ee;
+    --bg-page: #faf9f6;
+    --bg-highlight: rgba(218, 165, 32, 0.08);
+    --radius-lg: 10px;
+    --radius-md: 6px;
+    --shadow: rgba(0,0,0,0.1);
+    --accent-dark: #1e4a5e;
+    --accent-gold: #DAA520;
+    --text-muted: #999;
 }
 
 /* Dark theme */
@@ -33,6 +45,16 @@
     --ba-color: #a05ab5;
     --overlay: rgba(0,0,0,0.7);
     --shadow-modal: rgba(0,0,0,0.6);
+    --text-primary: #e2e4dc;
+    --text-secondary: #a0a498;
+    --bg-card: #1a1d18;
+    --bg-ref: #222520;
+    --bg-page: #121410;
+    --bg-highlight: rgba(218, 165, 32, 0.12);
+    --shadow: rgba(0,0,0,0.3);
+    --accent-dark: #3d7a94;
+    --accent-gold: #DAA520;
+    --text-muted: #777;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1034,4 +1056,643 @@ body {
     .peshitta-table td.gloss-cell { display: block; padding: 2px 0; }
     .peshitta-table td.refs { display: block; padding-top: 4px; }
     .panel-body { padding: 12px; }
+}
+
+/* === Root Visualizer === */
+/* Viz view tabs (Grafo / Ficha) */
+.viz-view-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 0;
+}
+
+.viz-view-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    margin-bottom: -2px;
+}
+
+.viz-view-tab:hover {
+    color: var(--text-primary);
+    background: var(--bg-ref);
+}
+
+.viz-view-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+}
+
+.viz-view-tab .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* Root Card (Ficha) */
+.root-ficha {
+    padding: 24px 20px;
+}
+
+.ficha-section {
+    margin-bottom: 28px;
+}
+
+.ficha-section:last-child {
+    margin-bottom: 0;
+}
+
+.ficha-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 12px 0;
+}
+
+.ficha-section-title .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--accent);
+}
+
+.ficha-root-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.ficha-root-syriac {
+    font-family: var(--syriac-font);
+    font-size: 2em;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.ficha-root-translit {
+    font-size: 1.1em;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+}
+
+.ficha-semantic-text {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    font-style: italic;
+}
+
+.ficha-citation-original {
+    font-family: var(--syriac-font);
+    font-size: 1.45em;
+    line-height: 1.8;
+    direction: rtl;
+    text-align: right;
+    color: var(--text-primary);
+    padding: 10px 16px 0;
+    border-left: 3px solid var(--accent);
+    background: var(--bg-ref);
+    border-radius: 0 8px 0 0;
+}
+
+.ficha-citation-translit {
+    font-size: 1.05em;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    padding: 4px 16px;
+    border-left: 3px solid var(--accent);
+    background: var(--bg-ref);
+    font-style: italic;
+}
+
+.ficha-citation {
+    margin: 0 0 8px 0;
+    padding: 8px 16px 12px;
+    border-left: 3px solid var(--accent);
+    background: var(--bg-ref);
+    border-radius: 0 0 8px 0;
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: var(--text-primary);
+    font-style: italic;
+}
+
+.ficha-citation-note {
+    font-size: 0.85em;
+    font-style: italic;
+    color: var(--accent);
+    margin-top: 6px;
+    padding: 6px 10px;
+    border-left: 3px solid var(--accent);
+    background: rgba(107, 122, 94, 0.06);
+    border-radius: 0 4px 4px 0;
+}
+
+[data-theme="dark"] .ficha-citation-note {
+    background: rgba(154, 172, 132, 0.1);
+}
+
+.ficha-citation-ref {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+}
+
+.ficha-read-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.ficha-read-link:hover {
+    text-decoration: underline;
+}
+
+.ficha-sisters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.ficha-sister {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.2s;
+    min-width: 100px;
+}
+
+.ficha-sister:hover {
+    border-color: var(--accent);
+    background: var(--bg-ref);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.ficha-sister-root {
+    font-weight: 600;
+    font-size: 1em;
+}
+
+.ficha-sister-gloss {
+    font-size: 0.8em;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.ficha-sister-shared {
+    font-size: 0.7em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.ficha-sisters-empty {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 0;
+}
+
+/* Translation degradation — ¿Qué se perdió? */
+.ficha-degradation-chain {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 12px 0 16px;
+}
+
+.ficha-degradation-lost {
+    font-style: italic;
+    color: var(--text-primary);
+    line-height: 1.6;
+    padding: 12px 16px;
+    border-left: 3px solid var(--accent-gold);
+    background: var(--bg-highlight);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.92em;
+}
+
+[data-theme="dark"] .ficha-degradation-lost {
+    background: var(--bg-highlight);
+    color: var(--text-primary);
+    border-left-color: var(--accent-gold);
+}
+
+.ficha-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ficha-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+.ficha-table th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.ficha-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.ficha-table tr:last-child td {
+    border-bottom: none;
+}
+
+.ficha-word {
+    display: block;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.ficha-word-syriac { font-family: var(--syriac-font); }
+
+.ficha-word-hebrew { font-family: 'Noto Sans Hebrew', serif; }
+
+.ficha-word-arabic { font-family: 'Noto Sans Arabic', serif; direction: rtl; }
+
+.ficha-translit {
+    display: block;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+}
+
+.ficha-meaning {
+    display: block;
+    font-size: 0.82em;
+    color: var(--text-primary);
+    margin-top: 2px;
+}
+
+/* === Root Visualizer === */
+.viz-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.viz-svg-wrap {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    overflow: hidden;
+}
+
+.viz-svg-wrap svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.viz-loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+    font-size: 1.1em;
+}
+
+.viz-error {
+    text-align: center;
+    padding: 40px 20px;
+    color: #c0392b;
+    font-size: 1.1em;
+}
+
+.viz-tooltip {
+    display: none;
+    position: absolute;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+    box-shadow: 0 4px 16px var(--shadow);
+    max-width: 280px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.viz-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.viz-link-icon {
+    color: var(--accent);
+    text-decoration: none;
+    margin-left: 6px;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+
+.viz-link-icon:hover {
+    opacity: 1;
+}
+
+.viz-btn:hover {
+    background: var(--accent-dark);
+}
+
+.viz-btn-primary {
+    padding: 8px 20px;
+    font-size: 1em;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    background: #f0ece4;
+    color: var(--accent-dark);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.02em;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+
+.viz-btn-primary:hover {
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+[data-theme="dark"] .viz-btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .viz-btn-primary:hover {
+    background: var(--accent-dark);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.viz-btn .material-symbols-outlined {
+    font-size: 16px;
+}
+
+.viz-btn-primary .material-symbols-outlined {
+    font-size: 18px;
+}
+
+/* Visualize button in word modal */
+.modal-viz-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-decoration: none;
+    margin: 8px 0 4px;
+    box-shadow: 0 2px 6px rgba(139, 69, 19, 0.3);
+    transition: background 0.15s, box-shadow 0.15s;
+}
+
+.modal-viz-btn:hover {
+    background: var(--accent-dark);
+    box-shadow: 0 3px 10px rgba(139, 69, 19, 0.4);
+}
+
+.modal-viz-btn .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.viz-controls {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.viz-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9em;
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+}
+
+.viz-check input[type="checkbox"] {
+    display: none;
+}
+
+.viz-check-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.viz-check input[type="checkbox"]:checked + .viz-check-dot {
+    border-color: transparent;
+    box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 3px currentColor;
+}
+
+.viz-check input[type="checkbox"]:not(:checked) + .viz-check-dot {
+    opacity: 0.4;
+}
+
+.viz-outlier-key {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 16px;
+    padding-left: 16px;
+    border-left: 1px solid var(--text-muted, #999);
+    font-size: 13px;
+    color: var(--viz-outlier-text, #8B6914);
+    gap: 2px;
+}
+
+.viz-bridge-key {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: 1px solid var(--text-muted, #999);
+    font-size: 13px;
+    color: var(--viz-bridge-text, #7A5C12);
+    gap: 4px;
+}
+
+.bridge-outlier-ring {
+    animation: bridge-glow 2s ease-in-out infinite;
+}
+
+.bridge-outlier-pulse {
+    animation: bridge-pulse 2s ease-in-out infinite;
+}
+
+/* Fullscreen button */
+.viz-fullscreen-btn {
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--text-muted);
+    border-radius: 6px;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 4px 8px;
+    display: inline-flex;
+    align-items: center;
+    transition: background 0.15s, color 0.15s;
+}
+
+.viz-fullscreen-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.viz-fullscreen-btn .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* Fullscreen mode */
+.viz-container.is-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: var(--bg-page, #fff);
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.viz-container.is-fullscreen .viz-controls {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    z-index: 10;
+    background: var(--bg-card, rgba(255,255,255,0.92));
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    padding: 10px 18px;
+}
+
+.viz-container.is-fullscreen .viz-svg-wrap {
+    width: 100%;
+    height: 100%;
+}
+
+.viz-container.is-fullscreen .viz-svg-wrap svg {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Native fullscreen API styles */
+.viz-container:fullscreen,
+.viz-container:-webkit-full-screen {
+    background: var(--bg-page, #fff);
+}
+
+.viz-container:fullscreen .viz-controls,
+.viz-container:-webkit-full-screen .viz-controls {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 10;
+    background: var(--bg-card, rgba(255,255,255,0.92));
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    padding: 10px 18px;
+}
+
+.viz-back {
+    margin-top: 8px;
+}
+
+.viz-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.95em;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.viz-back-link:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+.viz-controls {
+        gap: 10px;
+        padding: 10px 12px;
+        flex-wrap: wrap;
+    }
+
+.viz-check {
+        font-size: 0.82em;
+    }
+
+[dir="rtl"] .ficha-sister {
+    direction: rtl;
 }
