@@ -412,12 +412,13 @@ body {
     font-size: 0.8em;
     padding: 3px 10px;
     border-radius: 12px;
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.4);
+    font-weight: 500;
+    color: #ffffff;
 }
-.corpus-badge.corpus-peshitta_nt { background: rgba(44,95,124,0.4); }
-.corpus-badge.corpus-peshitta_ot { background: rgba(124,95,44,0.4); }
-.corpus-badge.corpus-biblical_aramaic { background: rgba(95,44,124,0.4); }
+.corpus-badge.corpus-peshitta_nt { background: #1a4d6b; }
+.corpus-badge.corpus-peshitta_ot { background: #6b5a1a; }
+.corpus-badge.corpus-biblical_aramaic { background: #5a1a6b; }
 .root-header-nav {
     display: flex;
     gap: 8px;
@@ -790,7 +791,7 @@ body {
     color: var(--muted);
     font-size: 0.95rem;
 }
-.corpus-badge {
+.verse-row .corpus-badge {
     display: inline-block;
     font-size: 0.7rem;
     padding: 0.1rem 0.4rem;
