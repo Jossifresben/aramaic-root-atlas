@@ -139,7 +139,6 @@
         <option value="{{ i }}"{% if i == chapter|int %} selected{% endif %}>{{ i }}</option>
         {% endfor %}
     </select>
-    <button onclick="loadParallel()">{{ t('search', lang) }}</button>
 </div>
 
 <div id="parallel-results"></div>
@@ -165,6 +164,10 @@ document.getElementById('par-book').addEventListener('change', function() {
         opt.value = i; opt.textContent = i;
         chSel.appendChild(opt);
     }
+    loadParallel();
+});
+document.getElementById('par-chapter').addEventListener('change', function() {
+    loadParallel();
 });
 
 // Trigger chapter update on load
