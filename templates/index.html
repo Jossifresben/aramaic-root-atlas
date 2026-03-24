@@ -7,11 +7,14 @@
     <h1>Aramaic Root Atlas</h1>
     <p class="subtitle">Trace triliteral roots across centuries of Aramaic literature</p>
 
-    <form class="search-form" action="/api/roots" method="get" id="rootSearchForm">
+    <form class="search-form" action="/" method="get" id="rootSearchForm">
         <div class="search-row">
-            <input type="text" name="q" id="rootInput"
-                   placeholder="Enter a root: SH-L-M, K-T-B, or ܫܠܡ"
-                   autocomplete="off" autofocus>
+            <div class="autocomplete-wrapper">
+                <input type="text" name="q" id="rootInput"
+                       placeholder="Enter a root: SH-L-M, K-T-B, or ܫܠܡ"
+                       autocomplete="off" autofocus>
+                <div id="autocomplete-list" class="autocomplete-list"></div>
+            </div>
             <select name="corpus" id="corpusFilter">
                 <option value="">All Corpora</option>
                 {% for c in corpora %}
@@ -54,6 +57,96 @@
 
 {% block scripts %}
 <script>
+// --- Book name translations ---
+var BOOK_NAMES = {{ book_names_json|safe if book_names_json else '{}' }};
+function translateBook(name) { return BOOK_NAMES[name] || name; }
+function translateRef(ref) {
+    var lastSpace = ref.lastIndexOf(' ');
+    if (lastSpace < 0) return ref;
+    var book = ref.substring(0, lastSpace);
+    return translateBook(book) + ref.substring(lastSpace);
+}
+
+// --- Autocomplete ---
+(function() {
+    var rootInput = document.getElementById('rootInput');
+    var acList = document.getElementById('autocomplete-list');
+    var acTimeout = null;
+
+    function escHtml(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    // Block manual dash entry
+    rootInput.addEventListener('keydown', function(e) {
+        if (e.key === '-') e.preventDefault();
+    });
+
+    // Auto-insert dashes after consonant letters (handle digraphs SH, KH, TH, TS)
+    rootInput.addEventListener('input', function(e) {
+        var v = this.value.toUpperCase();
+        if (e.inputType && e.inputType.indexOf('delete') !== -1) {
+            this.value = v;
+            fetchSuggestions(v);
+            return;
+        }
+        var clean = v.replace(/-+$/, '');
+        var parts = clean.split('-').filter(function(p) { return p.length > 0; });
+        var last = parts[parts.length - 1] || '';
+        var completedParts = parts.length - (last.length > 0 ? 1 : 0);
+        var digraphs = ['SH', 'KH', 'TH', 'TS'];
+        var digraphStarts = ['S', 'K', 'T'];
+        var isComplete = (last.length === 2 && digraphs.indexOf(last) !== -1) ||
+                         (last.length === 1 && digraphStarts.indexOf(last) === -1);
+        var isInvalidDigraph = (last.length === 2 && digraphs.indexOf(last) === -1);
+        if (isComplete && completedParts < 2) {
+            this.value = v + '-';
+        } else if (isInvalidDigraph && completedParts < 2) {
+            var newParts = parts.slice(0, -1).concat([last[0], last[1]]);
+            var fixed = newParts.join('-');
+            if (newParts.length < 3) fixed += '-';
+            this.value = fixed;
+        } else {
+            this.value = v;
+        }
+        fetchSuggestions(this.value.replace(/-+$/, ''));
+    });
+
+    function fetchSuggestions(prefix) {
+        clearTimeout(acTimeout);
+        if (!prefix) { acList.innerHTML = ''; return; }
+        acTimeout = setTimeout(function() {
+            fetch('/api/suggest?prefix=' + encodeURIComponent(prefix))
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    acList.innerHTML = '';
+                    if (!data.length) return;
+                    for (var i = 0; i < data.length; i++) {
+                        var item = document.createElement('div');
+                        item.className = 'autocomplete-item';
+                        item.innerHTML = '<span class="ac-syriac">' + escHtml(data[i].root) + '</span> '
+                            + '<span class="ac-translit">' + escHtml(data[i].translit) + '</span> '
+                            + '<span class="ac-count">(' + data[i].count + ')</span>';
+                        item.setAttribute('data-value', data[i].translit);
+                        item.addEventListener('click', function() {
+                            rootInput.value = this.getAttribute('data-value');
+                            acList.innerHTML = '';
+                            // Trigger the submit event so the JS handler catches it
+                            rootInput.closest('form').dispatchEvent(new Event('submit', { cancelable: true }));
+                        });
+                        acList.appendChild(item);
+                    }
+                });
+        }, 150);
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!rootInput.contains(e.target) && !acList.contains(e.target)) acList.innerHTML = '';
+    });
+})();
+
 document.getElementById('rootSearchForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const q = document.getElementById('rootInput').value.trim();
@@ -72,49 +165,336 @@ document.getElementById('rootSearchForm').addEventListener('submit', async (e) =
         return;
     }
 
+    const lang = '{{ lang }}';
+    const glossKey = lang === 'es' ? 'gloss_es' : 'gloss_en';
+    const c = data.cognates || {};
+    const gloss = c.gloss_es && lang === 'es' ? c.gloss_es : (c.gloss_en || '');
+
+    // --- Root Header Banner ---
     let html = `<div class="root-card">
-        <h2 class="root-header">
-            <span class="root-syriac">${data.root}</span>
-            <span class="root-translit">${data.root_transliteration}</span>
-            <span class="root-academic">${data.root_academic}</span>
-        </h2>
-        <div class="root-occurrences">${data.total_occurrences} occurrences</div>`;
+    <div class="root-header-banner">
+        <div class="root-header-top">
+            <span class="root-syriac-lg">${data.root}</span>
+            <span class="root-latin-lg">${data.root_transliteration}</span>
+        </div>`;
+    if (gloss) html += `<div class="root-meaning">${gloss}</div>`;
+    html += `<div class="root-header-nav">
+            <button class="root-tab active" data-tab="peshitta" onclick="switchResultTab(this)">Occurrences (${data.total_occurrences})</button>
+            <button class="root-tab" data-tab="hebrew" onclick="switchResultTab(this)">Hebrew Cognates</button>
+            <button class="root-tab" data-tab="arabic" onclick="switchResultTab(this)">Arabic Cognates</button>
+        </div>
+    </div>`;
 
-    if (data.cognates) {
-        const c = data.cognates;
-        const lang = '{{ lang }}';
-        const gloss = lang === 'es' ? c.gloss_es : c.gloss_en;
-        const sabor = lang === 'es' ? c.sabor_raiz_es : c.sabor_raiz_en;
-        html += `<div class="cognate-section">
-            <div class="root-gloss">${gloss}</div>`;
-        if (sabor) html += `<div class="sabor-raiz">${sabor}</div>`;
+    // --- Peshitta Occurrences Panel ---
+    html += `<div id="panel-peshitta" class="result-panel">
+        <div class="panel-header">
+            <span>Occurrences</span>
+            <button class="export-btn" onclick="exportCSV()"><span class="material-symbols-outlined">download</span> CSV</button>
+        </div>
+        <div class="panel-body">`;
 
-        if (c.hebrew.length) {
-            html += `<div class="cognate-list"><strong>Hebrew:</strong> `;
-            html += c.hebrew.map(h => `<span class="cognate-word">${h.word} (${h.transliteration}) — ${lang === 'es' ? h.meaning_es : h.meaning_en}</span>`).join(', ');
-            html += `</div>`;
+    // Book filter
+    const books = {};
+    const bookOrder = [];
+    for (const m of data.matches) {
+        for (const ref of m.references) {
+            const book = ref.substring(0, ref.lastIndexOf(' '));
+            if (!books[book]) { books[book] = 0; bookOrder.push(book); }
+            books[book]++;
         }
-        if (c.arabic.length) {
-            html += `<div class="cognate-list"><strong>Arabic:</strong> `;
-            html += c.arabic.map(a => `<span class="cognate-word">${a.word} (${a.transliteration}) — ${lang === 'es' ? a.meaning_es : a.meaning_en}</span>`).join(', ');
-            html += `</div>`;
-        }
-        html += `</div>`;
+    }
+    if (bookOrder.length > 1) {
+        html += `<div class="book-filter"><label>Filter by book:</label><select id="book-filter-select" onchange="filterByBook(this.value)">
+            <option value="">All books</option>`;
+        for (const b of bookOrder) html += `<option value="${b}">${translateBook(b)} (${books[b]})</option>`;
+        html += `</select></div>`;
     }
 
-    html += `<div class="matches-section"><h3>Word Forms</h3><table class="matches-table">
-        <thead><tr><th>Form</th><th>Transliteration</th><th>Gloss</th><th>Count</th></tr></thead><tbody>`;
-    const glossKey = '{{ lang }}' === 'es' ? 'gloss_es' : 'gloss_en';
+    html += `<table class="peshitta-table" id="peshitta-table">
+        <thead><tr><th>Form</th><th>Transliteration</th><th>Gloss</th><th>References</th></tr></thead><tbody>`;
     for (const m of data.matches) {
+        const refs20 = m.references.slice(0, 20);
+        const overflow = m.references.length > 20 ? m.references.length - 20 : 0;
+        let refHtml = refs20.map(r =>
+            `<span class="ref-link" data-ref="${r}" data-form="${m.form}" data-root="${data.root}" data-root-translit="${data.root_transliteration}" onclick="toggleContext(this)">${translateRef(r)}</span>`
+        ).join(' ');
+        if (overflow) refHtml += ` <span class="ref-more">... +${overflow}</span>`;
+
         html += `<tr>
             <td class="syriac">${m.form}</td>
-            <td>${m.transliteration}</td>
-            <td>${m[glossKey] || ''}</td>
-            <td>${m.count}</td>
+            <td class="translit-cell">${m.transliteration}</td>
+            <td class="gloss-cell">${m[glossKey] || ''}</td>
+            <td class="refs">${refHtml}</td>
         </tr>`;
     }
     html += `</tbody></table></div></div>`;
+
+    // --- Hebrew Cognates Panel ---
+    html += `<div id="panel-hebrew" class="result-panel" style="display:none">
+        <div class="panel-header">Hebrew Cognates</div>
+        <div class="panel-body">`;
+    if (c.hebrew && c.hebrew.length) {
+        html += `<table class="cognate-table"><thead><tr><th>Word</th><th>Transliteration</th><th>Meaning</th></tr></thead><tbody>`;
+        for (const h of c.hebrew) {
+            const meaning = lang === 'es' ? h.meaning_es : h.meaning_en;
+            html += `<tr><td class="hebrew">${h.word}</td><td class="translit">${h.transliteration}</td><td>${meaning}</td></tr>`;
+        }
+        html += `</tbody></table>`;
+    } else {
+        html += `<p class="no-results">No Hebrew cognates available for this root.</p>`;
+    }
+    html += `</div></div>`;
+
+    // --- Arabic Cognates Panel ---
+    html += `<div id="panel-arabic" class="result-panel" style="display:none">
+        <div class="panel-header">Arabic Cognates</div>
+        <div class="panel-body">`;
+    if (c.arabic && c.arabic.length) {
+        html += `<table class="cognate-table"><thead><tr><th>Word</th><th>Transliteration</th><th>Meaning</th></tr></thead><tbody>`;
+        for (const a of c.arabic) {
+            const meaning = lang === 'es' ? a.meaning_es : a.meaning_en;
+            html += `<tr><td class="arabic">${a.word}</td><td class="translit">${a.transliteration}</td><td>${meaning}</td></tr>`;
+        }
+        html += `</tbody></table>`;
+    } else {
+        html += `<p class="no-results">No Arabic cognates available for this root.</p>`;
+    }
+    html += `</div></div></div>`;
+
     el.innerHTML = html;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// --- Tab switching ---
+function switchResultTab(btn) {
+    const tab = btn.getAttribute('data-tab');
+    document.querySelectorAll('.root-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.result-panel').forEach(p => p.style.display = 'none');
+    const panel = document.getElementById('panel-' + tab);
+    if (panel) {
+        panel.style.display = '';
+        // Scroll so the tab bar stays visible at top, panel content below
+        var banner = document.querySelector('.root-header-banner');
+        if (banner) {
+            banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+}
+
+// --- Book filter ---
+function filterByBook(book) {
+    const rows = document.querySelectorAll('#peshitta-table tbody tr');
+    rows.forEach(row => {
+        if (!book) { row.style.display = ''; row.querySelectorAll('.ref-link').forEach(r => r.style.display = ''); row.querySelectorAll('.ref-more').forEach(r => r.style.display = ''); return; }
+        const refs = row.querySelectorAll('.ref-link');
+        let hasMatch = false;
+        refs.forEach(r => {
+            const match = r.getAttribute('data-ref').startsWith(book + ' ');
+            r.style.display = match ? '' : 'none';
+            if (match) hasMatch = true;
+        });
+        row.querySelectorAll('.ref-more').forEach(r => r.style.display = 'none');
+        row.style.display = hasMatch ? '' : 'none';
+    });
+}
+
+// --- CSV export ---
+function exportCSV() {
+    const table = document.getElementById('peshitta-table');
+    if (!table) return;
+    let csv = 'Form,Transliteration,Gloss,Count,References\n';
+    table.querySelectorAll('tbody tr').forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length < 4) return;
+        const form = cells[0].textContent.trim();
+        const translit = cells[1].textContent.trim();
+        const gloss = cells[2].textContent.trim().replace(/"/g, '""');
+        const refs = [];
+        row.querySelectorAll('.ref-link').forEach(r => refs.push(r.getAttribute('data-ref')));
+        let count = refs.length;
+        const more = row.querySelector('.ref-more');
+        if (more) { const m = more.textContent.match(/\+(\d+)/); if (m) count += parseInt(m[1]); }
+        csv += `"${form}","${translit}","${gloss}",${count},"${refs.join('; ')}"\n`;
+    });
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'root_forms.csv';
+    a.click();
+}
+
+// --- Inline KWIC Context ---
+function toggleContext(el) {
+    var ref = el.getAttribute('data-ref');
+    var form = el.getAttribute('data-form');
+
+    // If already expanded, collapse
+    var existing = el.parentNode.querySelector('.kwic-line[data-ref="' + ref + '"]');
+    if (existing) {
+        existing.remove();
+        el.classList.remove('ref-expanded');
+        return;
+    }
+
+    // Collapse any other expanded in same cell
+    var cell = el.closest('.refs, td');
+    if (cell) {
+        cell.querySelectorAll('.kwic-line').forEach(function(k) { k.remove(); });
+        cell.querySelectorAll('.ref-expanded').forEach(function(r) { r.classList.remove('ref-expanded'); });
+    }
+    el.classList.add('ref-expanded');
+
+    // Fetch verse
+    fetch('/api/verse?ref=' + encodeURIComponent(ref) + '&lang={{ lang }}&trans=' + '{{ trans }}')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.error || !data.words) return;
+            var kwic = document.createElement('div');
+            kwic.className = 'kwic-line';
+            kwic.setAttribute('data-ref', ref);
+
+            // Syriac line with highlighted word
+            var syrParts = data.words.map(function(w) {
+                return w === form
+                    ? '<span class="hl">' + escHtmlM(w) + '</span>'
+                    : escHtmlM(w);
+            });
+            var html = '<div class="kwic-syriac">' + syrParts.join(' ') + '</div>';
+
+            // Translation
+            var trans = data['translation_{{ trans }}'] || data.translation_en;
+            if (trans) html += '<div class="kwic-trans">' + escHtmlM(trans) + '</div>';
+
+            // Action links
+            var parts = ref.split(' ');
+            var book = parts.slice(0, -1).join(' ');
+            var chv = parts[parts.length - 1].split(':');
+            html += '<div class="kwic-actions">';
+            html += '<span class="kwic-action" data-ref="' + escHtmlM(ref) + '" data-form="' + escHtmlM(form) + '" data-root="' + escHtmlM(el.getAttribute('data-root')) + '" data-root-translit="' + escHtmlM(el.getAttribute('data-root-translit')) + '" onclick="showVerse(this)">&#x1F50D; full verse</span>';
+            html += '<a class="kwic-action" href="/read/' + encodeURIComponent(book) + '/' + chv[0] + '?lang={{ lang }}&trans={{ trans }}&hl=' + encodeURIComponent(form) + '#v' + chv[1] + '">&#x2192; reader</a>';
+            html += '</div>';
+
+            kwic.innerHTML = html;
+            el.insertAdjacentElement('afterend', kwic);
+        });
+}
+
+// --- Verse Modal ---
+var modalVerses = [];
+var originalRef = '';
+var highlightForm = '';
+var modalRootLabel = '';
+var modalTrans = '{{ trans }}';
+var MAX_VERSES = 4;
+
+function escHtmlM(str) { var d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+function showVerse(el) {
+    var ref = el.getAttribute('data-ref');
+    highlightForm = el.getAttribute('data-form') || '';
+    originalRef = ref;
+    modalVerses = [];
+    var rootSyriac = el.getAttribute('data-root') || '';
+    var rootTranslit = el.getAttribute('data-root-translit') || '';
+    modalRootLabel = rootSyriac
+        ? '<span class="modal-ref-syriac">' + escHtmlM(rootSyriac) + '</span> (' + escHtmlM(rootTranslit) + ')'
+        : '';
+    document.getElementById('modal-verses-container').innerHTML = '';
+    document.getElementById('modal-ref').textContent = ref;
+    document.getElementById('modal-loading').style.display = 'block';
+    document.getElementById('verse-modal').classList.add('active');
+    fetchVerse(ref, function(data) {
+        document.getElementById('modal-loading').style.display = 'none';
+        if (data.error) { document.getElementById('modal-verses-container').textContent = data.error; return; }
+        modalVerses.push(data);
+        renderModalVerses();
+    });
+}
+
+function fetchVerse(ref, callback) {
+    fetch('/api/verse?ref=' + encodeURIComponent(ref) + '&lang={{ lang }}&trans=' + modalTrans)
+        .then(function(r) { return r.json(); })
+        .then(callback)
+        .catch(function() { callback({error: 'Error loading verse'}); });
+}
+
+function navigateVerse(direction) {
+    if (modalVerses.length >= MAX_VERSES) return;
+    var targetRef = direction === -1 ? modalVerses[0].prev_ref : modalVerses[modalVerses.length - 1].next_ref;
+    if (!targetRef) return;
+    var btn = direction === -1 ? document.getElementById('nav-prev') : document.getElementById('nav-next');
+    btn.disabled = true;
+    fetchVerse(targetRef, function(data) {
+        if (data.error) return;
+        if (direction === -1) modalVerses.unshift(data); else modalVerses.push(data);
+        renderModalVerses();
+    });
+}
+
+function buildWordLine(words, isOriginal, syriacWords) {
+    var parts = [];
+    for (var i = 0; i < words.length; i++) {
+        var matchWord = syriacWords ? syriacWords[i] : words[i];
+        if (isOriginal && matchWord === highlightForm) {
+            parts.push('<span class="hl">' + escHtmlM(words[i]) + '</span>');
+        } else {
+            parts.push(escHtmlM(words[i]));
+        }
+    }
+    return parts.join(' ');
+}
+
+function formatRefRange(first, last) {
+    if (first === last) return first;
+    var c1 = first.lastIndexOf(':'), c2 = last.lastIndexOf(':');
+    return first.substring(0, c1) + ':' + first.substring(c1+1) + '-' + last.substring(c2+1);
+}
+
+function renderModalVerses() {
+    var container = document.getElementById('modal-verses-container');
+    container.innerHTML = '';
+    var firstD = modalVerses[0].reference_display, lastD = modalVerses[modalVerses.length - 1].reference_display;
+    var refText = formatRefRange(firstD, lastD);
+    document.getElementById('modal-ref').innerHTML = modalRootLabel ? modalRootLabel + ' &middot; ' + escHtmlM(translateRef(refText)) : escHtmlM(translateRef(refText));
+    for (var v = 0; v < modalVerses.length; v++) {
+        if (v > 0) { var hr = document.createElement('hr'); hr.className = 'verse-separator'; container.appendChild(hr); }
+        var data = modalVerses[v], isOrig = (data.reference === originalRef);
+        var block = document.createElement('div'); block.className = 'verse-block';
+        var syrDiv = document.createElement('div'); syrDiv.className = 'modal-syriac';
+        syrDiv.innerHTML = buildWordLine(data.words, isOrig); block.appendChild(syrDiv);
+        var acadDiv = document.createElement('div'); acadDiv.className = 'modal-translit';
+        acadDiv.innerHTML = buildWordLine(data.words_translit_academic, isOrig, data.words); block.appendChild(acadDiv);
+        var transDiv = document.createElement('div'); transDiv.className = 'modal-translation';
+        var translation = data['translation_' + modalTrans] || data.translation_en;
+        if (modalTrans === 'he' || modalTrans === 'ar') { transDiv.style.direction = 'rtl'; transDiv.style.textAlign = 'right'; }
+        if (translation) transDiv.textContent = translation;
+        block.appendChild(transDiv);
+        container.appendChild(block);
+    }
+    document.getElementById('nav-prev').disabled = (modalVerses.length >= MAX_VERSES || !modalVerses[0].prev_ref);
+    document.getElementById('nav-next').disabled = (modalVerses.length >= MAX_VERSES || !modalVerses[modalVerses.length - 1].next_ref);
+}
+
+function copyVerseModal() {
+    if (!modalVerses.length) return;
+    var lines = [document.getElementById('modal-ref').textContent, ''];
+    for (var v = 0; v < modalVerses.length; v++) {
+        var data = modalVerses[v];
+        lines.push(data.words.join(' ')); lines.push(data.words_translit_academic.join(' '));
+        var tr = data['translation_' + modalTrans] || data.translation_en;
+        if (tr) lines.push(tr);
+        lines.push('---'); lines.push('');
+    }
+    navigator.clipboard.writeText(lines.join('\n').trim()).then(function() {
+        var btn = document.getElementById('verse-copy-btn');
+        btn.textContent = '\u2713';
+        setTimeout(function() { btn.textContent = '\u29C9'; }, 1500);
+    });
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') document.getElementById('verse-modal').classList.remove('active');
 });
 </script>
 {% endblock %}

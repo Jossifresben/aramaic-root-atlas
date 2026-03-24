@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Aramaic Root Atlas{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Syriac&family=Noto+Sans+Syriac+Eastern&family=Noto+Sans+Syriac+Western&family=Noto+Sans+Hebrew&family=Noto+Sans+Arabic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% block head %}{% endblock %}
 </head>
@@ -14,14 +17,110 @@
             <div class="nav-links">
                 <a href="/browse?lang={{ lang }}">{{ t('browse', lang) if t else 'Browse' }}</a>
                 <a href="/about?lang={{ lang }}">{{ t('about', lang) if t else 'About' }}</a>
-                {% if lang == 'es' %}
-                    <a href="?lang=en" class="lang-toggle">EN</a>
-                {% else %}
-                    <a href="?lang=es" class="lang-toggle">ES</a>
-                {% endif %}
+
+                <!-- Language Dropdown -->
+                <div class="lang-wrapper">
+                    <button class="nav-btn lang-toggle" id="lang-toggle" aria-label="Language"
+                            aria-haspopup="true" aria-expanded="false">
+                        <span class="material-symbols-outlined">captive_portal</span>
+                    </button>
+                    <div class="lang-dropdown" id="lang-dropdown" role="menu">
+                        <a class="lang-option{% if lang == 'en' %} active{% endif %}" role="menuitem" data-lang="en">English</a>
+                        <a class="lang-option{% if lang == 'es' %} active{% endif %}" role="menuitem" data-lang="es">Español</a>
+                        <a class="lang-option{% if lang == 'he' %} active{% endif %}" role="menuitem" data-lang="he">עברית</a>
+                        <a class="lang-option{% if lang == 'ar' %} active{% endif %}" role="menuitem" data-lang="ar">العربية</a>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="settings-wrapper">
+                    <button class="nav-btn settings-toggle" id="settings-toggle" aria-label="Settings"
+                            aria-haspopup="true" aria-expanded="false">
+                        <span class="material-symbols-outlined">settings</span>
+                    </button>
+                    <div class="settings-dropdown" id="settings-dropdown" role="menu">
+                        <!-- Transliteration -->
+                        <div class="settings-label">{{ t('settings_script', lang) if t else 'Transliteration' }}</div>
+                        <button class="settings-option{% if script == 'latin' %} active{% endif %}"
+                                data-script="latin" role="menuitemradio">Latin (ABC)</button>
+                        <button class="settings-option{% if script == 'syriac' %} active{% endif %}"
+                                data-script="syriac" role="menuitemradio">Syriac (ʾbg)</button>
+                        <button class="settings-option{% if script == 'hebrew' %} active{% endif %}"
+                                data-script="hebrew" role="menuitemradio">Hebrew (אבג)</button>
+                        <button class="settings-option{% if script == 'arabic' %} active{% endif %}"
+                                data-script="arabic" role="menuitemradio">Arabic (ابج)</button>
+
+                        <div class="settings-divider"></div>
+
+                        <!-- Translation -->
+                        <div class="settings-label">{{ t('settings_translation', lang) if t else 'Translation' }}</div>
+                        <button class="settings-option{% if trans == 'en' %} active{% endif %}"
+                                data-trans="en" role="menuitemradio">English</button>
+                        <button class="settings-option{% if trans == 'es' %} active{% endif %}"
+                                data-trans="es" role="menuitemradio">Español</button>
+                        <button class="settings-option{% if trans == 'he' %} active{% endif %}"
+                                data-trans="he" role="menuitemradio">עברית (Hebrew)</button>
+                        <button class="settings-option{% if trans == 'ar' %} active{% endif %}"
+                                data-trans="ar" role="menuitemradio">العربية (Arabic)</button>
+
+                        <div class="settings-divider"></div>
+
+                        <!-- Script Style -->
+                        <div class="settings-label">{{ t('settings_syriac_font', lang) if t else 'Script style' }}</div>
+                        <button class="settings-option syriac-font-option" data-syriac-font="estrangela" role="menuitemradio">
+                            Estrangela (classical)</button>
+                        <button class="settings-option syriac-font-option" data-syriac-font="eastern" role="menuitemradio">
+                            Eastern (Madnḥāyā)</button>
+                        <button class="settings-option syriac-font-option" data-syriac-font="western" role="menuitemradio">
+                            Western (Serṭo)</button>
+                    </div>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button class="nav-btn theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <span class="material-symbols-outlined">sunny</span>
+                </button>
+
+                <!-- Share / QR -->
+                <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share">
+                    <span class="material-symbols-outlined">qr_code_2</span>
+                </button>
             </div>
         </div>
     </nav>
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Share">
+        <div class="modal-content share-modal-content">
+            <button class="modal-close" id="share-close" aria-label="Close">&times;</button>
+            <h3 class="share-modal-title">{{ t('share_title', lang) if t else 'Share this page' }}</h3>
+            <div class="share-qr-wrap">
+                <div id="share-qr"></div>
+                <p class="share-qr-hint">{{ t('share_scan', lang) if t else 'Scan with your device' }}</p>
+            </div>
+            <div class="share-url-wrap">
+                <input type="text" id="share-url" class="share-url-input" readonly aria-label="URL">
+                <button id="share-copy-btn" class="share-copy-btn" title="Copy">
+                    <span class="material-symbols-outlined">content_copy</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verse Modal -->
+    <div id="verse-modal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('active')">
+        <div class="modal-content verse-modal-content" onclick="event.stopPropagation()">
+            <div class="modal-sticky-header">
+                <button class="modal-close" onclick="document.getElementById('verse-modal').classList.remove('active')">&times;</button>
+                <button class="modal-copy" id="verse-copy-btn" onclick="copyVerseModal()" title="Copy">&#10697;</button>
+                <div class="modal-ref" id="modal-ref"></div>
+            </div>
+            <button class="modal-nav-arrow" id="nav-prev" onclick="navigateVerse(-1)" disabled>&#9650;</button>
+            <div id="modal-verses-container"></div>
+            <button class="modal-nav-arrow" id="nav-next" onclick="navigateVerse(1)" disabled>&#9660;</button>
+            <div class="modal-loading" id="modal-loading">Loading...</div>
+        </div>
+    </div>
 
     <main class="main">
         {% block content %}{% endblock %}
@@ -31,6 +130,8 @@
         <p>Aramaic Root Atlas &mdash; A cross-corpus triliteral root explorer</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="{{ url_for('static', filename='js/global.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

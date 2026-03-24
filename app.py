@@ -87,15 +87,37 @@ def _init():
 
 
 # --- Helper ---
+VALID_SCRIPTS = ('latin', 'syriac', 'hebrew', 'arabic')
+VALID_TRANS = ('en', 'es', 'he', 'ar')
+
+
 def _get_lang() -> str:
     return request.args.get('lang', 'en')
+
+
+def _get_script() -> str:
+    s = request.args.get('script', 'latin')
+    return s if s in VALID_SCRIPTS else 'latin'
+
+
+def _get_trans() -> str:
+    t = request.args.get('trans', _get_lang())
+    return t if t in VALID_TRANS else _get_lang()
 
 
 def _t(key: str, lang: str | None = None) -> str:
     """Translate a UI string."""
     if lang is None:
         lang = _get_lang()
-    return _i18n.get(key, {}).get(lang, key)
+    return _i18n.get(lang, {}).get(key, _i18n.get('en', {}).get(key, key))
+
+
+def _bn(book: str, lang: str | None = None) -> str:
+    """Translate a book name."""
+    if lang is None:
+        lang = _get_lang()
+    names = _i18n.get(lang, {}).get('book_names', {})
+    return names.get(book, _i18n.get('en', {}).get('book_names', {}).get(book, book))
 
 
 # --- Routes ---
@@ -118,9 +140,11 @@ def index():
                 'verses': info.verse_count,
                 'words': info.word_count,
             })
+    book_names = _i18n.get(lang, {}).get('book_names', {})
     return render_template('index.html',
-                           lang=lang,
-                           t=_t,
+                           lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t, bn=_bn,
+                           book_names_json=json.dumps(book_names, ensure_ascii=False),
                            corpora=corpora_info,
                            root_count=_extractor.get_root_count(),
                            total_words=_corpus.total_words(),
@@ -282,8 +306,8 @@ def browse():
     lang = _get_lang()
     corpus_filter = request.args.get('corpus', None)
     books = _corpus.get_books(corpus_filter)
-    return render_template('browse.html', lang=lang, t=_t,
-                           books=books, corpus_filter=corpus_filter)
+    return render_template('browse.html', lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t, bn=_bn, books=books, corpus_filter=corpus_filter)
 
 
 @app.route('/read/<path:book>/<int:chapter>')
@@ -305,15 +329,95 @@ def read(book, chapter):
         })
 
     books = _corpus.get_books()
-    return render_template('read.html', lang=lang, t=_t,
-                           book=book, chapter=chapter,
-                           verses=verse_data, books=books, trans=trans)
+    max_ch = 0
+    for b_name, b_ch in books:
+        if b_name == book:
+            max_ch = b_ch
+            break
+    return render_template('read.html', lang=lang, script=_get_script(), trans=trans,
+                           t=_t, bn=_bn, book=book, chapter=chapter,
+                           verses=verse_data, books=books, max_ch=max_ch)
 
 
 @app.route('/about')
 def about():
     lang = _get_lang()
-    return render_template('about.html', lang=lang, t=_t)
+    return render_template('about.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t, bn=_bn)
+
+
+@app.route('/api/verse')
+def api_verse():
+    """Return a single verse with word-level data for the modal."""
+    ref = request.args.get('ref', '').strip()
+    lang = _get_lang()
+    trans = request.args.get('trans', lang)
+    if not ref:
+        return jsonify({'error': 'Missing ref parameter'}), 400
+
+    syriac = _corpus.get_verse_text(ref)
+    if not syriac:
+        return jsonify({'error': f'Verse not found: {ref}'}), 404
+
+    words = syriac.split()
+    words_translit = [transliterate_syriac(w) for w in words]
+    words_academic = [transliterate_syriac_academic(w) for w in words]
+
+    result = {
+        'reference': ref,
+        'reference_display': ref,
+        'words': words,
+        'words_translit': words_translit,
+        'words_translit_academic': words_academic,
+        'translation_en': _corpus.get_verse_translation(ref, 'en'),
+        'translation_es': _corpus.get_verse_translation(ref, 'es'),
+        'translation_he': _corpus.get_verse_translation(ref, 'he'),
+        'translation_ar': _corpus.get_verse_translation(ref, 'ar'),
+    }
+
+    result['prev_ref'] = _corpus.get_adjacent_ref(ref, -1)
+    result['next_ref'] = _corpus.get_adjacent_ref(ref, 1)
+
+    return jsonify(result)
+
+
+def _translit_to_dash(syriac_root: str) -> str:
+    """Convert a Syriac root to dash-separated uppercase Latin: ܫܠܡ -> SH-L-M"""
+    from aramaic_core.characters import SYRIAC_TO_LATIN
+    parts = []
+    for ch in syriac_root:
+        if ch in SYRIAC_TO_LATIN:
+            parts.append(SYRIAC_TO_LATIN[ch].upper())
+    return '-'.join(parts) if parts else ''
+
+
+@app.route('/api/suggest')
+def api_suggest():
+    """Return roots matching a Latin-letter prefix for autocomplete."""
+    prefix = request.args.get('prefix', '').strip().upper()
+    if not prefix:
+        return jsonify([])
+
+    # Normalize: O -> E (both map to Ayin), A -> ' (alef)
+    normalized = prefix.replace('O', 'E')
+    alef_prefix = None
+    if normalized.startswith('A'):
+        alef_prefix = "'" + normalized[1:]
+
+    results = []
+    for entry in _extractor.get_all_roots():
+        dash_form = _translit_to_dash(entry.root)
+        if (dash_form.startswith(prefix) or
+                dash_form.startswith(normalized) or
+                (alef_prefix and dash_form.startswith(alef_prefix))):
+            results.append({
+                'root': entry.root,
+                'translit': dash_form,
+                'count': entry.total_occurrences,
+            })
+            if len(results) >= 20:
+                break
+
+    return jsonify(results)
 
 
 if __name__ == '__main__':

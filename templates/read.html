@@ -4,37 +4,44 @@
 
 {% block content %}
 <div class="reader-header">
-    <h1>{{ book }} — Chapter {{ chapter }}</h1>
+    <div>
+        <h1>{{ bn(book, lang) if bn else book }} — {{ t('chapter', lang) if t else 'Chapter' }} {{ chapter }}</h1>
+        <span class="corpus-badge">{{ verses[0].corpus_id if verses else '' }}</span>
+    </div>
     <div class="reader-nav">
         {% if chapter > 1 %}
-        <a href="/read/{{ book }}/{{ chapter - 1 }}?lang={{ lang }}&trans={{ trans }}">&larr; Ch {{ chapter - 1 }}</a>
+        <a href="/read/{{ book }}/{{ chapter - 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}">&larr; Ch {{ chapter - 1 }}</a>
         {% endif %}
         <a href="/browse?lang={{ lang }}">All Books</a>
-        {% set max_ch = 0 %}
-        {% for b, ch in books %}{% if b == book %}{% set max_ch = ch %}{% endif %}{% endfor %}
         {% if chapter < max_ch %}
-        <a href="/read/{{ book }}/{{ chapter + 1 }}?lang={{ lang }}&trans={{ trans }}">Ch {{ chapter + 1 }} &rarr;</a>
+        <a href="/read/{{ book }}/{{ chapter + 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}">Ch {{ chapter + 1 }} &rarr;</a>
         {% endif %}
     </div>
 </div>
 
-<div class="translation-selector">
-    <label>Translation:</label>
-    <a href="/read/{{ book }}/{{ chapter }}?lang={{ lang }}&trans=en" class="{% if trans == 'en' %}active{% endif %}">EN</a>
-    <a href="/read/{{ book }}/{{ chapter }}?lang={{ lang }}&trans=es" class="{% if trans == 'es' %}active{% endif %}">ES</a>
-    <a href="/read/{{ book }}/{{ chapter }}?lang={{ lang }}&trans=he" class="{% if trans == 'he' %}active{% endif %}">HE</a>
-</div>
-
 <div class="verses">
+    {% set hl_form = request.args.get('hl', '') %}
     {% for v in verses %}
     <div class="verse-row" id="v{{ v.verse }}">
         <span class="verse-num">{{ v.verse }}</span>
         <div class="verse-content">
-            <div class="verse-syriac" dir="rtl">{{ v.syriac }}</div>
+            <div class="verse-syriac" dir="rtl">
+                {%- if hl_form -%}
+                    {%- for w in v.syriac.split() -%}
+                        {%- if w == hl_form -%}
+                            <span class="hl">{{ w }}</span>
+                        {%- else -%}
+                            {{ w }}
+                        {%- endif -%}
+                        {%- if not loop.last %} {% endif -%}
+                    {%- endfor -%}
+                {%- else -%}
+                    {{ v.syriac }}
+                {%- endif -%}
+            </div>
             {% if v.translation %}
-            <div class="verse-translation">{{ v.translation }}</div>
+            <div class="verse-translation" {% if trans in ('he', 'ar') %}dir="rtl"{% endif %}>{{ v.translation }}</div>
             {% endif %}
-            <span class="corpus-badge">{{ v.corpus_id }}</span>
         </div>
     </div>
     {% endfor %}

@@ -18,15 +18,21 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
   - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv)
   - `roots/` — cognates.json, known_roots.json, stopwords.json, word_glosses_override.json
   - `translations/` — translations_{en,es,he,ar}.json
+- **scripts/** — Data pipeline scripts
+  - `fetch_ot_translations.py` — Fetch OT translations from bible.helloao.org (EN/ES/HE)
+  - `generate_new_cognates.py` — Generate cognates for uncovered roots via Claude API
 - **docs/PRD.md** — Full product requirements document with 4-phase roadmap
 
-## Current State (Initial Setup Complete)
-- Multi-corpus loading works: Peshitta NT (7,440 verses) + OT (5,929 verses) = 13,369 verses
-- 3,329 roots indexed across both corpora
+## Current State (Phase 1 — OT Complete)
+- **Full Peshitta OT**: All 39 books loaded (23,072 verses, 309,889 words)
+- **Full Peshitta NT**: 22 books (7,440 verses, 101,469 words)
+- **Total**: 30,512 verses, 411,358 words, 56,062 unique forms
+- **4,299 roots** indexed across both corpora (up from 3,329)
+- **1,127 cognate entries** with Hebrew/Arabic cognates, semantic bridges
 - Corpus filtering works on all API endpoints (?corpus=peshitta_nt|peshitta_ot)
-- All routes tested and returning 200
-- Bilingual UI (EN/ES) functional
-- Initial commit made
+- Bilingual UI (EN/ES) with EN/ES/HE/AR translation tracks
+- OT data source: ETCBC/peshitta (CC-BY-NC, Leiden Peshitta Institute)
+- Translation sources: WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR) via bible.helloao.org
 
 ## API Routes
 - `GET /` — Home page with search + stats
@@ -51,13 +57,17 @@ python3 app.py  # starts on port 5001
 - The Peshitta app stays clean and stable; this app is multi-corpus by design
 - Bug fixes can be cherry-picked between repos; formalize shared package later if needed
 
-## Next Steps (from PRD Phase 2)
-1. Complete the OT — acquire remaining ~35 books (~17,215 verses) from ETCBC
-2. Add Biblical Aramaic corpus (Daniel 2:4b-7:28, Ezra 4:8-6:18)
-3. Cross-script root normalization (Hebrew square script → shared Latin root key)
-4. Cross-corpus root card (attestation across corpora)
-5. Constellation visualization (D3.js, ported from Peshitta app)
-6. Proximity search (co-occurring roots, ported from Peshitta app)
+## Phase 1 Complete
+- ✅ Cognates generated for 493 new roots (1,127 total; ~2,085 patterns were non-roots)
+- ✅ Arabic translations fetched: Van Dyck (arb_vdv) via bible.helloao.org (30,585 verses)
+- ✅ Arabic translation track added to reader UI with RTL support
+
+## Next Steps (Phase 2 — Biblical Aramaic)
+1. Add Biblical Aramaic corpus (Daniel 2:4b-7:28, Ezra 4:8-6:18) from Sefaria API
+2. Cross-script root normalization (Hebrew square script → shared Latin root key)
+3. Cross-corpus root card (attestation across corpora)
+4. Constellation visualization (D3.js, ported from Peshitta app)
+5. Proximity search (co-occurring roots, ported from Peshitta app)
 
 ## Conventions
 - Syriac text uses Unicode (U+0710-U+074F), stored as-is in CSV
