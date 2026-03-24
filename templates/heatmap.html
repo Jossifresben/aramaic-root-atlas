@@ -106,6 +106,14 @@
 <p class="heatmap-info">{{ t('heatmap_desc', lang) }}</p>
 
 <div class="heatmap-controls">
+    <label>{{ t('show', lang) }}:</label>
+    <select id="hm-limit" onchange="loadHeatmap()">
+        <option value="100" selected>100</option>
+        <option value="200">200</option>
+        <option value="500">500</option>
+        <option value="0">All</option>
+    </select>
+    <label>roots</label>
     <input type="text" id="hm-filter" placeholder="Filter roots (e.g. SH-L-M, peace, ܫܠܡ)" oninput="filterHeatmap()" style="min-width:260px">
     <div class="heatmap-export">
         <button onclick="exportHeatmapCSV()"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">download</span> CSV</button>
@@ -138,7 +146,8 @@ async function loadHeatmap(sortCol) {
     var el = document.getElementById('heatmap-results');
     el.innerHTML = '<p>Loading...</p>';
 
-    var res = await fetch('/api/heatmap?limit=0&sort=' + _hmSort);
+    var limit = document.getElementById('hm-limit').value;
+    var res = await fetch('/api/heatmap?limit=' + limit + '&sort=' + _hmSort);
     var data = await res.json();
     _hmData = data;
     _hmAllRoots = data.roots;
