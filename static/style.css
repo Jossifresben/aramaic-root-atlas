@@ -1756,3 +1756,172 @@ body {
 [dir="rtl"] .ficha-sister {
     direction: rtl;
 }
+
+/* --- Bookmarks --- */
+
+/* Bookmark button on verse rows */
+.bm-verse-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    opacity: 0.35;
+    transition: opacity 0.2s, color 0.2s;
+    padding: 2px;
+    line-height: 1;
+}
+.bm-verse-btn .material-symbols-outlined { font-size: 18px; }
+.verse-row:hover .bm-verse-btn { opacity: 0.7; }
+.bm-verse-btn:hover,
+.bm-verse-btn.bookmarked { opacity: 1; color: var(--accent-gold); }
+
+/* Bookmark button on root card */
+.root-bm-wrap {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+.root-header-banner { position: relative; }
+.bm-root-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius);
+    color: rgba(255,255,255,0.8);
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    transition: background 0.15s, color 0.15s;
+}
+.bm-root-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.bm-root-btn .material-symbols-outlined { font-size: 20px; }
+
+/* Bookmarks page */
+.bookmarks-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1.5rem 0 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+.bookmarks-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+.bm-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    color: var(--fg);
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.15s, border-color 0.15s;
+}
+.bm-tab:hover { border-color: var(--accent); }
+.bm-tab.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+.bm-tab .material-symbols-outlined { font-size: 18px; }
+.bm-count {
+    background: rgba(0,0,0,0.15);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+.bm-tab.active .bm-count { background: rgba(255,255,255,0.25); }
+
+.bookmarks-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+.bm-action-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--fg);
+    cursor: pointer;
+    padding: 0.4rem;
+    line-height: 1;
+    transition: background 0.15s;
+}
+.bm-action-btn:hover { background: var(--accent-light); }
+.bm-action-btn .material-symbols-outlined { font-size: 20px; }
+
+.bookmarks-panel { margin-top: 0.5rem; }
+.bookmarks-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+}
+.bookmarks-empty p { margin-top: 0.75rem; font-size: 0.95rem; }
+
+.bm-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+.bm-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.bm-ref {
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 1.05rem;
+}
+.bm-ref:hover { text-decoration: underline; }
+.bm-gloss { color: var(--muted); font-size: 0.95rem; }
+.bm-date {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-left: auto;
+}
+.bm-remove {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 2px;
+    line-height: 1;
+    opacity: 0.5;
+    transition: opacity 0.15s, color 0.15s;
+}
+.bm-remove:hover { opacity: 1; color: #c0392b; }
+.bm-remove .material-symbols-outlined { font-size: 18px; }
+.bm-syriac {
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+.bm-translation {
+    margin-top: 0.3rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+.bm-note-input {
+    margin-top: 0.5rem;
+}
+.bm-note-input input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.4rem 0.6rem;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 0.9rem;
+}
+.bm-note-input input:focus {
+    outline: none;
+    border-color: var(--accent);
+}

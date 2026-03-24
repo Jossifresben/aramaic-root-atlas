@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('bookmarks_title', lang) if t else 'Bookmarks' }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <header>
+            <h1>{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}</h1>
+            <p class="subtitle">{{ t('bookmarks_subtitle', lang) if t else 'Your saved verses and roots. Stored locally in your browser.' }}</p>
+        </header>
+
+        <div class="bookmarks-toolbar">
+            <div class="bookmarks-tabs">
+                <button class="bm-tab active" onclick="switchBmTab('verses', this)">
+                    <span class="material-symbols-outlined">menu_book</span>
+                    {{ t('bookmarks_verses', lang) if t else 'Verses' }}
+                    <span class="bm-count" id="verse-count">0</span>
+                </button>
+                <button class="bm-tab" onclick="switchBmTab('roots', this)">
+                    <span class="material-symbols-outlined">hub</span>
+                    {{ t('bookmarks_roots', lang) if t else 'Roots' }}
+                    <span class="bm-count" id="root-count">0</span>
+                </button>
+            </div>
+            <div class="bookmarks-actions">
+                <button class="bm-action-btn" onclick="exportBookmarks()" title="{{ t('bookmarks_export', lang) if t else 'Export' }}">
+                    <span class="material-symbols-outlined">download</span>
+                </button>
+                <button class="bm-action-btn" onclick="clearAllBookmarks()" title="{{ t('bookmarks_clear', lang) if t else 'Clear all' }}">
+                    <span class="material-symbols-outlined">delete_sweep</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="bookmarks-panel" id="bm-verses-panel">
+            <div class="bookmarks-empty" id="verses-empty">
+                <span class="material-symbols-outlined" style="font-size:48px; color:var(--text-muted);">bookmark_border</span>
+                <p>{{ t('bookmarks_empty_verses', lang) if t else 'No saved verses yet. Click the bookmark icon on any verse in the reader to save it.' }}</p>
+            </div>
+            <div id="verses-list"></div>
+        </div>
+
+        <div class="bookmarks-panel" id="bm-roots-panel" style="display:none;">
+            <div class="bookmarks-empty" id="roots-empty">
+                <span class="material-symbols-outlined" style="font-size:48px; color:var(--text-muted);">bookmark_border</span>
+                <p>{{ t('bookmarks_empty_roots', lang) if t else 'No saved roots yet. Click the bookmark icon on any root in search results to save it.' }}</p>
+            </div>
+            <div id="roots-list"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var currentLang = '{{ lang }}';
+var bookNames = {{ book_names_json|safe }};
+
+function escHtml(s) {
+    var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+}
+
+function localizeRef(ref) {
+    for (var en in bookNames) {
+        if (ref.indexOf(en) === 0) return ref.replace(en, bookNames[en]);
+    }
+    return ref;
+}
+
+function renderBookmarks() {
+    var bm = getBookmarks();
+    var vList = document.getElementById('verses-list');
+    var rList = document.getElementById('roots-list');
+    document.getElementById('verse-count').textContent = bm.verses.length;
+    document.getElementById('root-count').textContent = bm.roots.length;
+    document.getElementById('verses-empty').style.display = bm.verses.length ? 'none' : 'block';
+    document.getElementById('roots-empty').style.display = bm.roots.length ? 'none' : 'block';
+
+    // Render verses
+    var vh = '';
+    bm.verses.forEach(function(v, i) {
+        vh += '<div class="bm-card">';
+        vh += '<div class="bm-card-header">';
+        vh += '<a class="bm-ref" href="/read/' + encodeURIComponent(v.book) + '/' + v.chapter + '?lang=' + currentLang + '#v' + v.verse + '">' + escHtml(localizeRef(v.ref)) + '</a>';
+        vh += '<span class="bm-date">' + (v.date || '') + '</span>';
+        vh += '<button class="bm-remove" onclick="removeBookmark(\'verses\',' + i + ')" title="Remove"><span class="material-symbols-outlined">close</span></button>';
+        vh += '</div>';
+        if (v.syriac) vh += '<div class="bm-syriac syriac" dir="rtl">' + escHtml(v.syriac) + '</div>';
+        if (v.translation) vh += '<div class="bm-translation">' + escHtml(v.translation) + '</div>';
+        vh += '<div class="bm-note-input"><input type="text" placeholder="' + escHtml('{{ t("bookmarks_add_note", lang) if t else "Add a note..." }}') + '" value="' + escHtml(v.note || '') + '" onchange="updateNote(\'verses\',' + i + ',this.value)"></div>';
+        vh += '</div>';
+    });
+    vList.innerHTML = vh;
+
+    // Render roots
+    var rh = '';
+    bm.roots.forEach(function(r, i) {
+        rh += '<div class="bm-card">';
+        rh += '<div class="bm-card-header">';
+        rh += '<a class="bm-ref" href="/?q=' + encodeURIComponent(r.key) + '&lang=' + currentLang + '#results">';
+        if (r.syriac) rh += '<span class="syriac">' + escHtml(r.syriac) + '</span> ';
+        rh += escHtml(r.key) + '</a>';
+        if (r.gloss) rh += '<span class="bm-gloss"> — ' + escHtml(r.gloss) + '</span>';
+        rh += '<span class="bm-date">' + (r.date || '') + '</span>';
+        rh += '<button class="bm-remove" onclick="removeBookmark(\'roots\',' + i + ')" title="Remove"><span class="material-symbols-outlined">close</span></button>';
+        rh += '</div>';
+        rh += '<div class="bm-note-input"><input type="text" placeholder="' + escHtml('{{ t("bookmarks_add_note", lang) if t else "Add a note..." }}') + '" value="' + escHtml(r.note || '') + '" onchange="updateNote(\'roots\',' + i + ',this.value)"></div>';
+        rh += '</div>';
+    });
+    rList.innerHTML = rh;
+}
+
+function removeBookmark(type, idx) {
+    var bm = getBookmarks();
+    bm[type].splice(idx, 1);
+    saveBookmarks(bm);
+    renderBookmarks();
+}
+
+function updateNote(type, idx, note) {
+    var bm = getBookmarks();
+    bm[type][idx].note = note;
+    saveBookmarks(bm);
+}
+
+function switchBmTab(tab, btn) {
+    document.querySelectorAll('.bm-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.getElementById('bm-verses-panel').style.display = tab === 'verses' ? '' : 'none';
+    document.getElementById('bm-roots-panel').style.display = tab === 'roots' ? '' : 'none';
+    btn.classList.add('active');
+}
+
+function exportBookmarks() {
+    var bm = getBookmarks();
+    var blob = new Blob([JSON.stringify(bm, null, 2)], {type: 'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'aramaic-atlas-bookmarks.json';
+    a.click();
+}
+
+function clearAllBookmarks() {
+    if (confirm('{{ t("bookmarks_confirm_clear", lang) if t else "Delete all bookmarks?" }}')) {
+        saveBookmarks({verses:[], roots:[]});
+        renderBookmarks();
+    }
+}
+
+renderBookmarks();
+</script>
+{% endblock %}

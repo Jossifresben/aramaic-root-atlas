@@ -49,6 +49,7 @@
             {% endif %}
         </div>
         <div class="verse-actions">
+            <button class="bm-verse-btn" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}" data-book="{{ book }}" data-chapter="{{ chapter }}" data-verse="{{ v.verse }}" title="{{ t('bookmarks_toggle', lang) if t else 'Bookmark' }}"><span class="material-symbols-outlined">bookmark_border</span></button>
             <a href="/constellation?book={{ book }}&chapter={{ chapter }}&v_start={{ v.verse }}&v_end={{ v.verse }}&lang={{ lang }}&script={{ script }}&trans={{ trans }}"
                class="verse-action-link" title="{{ t('constellation', lang) if t else 'Constellation' }}">
                 <span class="material-symbols-outlined">scatter_plot</span>
@@ -57,4 +58,56 @@
     </div>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    // Mark already-bookmarked verses on load
+    var bm = getBookmarks();
+    var refs = {};
+    bm.verses.forEach(function(v) { refs[v.ref] = true; });
+    document.querySelectorAll('.bm-verse-btn').forEach(function(btn) {
+        var ref = btn.getAttribute('data-ref');
+        if (refs[ref]) {
+            btn.querySelector('.material-symbols-outlined').textContent = 'bookmark';
+            btn.classList.add('bookmarked');
+        }
+    });
+
+    // Toggle bookmark on click
+    document.querySelectorAll('.bm-verse-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var ref = this.getAttribute('data-ref');
+            var book = this.getAttribute('data-book');
+            var chapter = parseInt(this.getAttribute('data-chapter'));
+            var verse = parseInt(this.getAttribute('data-verse'));
+            var bm = getBookmarks();
+            var idx = -1;
+            for (var i = 0; i < bm.verses.length; i++) {
+                if (bm.verses[i].ref === ref) { idx = i; break; }
+            }
+            if (idx >= 0) {
+                bm.verses.splice(idx, 1);
+                this.querySelector('.material-symbols-outlined').textContent = 'bookmark_border';
+                this.classList.remove('bookmarked');
+            } else {
+                var row = this.closest('.verse-row');
+                var syriac = row ? (row.querySelector('.verse-syriac') || {}).textContent || '' : '';
+                var translation = row ? (row.querySelector('.verse-translation') || {}).textContent || '' : '';
+                bm.verses.push({
+                    ref: ref, book: book, chapter: chapter, verse: verse,
+                    syriac: syriac.substring(0, 120),
+                    translation: translation.substring(0, 200),
+                    date: new Date().toISOString().slice(0, 10),
+                    note: ''
+                });
+                this.querySelector('.material-symbols-outlined').textContent = 'bookmark';
+                this.classList.add('bookmarked');
+            }
+            saveBookmarks(bm);
+        });
+    });
+})();
+</script>
 {% endblock %}

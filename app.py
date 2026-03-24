@@ -429,6 +429,15 @@ def read(book, chapter):
                            verses=verse_data, books=books, max_ch=max_ch)
 
 
+@app.route('/bookmarks')
+def bookmarks():
+    lang = _get_lang()
+    book_names = _i18n.get(lang, {}).get('book_names', {})
+    return render_template('bookmarks.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn,
+                           book_names_json=json.dumps(book_names, ensure_ascii=False))
+
+
 @app.route('/about')
 def about():
     lang = _get_lang()

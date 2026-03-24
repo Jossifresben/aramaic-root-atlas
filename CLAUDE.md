@@ -16,7 +16,7 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - **templates/** — Jinja2 templates (base, index, browse, read, about)
 - **static/style.css** — CSS with corpus-coded color variables
 - **data/** — Organized subdirectories:
-  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv)
+  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv, targum_onkelos.csv)
   - `roots/` — cognates.json, known_roots.json, stopwords.json, word_glosses_override.json
   - `translations/` — translations_{en,es,he,ar}.json
 - **scripts/** — Data pipeline scripts
@@ -41,6 +41,7 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - `GET /` — Home page with search + stats
 - `GET /browse` — Book browser with corpus filter tabs
 - `GET /read/<book>/<chapter>` — Verse reader with translation selector
+- `GET /bookmarks` — Bookmarks page (localStorage-based verse & root favorites)
 - `GET /about` — About page
 - `GET /api/stats` — Corpus statistics JSON
 - `GET /api/roots?q=SH-L-M&corpus=peshitta_ot` — Root search with optional corpus filter
@@ -53,9 +54,10 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - `GET /visualize/<root_key>` — Root family visualizer (D3 graph + card)
 - `GET /api/root-family?root=SH-L-M` — Root family data (words, cognates, sister roots)
 - `GET /parallel` — Parallel viewer (multi-corpus side-by-side)
-- `GET /api/parallel/<book>/<chapter>` — Parallel chapter data across corpora
+- `GET /api/parallel?ref=Genesis+1:1` — Parallel texts for a verse across corpora
 - `GET /heatmap` — Root frequency heat map page
 - `GET /api/heatmap?limit=100&sort=total` — Heat map data (root frequency across corpora)
+- `GET /api/suggest?prefix=SH` — Autocomplete suggestions for root search
 
 ## Run
 ```bash
@@ -109,7 +111,7 @@ python3 app.py  # starts on port 5001
 
 ## Next Steps (Phase 4 — Polish & Scale)
 1. Root-of-the-day on homepage
-2. Bookmark/favorites for roots
+2. ~~Bookmark/favorites for roots~~ — Done (localStorage-based, verses + roots, export JSON)
 3. Performance optimization for large datasets
 4. Deploy to production (Render)
 

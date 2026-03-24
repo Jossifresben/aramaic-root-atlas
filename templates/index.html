@@ -200,6 +200,13 @@ document.getElementById('rootSearchForm').addEventListener('submit', async (e) =
     }
 
     const vizKey = data.root_transliteration.replace(/ /g, '-').replace(/\u0027/g, 'A');
+    // Bookmark button for root
+    const rootBmKey = data.root_transliteration;
+    const rootBmSyriac = data.root;
+    const rootBmGloss = gloss;
+    const rootBmExists = getBookmarks().roots.some(r => r.key === rootBmKey);
+    html += `<div class="root-bm-wrap"><button class="bm-root-btn" id="bm-root-toggle" title="Bookmark" onclick="toggleRootBookmark()"><span class="material-symbols-outlined">${rootBmExists ? 'bookmark' : 'bookmark_border'}</span></button></div>`;
+
     html += `<div class="root-header-nav">
             <a href="/visualize/${vizKey}?lang=${lang}" class="root-tab viz-btn" style="text-decoration:none"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">hub</span> Visualize</a>
             <button class="root-tab active" data-tab="peshitta" onclick="switchResultTab(this)">Occurrences (${data.total_occurrences})</button>
@@ -285,6 +292,9 @@ document.getElementById('rootSearchForm').addEventListener('submit', async (e) =
     html += `</div></div></div>`;
 
     el.innerHTML = html;
+    _bmRootKey = rootBmKey;
+    _bmRootSyriac = rootBmSyriac;
+    _bmRootGloss = rootBmGloss;
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
@@ -519,5 +529,30 @@ function copyVerseModal() {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') document.getElementById('verse-modal').classList.remove('active');
 });
+
+// --- Root Bookmark Toggle ---
+var _bmRootKey = '', _bmRootSyriac = '', _bmRootGloss = '';
+function toggleRootBookmark() {
+    var bm = getBookmarks();
+    var idx = -1;
+    for (var i = 0; i < bm.roots.length; i++) {
+        if (bm.roots[i].key === _bmRootKey) { idx = i; break; }
+    }
+    var btn = document.getElementById('bm-root-toggle');
+    if (idx >= 0) {
+        bm.roots.splice(idx, 1);
+        if (btn) btn.querySelector('.material-symbols-outlined').textContent = 'bookmark_border';
+    } else {
+        bm.roots.push({
+            key: _bmRootKey,
+            syriac: _bmRootSyriac,
+            gloss: _bmRootGloss,
+            date: new Date().toISOString().slice(0, 10),
+            note: ''
+        });
+        if (btn) btn.querySelector('.material-symbols-outlined').textContent = 'bookmark';
+    }
+    saveBookmarks(bm);
+}
 </script>
 {% endblock %}

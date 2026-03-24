@@ -198,3 +198,10 @@
         }
     }
 })();
+
+// --- Shared bookmark utilities ---
+function getBookmarks() {
+    try { return JSON.parse(localStorage.getItem('atlas_bookmarks') || '{"verses":[],"roots":[]}'); }
+    catch(e) { return {verses:[], roots:[]}; }
+}
+function saveBookmarks(bm) { localStorage.setItem('atlas_bookmarks', JSON.stringify(bm)); }
