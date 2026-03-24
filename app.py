@@ -387,16 +387,21 @@ def browse():
 def read(book, chapter):
     lang = _get_lang()
     trans = request.args.get('trans', lang)
+    script = _get_script()
+    translit_fn = _get_translit_fn(script) if script != 'syriac' else transliterate_syriac
     verses = _corpus.get_chapter_verses(book, chapter)
     verse_data = []
     for v_num, ref, syriac in verses:
         translation = _corpus.get_verse_translation(ref, trans)
         if not translation and trans != 'en':
             translation = _corpus.get_verse_translation(ref, 'en')
+        words = syriac.split() if syriac else []
+        translit = ' '.join(translit_fn(w) for w in words)
         verse_data.append({
             'verse': v_num,
             'reference': ref,
             'syriac': syriac,
+            'transliteration': translit,
             'translation': translation,
             'corpus_id': _corpus.get_verse_corpus(ref),
         })

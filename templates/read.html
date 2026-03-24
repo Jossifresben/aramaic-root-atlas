@@ -39,9 +39,18 @@
                     {{ v.syriac }}
                 {%- endif -%}
             </div>
+            {% if v.transliteration %}
+            <div class="verse-translit">{{ v.transliteration }}</div>
+            {% endif %}
             {% if v.translation %}
             <div class="verse-translation" {% if trans in ('he', 'ar') %}dir="rtl"{% endif %}>{{ v.translation }}</div>
             {% endif %}
+        </div>
+        <div class="verse-actions">
+            <a href="/constellation?book={{ book }}&chapter={{ chapter }}&v_start={{ v.verse }}&v_end={{ v.verse }}&lang={{ lang }}&script={{ script }}&trans={{ trans }}"
+               class="verse-action-link" title="{{ t('constellation', lang) if t else 'Constellation' }}">
+                <span class="material-symbols-outlined">scatter_plot</span>
+            </a>
         </div>
     </div>
     {% endfor %}

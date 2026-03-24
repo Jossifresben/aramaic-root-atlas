@@ -810,9 +810,35 @@ body {
     line-height: 1.8;
     margin-bottom: 0.25rem;
 }
+.verse-translit {
+    font-size: 0.9rem;
+    color: var(--text-secondary, #888);
+    margin-bottom: 0.2rem;
+    line-height: 1.5;
+}
 .verse-translation {
     color: var(--muted);
     font-size: 0.95rem;
+}
+.verse-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    align-items: center;
+    padding-top: 0.2rem;
+}
+.verse-action-link {
+    color: var(--muted);
+    text-decoration: none;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+.verse-action-link:hover {
+    opacity: 1;
+    color: var(--accent);
+}
+.verse-action-link .material-symbols-outlined {
+    font-size: 18px;
 }
 .verse-row .corpus-badge {
     display: inline-block;
