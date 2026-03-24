@@ -1,33 +1,549 @@
 {% extends "base.html" %}
 
-{% block title %}About — Aramaic Root Atlas{% endblock %}
+{% block title %}{{ t('about_title', lang) if t else 'About' }} — Aramaic Root Atlas{% endblock %}
+
+{% block head %}
+<style>
+    .about-content {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 0 1rem 3rem;
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+    [lang="ar"] .about-content {
+        font-size: 1.3rem;
+        line-height: 2;
+    }
+    .about-content p {
+        margin-bottom: 1.2em;
+    }
+    .about-content a {
+        color: var(--accent, #b8860b);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+    .about-content a:hover {
+        opacity: 0.8;
+    }
+    .about-content h2 {
+        margin-top: 2.5rem;
+        margin-bottom: 0.75rem;
+        font-size: 1.5rem;
+        letter-spacing: -0.01em;
+        border-bottom: 2px solid var(--accent, #b8860b);
+        padding-bottom: 0.3rem;
+    }
+    .about-content h3 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.15rem;
+    }
+    .about-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin: 1.5rem 0 2rem;
+    }
+    .about-stat {
+        background: var(--card-bg, #fff);
+        border: 1px solid var(--border, #ddd);
+        border-radius: 8px;
+        padding: 0.75rem 1.25rem;
+        text-align: center;
+        min-width: 120px;
+    }
+    .about-stat .stat-num {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--accent, #b8860b);
+        display: block;
+    }
+    .about-stat .stat-label {
+        font-size: 0.85rem;
+        color: var(--muted, #888);
+    }
+    .about-table-wrap {
+        overflow-x: auto;
+        margin: 1rem 0 1.5rem;
+    }
+    .about-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.92rem;
+    }
+    .about-table th,
+    .about-table td {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border, #ddd);
+        text-align: left;
+    }
+    [dir="rtl"] .about-table th,
+    [dir="rtl"] .about-table td {
+        text-align: right;
+    }
+    .about-table th {
+        background: var(--card-bg, #f8f8f8);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .about-table td {
+        vertical-align: top;
+    }
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0 1.5rem;
+    }
+    .feature-card {
+        background: var(--card-bg, #fff);
+        border: 1px solid var(--border, #ddd);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+    }
+    .feature-card h4 {
+        margin: 0 0 0.4rem;
+        font-size: 1rem;
+        color: var(--accent, #b8860b);
+    }
+    .feature-card p {
+        margin: 0;
+        font-size: 0.92rem;
+        line-height: 1.5;
+    }
+    .use-case-list {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+    .use-case-list li {
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--border, #ddd);
+        line-height: 1.6;
+    }
+    .use-case-list li:last-child {
+        border-bottom: none;
+    }
+    .use-case-list strong {
+        color: var(--accent, #b8860b);
+    }
+    .about-credit {
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border, #ddd);
+        font-size: 0.95rem;
+        color: var(--muted, #888);
+    }
+    .about-credit a {
+        color: var(--accent, #b8860b);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<h1>About the Aramaic Root Atlas</h1>
+<div class="container">
+    <div class="about-content">
 
-<div class="about-content">
-    <p>The Aramaic Root Atlas is a cross-corpus triliteral root explorer spanning
-    centuries of Aramaic literary history. It allows scholars to trace a single
-    Semitic root from the Peshitta through Biblical Aramaic, Targum, and Syriac
-    patristic literature — with Hebrew, Arabic, and Greek cognates visible at
-    every layer.</p>
+        {# ── 1. OPENING ── #}
 
-    <h2>Corpora</h2>
-    <ul>
-        <li><strong>Peshitta NT</strong> — The Syriac New Testament (7,957 verses)</li>
-        <li><strong>Peshitta OT</strong> — Selected Old Testament books: Psalms, Proverbs, Isaiah, Ezekiel (5,930 verses)</li>
-        <li><em>Biblical Aramaic, Targum Onkelos, Ephrem's Hymns</em> — Coming soon</li>
-    </ul>
+        {% if lang == 'es' %}
 
-    <h2>How It Works</h2>
-    <p>The engine extracts triliteral consonantal roots from unvocalized Syriac text
-    using morphological analysis (prefix/suffix stripping) and a known-root dictionary.
-    Roots are normalized to a shared Latin key (e.g., k-t-b) enabling cross-script
-    comparison with Hebrew and Arabic cognates.</p>
+        <h1>{{ t('about_atlas_title', lang) }}</h1>
 
-    <h2>Credits</h2>
-    <p>Built by Jossif Fresco. Evolved from the
-    <a href="https://peshitta-roots.onrender.com">Peshitta Root Finder</a>.</p>
-    <p>Syriac text source: ETCBC/Leiden Peshitta Institute.</p>
+        <p>El Atlas de Ra&iacute;ces Arameas es un explorador de ra&iacute;ces tril&iacute;teras que abarca unos 1.500 a&ntilde;os de historia literaria aramea. Re&uacute;ne cuatro corpus &mdash; la Peshitta (NT y AT), el arameo b&iacute;blico y el T&aacute;rgum Onkelos &mdash; bajo un &uacute;nico &iacute;ndice de ra&iacute;ces consonant&iacute;cas, permitiendo rastrear una misma ra&iacute;z sem&iacute;tica a trav&eacute;s de tradiciones textuales, escrituras y siglos, con cognados hebreos y &aacute;rabes visibles en cada capa.</p>
+
+        {% elif lang == 'he' %}
+
+        <h1>{{ t('about_atlas_title', lang) }}</h1>
+
+        <p>אטלס השורשים הארמיים הוא כלי לחקירת שורשים תלת-עיצוריים המקיף כ-1,500 שנות היסטוריה ספרותית ארמית. הוא מאגד ארבעה קורפוסים &mdash; הפשיטתא (הברית החדשה והתנ"ך), הארמית המקראית והתרגום אונקלוס &mdash; תחת אינדקס שורשים עיצוריים אחד, ומאפשר לעקוב אחר שורש שמי יחיד דרך מסורות טקסטואליות, כתבים ותקופות, עם קוגנטים בעברית ובערבית בכל שכבה.</p>
+
+        {% elif lang == 'ar' %}
+
+        <h1>{{ t('about_atlas_title', lang) }}</h1>
+
+        <p>أطلس الجذور الآرامية هو أداة لاستكشاف الجذور الثلاثية تغطي نحو 1,500 عام من التاريخ الأدبي الآرامي. يجمع أربعة مدوّنات نصية &mdash; الپشيطتا (العهد الجديد والقديم)، والآرامية التوراتية، وترجوم أونكيلوس &mdash; تحت فهرس جذور صوامتي واحد، ممّا يتيح تتبّع جذر سامي واحد عبر التقاليد النصية والخطوط والقرون، مع عرض المُشتركات العبرية والعربية في كل طبقة.</p>
+
+        {% else %}
+
+        <h1>{{ t('about_atlas_title', lang) }}</h1>
+
+        <p>The Aramaic Root Atlas is a cross-corpus triliteral root explorer spanning roughly 1,500 years of Aramaic literary history. It brings four corpora &mdash; the Peshitta (NT and OT), Biblical Aramaic, and Targum Onkelos &mdash; under a single consonantal root index, enabling scholars to trace a single Semitic root across textual traditions, scripts, and centuries, with Hebrew and Arabic cognates visible at every layer.</p>
+
+        {% endif %}
+
+        {# Stats bar #}
+        <div class="about-stats">
+            <div class="about-stat">
+                <span class="stat-num">36,627</span>
+                <span class="stat-label">{% if lang == 'es' %}vers&iacute;culos{% elif lang == 'he' %}פסוקים{% elif lang == 'ar' %}آية{% else %}verses{% endif %}</span>
+            </div>
+            <div class="about-stat">
+                <span class="stat-num">498,922</span>
+                <span class="stat-label">{% if lang == 'es' %}palabras{% elif lang == 'he' %}מילים{% elif lang == 'ar' %}كلمة{% else %}words{% endif %}</span>
+            </div>
+            <div class="about-stat">
+                <span class="stat-num">5,039</span>
+                <span class="stat-label">{% if lang == 'es' %}ra&iacute;ces{% elif lang == 'he' %}שורשים{% elif lang == 'ar' %}جذر{% else %}roots{% endif %}</span>
+            </div>
+            <div class="about-stat">
+                <span class="stat-num">1,127</span>
+                <span class="stat-label">{% if lang == 'es' %}familias de cognados{% elif lang == 'he' %}משפחות קוגנטים{% elif lang == 'ar' %}عائلة اشتقاقية{% else %}cognate families{% endif %}</span>
+            </div>
+            <div class="about-stat">
+                <span class="stat-num">4</span>
+                <span class="stat-label">{% if lang == 'es' %}corpus{% elif lang == 'he' %}קורפוסים{% elif lang == 'ar' %}مدوّنات{% else %}corpora{% endif %}</span>
+            </div>
+        </div>
+
+        {# ── 2. CORPORA ── #}
+
+        <h2>{% if lang == 'es' %}Corpus{% elif lang == 'he' %}קורפוסים{% elif lang == 'ar' %}المدوّنات النصية{% else %}Corpora{% endif %}</h2>
+
+        {% if lang == 'es' %}
+        <p>El Atlas indexa cuatro corpus de texto aram&eacute;o, que representan dos escrituras y m&aacute;s de un milenio de producci&oacute;n literaria:</p>
+        {% elif lang == 'he' %}
+        <p>האטלס מאנדקס ארבעה קורפוסים של טקסט ארמי, המייצגים שני כתבים ומעל אלף שנות יצירה ספרותית:</p>
+        {% elif lang == 'ar' %}
+        <p>يفهرس الأطلس أربع مدوّنات من النصوص الآرامية، تمثّل خطّين كتابيين وأكثر من ألف عام من الإنتاج الأدبي:</p>
+        {% else %}
+        <p>The Atlas indexes four corpora of Aramaic text, representing two scripts and over a millennium of literary production:</p>
+        {% endif %}
+
+        <div class="about-table-wrap">
+        <table class="about-table">
+            <thead>
+                <tr>
+                    <th>{% if lang == 'es' %}Corpus{% elif lang == 'he' %}קורפוס{% elif lang == 'ar' %}المدوّنة{% else %}Corpus{% endif %}</th>
+                    <th>{% if lang == 'es' %}Vers&iacute;culos{% elif lang == 'he' %}פסוקים{% elif lang == 'ar' %}الآيات{% else %}Verses{% endif %}</th>
+                    <th>{% if lang == 'es' %}Palabras{% elif lang == 'he' %}מילים{% elif lang == 'ar' %}الكلمات{% else %}Words{% endif %}</th>
+                    <th>{% if lang == 'es' %}Escritura{% elif lang == 'he' %}כתב{% elif lang == 'ar' %}الخط{% else %}Script{% endif %}</th>
+                    <th>{% if lang == 'es' %}Fuente{% elif lang == 'he' %}מקור{% elif lang == 'ar' %}المصدر{% else %}Source{% endif %}</th>
+                    <th>{% if lang == 'es' %}Licencia{% elif lang == 'he' %}רישיון{% elif lang == 'ar' %}الرخصة{% else %}License{% endif %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{% if lang == 'es' %}Peshitta NT{% elif lang == 'he' %}פשיטתא ב"ח{% elif lang == 'ar' %}الپشيطتا &mdash; العهد الجديد{% else %}Peshitta NT{% endif %}</td>
+                    <td>7,440</td>
+                    <td>101,469</td>
+                    <td>{% if lang == 'es' %}Siríaco{% elif lang == 'he' %}סורית{% elif lang == 'ar' %}سرياني{% else %}Syriac{% endif %}</td>
+                    <td>ETCBC</td>
+                    <td>&mdash;</td>
+                </tr>
+                <tr>
+                    <td>{% if lang == 'es' %}Peshitta AT{% elif lang == 'he' %}פשיטתא תנ"ך{% elif lang == 'ar' %}الپشيطتا &mdash; العهد القديم{% else %}Peshitta OT{% endif %}</td>
+                    <td>23,072</td>
+                    <td>309,889</td>
+                    <td>{% if lang == 'es' %}Siríaco{% elif lang == 'he' %}סורית{% elif lang == 'ar' %}سرياني{% else %}Syriac{% endif %}</td>
+                    <td>ETCBC / Leiden</td>
+                    <td>CC-BY-NC</td>
+                </tr>
+                <tr>
+                    <td>{% if lang == 'es' %}Arameo b&iacute;blico{% elif lang == 'he' %}ארמית מקראית{% elif lang == 'ar' %}الآرامية التوراتية{% else %}Biblical Aramaic{% endif %}</td>
+                    <td>269</td>
+                    <td>4,880</td>
+                    <td>{% if lang == 'es' %}Hebreo cuadrado{% elif lang == 'he' %}כתב מרובע{% elif lang == 'ar' %}الخط العبري المربع{% else %}Hebrew square{% endif %}</td>
+                    <td>Sefaria / WLC</td>
+                    <td>CC-BY-SA</td>
+                </tr>
+                <tr>
+                    <td>{% if lang == 'es' %}T&aacute;rgum Onkelos{% elif lang == 'he' %}תרגום אונקלוס{% elif lang == 'ar' %}ترجوم أونكيلوس{% else %}Targum Onkelos{% endif %}</td>
+                    <td>5,846</td>
+                    <td>82,584</td>
+                    <td>{% if lang == 'es' %}Hebreo cuadrado{% elif lang == 'he' %}כתב מרובע{% elif lang == 'ar' %}الخط العبري المربع{% else %}Hebrew square{% endif %}</td>
+                    <td>Sefaria</td>
+                    <td>CC-BY-SA</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+
+        {# ── 3. METHODOLOGY ── #}
+
+        <h2>{% if lang == 'es' %}Metodolog&iacute;a{% elif lang == 'he' %}מתודולוגיה{% elif lang == 'ar' %}المنهجية{% else %}Methodology{% endif %}</h2>
+
+        {% if lang == 'es' %}
+
+        <h3>Extracci&oacute;n de ra&iacute;ces</h3>
+        <p>El motor extrae ra&iacute;ces tril&iacute;teras consonant&iacute;cas a partir de texto no vocalizado mediante an&aacute;lisis morfol&oacute;gico: eliminaci&oacute;n sistem&aacute;tica de prefijos y sufijos, puntuaci&oacute;n ponderada contra un diccionario de ra&iacute;ces verificadas, y resoluci&oacute;n de candidatos ambiguos por frecuencia y contexto.</p>
+
+        <h3>Normalizaci&oacute;n entre escrituras</h3>
+        <p>Los textos arameos emplean dos sistemas de escritura: siríaco (&#x0710;&ndash;&#x074F;) y hebreo cuadrado (&#x0590;&ndash;&#x05FF;). El Atlas normaliza ambos a una clave latina com&uacute;n &mdash; por ejemplo, el siríaco <span class="syriac">&#x071F;&#x072C;&#x0712;</span> y el hebreo &#x05DB;&#x05EA;&#x05D1; se resuelven a K-T-B &mdash; lo que permite la b&uacute;squeda unificada de ra&iacute;ces a trav&eacute;s de los corpus.</p>
+
+        <h3>An&aacute;lisis morfol&oacute;gico</h3>
+        <p>Se aplican conjuntos separados de reglas de afijos para el siríaco y para el arameo b&iacute;blico en escritura hebrea, dando cuenta de las diferencias en preposiciones cl&iacute;ticas, marcadores pronominales y morfolog&iacute;a verbal entre ambas tradiciones.</p>
+
+        {% elif lang == 'he' %}
+
+        <h3>חילוץ שורשים</h3>
+        <p>המנוע מחלץ שורשים תלת-עיצוריים מטקסט בלתי מנוקד באמצעות ניתוח מורפולוגי: הפשטה שיטתית של תחיליות וסופיות, ניקוד משוקלל כנגד מילון שורשים מאומתים, ופתרון מועמדים דו-משמעיים לפי תדירות והקשר.</p>
+
+        <h3>נרמול בין כתבים</h3>
+        <p>הטקסטים הארמיים משתמשים בשני כתבים: סורי (&#x0710;&ndash;&#x074F;) ועברי מרובע (&#x0590;&ndash;&#x05FF;). האטלס מנרמל את שניהם למפתח לטיני משותף &mdash; למשל, הסורי <span class="syriac">&#x071F;&#x072C;&#x0712;</span> והעברי &#x05DB;&#x05EA;&#x05D1; נפתרים ל-K-T-B &mdash; מה שמאפשר חיפוש שורשים מאוחד בין הקורפוסים.</p>
+
+        <h3>ניתוח מורפולוגי</h3>
+        <p>מערכות חוקי ניתוח נפרדות מוחלות על הסורית ועל הארמית המקראית בכתב העברי, תוך התייחסות להבדלים במילות יחס קליטיות, סמני כינויים ומורפולוגיה פועלית בין שתי המסורות.</p>
+
+        {% elif lang == 'ar' %}
+
+        <h3>استخلاص الجذور</h3>
+        <p>يستخلص المحرّك الجذور الثلاثية الصوامتية من النص غير المُشكَل عبر التحليل الصرفي: تجريد منهجي للسوابق واللواحق، وتسجيل مرجّح مقابل معجم جذور موثّقة، وحلّ المرشّحين المتعدّدين بحسب التواتر والسياق.</p>
+
+        <h3>التطبيع بين الخطوط</h3>
+        <p>تستعمل النصوص الآرامية خطّين كتابيين: السرياني (&#x0710;&ndash;&#x074F;) والعبري المربع (&#x0590;&ndash;&#x05FF;). يُطبّع الأطلس كليهما إلى مفتاح لاتيني مشترك &mdash; فمثلاً السرياني <span class="syriac">&#x071F;&#x072C;&#x0712;</span> والعبري &#x05DB;&#x05EA;&#x05D1; يُحلّان إلى K-T-B &mdash; ممّا يتيح البحث الموحّد عن الجذور عبر المدوّنات.</p>
+
+        <h3>التحليل الصرفي</h3>
+        <p>تُطبَّق مجموعات منفصلة من قواعد الزوائد على السريانية وعلى الآرامية التوراتية بالخط العبري، مع مراعاة الاختلافات في حروف الجر المتّصلة وعلامات الضمائر والصرف الفعلي بين التقليدين.</p>
+
+        {% else %}
+
+        <h3>Root Extraction</h3>
+        <p>The engine extracts triliteral consonantal roots from unvocalized text through morphological analysis: systematic prefix/suffix stripping, weighted scoring against a dictionary of verified roots, and resolution of ambiguous candidates by frequency and context.</p>
+
+        <h3>Cross-Script Normalization</h3>
+        <p>The Aramaic texts employ two writing systems: Syriac (&#x0710;&ndash;&#x074F;) and Hebrew square script (&#x0590;&ndash;&#x05FF;). The Atlas normalizes both to a shared Latin key &mdash; for example, Syriac <span class="syriac">&#x071F;&#x072C;&#x0712;</span> and Hebrew &#x05DB;&#x05EA;&#x05D1; both resolve to K-T-B &mdash; enabling unified root search across corpora.</p>
+
+        <h3>Morphological Analysis</h3>
+        <p>Separate affix rule sets are applied for Syriac and for Biblical Aramaic in Hebrew script, accounting for differences in clitic prepositions, pronominal markers, and verbal morphology between the two traditions.</p>
+
+        {% endif %}
+
+        {# ── 4. COGNATES & SEMANTIC STRUCTURE ── #}
+
+        <h2>{% if lang == 'es' %}Cognados y estructura sem&aacute;ntica{% elif lang == 'he' %}קוגנטים ומבנה סמנטי{% elif lang == 'ar' %}المُشتركات والبنية الدلالية{% else %}Cognates &amp; Semantic Structure{% endif %}</h2>
+
+        {% if lang == 'es' %}
+
+        <p>Los <em>cognados</em> son palabras en lenguas sem&iacute;ticas emparentadas que comparten un ancestro radical com&uacute;n. Por ejemplo, el siríaco <span class="syriac">&#x072B;&#x0720;&#x0721;&#x0710;</span> (<em>shlama</em>), el hebreo &#x05E9;&#x05C1;&#x05B8;&#x05DC;&#x05D5;&#x05B9;&#x05DD; (<em>shalom</em>) y el &aacute;rabe &#x0633;&#x064E;&#x0644;&#x0627;&#x0645; (<em>sal&#x0101;m</em>) derivan de la ra&iacute;z SH-L-M, cuyo n&uacute;cleo sem&aacute;ntico gira en torno a &laquo;paz / plenitud / completud&raquo;.</p>
+
+        <p>El Atlas contiene <strong>1.127 familias de cognados</strong>. Cada entrada incluye: clave de ra&iacute;z, glosas en ingl&eacute;s y espa&ntilde;ol, palabras cognadas en hebreo y &aacute;rabe con transliteraci&oacute;n y significado, <em>puentes sem&aacute;nticos</em> entre cognados cuyos significados divergieron, marcadores de <em>outlier</em> para cognados con desplazamiento sem&aacute;ntico significativo, <em>ra&iacute;ces hermanas</em> que comparten 2 de 3 consonantes, y el <em>sabor de ra&iacute;z</em> &mdash; una l&iacute;nea po&eacute;tica que captura la intuici&oacute;n sem&iacute;tica del esqueleto consonant&iacute;co.</p>
+
+        <p>De las 1.127 entradas, 493 fueron generadas con asistencia de inteligencia artificial (API de Claude, Anthropic) a partir de listas de ra&iacute;ces, y revisadas y curadas manualmente para garantizar la precisi&oacute;n ling&uuml;&iacute;stica.</p>
+
+        {% elif lang == 'he' %}
+
+        <p><em>קוגנטים</em> הם מילים בשפות שמיות קרובות החולקות שורש אב משותף. למשל, הסורי <span class="syriac">&#x072B;&#x0720;&#x0721;&#x0710;</span> (<em>shlama</em>), העברי &#x05E9;&#x05C1;&#x05B8;&#x05DC;&#x05D5;&#x05B9;&#x05DD; (<em>shalom</em>) והערבי &#x0633;&#x064E;&#x0644;&#x0627;&#x0645; (<em>sal&#x0101;m</em>) נגזרים מהשורש SH-L-M, שגרעינו הסמנטי סובב סביב &laquo;שלום / שלמות / השלמה&raquo;.</p>
+
+        <p>האטלס מכיל <strong>1,127 משפחות קוגנטים</strong>. כל רשומה כוללת: מפתח שורש, פירושים באנגלית ובספרדית, מילים קוגנטיות בעברית ובערבית עם תעתיק ומשמעות, <em>גשרים סמנטיים</em> בין קוגנטים שמשמעותם התפצלה, סמני <em>חריג</em> לקוגנטים עם הסטה סמנטית משמעותית, <em>שורשים אחיים</em> החולקים 2 מתוך 3 עיצורים, ו<em>טעם השורש</em> &mdash; שורה פואטית הלוכדת את האינטואיציה השמית של שלד העיצורים.</p>
+
+        <p>מתוך 1,127 הרשומות, 493 נוצרו בסיוע בינה מלאכותית (API של Claude, Anthropic) מרשימות שורשים, ונבדקו ונערכו ידנית להבטחת דיוק לשוני.</p>
+
+        {% elif lang == 'ar' %}
+
+        <p><em>المُشتركات</em> (cognates) هي كلمات في لغات سامية مترابطة تتشارك جذراً أصلياً واحداً. فمثلاً، السريانية <span class="syriac">&#x072B;&#x0720;&#x0721;&#x0710;</span> (<em>shlama</em>)، والعبرية &#x05E9;&#x05C1;&#x05B8;&#x05DC;&#x05D5;&#x05B9;&#x05DD; (<em>shalom</em>)، والعربية &#x0633;&#x064E;&#x0644;&#x0627;&#x0645; (<em>sal&#x0101;m</em>) تشتقّ جميعها من الجذر SH-L-M، الذي تدور نواته الدلالية حول &laquo;السلام / الكمال / التمام&raquo;.</p>
+
+        <p>يحتوي الأطلس على <strong>1,127 عائلة اشتقاقية</strong>. تشمل كل مدخلة: مفتاح الجذر، ترجمات بالإنجليزية والإسبانية، كلمات مشتركة بالعبرية والعربية مع الكتابة الصوتية والمعنى، <em>جسوراً دلالية</em> بين المشتركات التي تباعدت معانيها، علامات <em>شذوذ</em> للمشتركات ذات الانزياح الدلالي الكبير، <em>جذوراً شقيقة</em> تتشارك حرفين من ثلاثة، و<em>نكهة الجذر</em> &mdash; سطر شعري يلتقط الحدس السامي للهيكل الصوامتي.</p>
+
+        <p>من أصل 1,127 مدخلة، وُلّدت 493 منها بمساعدة الذكاء الاصطناعي (واجهة Claude، Anthropic) انطلاقاً من قوائم جذور، ثم رُوجعت ونُقّحت يدوياً لضمان الدقة اللغوية.</p>
+
+        {% else %}
+
+        <p><em>Cognates</em> are words in related Semitic languages that share a common root ancestor. For example, Syriac <span class="syriac">&#x072B;&#x0720;&#x0721;&#x0710;</span> (<em>shlama</em>), Hebrew &#x05E9;&#x05C1;&#x05B8;&#x05DC;&#x05D5;&#x05B9;&#x05DD; (<em>shalom</em>), and Arabic &#x0633;&#x064E;&#x0644;&#x0627;&#x0645; (<em>sal&#x0101;m</em>) all derive from the root SH-L-M, whose semantic core revolves around "peace / wholeness / completion."</p>
+
+        <p>The Atlas contains <strong>1,127 cognate families</strong>. Each entry includes: root key, English and Spanish glosses, Hebrew and Arabic cognate words with transliteration and meaning, <em>semantic bridges</em> linking cognates whose meanings diverged, <em>outlier</em> flags for cognates with significant semantic drift, <em>sister roots</em> sharing 2 of 3 consonants, and the <em>root flavor</em> (sabor de ra&iacute;z) &mdash; a poetic one-liner capturing the Semitic intuition behind the consonantal skeleton.</p>
+
+        <p>Of the 1,127 entries, 493 were generated with AI assistance (Claude API, Anthropic) from root lists, then manually reviewed and curated for linguistic accuracy.</p>
+
+        {% endif %}
+
+        {# ── 5. TOOLS & FEATURES ── #}
+
+        <h2>{% if lang == 'es' %}Herramientas y funciones{% elif lang == 'he' %}כלים ותכונות{% elif lang == 'ar' %}الأدوات والميزات{% else %}Tools &amp; Features{% endif %}</h2>
+
+        <div class="feature-grid">
+
+            {# Root Search #}
+            <div class="feature-card">
+                <h4>{% if lang == 'es' %}B&uacute;squeda de ra&iacute;ces{% elif lang == 'he' %}חיפוש שורשים{% elif lang == 'ar' %}البحث عن الجذور{% else %}Root Search{% endif %}</h4>
+                <p>{% if lang == 'es' %}Ingrese una ra&iacute;z en lat&iacute;n (SH-L-M), siríaco, hebreo o &aacute;rabe. Devuelve todas las formas atestiguadas, glosas, cognados y referencias por vers&iacute;culo en todos los corpus, con autocompletado en vivo.{% elif lang == 'he' %}הזינו שורש בלטינית (SH-L-M), סורית, עברית או ערבית. מחזיר את כל הצורות המעידות, פירושים, קוגנטים והפניות פסוקים בכל הקורפוסים, עם השלמה אוטומטית.{% elif lang == 'ar' %}أدخل جذراً بالحرف اللاتيني (SH-L-M) أو بالسريانية أو العبرية أو العربية. يُعيد جميع الصيغ المشهودة والترجمات والمشتركات والإحالات الآياتية عبر كل المدوّنات، مع إكمال تلقائي.{% else %}Enter a root in Latin (SH-L-M), Syriac, Hebrew, or Arabic. Returns all attested forms, glosses, cognates, and verse references across corpora, with live autocomplete.{% endif %}</p>
+            </div>
+
+            {# Root Family Visualizer #}
+            <div class="feature-card">
+                <h4>{% if lang == 'es' %}Visualizador de familias{% elif lang == 'he' %}מחזיר משפחת שורשים{% elif lang == 'ar' %}عارض عائلة الجذر{% else %}Root Family Visualizer{% endif %}</h4>
+                <p>{% if lang == 'es' %}Grafo de fuerza D3.js que muestra la familia de un ra&iacute;z: formas siríacas atestiguadas, cognados hebreos y &aacute;rabes, ra&iacute;ces hermanas, puentes sem&aacute;nticos y un vers&iacute;culo paradigm&aacute;tico.{% elif lang == 'he' %}גרף כוחות D3.js המציג את משפחת השורש: צורות סוריות מעידות, קוגנטים עבריים וערביים, שורשים אחיים, גשרים סמנטיים ופסוק פרדיגמטי.{% elif lang == 'ar' %}رسم بياني قوّي D3.js يعرض عائلة الجذر: الصيغ السريانية المشهودة، والمشتركات العبرية والعربية، والجذور الشقيقة، والجسور الدلالية، وآية نموذجية.{% else %}D3.js force-directed graph showing a root's word family: attested Syriac forms, Hebrew and Arabic cognates, sister roots, semantic bridges, and a paradigmatic key verse.{% endif %}</p>
+            </div>
+
+            {# Passage Constellation #}
+            <div class="feature-card">
+                <h4>{% if lang == 'es' %}Constelaci&oacute;n de pasaje{% elif lang == 'he' %}קונסטלציית קטע{% elif lang == 'ar' %}كوكبة النص{% else %}Passage Constellation{% endif %}</h4>
+                <p>{% if lang == 'es' %}Grafo interactivo de todas las ra&iacute;ces en un pasaje, mostrando coocurrencia y agrupamiento sem&aacute;ntico entre vers&iacute;culos.{% elif lang == 'he' %}גרף אינטראקטיבי של כל השורשים בקטע, המציג שיתוף הופעה וצביר סמנטי בין פסוקים.{% elif lang == 'ar' %}رسم بياني تفاعلي لجميع الجذور في مقطع نصي، يُظهر التواتر المشترك والتجمّع الدلالي بين الآيات.{% else %}Interactive graph of all roots in a passage, showing co-occurrence and semantic clustering across verses.{% endif %}</p>
+            </div>
+
+            {# Parallel Viewer #}
+            <div class="feature-card">
+                <h4>{% if lang == 'es' %}Visor paralelo{% elif lang == 'he' %}מציג מקביל{% elif lang == 'ar' %}العارض المتوازي{% else %}Parallel Viewer{% endif %}</h4>
+                <p>{% if lang == 'es' %}Comparaci&oacute;n lado a lado del mismo pasaje en diferentes corpus (Peshitta AT &harr; T&aacute;rgum Onkelos). Revela elecciones interpretativas entre tradiciones arameas.{% elif lang == 'he' %}השוואה זו-לצד-זו של אותו קטע בקורפוסים שונים (פשיטתא תנ"ך &harr; תרגום אונקלוס). חושפת בחירות פרשניות בין מסורות ארמיות.{% elif lang == 'ar' %}مقارنة جنباً إلى جنب للنص ذاته عبر مدوّنات مختلفة (الپشيطتا &harr; ترجوم أونكيلوس). تكشف الخيارات التفسيرية بين التقاليد الآرامية.{% else %}Side-by-side comparison of the same passage across corpora (Peshitta OT &harr; Targum Onkelos). Reveals interpretive choices between Aramaic traditions.{% endif %}</p>
+            </div>
+
+            {# Heat Map #}
+            <div class="feature-card">
+                <h4>{% if lang == 'es' %}Mapa de calor de ra&iacute;ces{% elif lang == 'he' %}מפת חום שורשים{% elif lang == 'ar' %}خريطة حرارة الجذور{% else %}Root Frequency Heat Map{% endif %}</h4>
+                <p>{% if lang == 'es' %}Tabla ordenable de frecuencia de ra&iacute;ces en todos los corpus con filtro, exportaci&oacute;n a CSV/JSON. Revela patrones de distribuci&oacute;n: ra&iacute;ces panarameas frente a las espec&iacute;ficas de un corpus.{% elif lang == 'he' %}טבלה ניתנת למיון של תדירות שורשים בכל הקורפוסים עם סינון וייצוא ל-CSV/JSON. חושפת דפוסי תפוצה: שורשים כל-ארמיים לעומת ספציפיים לקורפוס.{% elif lang == 'ar' %}جدول قابل للفرز لتواتر الجذور عبر كل المدوّنات مع تصفية وتصدير إلى CSV/JSON. يكشف أنماط التوزيع: جذور عابرة للآرامية مقابل جذور خاصة بمدوّنة واحدة.{% else %}Sortable table of root frequency across all corpora with filter and CSV/JSON export. Reveals distribution patterns: pan-Aramaic roots versus corpus-specific ones.{% endif %}</p>
+            </div>
+
+            {# KWIC Search #}
+            <div class="feature-card">
+                <h4>{% if lang == 'es' %}B&uacute;squeda KWIC{% elif lang == 'he' %}חיפוש KWIC{% elif lang == 'ar' %}بحث KWIC{% else %}KWIC Search{% endif %}</h4>
+                <p>{% if lang == 'es' %}Palabra clave en contexto: haga clic en una referencia para ver la palabra resaltada en su contexto textual inmediato, con transliteraci&oacute;n y traducci&oacute;n.{% elif lang == 'he' %}מילת מפתח בהקשר: לחצו על הפניה כדי לראות את המילה מודגשת בהקשר הטקסטואלי הישיר שלה, עם תעתיק ותרגום.{% elif lang == 'ar' %}الكلمة المفتاحية في سياقها: انقر على إحالة لرؤية الكلمة مُعلَّمة في سياقها النصي المباشر، مع الكتابة الصوتية والترجمة.{% else %}Key Word In Context: click a verse reference to see the word highlighted in its immediate textual context, with transliteration and translation.{% endif %}</p>
+            </div>
+
+            {# Quadrilingual UI #}
+            <div class="feature-card">
+                <h4>{% if lang == 'es' %}Interfaz cuadriling&uuml;e{% elif lang == 'he' %}ממשק ארבע-לשוני{% elif lang == 'ar' %}واجهة رباعية اللغة{% else %}Quadrilingual UI{% endif %}</h4>
+                <p>{% if lang == 'es' %}Interfaz completa en ingl&eacute;s, espa&ntilde;ol, hebreo y &aacute;rabe con soporte RTL. Cuatro pistas de traducci&oacute;n para la visualizaci&oacute;n de vers&iacute;culos.{% elif lang == 'he' %}ממשק מלא באנגלית, ספרדית, עברית וערבית עם תמיכה ב-RTL. ארבעה ערוצי תרגום להצגת פסוקים.{% elif lang == 'ar' %}واجهة كاملة بالإنجليزية والإسبانية والعبرية والعربية مع دعم الكتابة من اليمين لليسار. أربعة مسارات ترجمة لعرض الآيات.{% else %}Full interface in English, Spanish, Hebrew, and Arabic with RTL support. Four translation tracks for verse display.{% endif %}</p>
+            </div>
+
+            {# Script & Font Options #}
+            <div class="feature-card">
+                <h4>{% if lang == 'es' %}Escritura y tipograf&iacute;a{% elif lang == 'he' %}כתב וגופנים{% elif lang == 'ar' %}الخط والحروف{% else %}Script &amp; Font Options{% endif %}</h4>
+                <p>{% if lang == 'es' %}Transliteraci&oacute;n en lat&iacute;n, siríaco, hebreo o &aacute;rabe. Tres estilos de tipograf&iacute;a siríaca: Estrangela (cl&aacute;sico), Oriental (Madn&#x1E25;&#x0101;y&#x0101;), Occidental (Ser&#x1E6D;o).{% elif lang == 'he' %}תעתיק בלטינית, סורית, עברית או ערבית. שלושה סגנונות גופן סורי: אסטרנגלא (קלאסי), מזרחי (מדנחאיא), מערבי (סרטו).{% elif lang == 'ar' %}كتابة صوتية بالحرف اللاتيني أو السرياني أو العبري أو العربي. ثلاثة أنماط خط سرياني: إسطرنجيلا (كلاسيكي)، شرقي (مَدنحايا)، غربي (سِرطو).{% else %}Transliteration in Latin, Syriac, Hebrew, or Arabic script. Three Syriac font styles: Estrangela (classical), Eastern (Madn&#x1E25;&#x0101;y&#x0101;), Western (Ser&#x1E6D;o).{% endif %}</p>
+            </div>
+
+        </div>
+
+        {# ── 6. RESEARCH APPLICATIONS ── #}
+
+        <h2>{% if lang == 'es' %}Aplicaciones para la investigaci&oacute;n{% elif lang == 'he' %}יישומים מחקריים{% elif lang == 'ar' %}التطبيقات البحثية{% else %}Research Applications{% endif %}</h2>
+
+        <ul class="use-case-list">
+        {% if lang == 'es' %}
+
+            <li><strong>Sem&iacute;tica comparada</strong> &mdash; Rastree una ra&iacute;z como SH-L-M a trav&eacute;s del siríaco, hebreo y &aacute;rabe para estudiar la deriva sem&aacute;ntica. La tarjeta de cognados muestra c&oacute;mo &laquo;paz/plenitud&raquo; se relaciona con &laquo;isl&#x0101;m&raquo; y &laquo;muslim&raquo; en &aacute;rabe.</li>
+            <li><strong>T&eacute;cnica de traducci&oacute;n</strong> &mdash; Use el visor paralelo para comparar c&oacute;mo la Peshitta y el T&aacute;rgum Onkelos traducen el mismo texto hebreo, revelando decisiones interpretativas en tiempo real.</li>
+            <li><strong>Distribuci&oacute;n l&eacute;xica</strong> &mdash; El mapa de calor revela qu&eacute; ra&iacute;ces son panarameas (atestiguadas en los 4 corpus) frente a las espec&iacute;ficas de un corpus. Exporte a CSV para an&aacute;lisis estad&iacute;stico.</li>
+            <li><strong>Frecuencia de ra&iacute;ces</strong> &mdash; An&aacute;lisis cuantitativo de la frecuencia de ra&iacute;ces seg&uacute;n g&eacute;neros literarios (Tor&aacute; vs. Profetas vs. ep&iacute;stolas del NT).</li>
+            <li><strong>Morfolog&iacute;a diacr&oacute;nica</strong> &mdash; Compare patrones de afijos entre el arameo b&iacute;blico (s. V a.&thinsp;C.) y el siríaco de la Peshitta (ss. II&ndash;V d.&thinsp;C.), visibles a trav&eacute;s de la tabla de formas l&eacute;xicas.</li>
+            <li><strong>Preparaci&oacute;n de homil&iacute;as</strong> &mdash; El clero que trabaja en tradiciones lit&uacute;rgicas siríacas puede explorar significados radicales, cognados y referencias cruzadas para enriquecer la reflexi&oacute;n teol&oacute;gica.</li>
+            <li><strong>Herramienta pedag&oacute;gica</strong> &mdash; Los estudiantes de arameo y siríaco pueden usar los resultados KWIC y el visualizador para construir vocabulario mediante familias de ra&iacute;ces en lugar de palabras aisladas.</li>
+
+        {% elif lang == 'he' %}
+
+            <li><strong>שמיות השוואתית</strong> &mdash; עקבו אחר שורש כמו SH-L-M דרך הסורית, העברית והערבית כדי לחקור סחיפה סמנטית. כרטיס הקוגנטים מראה כיצד &laquo;שלום/שלמות&raquo; מתקשר ל-&laquo;אסלאם&raquo; ו-&laquo;מוסלם&raquo; בערבית.</li>
+            <li><strong>טכניקת תרגום</strong> &mdash; השתמשו במציג המקביל כדי להשוות כיצד הפשיטתא ותרגום אונקלוס מתרגמים את אותו מקור עברי, וחשפו בחירות פרשניות בזמן אמת.</li>
+            <li><strong>תפוצה לקסיקלית</strong> &mdash; מפת החום חושפת אילו שורשים הם כל-ארמיים (מעידים בכל 4 הקורפוסים) לעומת ספציפיים לקורפוס. ייצאו ל-CSV לניתוח סטטיסטי.</li>
+            <li><strong>חקר תדירות שורשים</strong> &mdash; ניתוח כמותי של תדירות שורשים לפי ז'אנרים ספרותיים (תורה מול נביאים מול איגרות הברית החדשה).</li>
+            <li><strong>מורפולוגיה דיאכרונית</strong> &mdash; השוו דפוסי ניתוח בין הארמית המקראית (המאה ה-5 לפנה"ס) לסורית הפשיטתא (המאות 2&ndash;5 לספירה), הנראים דרך טבלת הצורות הלקסיקליות.</li>
+            <li><strong>הכנת דרשות</strong> &mdash; אנשי דת העובדים במסורות ליטורגיות סוריות יכולים לחקור משמעויות שורשיות, קוגנטים והפניות צולבות כדי להעשיר את ההגות התיאולוגית.</li>
+            <li><strong>כלי הוראה</strong> &mdash; תלמידי ארמית וסורית יכולים להשתמש בתוצאות KWIC ובמחזיר כדי לבנות אוצר מילים דרך משפחות שורשים במקום מילים בודדות.</li>
+
+        {% elif lang == 'ar' %}
+
+            <li><strong>الساميات المقارنة</strong> &mdash; تتبّعوا جذراً مثل SH-L-M عبر السريانية والعبرية والعربية لدراسة الانزياح الدلالي. بطاقة المشتركات تُظهر كيف يرتبط &laquo;سلام/كمال&raquo; بـ&laquo;إسلام&raquo; و&laquo;مسلم&raquo; في العربية.</li>
+            <li><strong>تقنية الترجمة</strong> &mdash; استخدموا العارض المتوازي لمقارنة كيف تترجم الپشيطتا وترجوم أونكيلوس النص العبري ذاته، كاشفين الخيارات التفسيرية في الوقت الحقيقي.</li>
+            <li><strong>التوزيع المعجمي</strong> &mdash; تكشف خريطة الحرارة أيّ الجذور عابرة للآرامية (مشهودة في المدوّنات الأربع) مقابل الخاصة بمدوّنة واحدة. صدّروا إلى CSV للتحليل الإحصائي.</li>
+            <li><strong>دراسات تواتر الجذور</strong> &mdash; تحليل كمّي لتواتر الجذور حسب الأنواع الأدبية (التوراة مقابل الأنبياء مقابل رسائل العهد الجديد).</li>
+            <li><strong>الصرف التاريخي</strong> &mdash; قارنوا أنماط الزوائد بين الآرامية التوراتية (القرن 5 ق.م.) والسريانية الپشيطتانية (القرنان 2&ndash;5 م.) عبر جدول الصيغ المعجمية.</li>
+            <li><strong>إعداد الخُطب</strong> &mdash; يمكن لرجال الدين العاملين في التقاليد الليتورجية السريانية استكشاف المعاني الجذرية والمشتركات والإحالات المتقاطعة لإثراء التأمل اللاهوتي.</li>
+            <li><strong>أداة تعليمية</strong> &mdash; يمكن لطلاب الآرامية والسريانية استخدام نتائج KWIC والعارض لبناء المفردات عبر عائلات الجذور بدلاً من الكلمات المعزولة.</li>
+
+        {% else %}
+
+            <li><strong>Comparative Semitics</strong> &mdash; Trace a root like SH-L-M across Syriac, Hebrew, and Arabic to study semantic drift. The cognate card shows how "peace/wholeness" maps to Arabic "isl&#x0101;m" and "muslim."</li>
+            <li><strong>Translation Technique</strong> &mdash; Use the parallel viewer to compare how the Peshitta and Targum Onkelos translate the same Hebrew source, revealing interpretive choices in real time.</li>
+            <li><strong>Lexical Distribution</strong> &mdash; The heat map reveals which roots are pan-Aramaic (attested across all 4 corpora) versus corpus-specific. Export to CSV for statistical analysis.</li>
+            <li><strong>Root Frequency Studies</strong> &mdash; Quantitative analysis of root frequency across literary genres (Torah vs. Prophets vs. NT epistles).</li>
+            <li><strong>Diachronic Morphology</strong> &mdash; Compare affix patterns between Biblical Aramaic (5th c. BCE) and Peshitta Syriac (2nd&ndash;5th c. CE), visible through the word forms table.</li>
+            <li><strong>Sermon &amp; Homily Preparation</strong> &mdash; Clergy working in Syriac liturgical traditions can explore root meanings, cognates, and cross-references to enrich theological reflection.</li>
+            <li><strong>Teaching Tool</strong> &mdash; Students of Aramaic and Syriac can use KWIC results and the visualizer to build vocabulary through root families rather than isolated words.</li>
+
+        {% endif %}
+        </ul>
+
+        {# ── 7. DATA SOURCES & LICENSES ── #}
+
+        <h2>{% if lang == 'es' %}Fuentes de datos y licencias{% elif lang == 'he' %}מקורות נתונים ורישיונות{% elif lang == 'ar' %}مصادر البيانات والرُخص{% else %}Data Sources &amp; Licenses{% endif %}</h2>
+
+        <div class="about-table-wrap">
+        <table class="about-table">
+            <thead>
+                <tr>
+                    <th>{% if lang == 'es' %}Recurso{% elif lang == 'he' %}משאב{% elif lang == 'ar' %}المورد{% else %}Resource{% endif %}</th>
+                    <th>{% if lang == 'es' %}Licencia{% elif lang == 'he' %}רישיון{% elif lang == 'ar' %}الرخصة{% else %}License{% endif %}</th>
+                    <th>{% if lang == 'es' %}Uso{% elif lang == 'he' %}שימוש{% elif lang == 'ar' %}الاستخدام{% else %}Usage{% endif %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{% if lang == 'es' %}Peshitta OT (ETCBC / Leiden){% elif lang == 'he' %}פשיטתא תנ"ך (ETCBC / ליידן){% elif lang == 'ar' %}الپشيطتا ع.ق. (ETCBC / لايدن){% else %}Peshitta OT (ETCBC / Leiden){% endif %}</td>
+                    <td>CC-BY-NC</td>
+                    <td>{% if lang == 'es' %}Tiempo de ejecuci&oacute;n{% elif lang == 'he' %}זמן ריצה{% elif lang == 'ar' %}وقت التشغيل{% else %}Runtime{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% if lang == 'es' %}Arameo b&iacute;blico (WLC / Sefaria){% elif lang == 'he' %}ארמית מקראית (WLC / ספריא){% elif lang == 'ar' %}الآرامية التوراتية (WLC / Sefaria){% else %}Biblical Aramaic (WLC / Sefaria){% endif %}</td>
+                    <td>CC-BY-SA</td>
+                    <td>{% if lang == 'es' %}Tiempo de ejecuci&oacute;n{% elif lang == 'he' %}זמן ריצה{% elif lang == 'ar' %}وقت التشغيل{% else %}Runtime{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% if lang == 'es' %}T&aacute;rgum Onkelos (Sefaria){% elif lang == 'he' %}תרגום אונקלוס (ספריא){% elif lang == 'ar' %}ترجوم أونكيلوس (Sefaria){% else %}Targum Onkelos (Sefaria){% endif %}</td>
+                    <td>CC-BY-SA</td>
+                    <td>{% if lang == 'es' %}Tiempo de ejecuci&oacute;n{% elif lang == 'he' %}זמן ריצה{% elif lang == 'ar' %}وقت التشغيل{% else %}Runtime{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% if lang == 'es' %}Traducciones (WEB, RV1909, WLC, Van Dyck){% elif lang == 'he' %}תרגומים (WEB, RV1909, WLC, Van Dyck){% elif lang == 'ar' %}الترجمات (WEB، RV1909، WLC، Van Dyck){% else %}Translations (WEB, RV1909, WLC, Van Dyck){% endif %}</td>
+                    <td>{% if lang == 'es' %}Dominio p&uacute;blico{% elif lang == 'he' %}נחלת הכלל{% elif lang == 'ar' %}ملك عام{% else %}Public Domain{% endif %}</td>
+                    <td>{% if lang == 'es' %}Tiempo de ejecuci&oacute;n{% elif lang == 'he' %}זמן ריצה{% elif lang == 'ar' %}وقت التشغيل{% else %}Runtime{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% if lang == 'es' %}Noto Sans Syriac{% elif lang == 'he' %}Noto Sans Syriac{% elif lang == 'ar' %}Noto Sans Syriac{% else %}Noto Sans Syriac{% endif %}</td>
+                    <td>OFL-1.1</td>
+                    <td>{% if lang == 'es' %}Tiempo de ejecuci&oacute;n (CDN){% elif lang == 'he' %}זמן ריצה (CDN){% elif lang == 'ar' %}وقت التشغيل (CDN){% else %}Runtime (CDN){% endif %}</td>
+                </tr>
+                <tr>
+                    <td>D3.js</td>
+                    <td>ISC</td>
+                    <td>{% if lang == 'es' %}Tiempo de ejecuci&oacute;n (CDN){% elif lang == 'he' %}זמן ריצה (CDN){% elif lang == 'ar' %}وقت التشغيل (CDN){% else %}Runtime (CDN){% endif %}</td>
+                </tr>
+                <tr>
+                    <td>bible.helloao.org</td>
+                    <td>&mdash;</td>
+                    <td>{% if lang == 'es' %}Solo pipeline{% elif lang == 'he' %}צנרת בלבד{% elif lang == 'ar' %}خط الإنتاج فقط{% else %}Pipeline only{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>Sefaria API</td>
+                    <td>CC-BY-SA</td>
+                    <td>{% if lang == 'es' %}Solo pipeline{% elif lang == 'he' %}צנרת בלבד{% elif lang == 'ar' %}خط الإنتاج فقط{% else %}Pipeline only{% endif %}</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+
+        {# ── 8. TECHNICAL NOTES ── #}
+
+        <h2>{% if lang == 'es' %}Notas t&eacute;cnicas{% elif lang == 'he' %}הערות טכניות{% elif lang == 'ar' %}ملاحظات تقنية{% else %}Technical Notes{% endif %}</h2>
+
+        {% if lang == 'es' %}
+
+        <p>Todos los datos se cargan al inicio desde archivos CSV y JSON locales &mdash; no hay dependencias de API en tiempo de ejecuci&oacute;n. La aplicaci&oacute;n est&aacute; construida con Flask (Python) y D3.js, con JavaScript vanilla para la interfaz. Las tipograf&iacute;as siríacas se proporcionan mediante la familia Noto Sans Syriac (OFL-1.1) a trav&eacute;s de Google Fonts.</p>
+        <p>C&oacute;digo fuente: <a href="https://github.com/Jossifresben/aramaic-root-atlas" target="_blank" rel="noopener">github.com/Jossifresben/aramaic-root-atlas</a></p>
+
+        {% elif lang == 'he' %}
+
+        <p>כל הנתונים נטענים בעת ההפעלה מקבצי CSV ו-JSON מקומיים &mdash; אין תלויות API בזמן ריצה. האפליקציה בנויה עם Flask (Python) ו-D3.js, עם JavaScript ונילה לממשק. גופני הסורית מסופקים באמצעות משפחת Noto Sans Syriac (OFL-1.1) דרך Google Fonts.</p>
+        <p>קוד מקור: <a href="https://github.com/Jossifresben/aramaic-root-atlas" target="_blank" rel="noopener">github.com/Jossifresben/aramaic-root-atlas</a></p>
+
+        {% elif lang == 'ar' %}
+
+        <p>تُحمَّل جميع البيانات عند بدء التشغيل من ملفات CSV وJSON محلية &mdash; لا توجد تبعيات واجهات برمجة تطبيقات أثناء التشغيل. بُنيت التطبيق بـ Flask (Python) وD3.js، مع JavaScript صرف للواجهة. تُوفَّر خطوط السريانية عبر عائلة Noto Sans Syriac (OFL-1.1) من Google Fonts.</p>
+        <p>الكود المصدري: <a href="https://github.com/Jossifresben/aramaic-root-atlas" target="_blank" rel="noopener">github.com/Jossifresben/aramaic-root-atlas</a></p>
+
+        {% else %}
+
+        <p>All data is loaded at startup from local CSV and JSON files &mdash; there are no runtime API dependencies. The application is built with Flask (Python) and D3.js, with vanilla JavaScript for the frontend. Syriac fonts are provided by the Noto Sans Syriac family (OFL-1.1) via Google Fonts.</p>
+        <p>Source code: <a href="https://github.com/Jossifresben/aramaic-root-atlas" target="_blank" rel="noopener">github.com/Jossifresben/aramaic-root-atlas</a></p>
+
+        {% endif %}
+
+        {# ── CREDIT ── #}
+
+        <div class="about-credit">
+            <p>{% if lang == 'es' %}Creado por <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a>.{% elif lang == 'he' %}נוצר על ידי <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a>.{% elif lang == 'ar' %}أنشأه <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a>.{% else %}Created by <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a>.{% endif %}</p>
+            <p>{% if lang == 'es' %}V&eacute;ase tambi&eacute;n el <a href="https://peshitta.onrender.com" target="_blank" rel="noopener">Peshitta Root Finder</a> &mdash; una herramienta enfocada para explorar ra&iacute;ces en el Nuevo Testamento siríaco.{% elif lang == 'he' %}ראו גם את <a href="https://peshitta.onrender.com" target="_blank" rel="noopener">Peshitta Root Finder</a> &mdash; כלי ממוקד לחקירת שורשים בברית החדשה הסורית.{% elif lang == 'ar' %}انظر أيضاً <a href="https://peshitta.onrender.com" target="_blank" rel="noopener">Peshitta Root Finder</a> &mdash; أداة مخصّصة لاستكشاف الجذور في العهد الجديد السرياني.{% else %}See also the <a href="https://peshitta.onrender.com" target="_blank" rel="noopener">Peshitta Root Finder</a> &mdash; a focused tool for exploring roots in the Syriac New Testament.{% endif %}</p>
+        </div>
+
+    </div>
 </div>
 {% endblock %}
