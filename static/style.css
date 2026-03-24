@@ -1348,6 +1348,10 @@ body {
 
 .ficha-word-arabic { font-family: 'Noto Sans Arabic', serif; direction: rtl; }
 
+.cell-arabic { text-align: right; direction: rtl; }
+.cell-arabic .ficha-translit,
+.cell-arabic .ficha-meaning { direction: ltr; text-align: right; }
+
 .ficha-translit {
     display: block;
     font-size: 0.85em;
