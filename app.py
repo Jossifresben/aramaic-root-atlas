@@ -70,6 +70,10 @@ def _init():
         if os.path.exists(ot_path):
             _corpus.add_corpus('peshitta_ot', 'Peshitta OT', ot_path)
 
+        ba_path = os.path.join(CORPORA_DIR, 'biblical_aramaic.csv')
+        if os.path.exists(ba_path):
+            _corpus.add_corpus('biblical_aramaic', 'Biblical Aramaic', ba_path)
+
         _corpus.load()
 
         # Build root index
@@ -105,11 +109,26 @@ def _get_trans() -> str:
     return t if t in VALID_TRANS else _get_lang()
 
 
+class TranslationProxy:
+    """Supports both t('key') function calls and t.key attribute access."""
+    def __init__(self, lang_fn):
+        object.__setattr__(self, '_lang_fn', lang_fn)
+
+    def __call__(self, key, lang=None):
+        if lang is None:
+            lang = self._lang_fn()
+        return _i18n.get(lang, {}).get(key, _i18n.get('en', {}).get(key, key))
+
+    def __getattr__(self, key):
+        return self(key)
+
+
+_t_proxy = TranslationProxy(_get_lang)
+
+
 def _t(key: str, lang: str | None = None) -> str:
     """Translate a UI string."""
-    if lang is None:
-        lang = _get_lang()
-    return _i18n.get(lang, {}).get(key, _i18n.get('en', {}).get(key, key))
+    return _t_proxy(key, lang)
 
 
 def _bn(book: str, lang: str | None = None) -> str:
@@ -143,7 +162,7 @@ def index():
     book_names = _i18n.get(lang, {}).get('book_names', {})
     return render_template('index.html',
                            lang=lang, script=_get_script(), trans=_get_trans(),
-                           t=_t, bn=_bn,
+                           t=_t_proxy, bn=_bn,
                            book_names_json=json.dumps(book_names, ensure_ascii=False),
                            corpora=corpora_info,
                            root_count=_extractor.get_root_count(),
@@ -220,12 +239,26 @@ def api_roots():
             'gloss_es': _glosser.gloss(m.form, root_syriac, 'es'),
         })
 
+    # Cross-corpus attestation counts
+    corpus_counts = {}
+    for m in entry.matches:
+        for ref in m.references:
+            cid = _corpus.get_verse_corpus(ref)
+            corpus_counts[cid] = corpus_counts.get(cid, 0) + 1
+
+    # Root display forms in different scripts
+    root_display = _extractor.get_root_display(root_syriac)
+    root_scripts = list(_extractor.get_root_scripts(root_syriac))
+
     result = {
         'root': root_syriac,
         'root_transliteration': entry.root_transliteration,
         'root_academic': transliterate_syriac_academic(root_syriac),
         'total_occurrences': sum(m['count'] for m in matches),
         'matches': matches,
+        'corpus_attestation': corpus_counts,
+        'root_display': root_display,
+        'root_scripts': root_scripts,
     }
 
     if cognate:
@@ -307,7 +340,7 @@ def browse():
     corpus_filter = request.args.get('corpus', None)
     books = _corpus.get_books(corpus_filter)
     return render_template('browse.html', lang=lang, script=_get_script(), trans=_get_trans(),
-                           t=_t, bn=_bn, books=books, corpus_filter=corpus_filter)
+                           t=_t_proxy, bn=_bn, books=books, corpus_filter=corpus_filter)
 
 
 @app.route('/read/<path:book>/<int:chapter>')
@@ -335,14 +368,14 @@ def read(book, chapter):
             max_ch = b_ch
             break
     return render_template('read.html', lang=lang, script=_get_script(), trans=trans,
-                           t=_t, bn=_bn, book=book, chapter=chapter,
+                           t=_t_proxy, bn=_bn, book=book, chapter=chapter,
                            verses=verse_data, books=books, max_ch=max_ch)
 
 
 @app.route('/about')
 def about():
     lang = _get_lang()
-    return render_template('about.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t, bn=_bn)
+    return render_template('about.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn)
 
 
 @app.route('/api/verse')
@@ -418,6 +451,312 @@ def api_suggest():
                 break
 
     return jsonify(results)
+
+
+def _get_translit_fn(script: str):
+    """Return the transliteration function for a script type."""
+    if script == 'syriac':
+        return lambda w: w  # identity
+    elif script == 'hebrew':
+        return transliterate_syriac_to_hebrew
+    elif script == 'arabic':
+        return transliterate_syriac_to_arabic
+    else:
+        return transliterate_syriac
+
+
+@app.route('/api/proximity-search')
+def api_proximity_search():
+    """Find verses where two roots co-occur."""
+    root1_str = request.args.get('root1', '').strip()
+    root2_str = request.args.get('root2', '').strip()
+    scope = request.args.get('scope', 'verse')
+    lang = _get_lang()
+    trans = _get_trans()
+    corpus_filter = request.args.get('corpus', None)
+
+    if not root1_str or not root2_str:
+        return jsonify({'error': 'Two roots required'}), 400
+
+    root1_syriac = parse_root_input(root1_str)
+    root2_syriac = parse_root_input(root2_str)
+    if not root1_syriac or not root2_syriac:
+        return jsonify({'error': 'Invalid root input'}), 400
+
+    entry1 = _extractor.lookup_root(root1_syriac)
+    entry2 = _extractor.lookup_root(root2_syriac)
+
+    # Try sound correspondence fallback
+    if not entry1:
+        for v in semitic_root_variants(root1_syriac):
+            entry1 = _extractor.lookup_root(v)
+            if entry1:
+                root1_syriac = v
+                break
+    if not entry2:
+        for v in semitic_root_variants(root2_syriac):
+            entry2 = _extractor.lookup_root(v)
+            if entry2:
+                root2_syriac = v
+                break
+
+    if not entry1 or not entry2:
+        missing = root1_str if not entry1 else root2_str
+        return jsonify({'error': f'Root not found: {missing}', 'results': []})
+
+    # Collect references for each root
+    refs1, forms1 = set(), {}
+    for m in entry1.matches:
+        for ref in m.references:
+            if corpus_filter and _corpus.get_verse_corpus(ref) != corpus_filter:
+                continue
+            refs1.add(ref)
+            forms1.setdefault(ref, []).append(m.form)
+
+    refs2, forms2 = set(), {}
+    for m in entry2.matches:
+        for ref in m.references:
+            if corpus_filter and _corpus.get_verse_corpus(ref) != corpus_filter:
+                continue
+            refs2.add(ref)
+            forms2.setdefault(ref, []).append(m.form)
+
+    if scope == 'chapter':
+        def ref_to_chapter(r):
+            parts = r.rsplit(' ', 1)
+            if len(parts) == 2:
+                cv = parts[1].split(':')
+                return f'{parts[0]} {cv[0]}'
+            return r
+        ch1 = set(ref_to_chapter(r) for r in refs1)
+        ch2 = set(ref_to_chapter(r) for r in refs2)
+        common_chapters = sorted(ch1 & ch2)
+        return jsonify({
+            'root1': _translit_to_dash(root1_syriac),
+            'root2': _translit_to_dash(root2_syriac),
+            'scope': scope,
+            'count': len(common_chapters),
+            'results': [{'ref': ch, 'type': 'chapter'} for ch in common_chapters[:50]],
+        })
+
+    # Same verse
+    script = _get_script()
+    translit_fn = _get_translit_fn(script)
+
+    common = sorted(refs1 & refs2)
+    results = []
+    for ref in common[:100]:
+        text = _corpus.get_verse_text(ref) or ''
+        translit = ' '.join(translit_fn(w) for w in text.split()) if text else ''
+        translation = _corpus.get_verse_translation(ref, trans) or ''
+        results.append({
+            'ref': ref,
+            'syriac': text,
+            'translit': translit,
+            'translation': translation[:200],
+            'forms1': list(set(forms1.get(ref, []))),
+            'forms2': list(set(forms2.get(ref, []))),
+            'corpus_id': _corpus.get_verse_corpus(ref),
+        })
+
+    cognate1 = _cognate_lookup.lookup(root1_syriac)
+    cognate2 = _cognate_lookup.lookup(root2_syriac)
+    gloss_key = 'gloss_es' if lang == 'es' else 'gloss_en'
+
+    return jsonify({
+        'root1': _translit_to_dash(root1_syriac),
+        'root2': _translit_to_dash(root2_syriac),
+        'root1_syriac': root1_syriac,
+        'root2_syriac': root2_syriac,
+        'gloss1': getattr(cognate1, gloss_key, '') if cognate1 else '',
+        'gloss2': getattr(cognate2, gloss_key, '') if cognate2 else '',
+        'scope': scope,
+        'count': len(common),
+        'results': results,
+    })
+
+
+@app.route('/api/passage-constellation')
+def api_passage_constellation():
+    """Return constellation data for a passage: roots, cognates, and inter-root connections."""
+    book = request.args.get('book', '').strip()
+    chapter = request.args.get('chapter', 0, type=int)
+    v_start = request.args.get('v_start', 0, type=int)
+    v_end = request.args.get('v_end', v_start, type=int)
+    lang = _get_lang()
+    script = _get_script()
+    trans = _get_trans()
+    corpus_filter = request.args.get('corpus', None)
+    meaning_lang = trans if trans in ('es', 'en') else lang
+
+    if not book or not chapter or not v_start:
+        return jsonify({'error': 'Missing book, chapter, or v_start'}), 400
+
+    # Collect verses
+    verses = []
+    translit_fn = _get_translit_fn(script)
+    for v_num in range(v_start, v_end + 1):
+        ref = f"{book} {chapter}:{v_num}"
+        syriac_text = _corpus.get_verse_text(ref)
+        if syriac_text is None:
+            continue
+        if corpus_filter and _corpus.get_verse_corpus(ref) != corpus_filter:
+            continue
+        words = syriac_text.split()
+        verse_words = []
+        for w in words:
+            root = _extractor.lookup_word_root(w)
+            root_translit = _translit_to_dash(root) if root else None
+            verse_words.append({
+                'syriac': w,
+                'translit': translit_fn(w),
+                'root': root_translit,
+                'root_syriac': root,
+            })
+        translation = _corpus.get_verse_translation(ref, trans) or \
+                      _corpus.get_verse_translation(ref, 'en') or ''
+        verses.append({
+            'ref': ref,
+            'verse_num': v_num,
+            'words': verse_words,
+            'translation': translation,
+        })
+
+    if not verses:
+        return jsonify({'error': 'No verses found'}), 404
+
+    # Collect unique roots
+    root_map = {}
+    for v in verses:
+        for w in v['words']:
+            rt = w['root']
+            if not rt:
+                continue
+            if rt not in root_map:
+                root_map[rt] = {
+                    'root_syriac': w['root_syriac'],
+                    'root_translit': rt,
+                    'word_forms': [],
+                    'count': 0,
+                }
+            root_map[rt]['count'] += 1
+            form_key = w['syriac']
+            existing = [f for f in root_map[rt]['word_forms'] if f['syriac'] == form_key]
+            if not existing:
+                root_map[rt]['word_forms'].append({
+                    'syriac': w['syriac'],
+                    'translit': w['translit'],
+                })
+
+    # Build root data with cognates
+    roots_data = []
+    for rt, info in root_map.items():
+        root_syriac = info['root_syriac']
+        cognate_entry = _cognate_lookup.lookup(root_syriac)
+
+        gloss = ''
+        if cognate_entry:
+            gloss = cognate_entry.gloss_es if meaning_lang == 'es' else cognate_entry.gloss_en
+        if not gloss:
+            gloss = _extractor.get_root_gloss(root_syriac)
+
+        hebrew, arabic, bridges_raw = [], [], []
+        if cognate_entry:
+            for hw in cognate_entry.hebrew:
+                hebrew.append({
+                    'word': hw.word, 'translit': hw.transliteration,
+                    'meaning': hw.meaning_es if meaning_lang == 'es' else hw.meaning_en,
+                    'outlier': hw.outlier,
+                })
+            for aw in cognate_entry.arabic:
+                arabic.append({
+                    'word': aw.word, 'translit': aw.transliteration,
+                    'meaning': aw.meaning_es if meaning_lang == 'es' else aw.meaning_en,
+                    'outlier': aw.outlier,
+                })
+            if cognate_entry.semantic_bridges:
+                for b in cognate_entry.semantic_bridges:
+                    bridges_raw.append({
+                        'target_root': b.target_root,
+                        'bridge_concept': b.bridge_concept_es if meaning_lang == 'es' else b.bridge_concept_en,
+                    })
+
+        roots_data.append({
+            'root_translit': rt,
+            'root_syriac': root_syriac,
+            'gloss': gloss,
+            'frequency': info['count'],
+            'word_forms': info['word_forms'],
+            'hebrew': hebrew,
+            'arabic': arabic,
+            'bridges': bridges_raw,
+        })
+
+    roots_data.sort(key=lambda r: -r['frequency'])
+
+    # Detect inter-root connections
+    connections = []
+    passage_root_translits = {r['root_translit'] for r in roots_data}
+    seen_connections = set()
+    for rd in roots_data:
+        for b in rd.get('bridges', []):
+            target_key = b['target_root']
+            target_translit = target_key.upper().replace('A-', "'-", 1) if target_key.startswith('a-') else target_key.upper()
+            if target_translit in passage_root_translits:
+                conn_key = tuple(sorted([rd['root_translit'], target_translit]))
+                if conn_key not in seen_connections:
+                    seen_connections.add(conn_key)
+                    connections.append({
+                        'source': rd['root_translit'],
+                        'target': target_translit,
+                        'concept': b['bridge_concept'],
+                    })
+
+    # Sister roots (2+ shared consonants)
+    root_translits = list(passage_root_translits)
+    for i in range(len(root_translits)):
+        for j in range(i + 1, len(root_translits)):
+            r1_parts = root_translits[i].split('-')
+            r2_parts = root_translits[j].split('-')
+            if len(r1_parts) >= 2 and len(r2_parts) >= 2:
+                shared = sum(1 for a, b in zip(r1_parts, r2_parts) if a == b)
+                if shared >= 2:
+                    conn_key = tuple(sorted([root_translits[i], root_translits[j]]))
+                    if conn_key not in seen_connections:
+                        seen_connections.add(conn_key)
+                        label = ('Raíces hermanas' if meaning_lang == 'es' else 'Sister roots') + \
+                                f' ({shared}/{max(len(r1_parts), len(r2_parts))})'
+                        connections.append({
+                            'source': root_translits[i],
+                            'target': root_translits[j],
+                            'concept': label,
+                            'type': 'sister',
+                        })
+
+    book_display = _bn(book, lang)
+    ref_display = f"{book_display} {chapter}:{v_start}" if v_start == v_end else f"{book_display} {chapter}:{v_start}-{v_end}"
+
+    return jsonify({
+        'reference': ref_display,
+        'verses': verses,
+        'roots': roots_data,
+        'connections': connections,
+        'total_roots': len(roots_data),
+    })
+
+
+@app.route('/constellation')
+def constellation():
+    """Passage constellation visualization page."""
+    lang = _get_lang()
+    book = request.args.get('book', 'Matthew')
+    chapter = request.args.get('chapter', '1')
+    v_start = request.args.get('v_start', '1')
+    v_end = request.args.get('v_end', '5')
+    books = _corpus.get_books()
+    return render_template('constellation.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn, books=books,
+                           book=book, chapter=chapter, v_start=v_start, v_end=v_end)
 
 
 if __name__ == '__main__':

@@ -171,13 +171,28 @@ document.getElementById('rootSearchForm').addEventListener('submit', async (e) =
     const gloss = c.gloss_es && lang === 'es' ? c.gloss_es : (c.gloss_en || '');
 
     // --- Root Header Banner ---
+    const disp = data.root_display || {};
+    const att = data.corpus_attestation || {};
     let html = `<div class="root-card">
     <div class="root-header-banner">
         <div class="root-header-top">
-            <span class="root-syriac-lg">${data.root}</span>
-            <span class="root-latin-lg">${data.root_transliteration}</span>
+            <span class="root-syriac-lg">${data.root}</span>`;
+    if (disp.hebrew) html += ` <span class="root-hebrew-lg">${disp.hebrew}</span>`;
+    html += `   <span class="root-latin-lg">${data.root_transliteration}</span>
         </div>`;
     if (gloss) html += `<div class="root-meaning">${gloss}</div>`;
+
+    // Cross-corpus attestation badges
+    const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic'};
+    const corpusKeys = Object.keys(att);
+    if (corpusKeys.length > 0) {
+        html += `<div class="corpus-attestation">`;
+        for (const cid of corpusKeys) {
+            html += `<span class="corpus-badge corpus-${cid}">${corpusLabels[cid] || cid}: ${att[cid]}×</span>`;
+        }
+        html += `</div>`;
+    }
+
     html += `<div class="root-header-nav">
             <button class="root-tab active" data-tab="peshitta" onclick="switchResultTab(this)">Occurrences (${data.total_occurrences})</button>
             <button class="root-tab" data-tab="hebrew" onclick="switchResultTab(this)">Hebrew Cognates</button>

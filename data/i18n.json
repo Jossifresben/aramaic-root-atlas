@@ -339,7 +339,10 @@
     "full_verse": "versículo completo",
     "reader": "lector",
     "error_loading_verse": "Error al cargar el versículo",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "passage_panel": "Pasaje",
+    "visualize": "Visualizar",
+    "proximity_search": "Búsqueda de Proximidad"
   },
   "en": {
     "app_title": "Peshitta Constellations",
@@ -681,7 +684,10 @@
     "full_verse": "full verse",
     "reader": "reader",
     "error_loading_verse": "Error loading verse",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "passage_panel": "Passage",
+    "visualize": "Visualize",
+    "proximity_search": "Proximity Search"
   },
   "he": {
     "app_title": "קונסטלציות הפשיטתא",
@@ -1023,7 +1029,10 @@
     "full_verse": "פסוק מלא",
     "reader": "קורא",
     "error_loading_verse": "שגיאה בטעינת הפסוק",
-    "loading": "טוען..."
+    "loading": "טוען...",
+    "passage_panel": "פסוק",
+    "visualize": "הדמיה",
+    "proximity_search": "חיפוש קרבה"
   },
   "ar": {
     "app_title": "أبراج الپشيطتا",
@@ -1365,6 +1374,9 @@
     "full_verse": "الآية كاملة",
     "reader": "القارئ",
     "error_loading_verse": "خطأ في تحميل الآية",
-    "loading": "جارٍ التحميل..."
+    "loading": "جارٍ التحميل...",
+    "passage_panel": "آية",
+    "visualize": "تصور",
+    "proximity_search": "بحث القرب"
   }
 }

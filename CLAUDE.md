@@ -7,6 +7,7 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - **aramaic_core/** — Shared linguistic engine (zero Flask dependencies)
   - `characters.py` — Syriac/Hebrew/Arabic character maps, transliteration, script detection
   - `affixes.py` — Prefix/suffix stripping rules for Syriac morphological analysis
+  - `affixes_hebrew.py` — Biblical Aramaic affix stripping (Hebrew square script)
   - `corpus.py` — `AramaicCorpus` class: multi-corpus CSV loader with corpus_id filtering
   - `extractor.py` — `RootExtractor`: triliteral root extraction + scoring engine
   - `cognates.py` — `CognateLookup`: Hebrew & Arabic cognate lookup
@@ -15,12 +16,13 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - **templates/** — Jinja2 templates (base, index, browse, read, about)
 - **static/style.css** — CSS with corpus-coded color variables
 - **data/** — Organized subdirectories:
-  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv)
+  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv)
   - `roots/` — cognates.json, known_roots.json, stopwords.json, word_glosses_override.json
   - `translations/` — translations_{en,es,he,ar}.json
 - **scripts/** — Data pipeline scripts
   - `fetch_ot_translations.py` — Fetch OT translations from bible.helloao.org (EN/ES/HE)
   - `generate_new_cognates.py` — Generate cognates for uncovered roots via Claude API
+  - `fetch_biblical_aramaic.py` — Fetch BA corpus from Sefaria API
 - **docs/PRD.md** — Full product requirements document with 4-phase roadmap
 
 ## Current State (Phase 1 — OT Complete)
@@ -44,6 +46,9 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - `GET /api/books?corpus=peshitta_nt` — Book list with optional filter
 - `GET /api/chapter/<book>/<chapter>?trans=es` — Chapter verses with translation
 - `GET /api/search?q=peace&lang=en&corpus=` — Text search across corpora
+- `GET /api/proximity-search?root1=SH-L-M&root2=K-TH-B&scope=verse` — Proximity search
+- `GET /api/passage-constellation?book=Daniel&chapter=2&v_start=4&v_end=10` — Constellation data
+- `GET /constellation?book=Matthew&chapter=5&v_start=1&v_end=5` — Constellation visualization page
 
 ## Run
 ```bash
@@ -58,20 +63,41 @@ python3 app.py  # starts on port 5001
 - Bug fixes can be cherry-picked between repos; formalize shared package later if needed
 
 ## Phase 1 Complete
+- ✅ Full Peshitta OT loaded (39 books, 23,072 verses, 309,889 words)
 - ✅ Cognates generated for 493 new roots (1,127 total; ~2,085 patterns were non-roots)
-- ✅ Arabic translations fetched: Van Dyck (arb_vdv) via bible.helloao.org (30,585 verses)
+- ✅ Translations fetched: EN (WEB), ES (RV1909), HE (WLC), AR (Van Dyck) via bible.helloao.org
 - ✅ Arabic translation track added to reader UI with RTL support
+- ✅ Book names localized in 4 languages (EN/ES/HE/AR, 61 books)
+- ✅ 277 i18n UI keys per language (34 new keys added)
+- ✅ Search with autocomplete, KWIC inline expansion, verse modal with prev/next
+- ✅ Settings panel: transliteration, translation track, Syriac font (Estrangela/Eastern/Western)
+- ✅ Language selector (EN/ES/HE/AR), dark mode, QR sharing
+- ✅ Word highlighting in reader when navigating from search results
+- ✅ Data pipeline scripts: fetch_ot_translations.py, generate_new_cognates.py
 
-## Next Steps (Phase 2 — Biblical Aramaic)
-1. Add Biblical Aramaic corpus (Daniel 2:4b-7:28, Ezra 4:8-6:18) from Sefaria API
-2. Cross-script root normalization (Hebrew square script → shared Latin root key)
-3. Cross-corpus root card (attestation across corpora)
-4. Constellation visualization (D3.js, ported from Peshitta app)
-5. Proximity search (co-occurring roots, ported from Peshitta app)
+## Phase 2 Complete — Biblical Aramaic
+- ✅ Biblical Aramaic corpus loaded (269 verses, 4,880 words from Daniel 2:4b-7:28, Ezra 4:8-6:18, 7:12-26, Genesis 31:47, Jeremiah 10:11)
+- ✅ Cross-script root normalization: Hebrew כתב and Syriac ܟܬܒ resolve to same root key
+- ✅ Hebrew affix stripping module (affixes_hebrew.py) for BA morphological analysis
+- ✅ Cross-corpus attestation in root API (shows counts per corpus: NT, OT, BA)
+- ✅ Root display in multiple scripts (Syriac + Hebrew when both attested)
+- ✅ 4,485 roots indexed (up from 4,299), 57,849 unique word forms
+- ✅ Constellation visualization ported from Peshitta app (D3.js force graph)
+- ✅ Proximity search API ported (co-occurring roots across verse/chapter scope)
+- ✅ 19 new i18n keys added (281 total per language)
+- ✅ Data source: Sefaria API (Westminster Leningrad Codex, CC-BY-SA)
+- ✅ Fetch script: scripts/fetch_biblical_aramaic.py
+
+## Next Steps (Phase 3 — Targums & Beyond)
+1. Add Targum Onkelos corpus (Aramaic translation of Torah)
+2. Synoptic parallel viewer (Peshitta OT ↔ Biblical Aramaic side-by-side)
+3. Full root family visualizer page (ported from Peshitta app)
+4. Root frequency heat map across corpora
+5. Export/download functionality (root data as CSV/JSON)
 
 ## Conventions
 - Syriac text uses Unicode (U+0710-U+074F), stored as-is in CSV
 - Roots are 2-3 character Syriac strings (e.g., ܫܠܡ for SH-L-M)
 - Root keys in cognates.json use Latin transliteration: "sh-l-m"
 - Verse references follow "Book Chapter:Verse" format (e.g., "Psalms 1:1")
-- Bilingual: every user-facing string has EN and ES variants via i18n.json
+- Quadrilingual UI: every user-facing string has EN, ES, HE, AR variants via i18n.json

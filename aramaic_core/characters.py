@@ -388,9 +388,121 @@ def semitic_root_variants(root_syriac: str) -> list[str]:
     return list(variants)
 
 
+# --- Hebrew Consonants ---
+HEBREW_CONSONANTS = frozenset([
+    '\u05D0',  # א Alef
+    '\u05D1',  # ב Bet
+    '\u05D2',  # ג Gimel
+    '\u05D3',  # ד Dalet
+    '\u05D4',  # ה He
+    '\u05D5',  # ו Vav
+    '\u05D6',  # ז Zayin
+    '\u05D7',  # ח Het
+    '\u05D8',  # ט Tet
+    '\u05D9',  # י Yod
+    '\u05DA',  # ך Kaf final
+    '\u05DB',  # כ Kaf
+    '\u05DC',  # ל Lamed
+    '\u05DD',  # ם Mem final
+    '\u05DE',  # מ Mem
+    '\u05DF',  # ן Nun final
+    '\u05E0',  # נ Nun
+    '\u05E1',  # ס Samekh
+    '\u05E2',  # ע Ayin
+    '\u05E3',  # ף Pe final
+    '\u05E4',  # פ Pe
+    '\u05E5',  # ץ Tsadi final
+    '\u05E6',  # צ Tsadi
+    '\u05E7',  # ק Qof
+    '\u05E8',  # ר Resh
+    '\u05E9',  # ש Shin
+    '\u05EA',  # ת Tav
+])
+
+# Hebrew -> Syriac mapping (for cross-script root normalization)
+HEBREW_TO_SYRIAC = {
+    '\u05D0': '\u0710',  # א -> ܐ
+    '\u05D1': '\u0712',  # ב -> ܒ
+    '\u05D2': '\u0713',  # ג -> ܓ
+    '\u05D3': '\u0715',  # ד -> ܕ
+    '\u05D4': '\u0717',  # ה -> ܗ
+    '\u05D5': '\u0718',  # ו -> ܘ
+    '\u05D6': '\u0719',  # ז -> ܙ
+    '\u05D7': '\u071A',  # ח -> ܚ
+    '\u05D8': '\u071B',  # ט -> ܛ
+    '\u05D9': '\u071D',  # י -> ܝ
+    '\u05DA': '\u071F',  # ך -> ܟ (final kaf)
+    '\u05DB': '\u071F',  # כ -> ܟ
+    '\u05DC': '\u0720',  # ל -> ܠ
+    '\u05DD': '\u0721',  # ם -> ܡ (final mem)
+    '\u05DE': '\u0721',  # מ -> ܡ
+    '\u05DF': '\u0722',  # ן -> ܢ (final nun)
+    '\u05E0': '\u0722',  # נ -> ܢ
+    '\u05E1': '\u0723',  # ס -> ܣ
+    '\u05E2': '\u0725',  # ע -> ܥ
+    '\u05E3': '\u0726',  # ף -> ܦ (final pe)
+    '\u05E4': '\u0726',  # פ -> ܦ
+    '\u05E5': '\u0728',  # ץ -> ܨ (final tsadi)
+    '\u05E6': '\u0728',  # צ -> ܨ
+    '\u05E7': '\u0729',  # ק -> ܩ
+    '\u05E8': '\u072A',  # ר -> ܪ
+    '\u05E9': '\u072B',  # ש -> ܫ
+    '\u05EA': '\u072C',  # ת -> ܬ
+}
+
+# Hebrew weak letters (matres lectionis)
+HEBREW_WEAK = frozenset(['\u05D0', '\u05D5', '\u05D9', '\u05D4'])  # א ו י ה
+
+
 def syriac_consonants_of(word: str) -> str:
     """Extract only the Syriac consonant characters from a word."""
     return ''.join(ch for ch in word if ch in SYRIAC_CONSONANTS)
+
+
+def hebrew_consonants_of(word: str) -> str:
+    """Extract only the Hebrew consonant characters from a word.
+    Normalizes final forms to regular forms."""
+    FINAL_TO_REGULAR = {
+        '\u05DA': '\u05DB',  # ך -> כ
+        '\u05DD': '\u05DE',  # ם -> מ
+        '\u05DF': '\u05E0',  # ן -> נ
+        '\u05E3': '\u05E4',  # ף -> פ
+        '\u05E5': '\u05E6',  # ץ -> צ
+    }
+    result = []
+    for ch in word:
+        if ch in HEBREW_CONSONANTS:
+            result.append(FINAL_TO_REGULAR.get(ch, ch))
+    return ''.join(result)
+
+
+def hebrew_to_syriac(text: str) -> str:
+    """Convert Hebrew square script text to Syriac Unicode.
+    Used for cross-script root normalization."""
+    result = []
+    for ch in text:
+        if ch in HEBREW_TO_SYRIAC:
+            result.append(HEBREW_TO_SYRIAC[ch])
+        elif ch == ' ':
+            result.append(' ')
+    return ''.join(result)
+
+
+def normalize_root_to_latin(root_text: str) -> str:
+    """Convert a root in any script (Syriac, Hebrew, Arabic) to Latin key.
+    E.g., ܫܠܡ -> 'sh-l-m', שלם -> 'sh-l-m', سلم -> 's-l-m'
+    Returns dash-separated Latin transliteration."""
+    script = detect_script(root_text)
+    if script == 'syriac':
+        parts = [SYRIAC_TO_LATIN.get(ch, '') for ch in root_text if ch in SYRIAC_CONSONANTS]
+    elif script == 'hebrew':
+        cons = hebrew_consonants_of(root_text)
+        parts = [HEBREW_TO_LATIN.get(ch, '') for ch in cons]
+    elif script == 'arabic':
+        parts = [ARABIC_TO_LATIN.get(ch, '') for ch in root_text if ch in ARABIC_TO_LATIN]
+    else:
+        return root_text.lower()
+    return '-'.join(p for p in parts if p)
 
 
 def detect_script(text: str) -> str:

@@ -391,12 +391,33 @@ body {
     letter-spacing: 2px;
     text-transform: uppercase;
 }
+.root-hebrew-lg {
+    font-size: 1.8em;
+    direction: rtl;
+    opacity: 0.85;
+}
 .root-meaning {
     font-size: 1.1em;
     opacity: 0.9;
     font-style: italic;
+    margin-bottom: 8px;
+}
+.corpus-attestation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-bottom: 12px;
 }
+.corpus-badge {
+    font-size: 0.8em;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+.corpus-badge.corpus-peshitta_nt { background: rgba(44,95,124,0.4); }
+.corpus-badge.corpus-peshitta_ot { background: rgba(124,95,44,0.4); }
+.corpus-badge.corpus-biblical_aramaic { background: rgba(95,44,124,0.4); }
 .root-header-nav {
     display: flex;
     gap: 8px;

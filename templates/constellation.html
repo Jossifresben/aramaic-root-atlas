@@ -1,0 +1,1077 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t.app_title }} — {{ t.constellation_title }}{% endblock %}
+
+
+
+{% block head %}
+    <style>
+        .constellation-layout {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .constellation-passage {
+            flex: 0 0 320px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            padding: 16px;
+            background: var(--card-bg, #fff);
+            border-radius: 12px;
+            border: 1px solid var(--border-color, #e0d5c8);
+        }
+        .constellation-passage h3 {
+            margin: 0 0 12px;
+            font-size: 1em;
+            color: var(--accent-dark, #5c3a1e);
+        }
+        .constellation-verse {
+            margin-bottom: 16px;
+        }
+        .constellation-verse-num {
+            font-weight: bold;
+            color: var(--accent-gold, #B8860B);
+            margin-right: 4px;
+            font-size: 0.85em;
+        }
+        .constellation-word {
+            display: inline;
+            cursor: default;
+            padding: 1px 2px;
+            border-radius: 3px;
+            transition: background 0.2s;
+            font-family: 'Noto Sans Syriac', serif;
+            font-size: 1.2em;
+        }
+        .constellation-word.has-root {
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .constellation-word.has-root:hover {
+            background: rgba(184, 134, 11, 0.15);
+        }
+        .constellation-word.highlighted {
+            background: rgba(184, 134, 11, 0.25);
+        }
+        .constellation-translit {
+            display: block;
+            font-size: 0.85em;
+            color: var(--text-secondary, #8a7560);
+            margin-top: 4px;
+            direction: ltr;
+        }
+        .constellation-translation {
+            display: block;
+            font-size: 0.85em;
+            color: var(--text-secondary, #8a7560);
+            font-style: italic;
+            margin-top: 4px;
+        }
+        .constellation-viz-wrap {
+            flex: 1;
+            min-width: 0;
+        }
+        .constellation-svg-wrap {
+            width: 100%;
+            min-height: 500px;
+            background: var(--card-bg, #fff);
+            border-radius: 12px;
+            border: 1px solid var(--border-color, #e0d5c8);
+            position: relative;
+        }
+        .constellation-help-wrap {
+            display: inline-flex;
+            align-items: center;
+        }
+        .constellation-help-tooltip {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 28px;
+            z-index: 100;
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #e0d5c8);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.78em;
+            line-height: 1.6;
+            color: var(--text-color, #333);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            white-space: nowrap;
+            min-width: 200px;
+        }
+        .constellation-help-wrap:hover .constellation-help-tooltip {
+            display: block;
+        }
+        .constellation-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 10px 16px;
+            font-size: 0.8em;
+            color: var(--text-secondary, #8a7560);
+            align-items: center;
+        }
+        .constellation-legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .constellation-legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .constellation-stats {
+            font-size: 0.85em;
+            color: var(--text-secondary, #8a7560);
+            margin-top: 6px;
+        }
+        .constellation-root-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+        .constellation-root-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.8em;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            background: var(--card-bg, #fff);
+            color: var(--text-primary, #2c1810);
+            border-color: var(--border-color, #e0d5c8);
+        }
+        .constellation-root-tag:hover {
+            border-color: var(--accent-gold, #B8860B);
+        }
+        .constellation-root-tag .freq {
+            font-size: 0.75em;
+            opacity: 0.6;
+        }
+        .constellation-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        /* Inter-root connection line animation */
+        @keyframes dash-flow {
+            to { stroke-dashoffset: -20; }
+        }
+        .inter-root-link {
+            animation: dash-flow 1.5s linear infinite;
+        }
+        /* Fullscreen support */
+        .constellation-viz-wrap.is-fullscreen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background: var(--bg-color, #faf6f1);
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .constellation-viz-wrap.is-fullscreen .constellation-svg-wrap {
+            flex: 1;
+            border-radius: 0;
+            border: none;
+            min-height: 0;
+        }
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .constellation-layout {
+                flex-direction: column;
+            }
+            .constellation-passage {
+                flex: none;
+                max-height: 200px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <header>
+            <h1 class="page-title">{{ t.constellation_title }}</h1>
+        </header>
+
+        <div id="constellation-loading" class="viz-loading">
+            <p>{{ t.constellation_loading }}</p>
+        </div>
+        <div id="constellation-error" class="viz-error" style="display:none;"></div>
+
+        <div id="constellation-main" style="display:none;">
+            <div id="constellation-stats" class="constellation-stats"></div>
+            <div id="constellation-root-list" class="constellation-root-list"></div>
+
+            <div class="constellation-layout">
+                <!-- Passage panel -->
+                <div class="constellation-passage" id="passage-panel">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                        <button id="prev-verse-btn" class="nav-btn" style="padding:4px 10px; font-size:0.85em;" title="{{ t.prev_verse }}">&larr;</button>
+                        <h3 id="passage-panel-title" style="margin:0; flex:1; text-align:center;"></h3>
+                        <button id="next-verse-btn" class="nav-btn" style="padding:4px 10px; font-size:0.85em;" title="{{ t.next_verse }}">&rarr;</button>
+                    </div>
+                    <div id="passage-text"></div>
+                </div>
+
+                <!-- Visualization -->
+                <div class="constellation-viz-wrap" id="constellation-viz-wrap">
+                    <div class="constellation-controls">
+                        <span class="constellation-legend">
+                            <span class="constellation-legend-item"><span class="constellation-legend-dot" style="background:#8B4513;"></span> {{ t.legend_root }}</span>
+                            <span class="constellation-legend-item"><span class="constellation-legend-dot" style="background:#2E5090;"></span> {{ t.legend_hebrew }}</span>
+                            <span class="constellation-legend-item"><span class="constellation-legend-dot" style="background:#2D7D46;"></span> {{ t.legend_arabic }}</span>
+                            <span class="constellation-legend-item">
+                                <svg width="20" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#DAA520" stroke-width="2" stroke-dasharray="4,2"/></svg>
+                                {{ t.legend_bridge }}
+                            </span>
+                        </span>
+                        <div style="margin-left:auto; display:flex; align-items:center; gap:4px;">
+                            <div class="constellation-help-wrap" style="position:relative;">
+                                <button class="viz-fullscreen-btn" style="margin-left:0; cursor:help;" tabindex="-1">
+                                    <span class="material-symbols-outlined">help</span>
+                                </button>
+                                <div class="constellation-help-tooltip">
+                                    {% if lang == 'es' %}
+                                    <div style="font-weight:600; margin-bottom:6px;">Navegaci&oacute;n</div>
+                                    <div><b>Rat&oacute;n</b></div>
+                                    <div>Rueda &mdash; zoom</div>
+                                    <div>Arrastrar fondo &mdash; mover</div>
+                                    <div>Arrastrar nodo &mdash; reposicionar</div>
+                                    <div style="margin-top:6px;"><b>Teclado</b></div>
+                                    <div>&larr; &uarr; &darr; &rarr; &mdash; mover</div>
+                                    <div>+ / &minus; &mdash; zoom</div>
+                                    <div>Esc &mdash; restablecer vista</div>
+                                    <div style="margin-top:6px;"><b>Palabras</b></div>
+                                    <div>Click &mdash; fijar/soltar vista</div>
+                                    <div>Doble click &mdash; abrir visualizador</div>
+                                    {% elif lang == 'ar' %}
+                                    <div style="font-weight:600; margin-bottom:6px;">التنقل</div>
+                                    <div><b>الفأرة</b></div>
+                                    <div>عجلة التمرير &mdash; تكبير</div>
+                                    <div>سحب الخلفية &mdash; تحريك</div>
+                                    <div>سحب العقدة &mdash; إعادة تموضع</div>
+                                    <div style="margin-top:6px;"><b>لوحة المفاتيح</b></div>
+                                    <div>&larr; &uarr; &darr; &rarr; &mdash; تحريك</div>
+                                    <div>+ / &minus; &mdash; تكبير</div>
+                                    <div>Esc &mdash; إعادة تعيين العرض</div>
+                                    <div style="margin-top:6px;"><b>الكلمات</b></div>
+                                    <div>نقر &mdash; تثبيت/تحرير العرض</div>
+                                    <div>نقر مزدوج &mdash; فتح المُصوّر</div>
+                                    {% elif lang == 'he' %}
+                                    <div style="font-weight:600; margin-bottom:6px;">ניווט</div>
+                                    <div><b>עכבר</b></div>
+                                    <div>גלגלת &mdash; זום</div>
+                                    <div>גרירת רקע &mdash; הזזה</div>
+                                    <div>גרירת צומת &mdash; מיקום מחדש</div>
+                                    <div style="margin-top:6px;"><b>מקלדת</b></div>
+                                    <div>&larr; &uarr; &darr; &rarr; &mdash; הזזה</div>
+                                    <div>+ / &minus; &mdash; זום</div>
+                                    <div>Esc &mdash; איפוס תצוגה</div>
+                                    <div style="margin-top:6px;"><b>מילים</b></div>
+                                    <div>לחיצה &mdash; נעילה/שחרור תצוגה</div>
+                                    <div>לחיצה כפולה &mdash; פתיחת ממחיש</div>
+                                    {% else %}
+                                    <div style="font-weight:600; margin-bottom:6px;">Navigation</div>
+                                    <div><b>Mouse</b></div>
+                                    <div>Scroll wheel &mdash; zoom</div>
+                                    <div>Drag background &mdash; pan</div>
+                                    <div>Drag node &mdash; reposition</div>
+                                    <div style="margin-top:6px;"><b>Keyboard</b></div>
+                                    <div>&larr; &uarr; &darr; &rarr; &mdash; pan</div>
+                                    <div>+ / &minus; &mdash; zoom</div>
+                                    <div>Esc &mdash; reset view</div>
+                                    <div style="margin-top:6px;"><b>Words</b></div>
+                                    <div>Click &mdash; lock/unlock view</div>
+                                    <div>Double click &mdash; open visualizer</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <button id="constellation-fullscreen" class="viz-fullscreen-btn" title="{{ t.fullscreen }}">
+                                <span class="material-symbols-outlined" id="fullscreen-icon">fullscreen</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="constellation-svg-wrap" class="constellation-svg-wrap"></div>
+                    <div id="constellation-tooltip" class="viz-tooltip"></div>
+                </div>
+            </div>
+        </div>
+    
+        
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+    (function() {
+        var BOOK = {{ book|tojson }};
+        var CHAPTER = {{ chapter }};
+        var V_START = {{ v_start }};
+        var V_END = {{ v_end }};
+        var LANG = {{ lang|tojson }};
+        var SCRIPT = {{ script|tojson }};
+        var TRANS = {{ trans|tojson }};
+        var BOOK_NAMES = {};
+
+        var STRINGS = {
+            rootsFound: {{ t.roots_found|tojson }},
+            connections: {{ t.connections_label|tojson }},
+            legendRoot: {{ t.legend_root|tojson }},
+            hebrewLabel: {{ t.hebrew_label|tojson }},
+            arabicLabel: {{ t.arabic_label|tojson }},
+            bridgeRoot: {{ t.bridge_root|tojson }},
+            bridgeLabel: {{ t.bridge_label|tojson }},
+            outlierLabel: {{ t.outlier_label|tojson }},
+            vizRootFamily: {{ t.viz_root_family|tojson }},
+            errorLoading: {{ t.error_loading|tojson }},
+            syriacLabel: {{ t.syriac_label|tojson }},
+            clickClose: {{ t.click_close|tojson }},
+            clickExplore: {{ t.click_explore|tojson }},
+            semanticOutlier: {{ t.semantic_outlier|tojson }}
+        };
+
+        // Colors
+        var ROOT_COLORS = [
+            '#8B4513', '#2E5090', '#2D7D46', '#9B2335', '#6B4C9A',
+            '#CC7722', '#20706B', '#8B2252', '#4A6741', '#B85C38',
+            '#3A5FCD', '#CD6839', '#458B74', '#8B6508', '#5D478B',
+            '#2F4F4F', '#CD3333', '#228B22', '#6959CD', '#CD9B1D'
+        ];
+        var COLOR_HEBREW = '#2E5090';
+        var COLOR_ARABIC = '#2D7D46';
+        var COLOR_BRIDGE = '#DAA520';
+        var COLOR_LINE = '#ccc';
+
+        var width, height;
+        function updateSize() {
+            var wrap = document.getElementById('constellation-svg-wrap');
+            var vizWrap = document.getElementById('constellation-viz-wrap');
+            var isFs = vizWrap && vizWrap.classList.contains('is-fullscreen');
+            width = isFs ? window.innerWidth : wrap.clientWidth;
+            height = isFs ? window.innerHeight - 60 : Math.max(500, Math.min(700, window.innerHeight - 250));
+        }
+
+        var _data = null;
+        var _simulation = null;
+        var _highlightedRoot = null;
+        var _svg = null;
+        var _zoom = null;
+        var _nodes = null;
+        var _lockedRoot = null;
+
+        var url = '/api/passage-constellation?book=' + encodeURIComponent(BOOK)
+                + '&chapter=' + CHAPTER + '&v_start=' + V_START + '&v_end=' + V_END
+                + '&lang=' + LANG + '&script=' + SCRIPT + '&trans=' + TRANS;
+
+        fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.error) {
+                document.getElementById('constellation-loading').style.display = 'none';
+                document.getElementById('constellation-error').style.display = 'block';
+                document.getElementById('constellation-error').textContent = data.error;
+                return;
+            }
+            _data = data;
+            document.getElementById('constellation-loading').style.display = 'none';
+            document.getElementById('constellation-main').style.display = 'block';
+
+            // Show reference in passage panel
+            document.getElementById('passage-panel-title').textContent = data.reference;
+
+            // Stats
+            var statsText = data.total_roots + ' ' + STRINGS.rootsFound + (data.connections.length ? ', ' + data.connections.length + ' ' + STRINGS.connections : '');
+            document.getElementById('constellation-stats').textContent = statsText;
+
+            // Build root tag list
+            buildRootTags(data);
+
+            // Build passage panel
+            buildPassagePanel(data);
+
+            // Build visualization
+            render();
+        })
+        .catch(function(err) {
+            document.getElementById('constellation-loading').style.display = 'none';
+            document.getElementById('constellation-error').style.display = 'block';
+            document.getElementById('constellation-error').textContent = 'Error: ' + err.message;
+        });
+
+        function getRootColor(rootTranslit) {
+            if (!_data) return ROOT_COLORS[0];
+            var idx = _data.roots.findIndex(function(r) { return r.root_translit === rootTranslit; });
+            return ROOT_COLORS[idx % ROOT_COLORS.length];
+        }
+
+        function buildRootTags(data) {
+            var container = document.getElementById('constellation-root-list');
+            container.innerHTML = '';
+            data.roots.forEach(function(r, idx) {
+                var tag = document.createElement('span');
+                tag.className = 'constellation-root-tag';
+                tag.style.borderColor = ROOT_COLORS[idx % ROOT_COLORS.length];
+                tag.innerHTML = '<strong>' + r.root_translit + '</strong> <span class="freq">x' + r.frequency + '</span>';
+                tag.title = r.gloss || '';
+                tag.addEventListener('click', function() {
+                    var wasLocked = _lockedRoot === r.root_translit;
+                    clearHighlight();
+                    if (!wasLocked) {
+                        _lockedRoot = r.root_translit;
+                        highlightRoot(r.root_translit);
+                    }
+                });
+                // Right-click opens single root visualizer
+                tag.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    window.open('/visualize/' + r.root_translit + '?lang=' + LANG + '&script=' + SCRIPT + '&trans=' + TRANS, '_blank');
+                });
+                container.appendChild(tag);
+            });
+        }
+
+        function buildPassagePanel(data) {
+            var container = document.getElementById('passage-text');
+            container.innerHTML = '';
+            data.verses.forEach(function(v) {
+                var div = document.createElement('div');
+                div.className = 'constellation-verse';
+
+                // Syriac line (RTL)
+                var syrLine = document.createElement('div');
+                syrLine.style.direction = 'rtl';
+                syrLine.style.textAlign = 'right';
+
+                v.words.forEach(function(w) {
+                    var span = document.createElement('span');
+                    span.className = 'constellation-word' + (w.root ? ' has-root' : '');
+                    span.textContent = w.syriac + ' ';
+                    if (w.root) {
+                        span.setAttribute('data-root', w.root);
+                        span.style.borderBottomColor = getRootColor(w.root);
+                        span.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            var wasActive = span.classList.contains('highlighted');
+                            // Clear any previous lock
+                            clearHighlight();
+                            if (!wasActive) {
+                                _lockedRoot = w.root;
+                                highlightRoot(w.root);
+                            }
+                        });
+                        span.addEventListener('dblclick', function(e) {
+                            e.stopPropagation();
+                            window.open('/visualize/' + w.root + '?lang=' + LANG + '&script=' + SCRIPT + '&trans=' + TRANS, '_blank');
+                        });
+                    }
+                    syrLine.appendChild(span);
+                });
+                div.appendChild(syrLine);
+
+                // Transliteration line
+                var translitLine = document.createElement('div');
+                translitLine.className = 'constellation-translit';
+                translitLine.textContent = v.words.map(function(w) { return w.translit; }).join(' ');
+                div.appendChild(translitLine);
+
+                // Translation line
+                if (v.translation) {
+                    var transLine = document.createElement('div');
+                    transLine.className = 'constellation-translation';
+                    transLine.textContent = v.translation;
+                    div.appendChild(transLine);
+                }
+
+                container.appendChild(div);
+            });
+        }
+
+        function highlightRoot(rootTranslit) {
+            _highlightedRoot = rootTranslit;
+            // Highlight words in passage panel
+            document.querySelectorAll('.constellation-word').forEach(function(el) {
+                el.classList.toggle('highlighted', el.getAttribute('data-root') === rootTranslit);
+            });
+            // Highlight in D3
+            if (_simulation) {
+                d3.selectAll('.constellation-node').attr('opacity', function(d) {
+                    if (d.rootParent === rootTranslit || d.id === 'root-' + rootTranslit) return 1;
+                    if (d.type === 'root') return 0.3;
+                    return 0.15;
+                });
+                d3.selectAll('.constellation-link-line').attr('opacity', function(d) {
+                    var sid = typeof d.source === 'object' ? d.source.rootParent || d.source.id : d.source;
+                    var tid = typeof d.target === 'object' ? d.target.rootParent || d.target.id : d.target;
+                    if (sid === rootTranslit || tid === rootTranslit ||
+                        sid === 'root-' + rootTranslit || tid === 'root-' + rootTranslit) return 1;
+                    return 0.1;
+                });
+            }
+            // Highlight root tag
+            document.querySelectorAll('.constellation-root-tag').forEach(function(el) {
+                el.style.fontWeight = el.querySelector('strong').textContent === rootTranslit ? 'bold' : 'normal';
+                el.style.opacity = el.querySelector('strong').textContent === rootTranslit ? '1' : '0.5';
+            });
+
+            // Pan to center the root node in the viewport
+            if (_svg && _zoom && _nodes) {
+                var targetNode = _nodes.find(function(n) { return n.id === 'root-' + rootTranslit; });
+                if (targetNode && targetNode.x != null && targetNode.y != null) {
+                    var currentTransform = d3.zoomTransform(_svg.node());
+                    var scale = currentTransform.k;
+                    var tx = width / 2 - targetNode.x * scale;
+                    var ty = height / 2 - targetNode.y * scale;
+                    _svg.transition().duration(400)
+                        .call(_zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+                }
+            }
+        }
+
+        function clearHighlight() {
+            _highlightedRoot = null;
+            _lockedRoot = null;
+            document.querySelectorAll('.constellation-word.highlighted').forEach(function(el) {
+                el.classList.remove('highlighted');
+            });
+            if (_simulation) {
+                d3.selectAll('.constellation-node').attr('opacity', 1);
+                d3.selectAll('.constellation-link-line').attr('opacity', 1);
+            }
+            document.querySelectorAll('.constellation-root-tag').forEach(function(el) {
+                el.style.fontWeight = 'normal';
+                el.style.opacity = '1';
+            });
+        }
+
+        function render() {
+            if (!_data) return;
+            document.getElementById('constellation-svg-wrap').innerHTML = '';
+            buildConstellation(_data);
+        }
+
+        // Verse navigation
+        function navigateVerse(delta) {
+            var url = new URL(window.location);
+            var newStart = V_START + delta;
+            var newEnd = V_END + delta;
+            if (newStart < 1) return;
+            url.searchParams.set('v_start', newStart);
+            url.searchParams.set('v_end', newEnd);
+            window.location = url;
+        }
+        document.getElementById('prev-verse-btn').addEventListener('click', function() {
+            navigateVerse(-1);
+        });
+        document.getElementById('next-verse-btn').addEventListener('click', function() {
+            navigateVerse(1);
+        });
+        // Disable prev if at verse 1
+        if (V_START <= 1) {
+            document.getElementById('prev-verse-btn').disabled = true;
+        }
+
+        // Helper: split meaning into lines
+        function wrapMeaning(s, maxPerLine) {
+            if (!s) return [''];
+            if (s.length <= maxPerLine) return [s];
+            var mid = Math.floor(s.length / 2);
+            var commaIdx = s.indexOf(',', Math.max(0, mid - 6));
+            if (commaIdx > 0 && commaIdx < s.length - 3) {
+                var line1 = s.substring(0, commaIdx + 1).trim();
+                var line2 = s.substring(commaIdx + 1).trim();
+                if (line1.length > maxPerLine) line1 = line1.substring(0, maxPerLine - 1) + '\u2026';
+                if (line2.length > maxPerLine) line2 = line2.substring(0, maxPerLine - 1) + '\u2026';
+                return [line1, line2];
+            }
+            var spaceIdx = s.lastIndexOf(' ', maxPerLine);
+            if (spaceIdx > 3) {
+                return [s.substring(0, spaceIdx), s.substring(spaceIdx + 1).substring(0, maxPerLine)];
+            }
+            return [s.substring(0, maxPerLine - 1) + '\u2026'];
+        }
+
+        function buildConstellation(data) {
+            updateSize();
+            var showCognates = true;
+            var showConnections = true;
+
+            var nodes = [];
+            var links = [];
+            var tooltip = d3.select('#constellation-tooltip');
+            var rootCount = data.roots.length;
+
+            // Cap roots for performance
+            var maxRoots = 20;
+            var displayRoots = data.roots.slice(0, maxRoots);
+
+            // Position root centers in a circle
+            var cx = width / 2;
+            var cy = height / 2;
+            var orbitR = Math.min(width, height) * 0.18;
+            if (rootCount <= 3) orbitR = Math.min(width, height) * 0.1;
+            if (rootCount > 10) orbitR = Math.min(width, height) * 0.22;
+
+            displayRoots.forEach(function(r, idx) {
+                var angle = (2 * Math.PI * idx / displayRoots.length) - Math.PI / 2;
+                var x = cx + orbitR * Math.cos(angle);
+                var y = cy + orbitR * Math.sin(angle);
+                var rootR = 36 + Math.min(r.frequency * 4, 20);
+
+                nodes.push({
+                    id: 'root-' + r.root_translit,
+                    label: r.root_syriac,
+                    sublabel: r.root_translit,
+                    detail: r.gloss || '',
+                    type: 'root',
+                    rootParent: r.root_translit,
+                    r: rootR,
+                    color: ROOT_COLORS[idx % ROOT_COLORS.length],
+                    freq: r.frequency,
+                    x: x, y: y,
+                });
+
+                if (showCognates) {
+                    // Hebrew cognates (limit to 3 per root to keep it clean)
+                    var hLimit = Math.min(r.hebrew.length, 3);
+                    for (var hi = 0; hi < hLimit; hi++) {
+                        var hw = r.hebrew[hi];
+                        var hid = 'heb-' + r.root_translit + '-' + hi;
+                        nodes.push({
+                            id: hid,
+                            label: hw.word,
+                            sublabel: hw.translit,
+                            detail: hw.meaning,
+                            type: 'hebrew',
+                            rootParent: r.root_translit,
+                            r: 30,
+                            color: COLOR_HEBREW,
+                            outlier: hw.outlier,
+                        });
+                        links.push({ source: 'root-' + r.root_translit, target: hid, type: 'cognate' });
+                    }
+                    // Arabic cognates (limit to 3)
+                    var aLimit = Math.min(r.arabic.length, 3);
+                    for (var ai = 0; ai < aLimit; ai++) {
+                        var aw = r.arabic[ai];
+                        var aid = 'ar-' + r.root_translit + '-' + ai;
+                        nodes.push({
+                            id: aid,
+                            label: aw.word,
+                            sublabel: aw.translit,
+                            detail: aw.meaning,
+                            type: 'arabic',
+                            rootParent: r.root_translit,
+                            r: 30,
+                            color: COLOR_ARABIC,
+                            outlier: aw.outlier,
+                        });
+                        links.push({ source: 'root-' + r.root_translit, target: aid, type: 'cognate' });
+                    }
+                }
+            });
+
+            // Inter-root connections
+            if (showConnections) {
+                var displayRootSet = new Set(displayRoots.map(function(r) { return r.root_translit; }));
+                data.connections.forEach(function(c) {
+                    if (displayRootSet.has(c.source) && displayRootSet.has(c.target)) {
+                        links.push({
+                            source: 'root-' + c.source,
+                            target: 'root-' + c.target,
+                            type: 'bridge',
+                            concept: c.concept,
+                        });
+                    }
+                });
+            }
+
+            // Create SVG
+            var svg = d3.select('#constellation-svg-wrap')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+            _svg = svg;
+            _nodes = nodes;
+
+            var g = svg.append('g');
+
+            var zoom = d3.zoom()
+                .scaleExtent([0.2, 5])
+                .on('zoom', function(event) {
+                    g.attr('transform', event.transform);
+                });
+            _zoom = zoom;
+            svg.call(zoom);
+
+            // Links
+            var linkGroup = g.append('g').attr('class', 'links');
+            var linkSel = linkGroup.selectAll('line').data(links);
+            var linkEnter = linkSel.enter().append('line')
+                .attr('class', function(d) {
+                    return 'constellation-link-line' + (d.type === 'bridge' ? ' inter-root-link' : '');
+                })
+                .attr('stroke', function(d) { return d.type === 'bridge' ? COLOR_BRIDGE : COLOR_LINE; })
+                .attr('stroke-width', function(d) { return d.type === 'bridge' ? 2.5 : 1.5; })
+                .attr('stroke-dasharray', function(d) { return d.type === 'bridge' ? '6,4' : 'none'; })
+                .attr('stroke-opacity', function(d) { return d.type === 'bridge' ? 0.8 : 0.5; });
+
+            // Bridge labels on inter-root links
+            var bridgeLabels = g.append('g').attr('class', 'bridge-labels');
+            var bridgeLinks = links.filter(function(l) { return l.type === 'bridge' && l.concept; });
+            var bridgeLabelSel = bridgeLabels.selectAll('text').data(bridgeLinks);
+            var bridgeLabelEnter = bridgeLabelSel.enter().append('text')
+                .attr('class', 'bridge-label-text')
+                .attr('text-anchor', 'middle')
+                .attr('fill', COLOR_BRIDGE)
+                .attr('font-size', '9px')
+                .attr('font-style', 'italic')
+                .attr('pointer-events', 'none')
+                .text(function(d) { return d.concept; });
+
+            // Nodes
+            var nodeGroup = g.append('g').attr('class', 'nodes');
+            var nodeSel = nodeGroup.selectAll('g').data(nodes, function(d) { return d.id; });
+            var nodeEnter = nodeSel.enter().append('g')
+                .attr('class', 'constellation-node')
+                .style('cursor', 'pointer')
+                .call(d3.drag()
+                    .on('start', function(event, d) {
+                        if (!event.active) _simulation.alphaTarget(0.3).restart();
+                        d.fx = d.x; d.fy = d.y;
+                    })
+                    .on('drag', function(event, d) {
+                        d.fx = event.x; d.fy = event.y;
+                    })
+                    .on('end', function(event, d) {
+                        if (!event.active) _simulation.alphaTarget(0);
+                        d.fx = null; d.fy = null;
+                    }));
+
+            // Circle
+            nodeEnter.append('circle')
+                .attr('r', function(d) { return d.r; })
+                .attr('fill', function(d) {
+                    if (d.outlier) return d.color + '88';
+                    return d.color;
+                })
+                .attr('stroke', function(d) {
+                    if (d.outlier) return COLOR_BRIDGE;
+                    if (d.type === 'root') return '#fff';
+                    return 'rgba(255,255,255,0.5)';
+                })
+                .attr('stroke-width', function(d) {
+                    if (d.type === 'root') return 3;
+                    if (d.outlier) return 2;
+                    return 1.5;
+                })
+                .attr('stroke-dasharray', function(d) {
+                    return d.outlier ? '4,2' : 'none';
+                });
+
+            // Frequency badge for root nodes
+            nodeEnter.filter(function(d) { return d.type === 'root'; })
+                .append('circle')
+                .attr('cx', function(d) { return d.r * 0.65; })
+                .attr('cy', function(d) { return -d.r * 0.65; })
+                .attr('r', 10)
+                .attr('fill', '#fff')
+                .attr('stroke', function(d) { return d.color; })
+                .attr('stroke-width', 1.5);
+
+            nodeEnter.filter(function(d) { return d.type === 'root'; })
+                .append('text')
+                .attr('x', function(d) { return d.r * 0.65; })
+                .attr('y', function(d) { return -d.r * 0.65 + 4; })
+                .attr('text-anchor', 'middle')
+                .attr('fill', function(d) { return d.color; })
+                .attr('font-size', '10px')
+                .attr('font-weight', 'bold')
+                .attr('pointer-events', 'none')
+                .text(function(d) { return d.freq; });
+
+            // Label: main word
+            nodeEnter.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', function(d) { return d.type === 'root' ? '-0.8em' : '-0.6em'; })
+                .attr('fill', '#fff')
+                .attr('font-size', function(d) { return d.type === 'root' ? '14px' : '11px'; })
+                .attr('font-weight', 'bold')
+                .attr('pointer-events', 'none')
+                .text(function(d) { return d.label; });
+
+            // Label: transliteration
+            nodeEnter.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', function(d) { return d.type === 'root' ? '0.5em' : '0.5em'; })
+                .attr('fill', 'rgba(255,255,255,0.9)')
+                .attr('font-size', function(d) { return d.type === 'root' ? '11px' : '9px'; })
+                .attr('pointer-events', 'none')
+                .text(function(d) { return d.sublabel; });
+
+            // Root gloss
+            nodeEnter.filter(function(d) { return d.type === 'root' && d.detail; })
+                .each(function(d) {
+                    var el = d3.select(this);
+                    var lines = wrapMeaning(d.detail, 16);
+                    lines.forEach(function(line, idx) {
+                        el.append('text')
+                            .attr('text-anchor', 'middle')
+                            .attr('dy', (1.6 + idx * 1.0) + 'em')
+                            .attr('fill', 'rgba(255,255,255,0.75)')
+                            .attr('font-size', '8px')
+                            .attr('font-style', 'italic')
+                            .attr('pointer-events', 'none')
+                            .text(line);
+                    });
+                });
+
+            // Cognate meaning
+            nodeEnter.filter(function(d) { return d.type !== 'root' && d.detail; })
+                .each(function(d) {
+                    var el = d3.select(this);
+                    var lines = wrapMeaning(d.detail, 14);
+                    lines.forEach(function(line, idx) {
+                        el.append('text')
+                            .attr('text-anchor', 'middle')
+                            .attr('dy', (1.4 + idx * 1.0) + 'em')
+                            .attr('fill', 'rgba(255,255,255,0.8)')
+                            .attr('font-size', '8px')
+                            .attr('font-style', 'italic')
+                            .attr('pointer-events', 'none')
+                            .text(line);
+                    });
+                });
+
+            // Tooltip
+            nodeEnter.on('mouseover', function(event, d) {
+                var langLabel;
+                if (d.type === 'root') {
+                    langLabel = STRINGS.legendRoot;
+                } else if (d.type === 'hebrew') {
+                    langLabel = STRINGS.hebrewLabel;
+                } else {
+                    langLabel = STRINGS.arabicLabel;
+                }
+                var html = '<strong>' + d.label + '</strong> <small>(' + langLabel + ')</small><br>' +
+                           '<em>' + d.sublabel + '</em>';
+                if (d.detail) html += '<br>' + d.detail;
+                if (d.type === 'root') {
+                    html += '<br><small style="color:var(--accent-gold);">' +
+                        STRINGS.clickExplore + '</small>';
+                }
+                if (d.outlier) {
+                    html += '<br><span style="color:#DAA520;font-weight:bold;">' +
+                        STRINGS.semanticOutlier + '</span>';
+                }
+                tooltip.html(html)
+                    .style('display', 'block')
+                    .style('left', (event.pageX + 12) + 'px')
+                    .style('top', (event.pageY - 20) + 'px');
+
+                // Highlight this root family
+                if (d.rootParent) highlightRoot(d.rootParent);
+            })
+            .on('mousemove', function(event) {
+                tooltip.style('left', (event.pageX + 12) + 'px')
+                       .style('top', (event.pageY - 20) + 'px');
+            })
+            .on('mouseout', function() {
+                tooltip.style('display', 'none');
+                // Don't clear if a word is locked from the passage panel
+                if (!_lockedRoot) clearHighlight();
+            });
+
+            // Click: root nodes open visualizer
+            nodeEnter.filter(function(d) { return d.type === 'root'; })
+                .on('click', function(event, d) {
+                    window.open('/visualize/' + d.sublabel + '?lang=' + LANG + '&script=' + SCRIPT + '&trans=' + TRANS, '_blank');
+                });
+
+            // Force simulation
+            var cognateDist = showCognates ? 70 : 0;
+            var rootDist = orbitR * 0.6;
+            var charge = showCognates ? -150 : -250;
+
+            var simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(function(d) { return d.id; }).distance(function(l) {
+                    if (l.type === 'bridge') return rootDist;
+                    return cognateDist;
+                }))
+                .force('charge', d3.forceManyBody().strength(charge))
+                .force('center', d3.forceCenter(cx, cy))
+                .force('collision', d3.forceCollide().radius(function(d) { return d.r + 8; }))
+                .on('tick', function() {
+                    linkEnter.attr('x1', function(d) { return d.source.x; })
+                        .attr('y1', function(d) { return d.source.y; })
+                        .attr('x2', function(d) { return d.target.x; })
+                        .attr('y2', function(d) { return d.target.y; });
+
+                    bridgeLabelEnter
+                        .attr('x', function(d) { return (d.source.x + d.target.x) / 2; })
+                        .attr('y', function(d) { return (d.source.y + d.target.y) / 2 - 6; });
+
+                    nodeEnter.attr('transform', function(d) {
+                        return 'translate(' + d.x + ',' + d.y + ')';
+                    });
+                });
+
+            _simulation = simulation;
+
+            // Zoom to fit all nodes in view
+            function zoomToFit(duration) {
+                var bounds = g.node().getBBox();
+                if (bounds.width > 0 && bounds.height > 0) {
+                    var padding = 50;
+                    var scale = Math.min(
+                        (width - padding * 2) / bounds.width,
+                        (height - padding * 2) / bounds.height
+                    );
+                    scale = Math.max(Math.min(scale, 1.2), 0.15);
+                    var tx = width / 2 - (bounds.x + bounds.width / 2) * scale;
+                    var ty = height / 2 - (bounds.y + bounds.height / 2) * scale;
+                    svg.transition().duration(duration)
+                        .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+                }
+            }
+            // Fit after simulation settles at multiple checkpoints
+            setTimeout(function() { zoomToFit(400); }, 500);
+            setTimeout(function() { zoomToFit(400); }, 1500);
+            simulation.on('end', function() { zoomToFit(300); });
+        }
+
+        // Keyboard navigation: arrows pan, +/- zoom, Escape resets view
+        document.addEventListener('keydown', function(e) {
+            if (!_svg || !_zoom) return;
+            // Don't capture when typing in inputs
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+
+            var step = 60;
+            var zoomFactor = 1.3;
+            var currentTransform = d3.zoomTransform(_svg.node());
+            var newTransform = null;
+
+            switch (e.key) {
+                case 'ArrowUp':
+                    newTransform = currentTransform.translate(0, step / currentTransform.k);
+                    break;
+                case 'ArrowDown':
+                    newTransform = currentTransform.translate(0, -step / currentTransform.k);
+                    break;
+                case 'ArrowLeft':
+                    newTransform = currentTransform.translate(step / currentTransform.k, 0);
+                    break;
+                case 'ArrowRight':
+                    newTransform = currentTransform.translate(-step / currentTransform.k, 0);
+                    break;
+                case '+':
+                case '=':
+                    newTransform = currentTransform.scale(zoomFactor);
+                    break;
+                case '-':
+                case '_':
+                    newTransform = currentTransform.scale(1 / zoomFactor);
+                    break;
+                case 'Escape':
+                    // Reset: zoom to fit all nodes
+                    var g = _svg.select('g');
+                    var bounds = g.node().getBBox();
+                    if (bounds.width > 0 && bounds.height > 0) {
+                        var width = _svg.node().clientWidth || _svg.attr('width');
+                        var height = _svg.node().clientHeight || _svg.attr('height');
+                        var padding = 50;
+                        var scale = Math.min(
+                            (width - padding * 2) / bounds.width,
+                            (height - padding * 2) / bounds.height
+                        );
+                        scale = Math.max(Math.min(scale, 1.2), 0.15);
+                        var tx = width / 2 - (bounds.x + bounds.width / 2) * scale;
+                        var ty = height / 2 - (bounds.y + bounds.height / 2) * scale;
+                        newTransform = d3.zoomIdentity.translate(tx, ty).scale(scale);
+                    }
+                    break;
+                default:
+                    return; // Don't prevent default for other keys
+            }
+
+            if (newTransform) {
+                e.preventDefault();
+                _svg.transition().duration(200).call(_zoom.transform, newTransform);
+            }
+        });
+
+        // Fullscreen toggle
+        (function() {
+            var fsBtn = document.getElementById('constellation-fullscreen');
+            var fsIcon = document.getElementById('fullscreen-icon');
+            var vizWrap = document.getElementById('constellation-viz-wrap');
+            if (!fsBtn) return;
+
+            var _cssFs = false;
+
+            function enterFs() {
+                if (vizWrap.requestFullscreen) {
+                    var p = vizWrap.requestFullscreen();
+                    if (p && p.catch) p.catch(function() { enterCssFs(); });
+                } else if (vizWrap.webkitRequestFullscreen) {
+                    vizWrap.webkitRequestFullscreen();
+                } else {
+                    enterCssFs();
+                }
+            }
+            function enterCssFs() {
+                _cssFs = true;
+                vizWrap.classList.add('is-fullscreen');
+                document.body.style.overflow = 'hidden';
+                fsIcon.textContent = 'fullscreen_exit';
+                setTimeout(render, 100);
+            }
+            function exitCssFs() {
+                _cssFs = false;
+                vizWrap.classList.remove('is-fullscreen');
+                document.body.style.overflow = '';
+                fsIcon.textContent = 'fullscreen';
+                setTimeout(render, 100);
+            }
+            function exitFs() {
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                } else if (_cssFs) {
+                    exitCssFs();
+                }
+            }
+            function onFsChange() {
+                var isNative = !!(document.fullscreenElement || document.webkitFullscreenElement);
+                if (isNative) {
+                    fsIcon.textContent = 'fullscreen_exit';
+                    vizWrap.classList.add('is-fullscreen');
+                } else {
+                    fsIcon.textContent = 'fullscreen';
+                    vizWrap.classList.remove('is-fullscreen');
+                }
+                setTimeout(render, 100);
+            }
+            fsBtn.addEventListener('click', function() {
+                if ((document.fullscreenElement || document.webkitFullscreenElement) || _cssFs) exitFs();
+                else enterFs();
+            });
+            document.addEventListener('fullscreenchange', onFsChange);
+            document.addEventListener('webkitfullscreenchange', onFsChange);
+        })();
+    })();
+    </script>
+{% endblock %}
