@@ -295,23 +295,51 @@ def api_books():
 
 @app.route('/api/chapter/<path:book>/<int:chapter>')
 def api_chapter(book, chapter):
-    """Return all verses in a chapter."""
+    """Return all verses in a chapter.
+
+    If ?parallel=true, returns all corpus versions of each verse.
+    Otherwise returns one version per verse (filtered or last-loaded).
+    """
     corpus_filter = request.args.get('corpus', None)
     trans = request.args.get('trans', 'en')
+    parallel = request.args.get('parallel', '') == 'true'
 
     verses = _corpus.get_chapter_verses(book, chapter, corpus_filter)
     result = []
-    for v_num, ref, syriac in verses:
-        translation = _corpus.get_verse_translation(ref, trans)
-        if not translation and trans != 'en':
-            translation = _corpus.get_verse_translation(ref, 'en')
-        result.append({
-            'verse': v_num,
-            'reference': ref,
-            'syriac': syriac,
-            'translation': translation,
-            'corpus_id': _corpus.get_verse_corpus(ref),
-        })
+
+    if parallel and not corpus_filter:
+        # Return all corpus versions for each verse
+        seen_refs = set()
+        for v_num, ref, syriac in verses:
+            if ref in seen_refs:
+                continue
+            seen_refs.add(ref)
+            corpora = _corpus.get_verse_corpora(ref)
+            for cid in corpora:
+                text = _corpus.get_verse_text(ref, corpus_id=cid)
+                if text:
+                    translation = _corpus.get_verse_translation(ref, trans)
+                    if not translation and trans != 'en':
+                        translation = _corpus.get_verse_translation(ref, 'en')
+                    result.append({
+                        'verse': v_num,
+                        'reference': ref,
+                        'syriac': text,
+                        'translation': translation,
+                        'corpus_id': cid,
+                    })
+    else:
+        for v_num, ref, syriac in verses:
+            translation = _corpus.get_verse_translation(ref, trans)
+            if not translation and trans != 'en':
+                translation = _corpus.get_verse_translation(ref, 'en')
+            result.append({
+                'verse': v_num,
+                'reference': ref,
+                'syriac': syriac,
+                'translation': translation,
+                'corpus_id': _corpus.get_verse_corpus(ref),
+            })
 
     return jsonify({
         'book': book,
@@ -747,6 +775,49 @@ def api_passage_constellation():
         'connections': connections,
         'total_roots': len(roots_data),
     })
+
+
+@app.route('/api/parallel')
+def api_parallel():
+    """Return parallel texts for a verse across corpora."""
+    ref = request.args.get('ref', '').strip()
+    lang = _get_lang()
+    trans = _get_trans()
+    if not ref:
+        return jsonify({'error': 'Missing ref parameter'}), 400
+
+    results = []
+    for cid in _corpus.get_corpus_ids():
+        text = _corpus.get_verse_text(ref, corpus_id=cid)
+        if text:
+            from aramaic_core.characters import detect_script as ds
+            script = ds(text)
+            results.append({
+                'corpus_id': cid,
+                'corpus_label': _corpus.get_corpus_info(cid).label,
+                'text': text,
+                'script': script,
+                'translation': _corpus.get_verse_translation(ref, trans) or '',
+            })
+
+    return jsonify({
+        'reference': ref,
+        'parallels': results,
+        'translation_en': _corpus.get_verse_translation(ref, 'en') or '',
+        'translation_es': _corpus.get_verse_translation(ref, 'es') or '',
+    })
+
+
+@app.route('/parallel')
+def parallel():
+    """Synoptic parallel viewer page."""
+    lang = _get_lang()
+    book = request.args.get('book', 'Genesis')
+    chapter = request.args.get('chapter', '1')
+    books = _corpus.get_books()
+    return render_template('parallel.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn, books=books,
+                           book=book, chapter=chapter)
 
 
 @app.route('/constellation')

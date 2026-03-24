@@ -30,8 +30,10 @@ class AramaicCorpus:
     def __init__(self):
         self._occurrences: dict[str, list[str]] = {}  # word -> [reference, ...]
         self._total_words: int = 0
-        self._verses: dict[str, str] = {}  # reference -> syriac text
-        self._verse_corpus: dict[str, str] = {}  # reference -> corpus_id
+        self._verses: dict[str, str] = {}  # reference -> syriac text (last loaded wins)
+        self._verses_by_corpus: dict[str, dict[str, str]] = {}  # corpus_id -> {ref: text}
+        self._verse_corpus: dict[str, str] = {}  # reference -> corpus_id (last wins)
+        self._verse_corpora: dict[str, list[str]] = {}  # reference -> [corpus_ids]
         self._verse_order: list[str] = []  # ordered references
         self._translations: dict[str, dict] = {}  # lang -> {ref: text}
         self._corpora: dict[str, CorpusInfo] = {}  # corpus_id -> info
@@ -59,15 +61,21 @@ class AramaicCorpus:
         # Clear any previous state
         self._occurrences.clear()
         self._verses.clear()
+        self._verses_by_corpus.clear()
         self._verse_corpus.clear()
+        self._verse_corpora.clear()
         self._verse_order.clear()
         self._total_words = 0
+
+        seen_refs = set()
 
         for corpus_id, info in self._corpora.items():
             if not os.path.exists(info.csv_path):
                 continue
             corpus_words = 0
             corpus_verses = 0
+            self._verses_by_corpus[corpus_id] = {}
+
             with open(info.csv_path, 'r', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
@@ -79,7 +87,16 @@ class AramaicCorpus:
 
                     self._verses[reference] = syriac_text
                     self._verse_corpus[reference] = corpus_id
-                    self._verse_order.append(reference)
+                    self._verses_by_corpus[corpus_id][reference] = syriac_text
+
+                    # Track all corpora for this reference
+                    if reference not in self._verse_corpora:
+                        self._verse_corpora[reference] = []
+                    self._verse_corpora[reference].append(corpus_id)
+
+                    if reference not in seen_refs:
+                        self._verse_order.append(reference)
+                        seen_refs.add(reference)
                     corpus_verses += 1
 
                     words = syriac_text.split()
@@ -202,10 +219,18 @@ class AramaicCorpus:
         results.sort(key=lambda x: x[0])
         return results
 
-    def get_verse_text(self, reference: str) -> str | None:
-        """Return the Syriac text for a given verse reference."""
+    def get_verse_text(self, reference: str, corpus_id: str | None = None) -> str | None:
+        """Return the text for a given verse reference.
+        If corpus_id is given, returns text from that specific corpus."""
         self.load()
+        if corpus_id:
+            return self._verses_by_corpus.get(corpus_id, {}).get(reference)
         return self._verses.get(reference)
+
+    def get_verse_corpora(self, reference: str) -> list[str]:
+        """Return all corpus_ids that contain this reference."""
+        self.load()
+        return self._verse_corpora.get(reference, [])
 
     def get_adjacent_ref(self, reference: str, direction: int) -> str | None:
         """Return the reference for an adjacent verse (direction: -1 or +1)."""

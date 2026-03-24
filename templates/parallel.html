@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('parallel_viewer', lang) }} — Aramaic Root Atlas{% endblock %}
+
+{% block head %}
+<style>
+.parallel-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.parallel-controls select, .parallel-controls button {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 0.9rem;
+}
+.parallel-controls button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.parallel-grid {
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+.parallel-header {
+    display: grid;
+    gap: 0;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+.parallel-header > div {
+    padding: 10px 14px;
+    border-right: 1px solid rgba(255,255,255,0.2);
+}
+.parallel-header > div:last-child { border-right: none; }
+.parallel-row {
+    display: grid;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+}
+.parallel-row:last-child { border-bottom: none; }
+.parallel-row:hover { background: var(--accent-light); }
+.parallel-cell {
+    padding: 10px 14px;
+    border-right: 1px solid var(--border);
+    line-height: 1.8;
+}
+.parallel-cell:last-child { border-right: none; }
+.parallel-cell.verse-num {
+    font-weight: bold;
+    color: var(--muted);
+    text-align: center;
+    padding-top: 14px;
+}
+.parallel-cell .syriac-text {
+    font-family: var(--syriac-font);
+    font-size: 1.2rem;
+    direction: rtl;
+    text-align: right;
+}
+.parallel-cell .hebrew-text {
+    font-size: 1.2rem;
+    direction: rtl;
+    text-align: right;
+}
+.parallel-cell .translation-text {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 6px;
+}
+.parallel-cell.empty {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.85rem;
+}
+.parallel-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+.parallel-nav a {
+    padding: 8px 16px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.parallel-nav a:hover { opacity: 0.9; }
+.parallel-info {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 4px;">{{ t('parallel_viewer', lang) }}</h1>
+<p class="parallel-info">{{ t('parallel_desc', lang) }}</p>
+
+<div class="parallel-controls">
+    <label>{{ t('book', lang) }}:</label>
+    <select id="par-book">
+        {% for b_name, b_ch in books %}
+        <option value="{{ b_name }}" data-chapters="{{ b_ch }}"{% if b_name == book %} selected{% endif %}>{{ bn(b_name, lang) }}</option>
+        {% endfor %}
+    </select>
+    <label>{{ t('chapter', lang) }}:</label>
+    <select id="par-chapter">
+        {% for i in range(1, 151) %}
+        <option value="{{ i }}"{% if i == chapter|int %} selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    <button onclick="loadParallel()">{{ t('search', lang) }}</button>
+</div>
+
+<div id="parallel-results"></div>
+
+<div class="parallel-nav" id="parallel-nav" style="display:none">
+    <a href="#" id="par-prev" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t('prev', lang) != 'prev' else 'Previous' }}</a>
+    <a href="#" id="par-next" onclick="navChapter(1); return false;">{{ t('next', lang) if t('next', lang) != 'next' else 'Next' }} &#9654;</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var LANG = {{ lang|tojson }};
+var TRANS = {{ trans|tojson }};
+
+// Update chapter dropdown when book changes
+document.getElementById('par-book').addEventListener('change', function() {
+    var maxCh = parseInt(this.selectedOptions[0].getAttribute('data-chapters')) || 1;
+    var chSel = document.getElementById('par-chapter');
+    chSel.innerHTML = '';
+    for (var i = 1; i <= maxCh; i++) {
+        var opt = document.createElement('option');
+        opt.value = i; opt.textContent = i;
+        chSel.appendChild(opt);
+    }
+});
+
+// Trigger chapter update on load
+(function() {
+    var bookSel = document.getElementById('par-book');
+    var maxCh = parseInt(bookSel.selectedOptions[0].getAttribute('data-chapters')) || 1;
+    var chSel = document.getElementById('par-chapter');
+    var curCh = {{ chapter|tojson }};
+    chSel.innerHTML = '';
+    for (var i = 1; i <= maxCh; i++) {
+        var opt = document.createElement('option');
+        opt.value = i; opt.textContent = i;
+        if (i == parseInt(curCh)) opt.selected = true;
+        chSel.appendChild(opt);
+    }
+})();
+
+function navChapter(delta) {
+    var chSel = document.getElementById('par-chapter');
+    var newCh = parseInt(chSel.value) + delta;
+    if (newCh < 1) return;
+    var maxCh = chSel.options.length;
+    if (newCh > maxCh) return;
+    chSel.value = newCh;
+    loadParallel();
+}
+
+async function loadParallel() {
+    var book = document.getElementById('par-book').value;
+    var chapter = document.getElementById('par-chapter').value;
+    var el = document.getElementById('parallel-results');
+    el.innerHTML = '<p>Loading...</p>';
+
+    // Get chapter verses for all corpora
+    var res = await fetch('/api/chapter/' + encodeURIComponent(book) + '/' + chapter + '?trans=' + TRANS + '&parallel=true');
+    var data = await res.json();
+
+    if (!data.verses || !data.verses.length) {
+        el.innerHTML = '<p>No verses found for this chapter.</p>';
+        return;
+    }
+
+    // Group by verse number, identify which corpora are present
+    var verseMap = {};
+    var corporaSet = new Set();
+    for (var v of data.verses) {
+        if (!verseMap[v.verse]) verseMap[v.verse] = {};
+        verseMap[v.verse][v.corpus_id] = v;
+        corporaSet.add(v.corpus_id);
+    }
+
+    var corpora = Array.from(corporaSet);
+    var corpusLabels = {
+        'peshitta_nt': 'Peshitta NT',
+        'peshitta_ot': 'Peshitta OT',
+        'biblical_aramaic': 'Biblical Aramaic',
+        'targum_onkelos': 'Targum Onkelos'
+    };
+
+    // Only show parallel view if multiple corpora
+    var numCols = corpora.length + 1; // +1 for verse number
+    var gridCols = '50px ' + corpora.map(function() { return '1fr'; }).join(' ');
+
+    var html = '<div class="parallel-grid">';
+
+    // Header
+    html += '<div class="parallel-header" style="grid-template-columns: ' + gridCols + '">';
+    html += '<div>#</div>';
+    for (var c of corpora) {
+        html += '<div>' + (corpusLabels[c] || c) + '</div>';
+    }
+    html += '</div>';
+
+    // Rows
+    var verseNums = Object.keys(verseMap).map(Number).sort(function(a,b) { return a - b; });
+    for (var vn of verseNums) {
+        html += '<div class="parallel-row" style="grid-template-columns: ' + gridCols + '">';
+        html += '<div class="parallel-cell verse-num">' + vn + '</div>';
+        for (var c of corpora) {
+            var v = verseMap[vn][c];
+            if (v) {
+                var isHebrew = v.syriac && v.syriac.charCodeAt(0) >= 0x0590 && v.syriac.charCodeAt(0) <= 0x05FF;
+                var textClass = isHebrew ? 'hebrew-text' : 'syriac-text';
+                html += '<div class="parallel-cell">';
+                html += '<div class="' + textClass + '">' + (v.syriac || '') + '</div>';
+                if (v.translation) {
+                    html += '<div class="translation-text">' + v.translation + '</div>';
+                }
+                html += '</div>';
+            } else {
+                html += '<div class="parallel-cell empty">—</div>';
+            }
+        }
+        html += '</div>';
+    }
+
+    html += '</div>';
+    el.innerHTML = html;
+    document.getElementById('parallel-nav').style.display = 'flex';
+
+    // Update URL
+    history.replaceState(null, '', '/parallel?book=' + encodeURIComponent(book) + '&chapter=' + chapter + '&lang=' + LANG);
+}
+
+// Auto-load if book/chapter specified
+{% if book and chapter %}
+loadParallel();
+{% endif %}
+</script>
+{% endblock %}

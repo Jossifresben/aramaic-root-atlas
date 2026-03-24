@@ -342,7 +342,12 @@
     "loading": "Cargando...",
     "passage_panel": "Pasaje",
     "visualize": "Visualizar",
-    "proximity_search": "Búsqueda de Proximidad"
+    "proximity_search": "Búsqueda de Proximidad",
+    "parallel_viewer": "Vista Paralela",
+    "parallel_desc": "Compare el mismo pasaje en diferentes corpus arameos lado a lado.",
+    "book": "Libro",
+    "prev": "Anterior",
+    "next": "Siguiente"
   },
   "en": {
     "app_title": "Peshitta Constellations",
@@ -687,7 +692,12 @@
     "loading": "Loading...",
     "passage_panel": "Passage",
     "visualize": "Visualize",
-    "proximity_search": "Proximity Search"
+    "proximity_search": "Proximity Search",
+    "parallel_viewer": "Parallel Viewer",
+    "parallel_desc": "Compare the same passage across different Aramaic corpora side by side.",
+    "book": "Book",
+    "prev": "Previous",
+    "next": "Next"
   },
   "he": {
     "app_title": "קונסטלציות הפשיטתא",
@@ -1032,7 +1042,12 @@
     "loading": "טוען...",
     "passage_panel": "פסוק",
     "visualize": "הדמיה",
-    "proximity_search": "חיפוש קרבה"
+    "proximity_search": "חיפוש קרבה",
+    "parallel_viewer": "תצוגה מקבילה",
+    "parallel_desc": "השווה את אותו קטע במאגרים ארמיים שונים זה לצד זה.",
+    "book": "ספר",
+    "prev": "הקודם",
+    "next": "הבא"
   },
   "ar": {
     "app_title": "أبراج الپشيطتا",
@@ -1377,6 +1392,11 @@
     "loading": "جارٍ التحميل...",
     "passage_panel": "آية",
     "visualize": "تصور",
-    "proximity_search": "بحث القرب"
+    "proximity_search": "بحث القرب",
+    "parallel_viewer": "عرض متوازي",
+    "parallel_desc": "قارن نفس المقطع عبر مجموعات آرامية مختلفة جنبًا إلى جنب.",
+    "book": "سفر",
+    "prev": "السابق",
+    "next": "التالي"
   }
 }
