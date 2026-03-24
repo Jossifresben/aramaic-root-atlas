@@ -25,16 +25,17 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
   - `fetch_biblical_aramaic.py` — Fetch BA corpus from Sefaria API
 - **docs/PRD.md** — Full product requirements document with 4-phase roadmap
 
-## Current State (Phase 1 — OT Complete)
-- **Full Peshitta OT**: All 39 books loaded (23,072 verses, 309,889 words)
-- **Full Peshitta NT**: 22 books (7,440 verses, 101,469 words)
-- **Total**: 30,512 verses, 411,358 words, 56,062 unique forms
-- **4,299 roots** indexed across both corpora (up from 3,329)
+## Current State (Phase 3 Complete)
+- **4 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v)
+- **Total**: 36,627 verses, 498,922 words, 72,566 unique forms
+- **5,039 roots** indexed across all corpora
 - **1,127 cognate entries** with Hebrew/Arabic cognates, semantic bridges
-- Corpus filtering works on all API endpoints (?corpus=peshitta_nt|peshitta_ot)
-- Bilingual UI (EN/ES) with EN/ES/HE/AR translation tracks
-- OT data source: ETCBC/peshitta (CC-BY-NC, Leiden Peshitta Institute)
-- Translation sources: WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR) via bible.helloao.org
+- Quadrilingual UI (EN/ES/HE/AR) with 4 translation tracks
+- Corpus filtering on all API endpoints (?corpus=peshitta_nt|peshitta_ot|biblical_aramaic|targum_onkelos)
+- Root family visualizer (D3.js force graph + root card)
+- Parallel viewer (Peshitta OT ↔ Targum Onkelos / Biblical Aramaic)
+- Root frequency heat map with filter and CSV/JSON export
+- Data sources: ETCBC/peshitta (CC-BY-NC), Sefaria (CC-BY-SA), bible.helloao.org
 
 ## API Routes
 - `GET /` — Home page with search + stats
@@ -49,6 +50,12 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - `GET /api/proximity-search?root1=SH-L-M&root2=K-TH-B&scope=verse` — Proximity search
 - `GET /api/passage-constellation?book=Daniel&chapter=2&v_start=4&v_end=10` — Constellation data
 - `GET /constellation?book=Matthew&chapter=5&v_start=1&v_end=5` — Constellation visualization page
+- `GET /visualize/<root_key>` — Root family visualizer (D3 graph + card)
+- `GET /api/root-family?root=SH-L-M` — Root family data (words, cognates, sister roots)
+- `GET /parallel` — Parallel viewer (multi-corpus side-by-side)
+- `GET /api/parallel/<book>/<chapter>` — Parallel chapter data across corpora
+- `GET /heatmap` — Root frequency heat map page
+- `GET /api/heatmap?limit=100&sort=total` — Heat map data (root frequency across corpora)
 
 ## Run
 ```bash
@@ -88,12 +95,23 @@ python3 app.py  # starts on port 5001
 - ✅ Data source: Sefaria API (Westminster Leningrad Codex, CC-BY-SA)
 - ✅ Fetch script: scripts/fetch_biblical_aramaic.py
 
-## Next Steps (Phase 3 — Targums & Beyond)
-1. Add Targum Onkelos corpus (Aramaic translation of Torah)
-2. Synoptic parallel viewer (Peshitta OT ↔ Biblical Aramaic side-by-side)
-3. Full root family visualizer page (ported from Peshitta app)
-4. Root frequency heat map across corpora
-5. Export/download functionality (root data as CSV/JSON)
+## Phase 3 Complete — Targums & Beyond
+- ✅ Targum Onkelos corpus loaded (5,853 verses, Torah only) via Sefaria API
+- ✅ Synoptic parallel viewer (Peshitta OT ↔ Targum Onkelos / Biblical Aramaic side-by-side)
+- ✅ Full root family visualizer page ported from Peshitta app (D3.js force graph + root card)
+- ✅ Root frequency heat map with filter, progressive loading, CSV/JSON export
+- ✅ Cross-corpus attestation badges in visualizer (NT, OT, BA, Targum counts)
+- ✅ Sister roots discovery (roots sharing 2 of 3 consonants)
+- ✅ Semantic bridges between outlier cognates
+- ✅ Paradigmatic verse citation per root
+- ✅ Heat Map added to navbar with i18n support
+- ✅ Data source: Sefaria API (Targum Onkelos, CC-BY-SA)
+
+## Next Steps (Phase 4 — Polish & Scale)
+1. Root-of-the-day on homepage
+2. Bookmark/favorites for roots
+3. Performance optimization for large datasets
+4. Deploy to production (Render)
 
 ## Conventions
 - Syriac text uses Unicode (U+0710-U+074F), stored as-is in CSV
