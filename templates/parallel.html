@@ -80,11 +80,20 @@
     direction: rtl;
     text-align: right;
 }
+.parallel-cell .translit-text {
+    font-family: monospace;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 4px;
+    word-spacing: 4px;
+}
 .parallel-cell .translation-text {
     font-size: 0.85rem;
     color: var(--muted);
     font-style: italic;
-    margin-top: 6px;
+    margin-top: 4px;
+    border-top: 1px solid var(--border);
+    padding-top: 4px;
 }
 .parallel-cell.empty {
     color: var(--muted);
@@ -241,6 +250,9 @@ async function loadParallel() {
                 var textClass = isHebrew ? 'hebrew-text' : 'syriac-text';
                 html += '<div class="parallel-cell">';
                 html += '<div class="' + textClass + '">' + (v.syriac || '') + '</div>';
+                if (v.translit) {
+                    html += '<div class="translit-text">' + v.translit + '</div>';
+                }
                 if (v.translation) {
                     html += '<div class="translation-text">' + v.translation + '</div>';
                 }

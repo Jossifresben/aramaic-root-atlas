@@ -179,7 +179,7 @@ class AramaicCorpus:
         books_max_ch: dict[str, int] = {}
         book_list: list[tuple[str, int]] = []
         for ref in self._verse_order:
-            if corpus_id and self._verse_corpus.get(ref) != corpus_id:
+            if corpus_id and corpus_id not in self._verse_corpora.get(ref, []):
                 continue
             last_space = ref.rfind(' ')
             book = ref[:last_space]
@@ -197,7 +197,7 @@ class AramaicCorpus:
         self.load()
         results = []
         for ref, text in self._verses.items():
-            if corpus_id and self._verse_corpus.get(ref) != corpus_id:
+            if corpus_id and corpus_id not in self._verse_corpora.get(ref, []):
                 continue
             last_space = ref.rfind(' ')
             if last_space == -1:
@@ -215,6 +215,9 @@ class AramaicCorpus:
             except ValueError:
                 continue
             if ch == chapter:
+                # Use corpus-specific text if filtering
+                if corpus_id:
+                    text = self._verses_by_corpus.get(corpus_id, {}).get(ref, text)
                 results.append((v, ref, text))
         results.sort(key=lambda x: x[0])
         return results

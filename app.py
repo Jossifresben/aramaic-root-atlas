@@ -321,10 +321,18 @@ def api_chapter(book, chapter):
                     translation = _corpus.get_verse_translation(ref, trans)
                     if not translation and trans != 'en':
                         translation = _corpus.get_verse_translation(ref, 'en')
+                    # Transliterate based on script
+                    from aramaic_core.characters import detect_script, transliterate_hebrew
+                    script = detect_script(text)
+                    if script == 'hebrew':
+                        translit = ' '.join(transliterate_hebrew(w) for w in text.split())
+                    else:
+                        translit = ' '.join(transliterate_syriac(w) for w in text.split())
                     result.append({
                         'verse': v_num,
                         'reference': ref,
                         'syriac': text,
+                        'translit': translit,
                         'translation': translation,
                         'corpus_id': cid,
                     })
@@ -814,9 +822,24 @@ def parallel():
     lang = _get_lang()
     book = request.args.get('book', 'Genesis')
     chapter = request.args.get('chapter', '1')
-    books = _corpus.get_books()
+
+    # Only include books that exist in 2+ corpora
+    book_corpora = {}  # book_name -> set of corpus_ids
+    for cid in _corpus.get_corpus_ids():
+        for b_name, b_ch in _corpus.get_books(cid):
+            if b_name not in book_corpora:
+                book_corpora[b_name] = {'chapters': b_ch, 'corpora': set()}
+            book_corpora[b_name]['corpora'].add(cid)
+            book_corpora[b_name]['chapters'] = max(book_corpora[b_name]['chapters'], b_ch)
+
+    parallel_books = [(name, info['chapters']) for name, info in book_corpora.items()
+                      if len(info['corpora']) >= 2]
+
+    if book not in book_corpora or len(book_corpora.get(book, {}).get('corpora', set())) < 2:
+        book = parallel_books[0][0] if parallel_books else 'Genesis'
+
     return render_template('parallel.html', lang=lang, script=_get_script(),
-                           trans=_get_trans(), t=_t_proxy, bn=_bn, books=books,
+                           trans=_get_trans(), t=_t_proxy, bn=_bn, books=parallel_books,
                            book=book, chapter=chapter)
 
 
