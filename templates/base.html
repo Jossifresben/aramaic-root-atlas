@@ -8,12 +8,16 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Syriac&family=Noto+Sans+Syriac+Eastern&family=Noto+Sans+Syriac+Western&family=Noto+Sans+Hebrew&family=Noto+Sans+Arabic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     {% block head %}{% endblock %}
 </head>
 <body>
     <nav class="nav">
         <div class="nav-inner">
-            <a href="/?lang={{ lang }}" class="nav-brand">Aramaic Root Atlas</a>
+            <a href="/?lang={{ lang }}" class="nav-brand">
+                <img src="{{ url_for('static', filename='logo.svg') }}" alt="Aramaic Root Atlas" class="nav-logo">
+                <span class="nav-brand-text">Aramaic Root Atlas</span>
+            </a>
             <div class="nav-links">
                 <a href="/browse?lang={{ lang }}">{{ t('browse', lang) if t else 'Browse' }}</a>
                 <a href="/parallel?lang={{ lang }}">{{ t('parallel_viewer', lang) if t else 'Parallel' }}</a>
