@@ -82,7 +82,7 @@ Several parameters are shared across multiple endpoints:
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `lang` | string | `en` | UI language. One of: `en`, `es`, `he`, `ar`. Affects glosses and book names. |
-| `corpus` | string | _(all)_ | Filter by corpus ID. One of: `peshitta_nt`, `peshitta_ot`, `biblical_aramaic`. Omit to search all. |
+| `corpus` | string | _(all)_ | Filter by corpus ID. One of: `peshitta_nt`, `peshitta_ot`, `biblical_aramaic`, `targum_onkelos`. Omit to search all. |
 | `trans` | string | value of `lang` | Translation track for verse text. One of: `en`, `es`, `he`, `ar`. |
 | `script` | string | `latin` | Transliteration script. One of: `latin`, `syriac`, `hebrew`, `arabic`. |
 
@@ -118,12 +118,18 @@ Return aggregate corpus statistics.
       "label": "Biblical Aramaic",
       "verses": 269,
       "words": 4880
+    },
+    {
+      "id": "targum_onkelos",
+      "label": "Targum Onkelos",
+      "verses": 5846,
+      "words": 82684
     }
   ],
-  "total_verses": 30781,
-  "total_words": 416238,
-  "total_unique": 57849,
-  "root_count": 4485
+  "total_verses": 36627,
+  "total_words": 498922,
+  "total_unique": 72566,
+  "root_count": 5039
 }
 ```
 
@@ -154,7 +160,8 @@ Look up a triliteral root and return all attested word forms, cognates, and cros
   "corpus_attestation": {
     "peshitta_nt": 85,
     "peshitta_ot": 220,
-    "biblical_aramaic": 7
+    "biblical_aramaic": 7,
+    "targum_onkelos": 42
   },
   "matches": [
     {
@@ -567,6 +574,151 @@ Return root constellation data for a passage: all roots, their cognates, semanti
 
 ---
 
+### GET /api/root-family
+
+Return full root family data for the visualizer: word forms, cognates, sister roots, semantic bridges, and cross-corpus attestation.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `root` | string | yes | -- | Root query (same formats as `/api/roots?q=`). |
+| `lang` | string | no | `en` | UI language. |
+| `script` | string | no | `latin` | Transliteration script. |
+| `trans` | string | no | value of `lang` | Translation track for glosses and paradigmatic verse. |
+
+**Response (200):**
+
+```json
+{
+  "root": "\u072b\u0720\u0721",
+  "root_translit": "SH-L-M",
+  "gloss": "peace, completeness, wholeness",
+  "sabor": "the fullness that comes when nothing is missing",
+  "total_occurrences": 312,
+  "corpus_attestation": {
+    "peshitta_nt": 85,
+    "peshitta_ot": 220,
+    "biblical_aramaic": 7,
+    "targum_onkelos": 42
+  },
+  "syriac_words": [
+    {
+      "form": "\u072b\u0720\u0721\u0710",
+      "translit": "shlma",
+      "meaning": "peace",
+      "count": 94,
+      "corpus_counts": {"peshitta_nt": 30, "peshitta_ot": 64}
+    }
+  ],
+  "hebrew_cognates": [...],
+  "arabic_cognates": [...],
+  "bridges": [...],
+  "sister_roots": [
+    {
+      "root": "\u072b\u0720\u071d",
+      "translit": "SH-L-Y",
+      "gloss": "to be quiet, at rest",
+      "count": 45
+    }
+  ],
+  "paradigm_verse": {
+    "ref": "Matthew 10:13",
+    "text": "...",
+    "translation": "..."
+  }
+}
+```
+
+**Error Responses:**
+
+| Status | Body | Cause |
+|--------|------|-------|
+| 400 | `{"error": "Missing root parameter"}` | No `root` provided. |
+| 400 | `{"error": "Invalid root"}` | Input could not be parsed. |
+
+---
+
+### GET /api/parallel
+
+Return parallel texts for a verse reference across all corpora that contain it.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `ref` | string | yes | -- | Verse reference (e.g., `Genesis 1:1`). |
+| `lang` | string | no | `en` | UI language. |
+| `trans` | string | no | value of `lang` | Translation track. |
+
+**Response (200):**
+
+```json
+{
+  "reference": "Genesis 1:1",
+  "parallels": [
+    {
+      "corpus_id": "peshitta_ot",
+      "corpus_label": "Peshitta OT",
+      "text": "\u0712\u072a\u0713\u072b\u071d\u072c ...",
+      "script": "syriac",
+      "translation": "In the beginning..."
+    },
+    {
+      "corpus_id": "targum_onkelos",
+      "corpus_label": "Targum Onkelos",
+      "text": "\u0712\u0729\u0715\u0721\u071d\u0722 ...",
+      "script": "syriac",
+      "translation": ""
+    }
+  ],
+  "translation_en": "In the beginning...",
+  "translation_es": "En el principio..."
+}
+```
+
+**Error Responses:**
+
+| Status | Body | Cause |
+|--------|------|-------|
+| 400 | `{"error": "Missing ref parameter"}` | No `ref` provided. |
+
+---
+
+### GET /api/heatmap
+
+Return root frequency data across all corpora for heat map display.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `limit` | int | no | `100` | Maximum number of roots to return. Use `0` for all. |
+| `sort` | string | no | `total` | Sort key: `total` (descending), `root` (alphabetical), or a corpus ID (e.g., `peshitta_nt`). |
+
+**Response (200):**
+
+```json
+{
+  "corpora": ["peshitta_nt", "peshitta_ot", "biblical_aramaic", "targum_onkelos"],
+  "roots": [
+    {
+      "root": "\u0710\u0721\u072a",
+      "root_translit": "A-M-R",
+      "gloss": "to say, speak",
+      "total": 4521,
+      "peshitta_nt": 892,
+      "peshitta_ot": 2843,
+      "biblical_aramaic": 67,
+      "targum_onkelos": 719
+    }
+  ],
+  "total_roots": 5039
+}
+```
+
+---
+
 ## Page Routes (HTML)
 
 These routes return rendered HTML pages, not JSON. They accept the common `lang`, `script`, and `trans` query parameters.
@@ -577,6 +729,9 @@ These routes return rendered HTML pages, not JSON. They accept the common `lang`
 | `GET /browse` | Book browser with corpus filter tabs. Accepts `corpus` parameter. |
 | `GET /read/<book>/<chapter>` | Verse reader with interlinear Syriac text, transliteration, and translation selector. |
 | `GET /constellation` | Passage constellation visualization (D3.js force graph). Accepts `book`, `chapter`, `v_start`, `v_end`. |
+| `GET /visualize/<root_key>` | Root family visualizer page (D3.js force graph + root card). `root_key` is a dash-separated Latin transliteration (e.g., `SH-L-M`). |
+| `GET /parallel` | Synoptic parallel viewer for comparing texts across corpora. Accepts `book`, `chapter`. |
+| `GET /heatmap` | Root frequency heat map page with interactive filter, sort, and export. |
 | `GET /about` | About page with project information and credits. |
 
 ---

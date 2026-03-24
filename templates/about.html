@@ -384,6 +384,7 @@
             <div class="feature-card">
                 <h4>{% if lang == 'es' %}Constelaci&oacute;n de pasaje{% elif lang == 'he' %}קונסטלציית קטע{% elif lang == 'ar' %}كوكبة النص{% else %}Passage Constellation{% endif %}</h4>
                 <p>{% if lang == 'es' %}Grafo interactivo de todas las ra&iacute;ces en un pasaje, mostrando coocurrencia y agrupamiento sem&aacute;ntico entre vers&iacute;culos.{% elif lang == 'he' %}גרף אינטראקטיבי של כל השורשים בקטע, המציג שיתוף הופעה וצביר סמנטי בין פסוקים.{% elif lang == 'ar' %}رسم بياني تفاعلي لجميع الجذور في مقطع نصي، يُظهر التواتر المشترك والتجمّع الدلالي بين الآيات.{% else %}Interactive graph of all roots in a passage, showing co-occurrence and semantic clustering across verses.{% endif %}</p>
+                <a href="/constellation?book=Matthew&chapter=5&v_start=3&v_end=12&lang={{ lang }}" class="feature-example-link">{% if lang == 'es' %}Ejemplo: Bienaventuranzas{% elif lang == 'he' %}דוגמה: אשריות{% elif lang == 'ar' %}مثال: التطويبات{% else %}Example: The Beatitudes{% endif %} &rarr;</a>
             </div>
 
             {# Parallel Viewer #}

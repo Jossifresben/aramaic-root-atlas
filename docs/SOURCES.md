@@ -36,6 +36,17 @@ This document lists all data sources, licenses, and third-party resources used b
 - **Fetch script:** `scripts/fetch_biblical_aramaic.py`
 - **Notes:** The Biblical Aramaic passages are the Aramaic-language sections of the Hebrew Bible. They are written in Hebrew square script, not Syriac. The Atlas performs cross-script root normalization so that shared roots (e.g., Hebrew square script and Syriac) resolve to a common root key.
 
+### Targum Onkelos
+
+- **Content:** 5,846 verses, 82,684 words (Torah / Pentateuch only)
+- **Source:** Sefaria API
+- **License:** CC-BY-SA (Creative Commons Attribution-ShareAlike)
+- **Script:** Syriac (Unicode block U+0710--U+074F)
+- **Corpus ID:** `targum_onkelos`
+- **File:** `data/corpora/targum_onkelos.csv`
+- **Fetch script:** `scripts/fetch_targum_onkelos.py`
+- **Notes:** Targum Onkelos is the authoritative Jewish Aramaic translation of the Torah, produced in the 2nd century CE. It is the most literal of the major Targumim. The text was fetched from the Sefaria API and stored in Syriac script.
+
 ---
 
 ## Translation Tracks
@@ -174,6 +185,7 @@ All translations were fetched from the **bible.helloao.org** API and are stored 
 | Peshitta NT text | -- | Yes (loaded from CSV) |
 | Peshitta OT text (ETCBC) | CC-BY-NC | Yes (loaded from CSV) |
 | Biblical Aramaic (WLC via Sefaria) | CC-BY-SA | Yes (loaded from CSV) |
+| Targum Onkelos (Sefaria) | CC-BY-SA | Yes (loaded from CSV) |
 | WEB English translation | Public Domain | Yes (loaded from JSON) |
 | Reina-Valera 1909 Spanish | Public Domain | Yes (loaded from JSON) |
 | Westminster Leningrad Codex Hebrew | Public Domain | Yes (loaded from JSON) |
