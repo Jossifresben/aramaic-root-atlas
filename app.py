@@ -917,5 +917,209 @@ def heatmap():
                            trans=_get_trans(), t=_t_proxy, bn=_bn)
 
 
+@app.route('/visualize/<root_key>')
+def visualize(root_key):
+    """Root family visualizer page."""
+    lang = _get_lang()
+    script = _get_script()
+    trans = _get_trans()
+    display_key = root_key.upper()
+    if display_key.startswith('A-'):
+        display_key = "'" + display_key[1:]
+    return render_template('visualize.html', lang=lang, script=script,
+                           trans=trans, t=_t_proxy, bn=_bn,
+                           root_key=display_key)
+
+
+@app.route('/api/root-family')
+def api_root_family():
+    """Return full root family data for the visualizer."""
+    _init()
+    root_input = request.args.get('root', '').strip()
+    lang = _get_lang()
+    script = _get_script()
+    translit_fn = _get_translit_fn(script)
+    trans = _get_trans()
+    meaning_lang = trans if trans in ('es', 'en') else lang
+
+    if not root_input:
+        return jsonify({'error': 'Missing root parameter'}), 400
+
+    root_syriac = parse_root_input(root_input)
+    if root_syriac is None:
+        return jsonify({'error': 'Invalid root'}), 400
+
+    root_entry = _extractor.lookup_root(root_syriac)
+    cognate_entry = _cognate_lookup.lookup(root_syriac)
+
+    # Semitic sound correspondence fallback
+    if not root_entry and not cognate_entry:
+        for variant in semitic_root_variants(root_syriac):
+            v_root = _extractor.lookup_root(variant)
+            v_cognate = _cognate_lookup.lookup(variant)
+            if v_root or v_cognate:
+                root_syriac = variant
+                root_entry = v_root
+                cognate_entry = v_cognate
+                break
+
+    gloss = ''
+    if cognate_entry:
+        gloss = cognate_entry.gloss_es if meaning_lang == 'es' else cognate_entry.gloss_en
+    if not gloss:
+        gloss = _extractor.get_root_gloss(root_syriac)
+
+    # Syriac word forms — filter proclitics
+    PROCLITICS = {'\u0718', '\u0715', '\u0712', '\u0720'}
+    COMPOUND_PROCLITICS = {
+        '\u0718\u0712', '\u0718\u0720', '\u0718\u0721', '\u0718\u0715',
+        '\u0715\u0712', '\u0715\u0720', '\u0715\u0721', '\u0720\u0721',
+    }
+    syriac_words = []
+    seen_meanings = set()
+    if root_entry:
+        for m in root_entry.matches:
+            has_proclitic = False
+            if len(m.form) > 1:
+                if m.form[:2] in COMPOUND_PROCLITICS:
+                    has_proclitic = True
+                elif m.form[0] in PROCLITICS:
+                    has_proclitic = True
+            if has_proclitic:
+                continue
+
+            meaning = _glosser.gloss(m.form, root_syriac, meaning_lang)
+            if meaning and meaning in seen_meanings:
+                continue
+            if meaning:
+                seen_meanings.add(meaning)
+
+            translit_display = m.transliteration if script == 'latin' else translit_fn(m.form)
+            # Corpus breakdown for this form
+            corpus_counts = {}
+            for ref in m.references:
+                cid = _corpus.get_verse_corpus(ref)
+                corpus_counts[cid] = corpus_counts.get(cid, 0) + 1
+
+            syriac_words.append({
+                'word': m.form,
+                'translit': translit_display,
+                'meaning': meaning,
+                'references': m.references[:5],
+                'count': m.count,
+                'corpus_counts': corpus_counts,
+            })
+
+    # Cognates
+    hebrew = []
+    arabic = []
+    if cognate_entry:
+        for hw in cognate_entry.hebrew:
+            h = {
+                'word': hw.word,
+                'translit': hw.transliteration,
+                'meaning': hw.meaning_es if meaning_lang == 'es' else hw.meaning_en,
+            }
+            if hw.outlier:
+                h['outlier'] = True
+            hebrew.append(h)
+        for aw in cognate_entry.arabic:
+            a = {
+                'word': aw.word,
+                'translit': aw.transliteration,
+                'meaning': aw.meaning_es if meaning_lang == 'es' else aw.meaning_en,
+            }
+            if aw.outlier:
+                a['outlier'] = True
+            arabic.append(a)
+
+    # Semantic bridges
+    bridges = []
+    if cognate_entry and cognate_entry.semantic_bridges:
+        for b in cognate_entry.semantic_bridges:
+            bridges.append({
+                'outlier_key': b.outlier_key,
+                'target_root': b.target_root,
+                'relationship': b.relationship,
+                'bridge_concept': b.bridge_concept_es if meaning_lang == 'es' else b.bridge_concept_en,
+            })
+
+    # Paradigmatic citation
+    paradigmatic_ref = ''
+    paradigmatic_verse = ''
+    paradigmatic_syriac = ''
+    paradigmatic_translit = ''
+    paradigmatic_form = ''
+    override_ref = cognate_entry.paradigmatic_ref_override if cognate_entry else ''
+
+    if root_entry and root_entry.matches:
+        best_match = max(root_entry.matches, key=lambda m: m.count)
+        paradigmatic_form = best_match.form
+        if override_ref:
+            paradigmatic_ref = override_ref
+        elif best_match.references:
+            paradigmatic_ref = best_match.references[0]
+        if paradigmatic_ref:
+            verse_text = _corpus.get_verse_translation(paradigmatic_ref, trans)
+            if verse_text:
+                paradigmatic_verse = verse_text
+            syriac_text = _corpus.get_verse_text(paradigmatic_ref)
+            if syriac_text:
+                paradigmatic_syriac = syriac_text
+                words = syriac_text.split()
+                paradigmatic_translit = ' '.join(translit_fn(w) for w in words)
+
+    # Sister roots
+    sister_roots = []
+    root_parts = root_input.lower().split('-')
+    if len(root_parts) == 3:
+        all_keys = _cognate_lookup.get_all_keys()
+        for other_key in all_keys:
+            if other_key == root_input.lower():
+                continue
+            other_parts = other_key.split('-')
+            if len(other_parts) == 3:
+                shared = sum(1 for a, b in zip(root_parts, other_parts) if a == b)
+                if shared >= 2:
+                    other_entry = _cognate_lookup.lookup_by_key(other_key)
+                    other_gloss = ''
+                    other_syriac = ''
+                    if other_entry:
+                        other_gloss = other_entry.gloss_es if meaning_lang == 'es' else other_entry.gloss_en
+                        other_syriac = other_entry.root_syriac
+                    sister_roots.append({
+                        'root_translit': other_key.upper().replace('A-', "'-", 1) if other_key.startswith('a-') else other_key.upper(),
+                        'root_syriac': other_syriac,
+                        'gloss': other_gloss,
+                        'shared': shared,
+                    })
+
+    # Cross-corpus attestation
+    corpus_attestation = {}
+    if root_entry:
+        for m in root_entry.matches:
+            for ref in m.references:
+                cid = _corpus.get_verse_corpus(ref)
+                corpus_attestation[cid] = corpus_attestation.get(cid, 0) + 1
+
+    return jsonify({
+        'root': root_syriac,
+        'root_translit': _translit_to_dash(root_syriac) if root_syriac else root_input.upper(),
+        'gloss': gloss,
+        'syriac_words': syriac_words,
+        'hebrew': hebrew,
+        'arabic': arabic,
+        'semantic_bridges': bridges,
+        'paradigmatic_ref': paradigmatic_ref,
+        'paradigmatic_verse': paradigmatic_verse,
+        'paradigmatic_syriac': paradigmatic_syriac,
+        'paradigmatic_translit': paradigmatic_translit,
+        'paradigmatic_form': paradigmatic_form,
+        'paradigmatic_form_translit': translit_fn(paradigmatic_form) if paradigmatic_form else '',
+        'sister_roots': sister_roots,
+        'corpus_attestation': corpus_attestation,
+    })
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

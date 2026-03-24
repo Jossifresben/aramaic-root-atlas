@@ -1,0 +1,899 @@
+{% extends "base.html" %}
+
+{% block title %}Aramaic Root Atlas — {{ root_key }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <header>
+            <h1 class="page-title">{{ t('viz_title') }}</h1>
+        </header>
+
+        <div id="viz-loading" class="viz-loading">
+            <p>{{ t('viz_loading') }}</p>
+        </div>
+        <div id="viz-error" class="viz-error" style="display:none;"></div>
+        <div id="viz-container" class="viz-container" style="display:none;">
+            <!-- Graph / Card tabs -->
+            <div class="viz-view-tabs">
+                <button class="viz-view-tab active" id="tab-graph" onclick="switchVizTab('graph')">
+                    <span class="material-symbols-outlined">hub</span> {{ t('viz_graph_tab') }}
+                </button>
+                <button class="viz-view-tab" id="tab-ficha" onclick="switchVizTab('ficha')">
+                    <span class="material-symbols-outlined">badge</span> {{ t('viz_card_tab') }}
+                </button>
+            </div>
+
+            <!-- Graph view -->
+            <div id="view-graph">
+                <div class="viz-controls">
+                    <label class="viz-check"><input type="checkbox" id="chk-hebrew" checked> <span class="viz-check-dot" style="background:#2E5090;"></span> {{ t('viz_checkbox_hebrew') }}</label>
+                    <label class="viz-check"><input type="checkbox" id="chk-arabic" checked> <span class="viz-check-dot" style="background:#2D7D46;"></span> {{ t('viz_checkbox_arabic') }}</label>
+                    <label class="viz-check"><input type="checkbox" id="chk-syriac" checked> <span class="viz-check-dot" style="background:#A0522D;"></span> {{ t('viz_checkbox_syriac') }}</label>
+                    <span id="viz-outlier-key" class="viz-outlier-key" style="display:none;">
+                        <svg width="18" height="18" style="vertical-align:middle;margin-right:4px;"><circle cx="9" cy="9" r="7" fill="none" stroke="#DAA520" stroke-width="2" stroke-dasharray="4,2"/></svg>
+                        {{ t('viz_outlier_legend') }}
+                    </span>
+                    <span id="viz-bridge-key" class="viz-bridge-key" style="display:none;">
+                        <svg width="22" height="22" style="vertical-align:middle;margin-right:4px;">
+                            <circle cx="11" cy="11" r="9" fill="none" stroke="#DAA520" stroke-width="2.5" stroke-dasharray="4,3" class="bridge-outlier-ring"/>
+                            <circle cx="11" cy="11" r="6" fill="#B8860B" stroke="#DAA520" stroke-width="2"/>
+                        </svg>
+                        {{ t('viz_click_bridge') }}
+                    </span>
+                    <button id="viz-fullscreen" class="viz-fullscreen-btn" title="Fullscreen">
+                        <span class="material-symbols-outlined" id="fullscreen-icon">fullscreen</span>
+                    </button>
+                </div>
+                <div id="viz-svg-wrap" class="viz-svg-wrap"></div>
+                <div id="viz-tooltip" class="viz-tooltip"></div>
+            </div>
+
+            <!-- Root Card view -->
+            <div id="view-ficha" style="display:none;">
+                <div class="root-ficha">
+                    <!-- Semantic field -->
+                    <div class="ficha-section ficha-semantic">
+                        <div class="ficha-root-header">
+                            <span class="ficha-root-syriac" id="ficha-root-syriac"></span>
+                            <span class="ficha-root-translit" id="ficha-root-translit"></span>
+                        </div>
+                        <p class="ficha-semantic-text" id="ficha-sabor"></p>
+                        <!-- Corpus attestation badges -->
+                        <div class="ficha-attestation" id="ficha-attestation"></div>
+                    </div>
+
+                    <!-- Paradigmatic citation -->
+                    <div class="ficha-section ficha-citation-section">
+                        <h3 class="ficha-section-title">
+                            <span class="material-symbols-outlined">menu_book</span>
+                            {{ t('viz_key_verse') }}
+                        </h3>
+                        <div class="ficha-citation-original" id="ficha-syriac"></div>
+                        <div class="ficha-citation-translit" id="ficha-translit"></div>
+                        <blockquote class="ficha-citation" id="ficha-verse"></blockquote>
+                        <div class="ficha-citation-note" id="ficha-citation-note" style="display:none;"></div>
+                        <div class="ficha-citation-ref">
+                            <span id="ficha-ref"></span>
+                            <a id="ficha-read-link" href="#" class="ficha-read-link">
+                                {{ t('viz_read') }} &rarr;
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sister roots -->
+                    <div class="ficha-section ficha-sisters-section">
+                        <h3 class="ficha-section-title">
+                            <span class="material-symbols-outlined">share</span>
+                            {{ t('viz_sisters') }}
+                        </h3>
+                        <div class="ficha-sisters" id="ficha-sisters"></div>
+                        <p class="ficha-sisters-empty" id="ficha-sisters-empty" style="display:none;">
+                            {{ t('viz_no_sisters') }}
+                        </p>
+                    </div>
+
+                    <!-- All derivatives table -->
+                    <div class="ficha-section ficha-derivatives-section">
+                        <h3 class="ficha-section-title">
+                            <span class="material-symbols-outlined">table_chart</span>
+                            {{ t('viz_all_derivatives') }}
+                        </h3>
+                        <div class="ficha-table-wrap">
+                            <table class="ficha-table" id="ficha-table">
+                                <thead>
+                                    <tr>
+                                        <th>{{ t('viz_col_syriac') }}</th>
+                                        <th>{{ t('viz_col_hebrew') }}</th>
+                                        <th>{{ t('viz_col_arabic') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ficha-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+    (function() {
+        var ROOT_KEY = {{ root_key|tojson }};
+        var LANG = {{ lang|tojson }};
+        var SCRIPT = {{ script|tojson }};
+        var TRANS = {{ trans|tojson }};
+
+        // Colors
+        var COLOR_CENTER = '#8B4513';
+        var COLOR_SYRIAC = '#A0522D';
+        var COLOR_HEBREW = '#2E5090';
+        var COLOR_ARABIC = '#2D7D46';
+        var COLOR_BRIDGE_CENTER = '#B8860B';
+        var COLOR_BRIDGE_HEBREW = '#5B7DB8';
+        var COLOR_BRIDGE_ARABIC = '#5BA87A';
+        var COLOR_BRIDGE_LINE = '#DAA520';
+        var COLOR_OUTLIER = '#999';
+        var COLOR_LINE = '#ccc';
+
+        var width, height;
+        function updateSize() {
+            var wrap = document.getElementById('viz-svg-wrap');
+            var container = document.getElementById('viz-container');
+            var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement) ||
+                       (container && container.classList.contains('is-fullscreen'));
+            width = isFs ? window.innerWidth : wrap.clientWidth;
+            height = isFs ? window.innerHeight : Math.max(500, Math.min(700, window.innerHeight - 200));
+        }
+        updateSize();
+
+        var _rawData = null;
+        var _bridgeMap = {};
+        var _expandedBridges = {};
+        var _simulation = null;
+        var _nodes = [];
+        var _links = [];
+        var _svg = null;
+        var _g = null;
+        var _linkGroup = null;
+        var _nodeGroup = null;
+        var _tooltip = null;
+
+        fetch('/api/root-family?root=' + encodeURIComponent(ROOT_KEY) + '&lang=' + LANG + '&script=' + SCRIPT + '&trans=' + TRANS)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.error) {
+                document.getElementById('viz-loading').style.display = 'none';
+                document.getElementById('viz-error').style.display = 'block';
+                document.getElementById('viz-error').textContent = data.error;
+                return;
+            }
+            _rawData = data;
+            _bridgeMap = {};
+            if (data.semantic_bridges) {
+                data.semantic_bridges.forEach(function(b) {
+                    _bridgeMap[b.outlier_key] = b;
+                });
+            }
+            document.getElementById('viz-loading').style.display = 'none';
+            document.getElementById('viz-container').style.display = 'block';
+            render();
+            buildFicha(data);
+        })
+        .catch(function(err) {
+            document.getElementById('viz-loading').style.display = 'none';
+            document.getElementById('viz-error').style.display = 'block';
+            document.getElementById('viz-error').textContent = 'Error: ' + err.message;
+        });
+
+        // Re-render on checkbox change
+        document.getElementById('chk-hebrew').addEventListener('change', render);
+        document.getElementById('chk-arabic').addEventListener('change', render);
+        document.getElementById('chk-syriac').addEventListener('change', render);
+
+        function escHtml(str) {
+            var d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        function render() {
+            if (!_rawData) return;
+            _expandedBridges = {};
+            document.getElementById('viz-svg-wrap').innerHTML = '';
+            buildViz(_rawData);
+        }
+
+        // Tab switching (Graph / Card)
+        window.switchVizTab = function(tab, updateUrl) {
+            var graphView = document.getElementById('view-graph');
+            var fichaView = document.getElementById('view-ficha');
+            var tabGraph = document.getElementById('tab-graph');
+            var tabFicha = document.getElementById('tab-ficha');
+            if (tab === 'ficha') {
+                graphView.style.display = 'none';
+                fichaView.style.display = '';
+                tabGraph.classList.remove('active');
+                tabFicha.classList.add('active');
+            } else {
+                graphView.style.display = '';
+                fichaView.style.display = 'none';
+                tabGraph.classList.add('active');
+                tabFicha.classList.remove('active');
+            }
+            if (updateUrl !== false) {
+                var url = new URL(window.location);
+                url.searchParams.set('tab', tab);
+                history.replaceState(null, '', url);
+            }
+        };
+        // Auto-switch tab from URL parameter
+        var urlTab = new URLSearchParams(window.location.search).get('tab');
+        if (urlTab === 'ficha') switchVizTab('ficha', false);
+
+        // Build Root Card from API data
+        function buildFicha(data) {
+            document.getElementById('ficha-root-syriac').textContent = data.root || '';
+            document.getElementById('ficha-root-translit').textContent = data.root_translit || '';
+
+            // Semantic field
+            document.getElementById('ficha-sabor').textContent = data.sabor_raiz || data.gloss || '';
+
+            // Corpus attestation badges
+            var attEl = document.getElementById('ficha-attestation');
+            attEl.innerHTML = '';
+            if (data.corpus_attestation) {
+                var labels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT',
+                              'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+                for (var cid in data.corpus_attestation) {
+                    var badge = document.createElement('span');
+                    badge.className = 'corpus-badge corpus-' + cid;
+                    badge.textContent = (labels[cid] || cid) + ': ' + data.corpus_attestation[cid] + '\u00d7';
+                    attEl.appendChild(badge);
+                }
+            }
+
+            // Paradigmatic citation
+            var verseEl = document.getElementById('ficha-verse');
+            var refEl = document.getElementById('ficha-ref');
+            var readLink = document.getElementById('ficha-read-link');
+            var syriacEl = document.getElementById('ficha-syriac');
+            var translitEl = document.getElementById('ficha-translit');
+            if (data.paradigmatic_verse) {
+                var syrText = data.paradigmatic_syriac || '';
+                var form = data.paradigmatic_form || '';
+                if (form && syrText.indexOf(form) !== -1) {
+                    syriacEl.innerHTML = syrText.split(form).map(escHtml).join('<mark class="cite-highlight">' + escHtml(form) + '</mark>');
+                } else {
+                    syriacEl.textContent = syrText;
+                }
+                var translitText = data.paradigmatic_translit || '';
+                var formTranslit = data.paradigmatic_form_translit || '';
+                if (formTranslit && translitText.indexOf(formTranslit) !== -1) {
+                    translitEl.innerHTML = translitText.split(formTranslit).map(escHtml).join('<mark class="cite-highlight">' + escHtml(formTranslit) + '</mark>');
+                } else {
+                    translitEl.textContent = translitText;
+                }
+                verseEl.textContent = '\u201c' + data.paradigmatic_verse + '\u201d';
+                var noteEl = document.getElementById('ficha-citation-note');
+                if (data.paradigmatic_note) {
+                    noteEl.textContent = data.paradigmatic_note;
+                    noteEl.style.display = '';
+                } else {
+                    noteEl.style.display = 'none';
+                }
+                refEl.textContent = '\u2014 ' + data.paradigmatic_ref;
+                var refParts = (data.paradigmatic_ref || '').match(/^(.+?)\s+(\d+):(\d+)/);
+                if (refParts) {
+                    readLink.href = '/read/' + encodeURIComponent(refParts[1]) + '/' + refParts[2] + '?lang=' + LANG + '&trans=' + TRANS + '&hl=' + encodeURIComponent(form) + '#v' + refParts[3];
+                    readLink.style.display = '';
+                } else {
+                    readLink.style.display = 'none';
+                }
+            } else {
+                syriacEl.textContent = '';
+                translitEl.textContent = '';
+                verseEl.textContent = 'N/A';
+                refEl.textContent = '';
+                readLink.style.display = 'none';
+            }
+
+            // Sister roots
+            var sistersEl = document.getElementById('ficha-sisters');
+            var sistersEmpty = document.getElementById('ficha-sisters-empty');
+            sistersEl.innerHTML = '';
+            if (data.sister_roots && data.sister_roots.length > 0) {
+                sistersEmpty.style.display = 'none';
+                data.sister_roots.forEach(function(sr) {
+                    var pill = document.createElement('a');
+                    pill.className = 'ficha-sister';
+                    pill.href = '/visualize/' + sr.root_translit + '?lang=' + LANG +
+                        '&script=' + SCRIPT + '&trans=' + TRANS;
+                    var label = sr.root_translit;
+                    if (sr.root_syriac) label = sr.root_syriac + ' ' + label;
+                    pill.innerHTML = '<span class="ficha-sister-root">' + escHtml(label) + '</span>' +
+                        '<span class="ficha-sister-gloss">' + escHtml(sr.gloss || '') + '</span>' +
+                        '<span class="ficha-sister-shared">' + escHtml(sr.shared + '') + '/3</span>';
+                    sistersEl.appendChild(pill);
+                });
+            } else {
+                sistersEmpty.style.display = '';
+            }
+
+            // Derivatives table
+            var tbody = document.getElementById('ficha-table-body');
+            tbody.innerHTML = '';
+            var syriac = data.syriac_words || [];
+            var hebrew = (data.hebrew || []).filter(function(h) { return !h.outlier; });
+            var arabic = (data.arabic || []).filter(function(a) { return !a.outlier; });
+            var maxRows = Math.max(syriac.length, hebrew.length, arabic.length);
+            for (var i = 0; i < maxRows; i++) {
+                var tr = document.createElement('tr');
+                var tdS = document.createElement('td');
+                if (i < syriac.length) {
+                    tdS.innerHTML = '<span class="ficha-word ficha-word-syriac">' + escHtml(syriac[i].word) + '</span>' +
+                        '<span class="ficha-translit">' + escHtml(syriac[i].translit) + '</span>' +
+                        '<span class="ficha-meaning">' + escHtml(syriac[i].meaning || '') + '</span>';
+                }
+                tr.appendChild(tdS);
+                var tdH = document.createElement('td');
+                if (i < hebrew.length) {
+                    tdH.innerHTML = '<span class="ficha-word ficha-word-hebrew">' + escHtml(hebrew[i].word) + '</span>' +
+                        '<span class="ficha-translit">' + escHtml(hebrew[i].translit) + '</span>' +
+                        '<span class="ficha-meaning">' + escHtml(hebrew[i].meaning || '') + '</span>';
+                }
+                tr.appendChild(tdH);
+                var tdA = document.createElement('td');
+                if (i < arabic.length) {
+                    tdA.innerHTML = '<span class="ficha-word ficha-word-arabic">' + escHtml(arabic[i].word) + '</span>' +
+                        '<span class="ficha-translit">' + escHtml(arabic[i].translit) + '</span>' +
+                        '<span class="ficha-meaning">' + escHtml(arabic[i].meaning || '') + '</span>';
+                }
+                tr.appendChild(tdA);
+                tbody.appendChild(tr);
+            }
+        }
+
+        // Fullscreen toggle
+        (function() {
+            var fsBtn = document.getElementById('viz-fullscreen');
+            var fsIcon = document.getElementById('fullscreen-icon');
+            var container = document.getElementById('viz-container');
+            if (!fsBtn) return;
+            var _cssFullscreen = false;
+
+            function isNativeFullscreen() {
+                return !!(document.fullscreenElement || document.webkitFullscreenElement);
+            }
+            function supportsNativeFs() {
+                return !!(container.requestFullscreen || container.webkitRequestFullscreen);
+            }
+            function enterCssFullscreen() {
+                _cssFullscreen = true;
+                container.classList.add('is-fullscreen');
+                document.body.style.overflow = 'hidden';
+                fsIcon.textContent = 'fullscreen_exit';
+                setTimeout(render, 100);
+            }
+            function exitCssFullscreen() {
+                _cssFullscreen = false;
+                container.classList.remove('is-fullscreen');
+                document.body.style.overflow = '';
+                fsIcon.textContent = 'fullscreen';
+                setTimeout(render, 100);
+            }
+            function enterFullscreen() {
+                if (supportsNativeFs()) {
+                    var p = container.requestFullscreen ? container.requestFullscreen() :
+                            container.webkitRequestFullscreen ? container.webkitRequestFullscreen() : null;
+                    if (p && p.catch) p.catch(function() { enterCssFullscreen(); });
+                } else {
+                    enterCssFullscreen();
+                }
+            }
+            function exitFullscreen() {
+                if (isNativeFullscreen()) {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                } else if (_cssFullscreen) {
+                    exitCssFullscreen();
+                }
+            }
+            function onFsChange() {
+                if (isNativeFullscreen()) {
+                    fsIcon.textContent = 'fullscreen_exit';
+                    container.classList.add('is-fullscreen');
+                } else {
+                    fsIcon.textContent = 'fullscreen';
+                    container.classList.remove('is-fullscreen');
+                }
+                setTimeout(render, 100);
+            }
+
+            fsBtn.addEventListener('click', function() {
+                if (isNativeFullscreen() || _cssFullscreen) exitFullscreen();
+                else enterFullscreen();
+            });
+            document.addEventListener('fullscreenchange', onFsChange);
+            document.addEventListener('webkitfullscreenchange', onFsChange);
+        })();
+
+        // Helpers for bubble text
+        function truncMeaning(s, max) {
+            if (!s) return '';
+            if (s.length <= max) return s;
+            return s.substring(0, max - 1) + '\u2026';
+        }
+
+        function wrapMeaning(s, maxPerLine) {
+            if (!s) return [''];
+            if (s.length <= maxPerLine) return [s];
+            var mid = Math.floor(s.length / 2);
+            var commaIdx = s.indexOf(',', Math.max(0, mid - 6));
+            if (commaIdx > 0 && commaIdx < s.length - 3) {
+                var line1 = s.substring(0, commaIdx + 1).trim();
+                var line2 = s.substring(commaIdx + 1).trim();
+                if (line1.length > maxPerLine) line1 = line1.substring(0, maxPerLine - 1) + '\u2026';
+                if (line2.length > maxPerLine) line2 = line2.substring(0, maxPerLine - 1) + '\u2026';
+                return [line1, line2];
+            }
+            var spaceIdx = s.lastIndexOf(' ', maxPerLine);
+            if (spaceIdx > 3) {
+                var l1 = s.substring(0, spaceIdx);
+                var l2 = s.substring(spaceIdx + 1);
+                if (l2.length > maxPerLine) l2 = l2.substring(0, maxPerLine - 1) + '\u2026';
+                return [l1, l2];
+            }
+            return [s.substring(0, maxPerLine - 1) + '\u2026'];
+        }
+
+        function nodeColor(d) {
+            if (d.type === 'center') return COLOR_CENTER;
+            if (d.type === 'bridge-center') return COLOR_BRIDGE_CENTER;
+            if (d.type === 'bridge-hebrew') return COLOR_BRIDGE_HEBREW;
+            if (d.type === 'bridge-arabic') return COLOR_BRIDGE_ARABIC;
+            if (d.type === 'syriac') return COLOR_SYRIAC;
+            if (d.type === 'hebrew') return COLOR_HEBREW;
+            if (d.type === 'arabic') return COLOR_ARABIC;
+            return COLOR_OUTLIER;
+        }
+
+        function buildViz(data) {
+            updateSize();
+            var showHeb = document.getElementById('chk-hebrew').checked;
+            var showAr = document.getElementById('chk-arabic').checked;
+            var showSyr = document.getElementById('chk-syriac').checked;
+
+            _nodes = [];
+            _links = [];
+            _tooltip = d3.select('#viz-tooltip');
+
+            // Center node
+            _nodes.push({
+                id: 'center',
+                label: data.root,
+                sublabel: data.root_translit,
+                detail: data.sabor_raiz || data.gloss,
+                type: 'center',
+                r: 64,
+                fx: width / 2,
+                fy: height / 2
+            });
+
+            // Hebrew cognates
+            if (showHeb) {
+                (data.hebrew || []).forEach(function(w, i) {
+                    var outlierKey = 'heb:' + w.translit.toLowerCase().trim();
+                    var bridge = _bridgeMap[outlierKey] || null;
+                    _nodes.push({
+                        id: 'heb-' + i,
+                        label: w.word,
+                        sublabel: w.translit,
+                        detail: w.meaning,
+                        type: 'hebrew',
+                        outlier: !!w.outlier,
+                        bridge: bridge,
+                        outlierKey: outlierKey,
+                        r: 52
+                    });
+                    _links.push({ source: 'center', target: 'heb-' + i });
+                });
+            }
+
+            // Arabic cognates
+            if (showAr) {
+                (data.arabic || []).forEach(function(w, i) {
+                    var outlierKey = 'ar:' + w.translit.toLowerCase().trim();
+                    var bridge = _bridgeMap[outlierKey] || null;
+                    _nodes.push({
+                        id: 'ar-' + i,
+                        label: w.word,
+                        sublabel: w.translit,
+                        detail: w.meaning,
+                        type: 'arabic',
+                        outlier: !!w.outlier,
+                        bridge: bridge,
+                        outlierKey: outlierKey,
+                        r: 52
+                    });
+                    _links.push({ source: 'center', target: 'ar-' + i });
+                });
+            }
+
+            // Syriac words
+            if (showSyr) {
+                (data.syriac_words || []).forEach(function(w, i) {
+                    _nodes.push({
+                        id: 'syr-' + i,
+                        label: w.word,
+                        sublabel: w.translit,
+                        detail: w.meaning,
+                        refs: w.references,
+                        type: 'syriac',
+                        outlier: false,
+                        bridge: null,
+                        r: 48
+                    });
+                    _links.push({ source: 'center', target: 'syr-' + i });
+                });
+            }
+
+            // Force layout
+            var nodeCount = _nodes.length - 1;
+            var dist = nodeCount > 12 ? 220 : nodeCount > 6 ? 190 : 170;
+            var charge = nodeCount > 12 ? -700 : -500;
+
+            _svg = d3.select('#viz-svg-wrap')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            _g = _svg.append('g');
+
+            var zoom = d3.zoom()
+                .scaleExtent([0.3, 4])
+                .on('zoom', function(event) {
+                    _g.attr('transform', event.transform);
+                });
+            _svg.call(zoom);
+
+            // Arrowhead marker
+            _svg.append('defs').append('marker')
+                .attr('id', 'arrow')
+                .attr('viewBox', '0 -5 10 10')
+                .attr('refX', 20)
+                .attr('refY', 0)
+                .attr('markerWidth', 6)
+                .attr('markerHeight', 6)
+                .attr('orient', 'auto')
+                .append('path')
+                .attr('d', 'M0,-4L10,0L0,4')
+                .attr('fill', COLOR_LINE);
+
+            _linkGroup = _g.append('g').attr('class', 'links');
+            _nodeGroup = _g.append('g').attr('class', 'nodes');
+
+            _simulation = d3.forceSimulation(_nodes)
+                .force('link', d3.forceLink(_links).id(function(d) { return d.id; }).distance(function(l) {
+                    var target = typeof l.target === 'object' ? l.target : _nodes.find(function(n) { return n.id === l.target; });
+                    if (l.bridge) return dist * 1.8;
+                    return target && target.outlier ? dist * 1.6 : dist;
+                }))
+                .force('charge', d3.forceManyBody().strength(charge))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(function(d) { return d.r + 18; }));
+
+            updateGraph();
+
+            // Show legend keys
+            var hasOutliers = _nodes.some(function(d) { return d.outlier; });
+            var hasBridges = _nodes.some(function(d) { return d.outlier && d.bridge; });
+            var outlierKey = document.getElementById('viz-outlier-key');
+            var bridgeKey = document.getElementById('viz-bridge-key');
+            if (outlierKey) outlierKey.style.display = hasOutliers ? 'inline-flex' : 'none';
+            if (bridgeKey) bridgeKey.style.display = hasBridges ? 'inline-flex' : 'none';
+        }
+
+        function updateGraph() {
+            // Links
+            var linkSel = _linkGroup.selectAll('line').data(_links, function(d) {
+                var sid = typeof d.source === 'object' ? d.source.id : d.source;
+                var tid = typeof d.target === 'object' ? d.target.id : d.target;
+                return sid + '->' + tid;
+            });
+            linkSel.exit().transition().duration(300).attr('stroke-opacity', 0).remove();
+            var linkEnter = linkSel.enter().append('line')
+                .attr('stroke', function(d) { return d.bridge ? COLOR_BRIDGE_LINE : COLOR_LINE; })
+                .attr('stroke-width', function(d) { return d.bridge ? 2.5 : 2; })
+                .attr('stroke-dasharray', function(d) { return d.bridge ? '8,4' : 'none'; })
+                .attr('stroke-opacity', 0)
+                .attr('marker-end', function(d) { return d.bridge ? '' : 'url(#arrow)'; });
+            linkEnter.transition().duration(300).attr('stroke-opacity', 1);
+            linkEnter.filter(function(d) { return d.bridge; })
+                .attr('class', 'bridge-link-animated');
+            var allLinks = linkEnter.merge(linkSel);
+
+            // Nodes
+            var nodeSel = _nodeGroup.selectAll('g.viz-node').data(_nodes, function(d) { return d.id; });
+            nodeSel.exit().transition().duration(300).attr('opacity', 0).remove();
+            var nodeEnter = nodeSel.enter().append('g')
+                .attr('class', 'viz-node')
+                .attr('opacity', 0)
+                .call(d3.drag()
+                    .on('start', dragstart)
+                    .on('drag', dragged)
+                    .on('end', dragend));
+
+            // Bridge outlier ring
+            nodeEnter.filter(function(d) { return d.outlier && d.bridge; })
+                .append('circle')
+                .attr('class', 'bridge-outlier-ring')
+                .attr('r', function(d) { return d.r + 5; })
+                .attr('fill', 'none')
+                .attr('stroke', '#DAA520')
+                .attr('stroke-width', 2.5)
+                .attr('stroke-dasharray', '4,3')
+                .attr('pointer-events', 'none');
+
+            // Circle
+            nodeEnter.append('circle')
+                .attr('class', function(d) { return 'node-circle' + (d.outlier && d.bridge ? ' bridge-clickable' : ''); })
+                .attr('r', function(d) { return d.r; })
+                .attr('fill', function(d) {
+                    if (d.outlier && d.bridge) return nodeColor(d);
+                    if (d.outlier) return nodeColor(d) + '99';
+                    return nodeColor(d);
+                })
+                .attr('stroke', function(d) {
+                    if (d.outlier) return '#DAA520';
+                    return '#fff';
+                })
+                .attr('stroke-width', function(d) {
+                    if (d.outlier && d.bridge) return 3.5;
+                    if (d.outlier) return 3;
+                    return 2;
+                })
+                .attr('stroke-dasharray', function(d) {
+                    if (d.outlier && d.bridge) return 'none';
+                    if (d.outlier) return '6,3';
+                    return 'none';
+                })
+                .style('cursor', function(d) { return (d.outlier && d.bridge) ? 'pointer' : 'default'; });
+
+            // Label: main word
+            nodeEnter.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', function(d) { return (d.type === 'center' || d.type === 'bridge-center') ? '-1.2em' : '-1em'; })
+                .attr('fill', '#fff')
+                .attr('font-size', function(d) { return (d.type === 'center' || d.type === 'bridge-center') ? '16px' : '14px'; })
+                .attr('font-weight', 'bold')
+                .attr('pointer-events', 'none')
+                .text(function(d) { return d.label; });
+
+            // Label: transliteration
+            nodeEnter.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.2em')
+                .attr('fill', '#fff')
+                .attr('font-size', '11px')
+                .attr('pointer-events', 'none')
+                .text(function(d) { return d.sublabel; });
+
+            // Label: meaning (multi-line)
+            nodeEnter.filter(function(d) { return d.type !== 'center' && d.type !== 'bridge-center'; })
+                .each(function(d) {
+                    var g = d3.select(this);
+                    var lines = wrapMeaning(d.detail, 20);
+                    lines.forEach(function(line, idx) {
+                        g.append('text')
+                            .attr('text-anchor', 'middle')
+                            .attr('dy', (1.4 + idx * 1.1) + 'em')
+                            .attr('fill', 'rgba(255,255,255,0.85)')
+                            .attr('font-size', '9px')
+                            .attr('font-style', 'italic')
+                            .attr('pointer-events', 'none')
+                            .text(line);
+                    });
+                });
+
+            // Bridge icon for bridge-outliers
+            nodeEnter.filter(function(d) { return d.outlier && d.bridge && !d.type.startsWith('bridge-'); })
+                .append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', function(d) { return d.r + 16; })
+                .attr('fill', '#8B6914')
+                .attr('font-size', '12px')
+                .attr('font-weight', 'bold')
+                .attr('pointer-events', 'none')
+                .text('bridge');
+
+            // Center detail text
+            nodeEnter.filter(function(d) { return d.type === 'center' || d.type === 'bridge-center'; })
+                .append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '1.6em')
+                .attr('fill', '#fff')
+                .attr('font-size', '10px')
+                .attr('font-style', 'italic')
+                .attr('pointer-events', 'none')
+                .text(function(d) { return d.detail; });
+
+            nodeEnter.transition().duration(400).attr('opacity', 1);
+            var allNodes = nodeEnter.merge(nodeSel);
+
+            // Click handler for bridge outliers
+            allNodes.filter(function(d) { return d.outlier && d.bridge && !d.type.startsWith('bridge-'); })
+                .on('click', function(event, d) {
+                    event.stopPropagation();
+                    toggleBridge(d);
+                });
+
+            // Tooltip
+            allNodes.on('mouseover', function(event, d) {
+                if (d.type === 'center') return;
+                var lang_label;
+                var base = d.type.replace('bridge-', '');
+                lang_label = base === 'syriac' ? 'Syriac' :
+                             base === 'hebrew' ? 'Hebrew' :
+                             base === 'arabic' ? 'Arabic' : d.type;
+                if (d.type === 'bridge-center') lang_label = 'Bridge root';
+                if (d.type.startsWith('bridge-') && d.type !== 'bridge-center') lang_label += ' (bridge)';
+
+                var outlier_tag = '';
+                if (d.outlier) {
+                    outlier_tag = '<br><span style="color:#B8860B;font-weight:bold;">Semantic outlier</span>';
+                    if (d.bridge) {
+                        outlier_tag += '<br><span style="color:#B8860B;font-size:11px;font-style:italic;">' + d.bridge.bridge_concept + '</span>';
+                    }
+                }
+                if (d.bridgeConcept) {
+                    outlier_tag += '<br><span style="color:#B8860B;font-size:11px;font-style:italic;">' + d.bridgeConcept + '</span>';
+                }
+                var html = '<strong>' + escHtml(d.label) + '</strong> <small>(' + lang_label + ')</small><br>' +
+                           '<em>' + escHtml(d.sublabel) + '</em><br>' +
+                           escHtml(d.detail) + outlier_tag;
+                if (d.refs && d.refs.length > 0) {
+                    html += '<br><small>' + d.refs.join(', ') + '</small>';
+                }
+                _tooltip.html(html)
+                    .style('display', 'block')
+                    .style('left', (event.pageX + 12) + 'px')
+                    .style('top', (event.pageY - 20) + 'px');
+            })
+            .on('mousemove', function(event) {
+                _tooltip.style('left', (event.pageX + 12) + 'px')
+                       .style('top', (event.pageY - 20) + 'px');
+            })
+            .on('mouseout', function() {
+                _tooltip.style('display', 'none');
+            });
+
+            // Tick
+            _simulation.nodes(_nodes);
+            _simulation.force('link').links(_links);
+            _simulation.on('tick', function() {
+                allLinks.attr('x1', function(d) { return d.source.x; })
+                    .attr('y1', function(d) { return d.source.y; })
+                    .attr('x2', function(d) { return d.target.x; })
+                    .attr('y2', function(d) { return d.target.y; });
+                allNodes.attr('transform', function(d) {
+                    return 'translate(' + d.x + ',' + d.y + ')';
+                });
+            });
+        }
+
+        function toggleBridge(outlierNode) {
+            var key = outlierNode.outlierKey;
+            if (_expandedBridges[key]) {
+                collapseBridge(key);
+            } else {
+                expandBridge(outlierNode);
+            }
+        }
+
+        function expandBridge(outlierNode) {
+            var key = outlierNode.outlierKey;
+            var bridge = outlierNode.bridge;
+            var url = '/api/root-family?root=' + encodeURIComponent(bridge.target_root)
+                      + '&lang=' + LANG + '&script=' + SCRIPT + '&trans=' + TRANS;
+
+            fetch(url)
+            .then(function(r) { return r.json(); })
+            .then(function(targetData) {
+                if (targetData.error) return;
+
+                var prefix = 'bridge-' + key.replace(/[^a-z0-9]/g, '_') + '-';
+                var newNodeIds = [];
+
+                var cx = outlierNode.x || width / 2;
+                var cy = outlierNode.y || height / 2;
+                var dx = cx - width / 2;
+                var dy = cy - height / 2;
+                var len = Math.sqrt(dx * dx + dy * dy) || 1;
+                var targetX = cx + (dx / len) * 180;
+                var targetY = cy + (dy / len) * 180;
+
+                var centerNode = {
+                    id: prefix + 'center',
+                    label: targetData.root,
+                    sublabel: targetData.root_translit,
+                    detail: targetData.sabor_raiz || targetData.gloss,
+                    type: 'bridge-center',
+                    outlier: false,
+                    bridge: null,
+                    bridgeConcept: bridge.bridge_concept,
+                    r: 56,
+                    x: targetX, y: targetY
+                };
+                _nodes.push(centerNode);
+                newNodeIds.push(centerNode.id);
+
+                _links.push({
+                    source: outlierNode.id,
+                    target: prefix + 'center',
+                    bridge: true
+                });
+
+                var showHeb = document.getElementById('chk-hebrew').checked;
+                var showAr = document.getElementById('chk-arabic').checked;
+                if (showHeb) {
+                    (targetData.hebrew || []).forEach(function(w, i) {
+                        var nodeId = prefix + 'heb-' + i;
+                        _nodes.push({
+                            id: nodeId, label: w.word, sublabel: w.translit,
+                            detail: w.meaning, type: 'bridge-hebrew',
+                            outlier: !!w.outlier, bridge: null, r: 46
+                        });
+                        _links.push({ source: prefix + 'center', target: nodeId });
+                        newNodeIds.push(nodeId);
+                    });
+                }
+                if (showAr) {
+                    (targetData.arabic || []).forEach(function(w, i) {
+                        var nodeId = prefix + 'ar-' + i;
+                        _nodes.push({
+                            id: nodeId, label: w.word, sublabel: w.translit,
+                            detail: w.meaning, type: 'bridge-arabic',
+                            outlier: !!w.outlier, bridge: null, r: 46
+                        });
+                        _links.push({ source: prefix + 'center', target: nodeId });
+                        newNodeIds.push(nodeId);
+                    });
+                }
+
+                _expandedBridges[key] = { nodeIds: newNodeIds, prefix: prefix };
+                updateGraph();
+                _simulation.alpha(0.5).restart();
+            });
+        }
+
+        function collapseBridge(key) {
+            var info = _expandedBridges[key];
+            var idsToRemove = new Set(info.nodeIds);
+            _nodes = _nodes.filter(function(n) { return !idsToRemove.has(n.id); });
+            _links = _links.filter(function(l) {
+                var sid = typeof l.source === 'object' ? l.source.id : l.source;
+                var tid = typeof l.target === 'object' ? l.target.id : l.target;
+                return !idsToRemove.has(sid) && !idsToRemove.has(tid);
+            });
+            delete _expandedBridges[key];
+            updateGraph();
+            _simulation.alpha(0.3).restart();
+        }
+
+        function dragstart(event, d) {
+            if (!event.active) _simulation.alphaTarget(0.3).restart();
+            d.fx = d.x; d.fy = d.y;
+        }
+        function dragged(event, d) {
+            d.fx = event.x; d.fy = event.y;
+        }
+        function dragend(event, d) {
+            if (!event.active) _simulation.alphaTarget(0);
+            if (d.type !== 'center') { d.fx = null; d.fy = null; }
+        }
+    })();
+    </script>
+{% endblock %}
