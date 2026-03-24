@@ -1067,7 +1067,9 @@ def api_root_family():
             if syriac_text:
                 paradigmatic_syriac = syriac_text
                 words = syriac_text.split()
-                paradigmatic_translit = ' '.join(translit_fn(w) for w in words)
+                # Use Latin transliteration for the key verse (script=syriac means identity, which is wrong here)
+                latin_fn = _get_translit_fn(script) if script != 'syriac' else transliterate_syriac
+                paradigmatic_translit = ' '.join(latin_fn(w) for w in words)
 
     # Sister roots
     sister_roots = []
@@ -1115,7 +1117,7 @@ def api_root_family():
         'paradigmatic_syriac': paradigmatic_syriac,
         'paradigmatic_translit': paradigmatic_translit,
         'paradigmatic_form': paradigmatic_form,
-        'paradigmatic_form_translit': translit_fn(paradigmatic_form) if paradigmatic_form else '',
+        'paradigmatic_form_translit': ((_get_translit_fn(script) if script != 'syriac' else transliterate_syriac)(paradigmatic_form)) if paradigmatic_form else '',
         'sister_roots': sister_roots,
         'corpus_attestation': corpus_attestation,
     })
