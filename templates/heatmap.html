@@ -106,6 +106,7 @@
 <p class="heatmap-info">{{ t('heatmap_desc', lang) }}</p>
 
 <div class="heatmap-controls">
+    <input type="text" id="hm-filter" placeholder="Filter roots (e.g. SH-L-M, peace, ܫܠܡ)" oninput="filterHeatmap()" style="min-width:260px">
     <div class="heatmap-export">
         <button onclick="exportHeatmapCSV()"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">download</span> CSV</button>
         <button onclick="exportHeatmapJSON()"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">download</span> JSON</button>
@@ -166,11 +167,12 @@ async function loadHeatmap(sortCol) {
 
 function showMoreRows() {
     var tbody = document.getElementById('hm-tbody');
-    var end = Math.min(_hmDisplayed + _hmPageSize, _hmAllRoots.length);
+    var source = _hmFilteredRoots || _hmAllRoots;
+    var end = Math.min(_hmDisplayed + _hmPageSize, source.length);
 
     var html = '';
     for (var i = _hmDisplayed; i < end; i++) {
-        var r = _hmAllRoots[i];
+        var r = source[i];
         html += '<tr>';
         html += '<td class="root-cell"><a href="/?q=' + encodeURIComponent(r.root_translit) + '" style="text-decoration:none;color:inherit">' + r.root + '</a></td>';
         html += '<td class="translit-cell">' + r.root_translit + '</td>';
@@ -188,16 +190,42 @@ function showMoreRows() {
     _hmDisplayed = end;
 
     var moreEl = document.getElementById('hm-show-more');
-    if (_hmDisplayed < _hmAllRoots.length) {
-        var remaining = _hmAllRoots.length - _hmDisplayed;
+    if (_hmDisplayed < source.length) {
+        var remaining = source.length - _hmDisplayed;
         moreEl.innerHTML = '<div class="show-more-wrap">' +
             '<button class="show-more-btn" onclick="showMoreRows()">Show more</button>' +
-            '<div class="show-more-info">Showing ' + _hmDisplayed + ' of ' + _hmAllRoots.length + ' roots (' + remaining + ' remaining)</div>' +
+            '<div class="show-more-info">Showing ' + _hmDisplayed + ' of ' + source.length + ' roots (' + remaining + ' remaining)</div>' +
             '</div>';
     } else {
-        moreEl.innerHTML = '<p class="heatmap-info" style="text-align:center">Showing all ' + _hmAllRoots.length + ' roots</p>';
+        moreEl.innerHTML = '<p class="heatmap-info" style="text-align:center">Showing all ' + source.length + ' roots</p>';
     }
 }
+
+function filterHeatmap() {
+    var q = document.getElementById('hm-filter').value.trim().toLowerCase().replace(/-/g, '');
+    if (!q) {
+        // Reset to full view
+        _hmDisplayed = 0;
+        var tbody = document.getElementById('hm-tbody');
+        if (tbody) tbody.innerHTML = '';
+        _hmFilteredRoots = null;
+        showMoreRows();
+        return;
+    }
+    var filtered = _hmAllRoots.filter(function(r) {
+        var translit = (r.root_translit || '').toLowerCase().replace(/-/g, '');
+        var gloss = (r.gloss || '').toLowerCase();
+        var root = r.root || '';
+        return translit.indexOf(q) >= 0 || gloss.indexOf(q) >= 0 || root.indexOf(q) >= 0;
+    });
+    _hmFilteredRoots = filtered;
+    _hmDisplayed = 0;
+    var tbody = document.getElementById('hm-tbody');
+    if (tbody) tbody.innerHTML = '';
+    showMoreRows();
+}
+
+var _hmFilteredRoots = null;
 
 function exportHeatmapCSV() {
     if (!_hmData) return;
