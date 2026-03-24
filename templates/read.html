@@ -6,7 +6,9 @@
 <div class="reader-header">
     <div>
         <h1>{{ bn(book, lang) if bn else book }} — {{ t('chapter', lang) if t else 'Chapter' }} {{ chapter }}</h1>
-        <span class="corpus-badge">{{ verses[0].corpus_id if verses else '' }}</span>
+        {% set cid = verses[0].corpus_id if verses else '' %}
+        {% set corpus_labels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'} %}
+        <span class="corpus-badge corpus-{{ cid }}">{{ corpus_labels.get(cid, cid) }}</span>
     </div>
     <div class="reader-nav">
         {% if chapter > 1 %}
