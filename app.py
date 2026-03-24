@@ -252,7 +252,7 @@ def api_roots():
 
     result = {
         'root': root_syriac,
-        'root_transliteration': entry.root_transliteration,
+        'root_transliteration': _translit_to_dash(root_syriac),
         'root_academic': transliterate_syriac_academic(root_syriac),
         'total_occurrences': sum(m['count'] for m in matches),
         'matches': matches,
