@@ -10,8 +10,8 @@ abstract: >-
   root family visualization, parallel viewer, frequency heat maps,
   and proximity search. Quadrilingual interface (EN/ES/HE/AR).
 authors:
-  - family-names: Fresco
-    given-names: Jossi
+  - family-names: Fresco Benaim
+    given-names: Jose
     website: https://jossifresco.com
     orcid: https://orcid.org/0009-0000-2026-0836
 version: "1.0.0"
