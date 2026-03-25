@@ -205,7 +205,7 @@ document.getElementById('rootSearchForm').addEventListener('submit', async (e) =
     const rootBmSyriac = data.root;
     const rootBmGloss = gloss;
     const rootBmExists = getBookmarks().roots.some(r => r.key === rootBmKey);
-    html += `<div class="root-bm-wrap"><button class="bm-root-btn" id="bm-root-toggle" title="Bookmark" onclick="toggleRootBookmark()"><span class="material-symbols-outlined">${rootBmExists ? 'bookmark' : 'bookmark_border'}</span></button></div>`;
+    html += `<div class="root-bm-wrap"><button class="bm-root-btn${rootBmExists ? ' bookmarked' : ''}" id="bm-root-toggle" title="Bookmark" onclick="toggleRootBookmark()"><span class="material-symbols-outlined">${rootBmExists ? 'bookmark' : 'bookmark_border'}</span></button></div>`;
 
     html += `<div class="root-header-nav">
             <a href="/visualize/${vizKey}?lang=${lang}" class="root-tab viz-btn" style="text-decoration:none"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">hub</span> Visualize</a>
@@ -541,7 +541,7 @@ function toggleRootBookmark() {
     var btn = document.getElementById('bm-root-toggle');
     if (idx >= 0) {
         bm.roots.splice(idx, 1);
-        if (btn) btn.querySelector('.material-symbols-outlined').textContent = 'bookmark_border';
+        if (btn) { btn.querySelector('.material-symbols-outlined').textContent = 'bookmark_border'; btn.classList.remove('bookmarked'); }
     } else {
         bm.roots.push({
             key: _bmRootKey,
@@ -550,7 +550,7 @@ function toggleRootBookmark() {
             date: new Date().toISOString().slice(0, 10),
             note: ''
         });
-        if (btn) btn.querySelector('.material-symbols-outlined').textContent = 'bookmark';
+        if (btn) { btn.querySelector('.material-symbols-outlined').textContent = 'bookmark'; btn.classList.add('bookmarked'); }
     }
     saveBookmarks(bm);
 }

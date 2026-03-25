@@ -1793,6 +1793,8 @@ body {
     transition: background 0.15s, color 0.15s;
 }
 .bm-root-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.bm-root-btn.bookmarked { color: var(--accent-gold, #DAA520); border-color: var(--accent-gold, #DAA520); }
+.bm-root-btn.bookmarked:hover { color: #fff; }
 .bm-root-btn .material-symbols-outlined { font-size: 20px; }
 
 /* Bookmarks page */
