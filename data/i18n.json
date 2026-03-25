@@ -353,7 +353,8 @@
     "show": "Mostrar",
     "heat_map": "Mapa de calor",
     "root_search": "Buscar raíz",
-    "text_search": "Buscar texto"
+    "text_search": "Buscar texto",
+    "read": "leer"
   },
   "en": {
     "app_title": "Peshitta Constellations",
@@ -709,7 +710,8 @@
     "show": "Show",
     "heat_map": "Heat Map",
     "root_search": "Root Search",
-    "text_search": "Text Search"
+    "text_search": "Text Search",
+    "read": "read"
   },
   "he": {
     "app_title": "קונסטלציות הפשיטתא",
@@ -1065,7 +1067,8 @@
     "show": "הצג",
     "heat_map": "מפת חום",
     "root_search": "חיפוש שורש",
-    "text_search": "חיפוש טקסט"
+    "text_search": "חיפוש טקסט",
+    "read": "קריאה"
   },
   "ar": {
     "app_title": "أبراج الپشيطتا",
@@ -1421,6 +1424,7 @@
     "show": "عرض",
     "heat_map": "خريطة حرارية",
     "root_search": "بحث عن جذر",
-    "text_search": "بحث نصي"
+    "text_search": "بحث نصي",
+    "read": "قراءة"
   }
 }

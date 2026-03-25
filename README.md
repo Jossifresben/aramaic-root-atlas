@@ -1,6 +1,6 @@
 # Aramaic Root Atlas
 
-A cross-corpus triliteral root explorer spanning ~1,500 years of Aramaic literary history.
+**[Live App](https://aramaic-root-atlas.onrender.com)** · A cross-corpus triliteral root explorer spanning ~1,500 years of Aramaic literary history.
 
 **36,627 verses** · **498,922 words** · **5,039 roots** · **1,127 cognate families** · **4 corpora**
 

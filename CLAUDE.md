@@ -109,11 +109,13 @@ python3 app.py  # starts on port 5001
 - ✅ Heat Map added to navbar with i18n support
 - ✅ Data source: Sefaria API (Targum Onkelos, CC-BY-SA)
 
-## Next Steps (Phase 4 — Polish & Scale)
-1. Root-of-the-day on homepage
-2. ~~Bookmark/favorites for roots~~ — Done (localStorage-based, verses + roots, export JSON)
-3. Performance optimization for large datasets
-4. Deploy to production (Render)
+## Phase 4 Complete — Polish & Scale
+- ✅ Bookmark/favorites for roots — Done (localStorage-based, verses + roots, export JSON)
+- ✅ Text search UI on homepage (Root Search / Text Search toggle)
+- ✅ Mobile responsiveness fixes
+- ✅ Deployed to production: https://aramaic-root-atlas.onrender.com
+- ✅ TipTopJar support widget
+- ✅ Footer with attribution, license, GitHub link
 
 ## Conventions
 - Syriac text uses Unicode (U+0710-U+074F), stored as-is in CSV
