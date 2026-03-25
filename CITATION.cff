@@ -13,6 +13,7 @@ authors:
   - family-names: Fresco
     given-names: Jossi
     website: https://jossifresco.com
+    orcid: https://orcid.org/0009-0000-2026-0836
 version: "1.0.0"
 date-released: "2026-03-25"
 license: Apache-2.0
