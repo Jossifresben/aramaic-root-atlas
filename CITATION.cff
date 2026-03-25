@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer"
+abstract: >-
+  A cross-corpus triliteral root explorer for Aramaic literature,
+  indexing 5,039 roots across 36,627 verses from the Peshitta (NT & OT),
+  Biblical Aramaic (Daniel, Ezra), and Targum Onkelos. Features
+  cross-script root normalization, 1,127 Hebrew/Arabic cognate entries,
+  root family visualization, parallel viewer, frequency heat maps,
+  and proximity search. Quadrilingual interface (EN/ES/HE/AR).
+authors:
+  - family-names: Fresco
+    given-names: Jossi
+    website: https://jossifresco.com
+version: "1.0.0"
+date-released: "2026-03-25"
+license: Apache-2.0
+url: https://aramaic-root-atlas.onrender.com
+repository-code: https://github.com/Jossifresben/aramaic-root-atlas
+keywords:
+  - Aramaic
+  - Syriac
+  - Peshitta
+  - Biblical Aramaic
+  - Targum Onkelos
+  - triliteral roots
+  - Semitic linguistics
+  - computational linguistics
+  - digital humanities
+  - corpus linguistics
+  - cognates
