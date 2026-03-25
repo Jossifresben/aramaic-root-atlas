@@ -23,7 +23,7 @@
     "meaning_search_help": "Busca raíces siríacas por su significado en español. Encuentra el campo semántico arameo de un concepto.",
     "meaning_search_no_results": "No se encontraron raíces.",
     "meaning_search_results_count": "raíces encontradas",
-    "text_search_placeholder": "Ej: amor, pan, luz",
+    "text_search_placeholder": "Buscar en traducciones: paz, amor, reino...",
     "text_search_help": "Busca palabras o frases en las traducciones. También acepta texto siríaco.",
     "text_search_no_results": "No se encontraron versículos.",
     "text_search_results_count": "versículos encontrados",
@@ -351,7 +351,9 @@
     "heatmap_title": "Mapa de Frecuencia de Raíces",
     "heatmap_desc": "Compare la frecuencia de raíces en todos los corpus. Haga clic en los encabezados para ordenar.",
     "show": "Mostrar",
-    "heat_map": "Mapa de calor"
+    "heat_map": "Mapa de calor",
+    "root_search": "Buscar raíz",
+    "text_search": "Buscar texto"
   },
   "en": {
     "app_title": "Peshitta Constellations",
@@ -377,7 +379,7 @@
     "meaning_search_help": "Search Syriac roots by their English meaning. Find the Aramaic semantic field of a concept.",
     "meaning_search_no_results": "No roots found.",
     "meaning_search_results_count": "roots found",
-    "text_search_placeholder": "e.g. love, bread, light",
+    "text_search_placeholder": "Search in translations: peace, love, kingdom...",
     "text_search_help": "Search words or phrases in translations. Also accepts Syriac text.",
     "text_search_no_results": "No verses found.",
     "text_search_results_count": "verses found",
@@ -705,7 +707,9 @@
     "heatmap_title": "Root Frequency Heat Map",
     "heatmap_desc": "Compare root frequency across all corpora. Click column headers to sort.",
     "show": "Show",
-    "heat_map": "Heat Map"
+    "heat_map": "Heat Map",
+    "root_search": "Root Search",
+    "text_search": "Text Search"
   },
   "he": {
     "app_title": "קונסטלציות הפשיטתא",
@@ -731,7 +735,7 @@
     "meaning_search_help": "חפש שורשים סוריים לפי משמעותם באנגלית. מצא את השדה הסמנטי הארמי של מושג.",
     "meaning_search_no_results": "לא נמצאו שורשים.",
     "meaning_search_results_count": "שורשים נמצאו",
-    "text_search_placeholder": "למשל: אהבה, לחם, אור",
+    "text_search_placeholder": "חפש בתרגומים: שלום, אהבה, מלכות...",
     "text_search_help": "חפש מילים או ביטויים בתרגומים. מקבל גם טקסט סורי.",
     "text_search_no_results": "לא נמצאו פסוקים.",
     "text_search_results_count": "פסוקים נמצאו",
@@ -1059,7 +1063,9 @@
     "heatmap_title": "מפת חום של שורשים",
     "heatmap_desc": "השוו תדירות שורשים בין כל המאגרים. לחצו על כותרות העמודות למיון.",
     "show": "הצג",
-    "heat_map": "מפת חום"
+    "heat_map": "מפת חום",
+    "root_search": "חיפוש שורש",
+    "text_search": "חיפוש טקסט"
   },
   "ar": {
     "app_title": "أبراج الپشيطتا",
@@ -1085,7 +1091,7 @@
     "meaning_search_help": "ابحث عن الجذور السريانية بمعناها بالإنجليزية. اعثر على الحقل الدلالي الآرامي لمفهوم ما.",
     "meaning_search_no_results": "لم يتم العثور على جذور.",
     "meaning_search_results_count": "جذور تم العثور عليها",
-    "text_search_placeholder": "مثال: حب، خبز، نور",
+    "text_search_placeholder": "ابحث في الترجمات: سلام، محبة، ملكوت...",
     "text_search_help": "ابحث عن كلمات أو عبارات في الترجمات. يقبل أيضًا النص السرياني.",
     "text_search_no_results": "لم يتم العثور على آيات.",
     "text_search_results_count": "آيات تم العثور عليها",
@@ -1413,24 +1419,8 @@
     "heatmap_title": "خريطة حرارية لتكرار الجذور",
     "heatmap_desc": "قارن تكرار الجذور عبر جميع المجموعات. انقر على رؤوس الأعمدة للترتيب.",
     "show": "عرض",
-    "heat_map": "خريطة حرارية"
-  },
-  "root_search": {
-    "en": "Root Search",
-    "es": "Buscar raíz",
-    "he": "חיפוש שורש",
-    "ar": "بحث عن جذر"
-  },
-  "text_search": {
-    "en": "Text Search",
-    "es": "Buscar texto",
-    "he": "חיפוש טקסט",
-    "ar": "بحث نصي"
-  },
-  "text_search_placeholder": {
-    "en": "Search in translations: peace, love, kingdom...",
-    "es": "Buscar en traducciones: paz, amor, reino...",
-    "he": "חפש בתרגומים: שלום, אהבה, מלכות...",
-    "ar": "ابحث في الترجمات: سلام، محبة، ملكوت..."
+    "heat_map": "خريطة حرارية",
+    "root_search": "بحث عن جذر",
+    "text_search": "بحث نصي"
   }
 }

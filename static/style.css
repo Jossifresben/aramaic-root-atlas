@@ -1169,13 +1169,33 @@ body {
 }
 
 /* Responsive */
+@media (max-width: 768px) {
+    .nav-inner {
+        flex-wrap: wrap;
+        gap: 0.3rem;
+    }
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.2rem 0.6rem;
+        font-size: 0.85rem;
+    }
+    .nav-icons { gap: 0.2rem; }
+    .nav-btn { padding: 4px; }
+}
 @media (max-width: 600px) {
     .hero h1 { font-size: 1.6rem; }
+    .hero .subtitle { font-size: 0.9rem; }
     .search-row { flex-direction: column; }
+    .search-row input, .search-row select, .search-row button { width: 100%; }
+    .search-mode-tabs { gap: 0.3rem; }
+    .search-mode-tab { font-size: 0.8rem; padding: 0.3rem 0.7rem; }
     .stat-grid .stat-card { flex: 1 1 45%; max-width: none; }
-    .nav-inner { flex-direction: column; gap: 0.5rem; }
+    .stat-card .stat-value { font-size: 1.2rem; }
+    .stat-card .stat-label { font-size: 0.75rem; }
+    .nav-links a { font-size: 0.8rem; }
     .root-header-top { flex-wrap: wrap; }
-    .root-header-nav { gap: 4px; }
+    .root-header-nav { gap: 4px; flex-wrap: wrap; }
     .root-tab { font-size: 0.78em; padding: 5px 10px; }
     .peshitta-table thead { display: none; }
     .peshitta-table, .peshitta-table tbody, .peshitta-table tr, .peshitta-table td { display: block; width: 100%; }
@@ -1186,6 +1206,13 @@ body {
     .peshitta-table td.gloss-cell { display: block; padding: 2px 0; }
     .peshitta-table td.refs { display: block; padding-top: 4px; }
     .panel-body { padding: 12px; }
+    .verse-row { gap: 0.4rem; }
+    .verse-syriac { font-size: 1.1rem; }
+    .verse-actions { flex-direction: row; gap: 0.2rem; }
+    .parallel-controls { flex-wrap: wrap; }
+    .bookmarks-toolbar { flex-direction: column; gap: 0.5rem; }
+    .text-result-card { padding: 0.6rem; }
+    .browse-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
 }
 
 /* === Root Visualizer === */
