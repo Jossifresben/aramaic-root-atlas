@@ -18,7 +18,10 @@
                 <img src="{{ url_for('static', filename='logo.svg') }}" alt="Aramaic Root Atlas" class="nav-logo">
                 <span class="nav-brand-text">Aramaic Root Atlas</span>
             </a>
-            <div class="nav-links">
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="nav-links" id="nav-links">
                 <a href="/browse?lang={{ lang }}">{{ t('browse', lang) if t else 'Browse' }}</a>
                 <a href="/parallel?lang={{ lang }}">{{ t('parallel_viewer', lang) if t else 'Parallel' }}</a>
                 <a href="/heatmap?lang={{ lang }}">{{ t('heat_map', lang) if t else 'Heat Map' }}</a>

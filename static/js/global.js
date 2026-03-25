@@ -73,6 +73,18 @@
         });
     });
 
+    // --- Hamburger Menu ---
+    var hamburger = document.getElementById('nav-hamburger');
+    var navLinks = document.getElementById('nav-links');
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isOpen = navLinks.classList.toggle('open');
+            hamburger.setAttribute('aria-expanded', isOpen);
+            hamburger.querySelector('.material-symbols-outlined').textContent = isOpen ? 'close' : 'menu';
+        });
+    }
+
     // --- Helper: close all dropdowns ---
     function closeAllDropdowns() {
         var sd = document.getElementById('settings-dropdown');
@@ -134,9 +146,16 @@
         });
     }
 
-    // Close dropdowns on outside click
+    // Close dropdowns and hamburger on outside click
     document.addEventListener('click', function() {
         closeAllDropdowns();
+        if (navLinks) {
+            navLinks.classList.remove('open');
+            if (hamburger) {
+                hamburger.setAttribute('aria-expanded', 'false');
+                hamburger.querySelector('.material-symbols-outlined').textContent = 'menu';
+            }
+        }
     });
     if (settingsDropdown) settingsDropdown.addEventListener('click', function(e) { e.stopPropagation(); });
     if (langDropdown) langDropdown.addEventListener('click', function(e) { e.stopPropagation(); });

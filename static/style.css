@@ -1201,20 +1201,53 @@ body {
     text-decoration: underline;
 }
 
+/* Hamburger menu button — hidden on desktop */
+.nav-hamburger {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+}
+.nav-hamburger .material-symbols-outlined { font-size: 28px; }
+
 /* Responsive */
 @media (max-width: 768px) {
     .nav-inner {
         flex-wrap: wrap;
         gap: 0.3rem;
+        position: relative;
     }
+    .nav-hamburger { display: block; }
+    .nav-brand-text { display: none; }
     .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: var(--accent);
+        padding: 0.5rem 0;
+        gap: 0;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links > a {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .nav-links > a:hover { background: rgba(255,255,255,0.1); }
+    .nav-links .lang-wrapper,
+    .nav-links .settings-wrapper {
+        padding: 0.4rem 1rem;
+    }
+    .nav-links .nav-btn {
+        padding: 0.5rem 1rem;
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.2rem 0.6rem;
-        font-size: 0.85rem;
+        align-items: center;
+        gap: 0.3rem;
     }
     .nav-icons { gap: 0.2rem; }
-    .nav-btn { padding: 4px; }
 }
 @media (max-width: 600px) {
     .hero h1 { font-size: 1.6rem; }
