@@ -1414,5 +1414,23 @@
     "heatmap_desc": "قارن تكرار الجذور عبر جميع المجموعات. انقر على رؤوس الأعمدة للترتيب.",
     "show": "عرض",
     "heat_map": "خريطة حرارية"
+  },
+  "root_search": {
+    "en": "Root Search",
+    "es": "Buscar raíz",
+    "he": "חיפוש שורש",
+    "ar": "بحث عن جذر"
+  },
+  "text_search": {
+    "en": "Text Search",
+    "es": "Buscar texto",
+    "he": "חיפוש טקסט",
+    "ar": "بحث نصي"
+  },
+  "text_search_placeholder": {
+    "en": "Search in translations: peace, love, kingdom...",
+    "es": "Buscar en traducciones: paz, amor, reino...",
+    "he": "חפש בתרגומים: שלום, אהבה, מלכות...",
+    "ar": "ابحث في الترجمات: سلام، محبة، ملكوت..."
   }
 }

@@ -7,6 +7,17 @@
     <h1>Aramaic Root Atlas</h1>
     <p class="subtitle">Trace triliteral roots across centuries of Aramaic literature</p>
 
+    <div class="search-mode-tabs">
+        <button class="search-mode-tab active" onclick="switchSearchMode('root', this)">
+            <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">hub</span>
+            {{ t('root_search', lang) if t else 'Root Search' }}
+        </button>
+        <button class="search-mode-tab" onclick="switchSearchMode('text', this)">
+            <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">search</span>
+            {{ t('text_search', lang) if t else 'Text Search' }}
+        </button>
+    </div>
+
     <form class="search-form" action="/" method="get" id="rootSearchForm">
         <div class="search-row">
             <div class="autocomplete-wrapper">
@@ -16,12 +27,27 @@
                 <div id="autocomplete-list" class="autocomplete-list"></div>
             </div>
             <select name="corpus" id="corpusFilter">
-                <option value="">All Corpora</option>
+                <option value="">{{ t('all_corpora', lang) if t else 'All Corpora' }}</option>
                 {% for c in corpora %}
                 <option value="{{ c.id }}">{{ c.label }}</option>
                 {% endfor %}
             </select>
-            <button type="submit">Search</button>
+            <button type="submit">{{ t('search', lang) if t else 'Search' }}</button>
+        </div>
+    </form>
+
+    <form class="search-form" id="textSearchForm" style="display:none">
+        <div class="search-row">
+            <input type="text" id="textInput"
+                   placeholder="{{ t('text_search_placeholder', lang) if t else 'Search in translations: peace, love, kingdom...' }}"
+                   autocomplete="off">
+            <select id="textCorpusFilter">
+                <option value="">{{ t('all_corpora', lang) if t else 'All Corpora' }}</option>
+                {% for c in corpora %}
+                <option value="{{ c.id }}">{{ c.label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">{{ t('search', lang) if t else 'Search' }}</button>
         </div>
     </form>
 </section>
@@ -554,5 +580,73 @@ function toggleRootBookmark() {
     }
     saveBookmarks(bm);
 }
+
+// --- Search Mode Toggle ---
+function switchSearchMode(mode, btn) {
+    document.querySelectorAll('.search-mode-tab').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('rootSearchForm').style.display = mode === 'root' ? '' : 'none';
+    document.getElementById('textSearchForm').style.display = mode === 'text' ? '' : 'none';
+    if (mode === 'text') {
+        document.getElementById('textInput').focus();
+    } else {
+        document.getElementById('rootInput').focus();
+    }
+}
+
+// --- Text Search Handler ---
+document.getElementById('textSearchForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var q = document.getElementById('textInput').value.trim();
+    var corpus = document.getElementById('textCorpusFilter').value;
+    if (!q) return;
+
+    var params = new URLSearchParams({q: q, lang: '{{ lang }}'});
+    if (corpus) params.set('corpus', corpus);
+
+    var el = document.getElementById('results');
+    el.innerHTML = '<p style="text-align:center">Searching...</p>';
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    var res = await fetch('/api/search?' + params);
+    var data = await res.json();
+
+    if (!data.results || !data.results.length) {
+        el.innerHTML = '<div class="no-results">No results found for "' + q.replace(/</g, '&lt;') + '"</div>';
+        return;
+    }
+
+    var html = '<div class="text-search-results">';
+    html += '<h3 class="text-search-header">' + data.count + ' results for "' + q.replace(/</g, '&lt;') + '"</h3>';
+
+    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+
+    for (var i = 0; i < data.results.length; i++) {
+        var r = data.results[i];
+        var refParts = r.reference.match(/^(.+?)\s+(\d+):(\d+)/);
+        var readerLink = refParts ? '/read/' + encodeURIComponent(refParts[1]) + '/' + refParts[2] + '?lang={{ lang }}&trans={{ trans }}#v' + refParts[3] : '#';
+
+        html += '<div class="text-result-card">';
+        html += '<div class="text-result-header">';
+        html += '<a href="' + readerLink + '" class="text-result-ref">' + r.reference + '</a>';
+        html += '<span class="corpus-badge corpus-' + r.corpus_id + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>';
+        html += '</div>';
+        if (r.syriac) html += '<div class="text-result-syriac" dir="rtl">' + r.syriac + '</div>';
+        if (r.translation) {
+            // Highlight the search term in the translation
+            var regex = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+            var highlighted = r.translation.replace(regex, '<mark>$1</mark>');
+            html += '<div class="text-result-translation">' + highlighted + '</div>';
+        }
+        html += '</div>';
+    }
+
+    if (data.count > data.results.length) {
+        html += '<p class="text-search-more">Showing ' + data.results.length + ' of ' + data.count + ' results</p>';
+    }
+
+    html += '</div>';
+    el.innerHTML = html;
+});
 </script>
 {% endblock %}
