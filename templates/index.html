@@ -5,7 +5,7 @@
 {% block content %}
 <section class="hero">
     <h1>Aramaic Root Atlas</h1>
-    <p class="subtitle">Trace triliteral roots across centuries of Aramaic literature</p>
+    <p class="subtitle">Trace triliteral roots across centuries of Aramaic literature and explore every derived word across multiple Aramaic corpora. <a href="/about?lang={{ lang }}" class="subtitle-link">Learn more</a></p>
 
     <div class="search-mode-tabs">
         <button class="search-mode-tab active" onclick="switchSearchMode('root', this)">
@@ -38,9 +38,11 @@
 
     <form class="search-form" id="textSearchForm" style="display:none">
         <div class="search-row">
-            <input type="text" id="textInput"
-                   placeholder="{{ t('text_search_placeholder', lang) if t else 'Search in translations: peace, love, kingdom...' }}"
-                   autocomplete="off">
+            <div class="autocomplete-wrapper">
+                <input type="text" id="textInput"
+                       placeholder="{{ t('text_search_placeholder', lang) if t else 'e.g. peace, kingdom, love...' }}"
+                       autocomplete="off">
+            </div>
             <select id="textCorpusFilter">
                 <option value="">{{ t('all_corpora', lang) if t else 'All Corpora' }}</option>
                 {% for c in corpora %}
@@ -73,15 +75,14 @@
             {{ t('browse', lang) if t else 'Browse' }} &amp; {{ t('read', lang) if t else 'Read' }}
         </a>
     </div>
-</section>
-
-<section class="intro">
-    <h2>What is this?</h2>
-    <p>The Aramaic Root Atlas lets you search for any Semitic triliteral root and see
-    every word form derived from it across multiple Aramaic corpora — from the Peshitta
-    New Testament and Old Testament to Biblical Aramaic and beyond.</p>
-    <p>Each root card shows Hebrew and Arabic cognates, semantic bridges between
-    related roots, and bilingual glosses in English and Spanish.</p>
+    <div style="text-align:center; margin-top:1rem;">
+        <script src="https://tiptopjar.com/widget.js"
+          data-username="jossif"
+          data-mode="button"
+          data-button-text="{% if lang == 'es' %}Apoya este proyecto{% elif lang == 'he' %}תמכו בפרויקט{% elif lang == 'ar' %}ادعم هذا المشروع{% else %}Support this project{% endif %}"
+          data-button-color="white"
+          data-button-size="sm"></script>
+    </div>
 </section>
 
 <div id="results"></div>

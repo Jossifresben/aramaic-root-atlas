@@ -138,7 +138,7 @@
     </main>
 
     <footer class="footer">
-        <p>Aramaic Root Atlas &mdash; A cross-corpus triliteral root explorer</p>
+        <p>{% if lang == 'es' %}Por{% elif lang == 'he' %}מאת{% elif lang == 'ar' %}بواسطة{% else %}By{% endif %} <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a> &middot; <a href="https://github.com/Jossifresben/aramaic-root-atlas" target="_blank" rel="noopener">GitHub</a> &middot; Apache 2.0</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
