@@ -106,6 +106,12 @@ body {
     font-size: 0.95rem;
 }
 .nav-links a:hover { color: white; }
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-left: 0.5rem;
+}
 /* Nav Buttons (shared style) */
 .nav-btn {
     background: transparent;
@@ -1237,12 +1243,16 @@ body {
         border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .nav-links > a:hover { background: rgba(255,255,255,0.1); }
-    .nav-links .lang-wrapper,
-    .nav-links .settings-wrapper {
-        padding: 0.4rem 1rem;
+    .nav-icons {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 0.3rem;
+        padding: 0.6rem 1rem;
+        border-top: 1px solid rgba(255,255,255,0.15);
     }
     .nav-links .nav-btn {
-        padding: 0.5rem 1rem;
+        padding: 6px;
         display: flex;
         align-items: center;
         gap: 0.3rem;

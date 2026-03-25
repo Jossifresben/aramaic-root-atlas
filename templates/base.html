@@ -27,80 +27,75 @@
                 <a href="/heatmap?lang={{ lang }}">{{ t('heat_map', lang) if t else 'Heat Map' }}</a>
                 <a href="/about?lang={{ lang }}">{{ t('about', lang) if t else 'About' }}</a>
 
-                <!-- Language Dropdown -->
-                <div class="lang-wrapper">
-                    <button class="nav-btn lang-toggle" id="lang-toggle" aria-label="Language"
-                            aria-haspopup="true" aria-expanded="false">
-                        <span class="material-symbols-outlined">captive_portal</span>
-                    </button>
-                    <div class="lang-dropdown" id="lang-dropdown" role="menu">
-                        <a class="lang-option{% if lang == 'en' %} active{% endif %}" role="menuitem" data-lang="en">English</a>
-                        <a class="lang-option{% if lang == 'es' %} active{% endif %}" role="menuitem" data-lang="es">Español</a>
-                        <a class="lang-option{% if lang == 'he' %} active{% endif %}" role="menuitem" data-lang="he">עברית</a>
-                        <a class="lang-option{% if lang == 'ar' %} active{% endif %}" role="menuitem" data-lang="ar">العربية</a>
+                <div class="nav-icons">
+                    <!-- Language Dropdown -->
+                    <div class="lang-wrapper">
+                        <button class="nav-btn lang-toggle" id="lang-toggle" aria-label="Language"
+                                aria-haspopup="true" aria-expanded="false">
+                            <span class="material-symbols-outlined">captive_portal</span>
+                        </button>
+                        <div class="lang-dropdown" id="lang-dropdown" role="menu">
+                            <a class="lang-option{% if lang == 'en' %} active{% endif %}" role="menuitem" data-lang="en">English</a>
+                            <a class="lang-option{% if lang == 'es' %} active{% endif %}" role="menuitem" data-lang="es">Español</a>
+                            <a class="lang-option{% if lang == 'he' %} active{% endif %}" role="menuitem" data-lang="he">עברית</a>
+                            <a class="lang-option{% if lang == 'ar' %} active{% endif %}" role="menuitem" data-lang="ar">العربية</a>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Settings -->
-                <div class="settings-wrapper">
-                    <button class="nav-btn settings-toggle" id="settings-toggle" aria-label="Settings"
-                            aria-haspopup="true" aria-expanded="false">
-                        <span class="material-symbols-outlined">settings</span>
-                    </button>
-                    <div class="settings-dropdown" id="settings-dropdown" role="menu">
-                        <!-- Transliteration -->
-                        <div class="settings-label">{{ t('settings_script', lang) if t else 'Transliteration' }}</div>
-                        <button class="settings-option{% if script == 'latin' %} active{% endif %}"
-                                data-script="latin" role="menuitemradio">Latin (ABC)</button>
-                        <button class="settings-option{% if script == 'syriac' %} active{% endif %}"
-                                data-script="syriac" role="menuitemradio">Syriac (ʾbg)</button>
-                        <button class="settings-option{% if script == 'hebrew' %} active{% endif %}"
-                                data-script="hebrew" role="menuitemradio">Hebrew (אבג)</button>
-                        <button class="settings-option{% if script == 'arabic' %} active{% endif %}"
-                                data-script="arabic" role="menuitemradio">Arabic (ابج)</button>
-
-                        <div class="settings-divider"></div>
-
-                        <!-- Translation -->
-                        <div class="settings-label">{{ t('settings_translation', lang) if t else 'Translation' }}</div>
-                        <button class="settings-option{% if trans == 'en' %} active{% endif %}"
-                                data-trans="en" role="menuitemradio">English</button>
-                        <button class="settings-option{% if trans == 'es' %} active{% endif %}"
-                                data-trans="es" role="menuitemradio">Español</button>
-                        <button class="settings-option{% if trans == 'he' %} active{% endif %}"
-                                data-trans="he" role="menuitemradio">עברית (Hebrew)</button>
-                        <button class="settings-option{% if trans == 'ar' %} active{% endif %}"
-                                data-trans="ar" role="menuitemradio">العربية (Arabic)</button>
-
-                        <div class="settings-divider"></div>
-
-                        <!-- Script Style -->
-                        <div class="settings-label">{{ t('settings_syriac_font', lang) if t else 'Script style' }}</div>
-                        <button class="settings-option syriac-font-option" data-syriac-font="estrangela" role="menuitemradio">
-                            Estrangela (classical)</button>
-                        <button class="settings-option syriac-font-option" data-syriac-font="eastern" role="menuitemradio">
-                            Eastern (Madnḥāyā)</button>
-                        <button class="settings-option syriac-font-option" data-syriac-font="western" role="menuitemradio">
-                            Western (Serṭo)</button>
+                    <!-- Settings -->
+                    <div class="settings-wrapper">
+                        <button class="nav-btn settings-toggle" id="settings-toggle" aria-label="Settings"
+                                aria-haspopup="true" aria-expanded="false">
+                            <span class="material-symbols-outlined">settings</span>
+                        </button>
+                        <div class="settings-dropdown" id="settings-dropdown" role="menu">
+                            <div class="settings-label">{{ t('settings_script', lang) if t else 'Transliteration' }}</div>
+                            <button class="settings-option{% if script == 'latin' %} active{% endif %}"
+                                    data-script="latin" role="menuitemradio">Latin (ABC)</button>
+                            <button class="settings-option{% if script == 'syriac' %} active{% endif %}"
+                                    data-script="syriac" role="menuitemradio">Syriac (ʾbg)</button>
+                            <button class="settings-option{% if script == 'hebrew' %} active{% endif %}"
+                                    data-script="hebrew" role="menuitemradio">Hebrew (אבג)</button>
+                            <button class="settings-option{% if script == 'arabic' %} active{% endif %}"
+                                    data-script="arabic" role="menuitemradio">Arabic (ابج)</button>
+                            <div class="settings-divider"></div>
+                            <div class="settings-label">{{ t('settings_translation', lang) if t else 'Translation' }}</div>
+                            <button class="settings-option{% if trans == 'en' %} active{% endif %}"
+                                    data-trans="en" role="menuitemradio">English</button>
+                            <button class="settings-option{% if trans == 'es' %} active{% endif %}"
+                                    data-trans="es" role="menuitemradio">Español</button>
+                            <button class="settings-option{% if trans == 'he' %} active{% endif %}"
+                                    data-trans="he" role="menuitemradio">עברית (Hebrew)</button>
+                            <button class="settings-option{% if trans == 'ar' %} active{% endif %}"
+                                    data-trans="ar" role="menuitemradio">العربية (Arabic)</button>
+                            <div class="settings-divider"></div>
+                            <div class="settings-label">{{ t('settings_syriac_font', lang) if t else 'Script style' }}</div>
+                            <button class="settings-option syriac-font-option" data-syriac-font="estrangela" role="menuitemradio">
+                                Estrangela (classical)</button>
+                            <button class="settings-option syriac-font-option" data-syriac-font="eastern" role="menuitemradio">
+                                Eastern (Madnḥāyā)</button>
+                            <button class="settings-option syriac-font-option" data-syriac-font="western" role="menuitemradio">
+                                Western (Serṭo)</button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Bookmarks -->
-                <a class="nav-btn" href="/bookmarks?lang={{ lang }}" aria-label="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}">
-                    <span class="material-symbols-outlined">bookmark</span>
-                </a>
+                    <!-- Bookmarks -->
+                    <a class="nav-btn" href="/bookmarks?lang={{ lang }}" aria-label="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}">
+                        <span class="material-symbols-outlined">bookmark</span>
+                    </a>
 
-                <!-- Theme Toggle -->
-                <button class="nav-btn theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-                    <span class="material-symbols-outlined">sunny</span>
-                </button>
+                    <!-- Theme Toggle -->
+                    <button class="nav-btn theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                        <span class="material-symbols-outlined">sunny</span>
+                    </button>
 
-                <!-- Share / QR -->
-                <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share">
-                    <span class="material-symbols-outlined">qr_code_2</span>
-                </button>
-            </div>
-        </div>
+                    <!-- Share / QR -->
+                    <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share">
+                        <span class="material-symbols-outlined">qr_code_2</span>
+                    </button>
+                </div>{# /nav-icons #}
+            </div>{# /nav-links #}
+        </div>{# /nav-inner #}
     </nav>
 
     <!-- Share Modal -->
