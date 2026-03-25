@@ -403,20 +403,14 @@ def read(book, chapter):
         if not translation and trans != 'en':
             translation = _corpus.get_verse_translation(ref, 'en')
         words = syriac.split() if syriac else []
-        # Detect actual script of the text to choose correct transliteration
+        # Always produce Latin transliteration for the translit line
         from aramaic_core.characters import detect_script as _ds
+        from aramaic_core.characters import transliterate_hebrew
         text_script = _ds(syriac) if syriac else 'syriac'
-        if script == 'syriac' or script == 'latin':
-            # User wants Latin or Syriac display — transliterate to Latin
-            if text_script == 'hebrew':
-                from aramaic_core.characters import transliterate_hebrew
-                translit = ' '.join(transliterate_hebrew(w) for w in words)
-            else:
-                translit = ' '.join(transliterate_syriac(w) for w in words)
+        if text_script == 'hebrew':
+            translit = ' '.join(transliterate_hebrew(w) for w in words)
         else:
-            # User chose Hebrew or Arabic script display
-            translit_fn = _get_translit_fn(script)
-            translit = ' '.join(translit_fn(w) for w in words)
+            translit = ' '.join(transliterate_syriac(w) for w in words)
         verse_data.append({
             'verse': v_num,
             'reference': ref,
