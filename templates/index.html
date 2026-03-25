@@ -632,6 +632,7 @@ document.getElementById('textSearchForm').addEventListener('submit', async funct
         html += '<span class="corpus-badge corpus-' + r.corpus_id + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>';
         html += '</div>';
         if (r.syriac) html += '<div class="text-result-syriac" dir="rtl">' + r.syriac + '</div>';
+        if (r.transliteration) html += '<div class="text-result-translit">' + r.transliteration + '</div>';
         if (r.translation) {
             // Highlight the search term in the translation
             var regex = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');

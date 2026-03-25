@@ -403,6 +403,20 @@ body {
     padding: 0 2px;
     border-radius: 2px;
 }
+.text-result-translit {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+}
+/* Verse flash highlight when navigating from search */
+@keyframes verse-flash-anim {
+    0% { background-color: var(--accent-light); }
+    100% { background-color: transparent; }
+}
+.verse-flash {
+    animation: verse-flash-anim 2s ease-out;
+}
 .text-search-more {
     text-align: center;
     color: var(--muted);
@@ -899,6 +913,7 @@ body {
     gap: 0.75rem;
     padding: 0.6rem 0;
     border-bottom: 1px solid var(--border);
+    transition: background-color 0.5s ease;
 }
 .verse-num {
     min-width: 2rem;

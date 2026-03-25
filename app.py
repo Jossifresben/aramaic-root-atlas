@@ -367,6 +367,14 @@ def api_search():
         return jsonify({'error': 'Missing query parameter q'}), 400
 
     results = _corpus.search_text(query, lang, corpus_filter)
+    from aramaic_core.characters import transliterate_syriac, transliterate_hebrew, detect_script
+    for r in results:
+        if r.get('syriac'):
+            script = detect_script(r['syriac'])
+            if script == 'hebrew':
+                r['transliteration'] = transliterate_hebrew(r['syriac'])
+            else:
+                r['transliteration'] = transliterate_syriac(r['syriac'])
     return jsonify({
         'query': query,
         'count': len(results),

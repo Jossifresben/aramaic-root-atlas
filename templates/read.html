@@ -109,5 +109,20 @@
         });
     });
 })();
+
+// Highlight verse briefly when navigating from search results via #vN hash
+(function() {
+    var hash = window.location.hash;
+    if (hash && hash.match(/^#v\d+$/)) {
+        var el = document.getElementById(hash.slice(1));
+        if (el) {
+            setTimeout(function() {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.classList.add('verse-flash');
+                setTimeout(function() { el.classList.remove('verse-flash'); }, 2000);
+            }, 300);
+        }
+    }
+})();
 </script>
 {% endblock %}
