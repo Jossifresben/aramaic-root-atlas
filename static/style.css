@@ -1712,23 +1712,13 @@ body {
 
 .ficha-word-hebrew { font-family: 'Noto Sans Hebrew', serif; }
 
-.ficha-word-arabic { font-family: 'Noto Sans Arabic', serif; }
+.ficha-word-arabic { font-family: 'Noto Sans Arabic', serif; direction: rtl; }
 
 .ficha-word-greek { font-family: 'Noto Serif', serif; font-size: 1.15rem; }
 
-.ficha-table td {
-    text-align: left;
-}
-.ficha-table td[dir="rtl"] {
-    text-align: right;
-}
-.ficha-table td[dir="rtl"] .ficha-translit,
-.ficha-table td[dir="rtl"] .ficha-meaning {
-    text-align: left;
-}
-.ficha-table th, .ficha-table td {
-    width: 25%;
-}
+.cell-arabic { text-align: right; direction: rtl; }
+.cell-arabic .ficha-translit,
+.cell-arabic .ficha-meaning { direction: ltr; text-align: right; }
 
 .ficha-translit {
     display: block;

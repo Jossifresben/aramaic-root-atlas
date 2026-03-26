@@ -334,35 +334,32 @@
             for (var i = 0; i < maxRows; i++) {
                 var tr = document.createElement('tr');
                 var tdS = document.createElement('td');
-                tdS.setAttribute('dir', 'rtl');
                 if (i < syriac.length) {
-                    tdS.innerHTML = '<div class="ficha-word ficha-word-syriac">' + escHtml(syriac[i].word) + '</div>' +
-                        '<div class="ficha-translit" dir="ltr">' + escHtml(syriac[i].translit) + '</div>' +
-                        '<div class="ficha-meaning" dir="ltr">' + escHtml(syriac[i].meaning || '') + '</div>';
+                    tdS.innerHTML = '<span class="ficha-word ficha-word-syriac">' + escHtml(syriac[i].word) + '</span>' +
+                        '<span class="ficha-translit">' + escHtml(syriac[i].translit) + '</span>' +
+                        '<span class="ficha-meaning">' + escHtml(syriac[i].meaning || '') + '</span>';
                 }
                 tr.appendChild(tdS);
                 var tdH = document.createElement('td');
-                tdH.setAttribute('dir', 'rtl');
                 if (i < hebrew.length) {
-                    tdH.innerHTML = '<div class="ficha-word ficha-word-hebrew">' + escHtml(hebrew[i].word) + '</div>' +
-                        '<div class="ficha-translit" dir="ltr">' + escHtml(hebrew[i].translit) + '</div>' +
-                        '<div class="ficha-meaning" dir="ltr">' + escHtml(hebrew[i].meaning || '') + '</div>';
+                    tdH.innerHTML = '<span class="ficha-word ficha-word-hebrew">' + escHtml(hebrew[i].word) + '</span>' +
+                        '<span class="ficha-translit">' + escHtml(hebrew[i].translit) + '</span>' +
+                        '<span class="ficha-meaning">' + escHtml(hebrew[i].meaning || '') + '</span>';
                 }
                 tr.appendChild(tdH);
                 var tdA = document.createElement('td');
                 tdA.classList.add('cell-arabic');
-                tdA.setAttribute('dir', 'rtl');
                 if (i < arabic.length) {
-                    tdA.innerHTML = '<div class="ficha-word ficha-word-arabic">' + escHtml(arabic[i].word) + '</div>' +
-                        '<div class="ficha-translit" dir="ltr">' + escHtml(arabic[i].translit) + '</div>' +
-                        '<div class="ficha-meaning" dir="ltr">' + escHtml(arabic[i].meaning || '') + '</div>';
+                    tdA.innerHTML = '<span class="ficha-word ficha-word-arabic">' + escHtml(arabic[i].word) + '</span>' +
+                        '<span class="ficha-translit">' + escHtml(arabic[i].translit) + '</span>' +
+                        '<span class="ficha-meaning">' + escHtml(arabic[i].meaning || '') + '</span>';
                 }
                 tr.appendChild(tdA);
                 var tdG = document.createElement('td');
                 if (i < greek.length) {
-                    tdG.innerHTML = '<div class="ficha-word ficha-word-greek">' + escHtml(greek[i].word) + '</div>' +
-                        '<div class="ficha-translit">' + escHtml(greek[i].translit) + '</div>' +
-                        '<div class="ficha-meaning">' + escHtml(greek[i].meaning || '') + '</div>';
+                    tdG.innerHTML = '<span class="ficha-word ficha-word-greek">' + escHtml(greek[i].word) + '</span>' +
+                        '<span class="ficha-translit">' + escHtml(greek[i].translit) + '</span>' +
+                        '<span class="ficha-meaning">' + escHtml(greek[i].meaning || '') + '</span>';
                 }
                 tr.appendChild(tdG);
                 tbody.appendChild(tr);
