@@ -21,6 +21,16 @@
     </div>
 </div>
 
+<div class="chapter-roots-toggle">
+    <button onclick="toggleChapterRoots()" id="chRootsBtn" class="ch-roots-btn">
+        <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">list_alt</span>
+        <span id="chRootsBtnText">Roots in this chapter</span>
+    </button>
+</div>
+<div id="chRootsPanel" class="ch-roots-panel" style="display:none">
+    <div id="chRootsContent"></div>
+</div>
+
 <div class="verses">
     {% set hl_form = request.args.get('hl', '') %}
     {% for v in verses %}
@@ -105,6 +115,47 @@
         });
     });
 })();
+
+// --- Chapter Roots Summary ---
+var _chRootsLoaded = false;
+function toggleChapterRoots() {
+    var panel = document.getElementById('chRootsPanel');
+    if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+        if (!_chRootsLoaded) {
+            document.getElementById('chRootsContent').innerHTML = '<p style="text-align:center;color:var(--muted)">Loading...</p>';
+            fetch('/api/chapter-roots?book={{ book }}&chapter={{ chapter }}')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    _chRootsLoaded = true;
+                    if (!data.roots || !data.roots.length) {
+                        document.getElementById('chRootsContent').innerHTML = '<p>No roots found.</p>';
+                        return;
+                    }
+                    var html = '<table class="ch-roots-table"><thead><tr>';
+                    html += '<th>Root</th><th>Translit</th><th>Gloss</th><th>Count</th><th></th>';
+                    html += '</tr></thead><tbody>';
+                    for (var i = 0; i < data.roots.length; i++) {
+                        var r = data.roots[i];
+                        var tier = r.confidence >= 0.8 ? 'conf-high' : (r.confidence >= 0.5 ? 'conf-med' : 'conf-low');
+                        var vizKey = r.translit;
+                        html += '<tr>';
+                        html += '<td class="syriac" dir="rtl">' + r.root + '</td>';
+                        html += '<td>' + r.translit + '</td>';
+                        html += '<td>' + (r.gloss || '') + '</td>';
+                        html += '<td><strong>' + r.count + '</strong> <span class="wp-conf ' + tier + '" title="Avg confidence: ' + r.confidence + '"></span></td>';
+                        html += '<td><a href="/visualize/' + encodeURIComponent(vizKey) + '?lang={{ lang }}" class="wp-link">Visualize</a></td>';
+                        html += '</tr>';
+                    }
+                    html += '</tbody></table>';
+                    html += '<p class="ch-roots-summary">' + data.total_roots + ' roots in ' + data.roots.reduce(function(s,r){return s+r.count},0) + ' word tokens</p>';
+                    document.getElementById('chRootsContent').innerHTML = html;
+                });
+        }
+    } else {
+        panel.style.display = 'none';
+    }
+}
 
 // Highlight verse briefly when navigating from search results via #vN hash
 (function() {

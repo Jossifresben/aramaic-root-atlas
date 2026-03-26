@@ -903,6 +903,62 @@ def constellation():
                            book=book, chapter=chapter, v_start=v_start, v_end=v_end)
 
 
+@app.route('/api/chapter-roots')
+def api_chapter_roots():
+    """Return all roots found in a chapter, sorted by frequency."""
+    book = request.args.get('book', '')
+    chapter = request.args.get('chapter', 1, type=int)
+    if not book:
+        return jsonify({'error': 'Missing book parameter'}), 400
+
+    verses = _corpus.get_chapter_verses(book, chapter)
+    root_counts: dict[str, dict] = {}  # root_syriac -> {count, forms, gloss, translit, conf_sum}
+
+    for v_num, ref, syriac in verses:
+        if not syriac:
+            continue
+        for word in syriac.split():
+            result = _extractor.lookup_word_root_with_confidence(word)
+            if not result:
+                continue
+            root_syr, conf = result
+            if root_syr not in root_counts:
+                gloss = _extractor.get_root_gloss(root_syr)
+                root_counts[root_syr] = {
+                    'root': root_syr,
+                    'translit': _translit_to_dash(root_syr),
+                    'gloss': gloss,
+                    'count': 0,
+                    'forms': set(),
+                    'conf_sum': 0.0,
+                }
+            root_counts[root_syr]['count'] += 1
+            root_counts[root_syr]['forms'].add(word)
+            root_counts[root_syr]['conf_sum'] += conf
+
+    # Convert sets to lists, compute avg confidence
+    rows = []
+    for rc in root_counts.values():
+        avg_conf = rc['conf_sum'] / rc['count'] if rc['count'] > 0 else 0
+        rows.append({
+            'root': rc['root'],
+            'translit': rc['translit'],
+            'gloss': rc['gloss'],
+            'count': rc['count'],
+            'forms': sorted(rc['forms']),
+            'confidence': round(avg_conf, 2),
+        })
+
+    rows.sort(key=lambda x: x['count'], reverse=True)
+
+    return jsonify({
+        'book': book,
+        'chapter': chapter,
+        'total_roots': len(rows),
+        'roots': rows,
+    })
+
+
 @app.route('/api/heatmap')
 def api_heatmap():
     """Return root frequency across corpora for heat map display."""

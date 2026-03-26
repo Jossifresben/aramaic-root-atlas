@@ -1018,6 +1018,58 @@ body {
 }
 .wp-link:hover { text-decoration: underline; }
 
+/* Chapter roots summary */
+.chapter-roots-toggle {
+    margin: 0.5rem 0;
+}
+.ch-roots-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--muted);
+    transition: all 0.15s;
+}
+.ch-roots-btn:hover { background: var(--accent-light); color: var(--fg); }
+.ch-roots-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    background: var(--card-bg);
+    max-height: 400px;
+    overflow-y: auto;
+}
+.ch-roots-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+.ch-roots-table th {
+    text-align: left;
+    padding: 4px 8px;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.ch-roots-table td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--border);
+}
+.ch-roots-table td.syriac {
+    font-family: var(--syriac-font);
+    font-size: 1.1rem;
+}
+.ch-roots-summary {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-top: 0.5rem;
+}
+
 .verse-translation {
     color: var(--muted);
     font-size: 0.95rem;
