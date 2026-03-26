@@ -8,13 +8,17 @@
 
 ## Features
 
+- **Word-level root display** -- click any Syriac word in the reader to see its extracted root, gloss, confidence score, and link to the root visualizer
+- **Root confidence scoring** -- three-tier system (High >= 0.8, Medium 0.5--0.8, Low < 0.5) with methodological notes on the About page
+- **Chapter root summary** -- toggle panel showing all roots in a chapter sorted by frequency, with CSV/JSON export
 - **Root search with autocomplete** -- look up any triliteral root in Latin, Syriac, Hebrew, or Arabic script
 - **Root family visualizer** -- D3.js force-directed graph showing word forms, cognates, sister roots, and semantic bridges
 - **Passage constellation** -- visualize all roots and their relationships within a selected passage
 - **Parallel viewer** -- side-by-side comparison of Peshitta OT, Targum Onkelos, and Biblical Aramaic
 - **Root frequency heat map** -- cross-corpus root distribution with filter, sort, and CSV/JSON export
-- **KWIC search** -- keyword-in-context results with inline expansion and verse modal
+- **Text search** -- full-text search across translation tracks with KWIC inline expansion and verse modal
 - **Proximity search** -- find co-occurring roots at verse or chapter scope
+- **Bookmarks** -- save verses and roots with tags, export as CSV/JSON, copy formatted citations
 - **Quadrilingual UI** -- full interface in English, Spanish, Hebrew, and Arabic with RTL support
 - **Four translation tracks** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR)
 - **Three Syriac font styles** -- Estrangela, Eastern (Madnhaya), Western (Serto)
@@ -77,6 +81,7 @@ The Atlas exposes a full JSON API for programmatic access. All endpoints support
 | `GET /api/chapter/<book>/<ch>` | Chapter text with transliteration and translation |
 | `GET /api/chapter/<book>/<ch>?parallel=true` | All corpus versions of each verse (for parallel viewer) |
 | `GET /api/verse?ref=Psalms+1:1` | Single verse with word-level root analysis |
+| `GET /api/chapter-roots?book=Matthew&chapter=5` | All roots in a chapter sorted by frequency |
 | `GET /api/proximity-search?root1=SH-L-M&root2=K-TH-B` | Co-occurring roots at verse/chapter scope |
 | `GET /api/passage-constellation` | D3 constellation graph data for a passage range |
 | `GET /api/parallel?ref=Genesis+1:1` | Parallel texts for a verse across all corpora |
@@ -120,13 +125,21 @@ aramaic-root-atlas/
 
 See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details.
 
+## Citation
+
+If you use the Aramaic Root Atlas in academic work, please cite it using the metadata in [CITATION.cff](CITATION.cff).
+
+## Support
+
+If you find this project useful, consider supporting its development via [TipTopJar](https://tiptopjar.com).
+
 ## Related
 
 - [Peshitta Root Finder](https://peshitta.onrender.com) -- the predecessor project focused on the Peshitta NT
 
 ## Author
 
-Created by [Jossi Fresco](https://jossifresco.com)
+Created by [Jose Fresco Benaim](https://jossifresco.com)
 
 ## License
 

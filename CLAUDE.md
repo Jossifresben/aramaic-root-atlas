@@ -25,7 +25,7 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
   - `fetch_biblical_aramaic.py` — Fetch BA corpus from Sefaria API
 - **docs/PRD.md** — Full product requirements document with 4-phase roadmap
 
-## Current State (Phase 3 Complete)
+## Current State (All Phases Complete)
 - **4 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v)
 - **Total**: 36,627 verses, 498,922 words, 72,566 unique forms
 - **5,039 roots** indexed across all corpora
@@ -35,6 +35,10 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - Root family visualizer (D3.js force graph + root card)
 - Parallel viewer (Peshitta OT ↔ Targum Onkelos / Biblical Aramaic)
 - Root frequency heat map with filter and CSV/JSON export
+- Word-level root display with confidence scoring in reader
+- Chapter root summary panel with frequency table and export
+- Bookmarks with tags, CSV/JSON export, copy citation
+- Production deployment: https://aramaic-root-atlas.onrender.com
 - Data sources: ETCBC/peshitta (CC-BY-NC), Sefaria (CC-BY-SA), bible.helloao.org
 
 ## API Routes
@@ -58,6 +62,8 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - `GET /heatmap` — Root frequency heat map page
 - `GET /api/heatmap?limit=100&sort=total` — Heat map data (root frequency across corpora)
 - `GET /api/suggest?prefix=SH` — Autocomplete suggestions for root search
+- `GET /api/chapter-roots?book=Matthew&chapter=5` — All roots in a chapter sorted by frequency
+- `GET /api/verse?ref=Matthew+5:3` — Single verse with word-level root data
 
 ## Run
 ```bash
@@ -110,12 +116,20 @@ python3 app.py  # starts on port 5001
 - ✅ Data source: Sefaria API (Targum Onkelos, CC-BY-SA)
 
 ## Phase 4 Complete — Polish & Scale
-- ✅ Bookmark/favorites for roots — Done (localStorage-based, verses + roots, export JSON)
+- ✅ Bookmark/favorites for roots and verses (localStorage-based, tags, CSV/JSON export, copy citation)
 - ✅ Text search UI on homepage (Root Search / Text Search toggle)
 - ✅ Mobile responsiveness fixes
 - ✅ Deployed to production: https://aramaic-root-atlas.onrender.com
 - ✅ TipTopJar support widget
 - ✅ Footer with attribution, license, GitHub link
+
+## Scholarly Improvements
+- ✅ Root confidence scoring (High ≥0.8, Medium 0.5-0.8, Low <0.5)
+- ✅ Word-level root display in reader (click word → popover with root, gloss, confidence, visualizer link)
+- ✅ Chapter root summary ("Roots in this chapter" toggle with frequency table, CSV/JSON export)
+- ✅ Methodological caveats on About page
+- ✅ Enhanced bookmarks (tags, CSV export, copy citation)
+- ✅ CITATION.cff for academic citation
 
 ## Conventions
 - Syriac text uses Unicode (U+0710-U+074F), stored as-is in CSV

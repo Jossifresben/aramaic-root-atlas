@@ -301,6 +301,7 @@ Full-text search across translation tracks.
     {
       "reference": "Matthew 10:13",
       "text": "...let your peace come upon it...",
+      "transliteration": "wshlmkwn ...",
       "corpus_id": "peshitta_nt"
     }
   ]
@@ -310,12 +311,60 @@ Full-text search across translation tracks.
 **Notes:**
 - Results are capped at 50.
 - Search is case-insensitive substring matching within the chosen translation track.
+- Each result includes a `transliteration` field with the Latin transliteration of the Syriac text.
 
 **Error Responses:**
 
 | Status | Body | Cause |
 |--------|------|-------|
 | 400 | `{"error": "Missing query parameter q"}` | No search term provided. |
+
+---
+
+### GET /api/chapter-roots
+
+Return all roots found in a chapter, sorted by frequency. Used by the chapter root summary panel.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `book` | string | yes | -- | Book name in English (e.g., `Matthew`, `Genesis`). |
+| `chapter` | int | yes | -- | Chapter number (1-based). |
+| `corpus` | string | no | _(all)_ | Filter to a single corpus. |
+| `lang` | string | no | `en` | Language for glosses. |
+
+**Response (200):**
+
+```json
+{
+  "book": "Matthew",
+  "chapter": 5,
+  "roots": [
+    {
+      "root": "\u0710\u0721\u072a",
+      "translit": "A-M-R",
+      "gloss": "to say, speak",
+      "count": 7,
+      "confidence": 0.95,
+      "forms": ["\u0710\u0721\u072a", "\u0710\u0721\u072a\u072c"]
+    }
+  ],
+  "total_roots": 42
+}
+```
+
+**Notes:**
+- Roots are sorted by descending `count` (frequency within the chapter).
+- `confidence` is the root extraction confidence score (0.0--1.0). High >= 0.8, Medium 0.5--0.8, Low < 0.5.
+- `forms` lists the distinct word forms attested for each root in the chapter.
+
+**Error Responses:**
+
+| Status | Body | Cause |
+|--------|------|-------|
+| 400 | `{"error": "Missing book or chapter"}` | Required parameters missing. |
+| 404 | `{"error": "No verses found"}` | Book/chapter not in any loaded corpus. |
 
 ---
 
@@ -732,7 +781,8 @@ These routes return rendered HTML pages, not JSON. They accept the common `lang`
 | `GET /visualize/<root_key>` | Root family visualizer page (D3.js force graph + root card). `root_key` is a dash-separated Latin transliteration (e.g., `SH-L-M`). |
 | `GET /parallel` | Synoptic parallel viewer for comparing texts across corpora. Accepts `book`, `chapter`. |
 | `GET /heatmap` | Root frequency heat map page with interactive filter, sort, and export. |
-| `GET /about` | About page with project information and credits. |
+| `GET /bookmarks` | Bookmarks page (localStorage-based verse & root favorites with tags, CSV/JSON export, copy citation). |
+| `GET /about` | About page with project information, methodological notes, and credits. |
 
 ---
 
