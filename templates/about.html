@@ -287,6 +287,15 @@
         <h3>An&aacute;lisis morfol&oacute;gico</h3>
         <p>Se aplican conjuntos separados de reglas de afijos para el siríaco y para el arameo b&iacute;blico en escritura hebrea, dando cuenta de las diferencias en preposiciones cl&iacute;ticas, marcadores pronominales y morfolog&iacute;a verbal entre ambas tradiciones.</p>
 
+        <h3>Puntuaci&oacute;n de confianza</h3>
+        <p>Cada atribuci&oacute;n de ra&iacute;z lleva una puntuaci&oacute;n de confianza (0.0&ndash;1.0) que refleja c&oacute;mo fue identificada la ra&iacute;z. Haga clic en cualquier palabra del lector para ver su puntuaci&oacute;n como un indicador de color:</p>
+        <ul>
+            <li><span style="color:#4caf50;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>Alta (&ge; 0,8)</strong> &mdash; Palabra encontrada en el diccionario verificado, o triliteral pura que coincide con una ra&iacute;z conocida. Estas atribuciones son fiables.</li>
+            <li><span style="color:#ff9800;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>Media (0,5&ndash;0,8)</strong> &mdash; Ra&iacute;z extra&iacute;da mediante eliminaci&oacute;n de afijos pero no verificada independientemente contra el diccionario. Plausible pero debe verificarse en casos l&iacute;mite.</li>
+            <li><span style="color:#9e9e9e;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>Baja (&lt; 0,5)</strong> &mdash; Ra&iacute;z reconstruida a partir de expansi&oacute;n de letras d&eacute;biles o eliminaci&oacute;n morfol&oacute;gica intensa. Estas son las m&aacute;s propensas a errores.</li>
+        </ul>
+        <p>La puntuaci&oacute;n es estad&iacute;stica, no basada en etiquetado morfol&oacute;gico. No indica la forma morfol&oacute;gica (Peal, Aphel, Ethpeel), el patr&oacute;n de la ra&iacute;z ni la funci&oacute;n gramatical de la palabra.</p>
+
         {% elif lang == 'he' %}
 
         <h3>חילוץ שורשים</h3>
@@ -297,6 +306,15 @@
 
         <h3>ניתוח מורפולוגי</h3>
         <p>מערכות חוקי ניתוח נפרדות מוחלות על הסורית ועל הארמית המקראית בכתב העברי, תוך התייחסות להבדלים במילות יחס קליטיות, סמני כינויים ומורפולוגיה פועלית בין שתי המסורות.</p>
+
+        <h3>ניקוד ביטחון</h3>
+        <p>כל ייחוס שורש נושא ציון ביטחון (0.0&ndash;1.0) המשקף כיצד זוהה השורש. לחצו על כל מילה בקורא כדי לראות את הציון כמחוון צבעוני:</p>
+        <ul>
+            <li><span style="color:#4caf50;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>גבוה (&ge; 0.8)</strong> &mdash; מילה שנמצאה במילון המאומת, או תלת-עיצורית חשופה התואמת שורש ידוע. ייחוסים אלה אמינים.</li>
+            <li><span style="color:#ff9800;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>בינוני (0.5&ndash;0.8)</strong> &mdash; שורש שחולץ באמצעות הפשטת מוספיות אך לא אומת באופן עצמאי מול המילון. סביר אך יש לבדוק במקרי קצה.</li>
+            <li><span style="color:#9e9e9e;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>נמוך (&lt; 0.5)</strong> &mdash; שורש ששוחזר מהרחבת אותיות חלשות או הפשטה מורפולוגית כבדה. אלה הסבירים ביותר להכיל שגיאות.</li>
+        </ul>
+        <p>הניקוד סטטיסטי, לא מבוסס על תיוג מורפולוגי. הוא אינו מציין את הצורה המורפולוגית (פעל, אפעל, אתפעל), את תבנית הגזע או את התפקיד הדקדוקי של המילה.</p>
 
         {% elif lang == 'ar' %}
 
@@ -309,6 +327,15 @@
         <h3>التحليل الصرفي</h3>
         <p>تُطبَّق مجموعات منفصلة من قواعد الزوائد على السريانية وعلى الآرامية التوراتية بالخط العبري، مع مراعاة الاختلافات في حروف الجر المتّصلة وعلامات الضمائر والصرف الفعلي بين التقليدين.</p>
 
+        <h3>تسجيل الثقة</h3>
+        <p>يحمل كل نسب جذري درجة ثقة (0.0&ndash;1.0) تعكس كيفية تحديد الجذر. انقر على أي كلمة في القارئ لرؤية درجتها كمؤشر لوني:</p>
+        <ul>
+            <li><span style="color:#4caf50;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>عالية (&ge; 0.8)</strong> &mdash; كلمة موجودة في المعجم الموثّق، أو ثلاثية صوامت مطابقة لجذر معروف. هذه النسب موثوقة.</li>
+            <li><span style="color:#ff9800;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>متوسطة (0.5&ndash;0.8)</strong> &mdash; جذر مُستخلَص عبر تجريد الزوائد لكنه لم يُتحقَّق منه مستقلاً في المعجم. محتمل لكن يجب التحقق في الحالات الحدّية.</li>
+            <li><span style="color:#9e9e9e;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>منخفضة (&lt; 0.5)</strong> &mdash; جذر أُعيد بناؤه من توسيع حروف العلة أو تجريد صرفي مكثف. هذه الأكثر عرضة للخطأ.</li>
+        </ul>
+        <p>التسجيل إحصائي وليس مبنياً على الوسم الصرفي. لا يُشير إلى الوزن الصرفي (فعل، أفعل، إتفعل)، ولا إلى نمط الجذع أو الوظيفة النحوية للكلمة.</p>
+
         {% else %}
 
         <h3>Root Extraction</h3>
@@ -319,6 +346,15 @@
 
         <h3>Morphological Analysis</h3>
         <p>Separate affix rule sets are applied for Syriac and for Biblical Aramaic in Hebrew script, accounting for differences in clitic prepositions, pronominal markers, and verbal morphology between the two traditions.</p>
+
+        <h3>Root Confidence Scoring</h3>
+        <p>Each root attribution carries a confidence score (0.0&ndash;1.0) reflecting how the root was identified. Click any word in the reader to see its score as a colored indicator:</p>
+        <ul>
+            <li><span style="color:#4caf50;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>High (&ge; 0.8)</strong> &mdash; Word found in the verified dictionary, or a bare triliteral matching a known root. These attributions are reliable.</li>
+            <li><span style="color:#ff9800;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>Medium (0.5&ndash;0.8)</strong> &mdash; Root extracted via affix stripping but not independently verified against the dictionary. Plausible but should be checked for edge cases.</li>
+            <li><span style="color:#9e9e9e;font-size:1.8em;line-height:0;vertical-align:middle">&bull;</span> <strong>Low (&lt; 0.5)</strong> &mdash; Root reconstructed from weak-letter expansion or heavy morphological stripping. These are the most likely to contain errors, particularly for weak roots (<em>I-&#x02BE;Alap</em>, <em>II-Waw/Yod</em>, <em>III-&#x02BE;Alap</em>) and quadriliteral forms.</li>
+        </ul>
+        <p>The scoring is statistical, not based on morphological tagging. It does not indicate the morphological form (Peal, Aphel, Ethpeel), stem pattern, or grammatical function of the word. No error rate has been measured against a gold-standard morphological corpus.</p>
 
         {% endif %}
 
