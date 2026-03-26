@@ -117,6 +117,15 @@
 var _chRootsLoaded = false;
 var _chRootsData = null;
 
+function exportChapterRootsJSON() {
+    if (!_chRootsData) return;
+    var blob = new Blob([JSON.stringify(_chRootsData, null, 2)], {type: 'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '{{ book }}-ch{{ chapter }}-roots.json';
+    a.click();
+}
+
 function exportChapterRootsCSV() {
     if (!_chRootsData) return;
     var lines = ['Root,Transliteration,Gloss,Count,Confidence,Forms'];
@@ -143,7 +152,7 @@ function toggleChapterRoots() {
                         document.getElementById('chRootsContent').innerHTML = '<p>No roots found.</p>';
                         return;
                     }
-                    var html = '<div style="text-align:right;margin-bottom:0.4rem"><button class="ch-roots-csv-btn" onclick="exportChapterRootsCSV()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> CSV</button></div>';
+                    var html = '<div style="text-align:right;margin-bottom:0.4rem"><button class="ch-roots-csv-btn" onclick="exportChapterRootsCSV()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> CSV</button> <button class="ch-roots-csv-btn" onclick="exportChapterRootsJSON()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> JSON</button></div>';
                     html += '<table class="ch-roots-table"><thead><tr>';
                     html += '<th>Root</th><th>Translit</th><th>Gloss</th><th>Count</th><th></th>';
                     html += '</tr></thead><tbody>';
@@ -162,7 +171,8 @@ function toggleChapterRoots() {
                     html += '</tbody></table>';
                     html += '<div class="ch-roots-footer">';
                     html += '<p class="ch-roots-summary">' + data.total_roots + ' roots in ' + data.roots.reduce(function(s,r){return s+r.count},0) + ' word tokens</p>';
-                    html += '<button class="ch-roots-csv-btn" onclick="exportChapterRootsCSV()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> CSV</button>';
+                    html += '<button class="ch-roots-csv-btn" onclick="exportChapterRootsCSV()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> CSV</button> ';
+                    html += '<button class="ch-roots-csv-btn" onclick="exportChapterRootsJSON()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> JSON</button>';
                     html += '</div>';
                     _chRootsData = data;
                     document.getElementById('chRootsContent').innerHTML = html;
