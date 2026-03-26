@@ -52,6 +52,8 @@ class RootExtractor:
         self._root_index: dict[str, RootEntry] = {}
         # Word -> root mapping (built during build_index)
         self._word_to_root: dict[str, str] = {}
+        # Word -> confidence score (built during build_index)
+        self._word_to_score: dict[str, float] = {}
         self._built = False
 
     def load_data(self) -> None:
@@ -86,15 +88,31 @@ class RootExtractor:
         Handles both Syriac script and Hebrew square script (Biblical Aramaic).
         Returns the root as a 2- or 3-character string in the word's native script, or None.
         """
+        result = self._extract_root_with_score(word)
+        return result[0] if result else None
+
+    def _extract_root_with_score(self, word: str) -> tuple[str, float] | None:
+        """Extract a root and its confidence score from a single word.
+
+        Returns (root, score) where score is 0.0-1.0, or None if no root found.
+        Score tiers: High (>=0.8), Medium (0.5-0.8), Low (<0.5).
+        """
         script = detect_script(word)
 
         if script == 'hebrew':
-            return self._extract_root_hebrew(word)
+            root = self._extract_root_hebrew(word)
+            if root is None:
+                return None
+            # Estimate score for Hebrew path
+            syriac_equiv = hebrew_to_syriac(root)
+            if syriac_equiv in self._known_roots:
+                return (root, 0.9)
+            return (root, 0.5)
 
         # --- Syriac script path (original logic) ---
         # 1. Direct form lookup in known dictionary
         if word in self._form_to_root:
-            return self._form_to_root[word]
+            return (self._form_to_root[word], 1.0)
 
         # 2. Get consonants only
         consonants = syriac_consonants_of(word)
@@ -104,12 +122,12 @@ class RootExtractor:
         # 3. If exactly 3 consonants, it might be a bare root
         if len(consonants) == 3:
             if consonants in self._known_roots:
-                return consonants
-            return consonants
+                return (consonants, 0.95)
+            return (consonants, 0.5)
 
         # 3b. If exactly 2 consonants and it's a known biliteral root
         if len(consonants) == 2 and consonants in self._known_roots:
-            return consonants
+            return (consonants, 0.85)
 
         # 4. Generate candidate stems via affix stripping
         candidates = generate_candidate_stems(word)
@@ -146,7 +164,9 @@ class RootExtractor:
                         best_score = score
                         best_root = reconstructed
 
-        return best_root
+        if best_root is not None:
+            return (best_root, best_score)
+        return None
 
     def _extract_root_hebrew(self, word: str) -> str | None:
         """Extract root from a Biblical Aramaic word in Hebrew square script.
@@ -267,9 +287,10 @@ class RootExtractor:
             if '-' in word:
                 continue
 
-            root = self._extract_root_for_word(word)
-            if root is None:
+            result = self._extract_root_with_score(word)
+            if result is None:
                 continue
+            root, score = result
 
             word_script = detect_script(word)
 
@@ -284,6 +305,7 @@ class RootExtractor:
                 self._root_display[canonical_root]['syriac'] = root
 
             self._word_to_root[word] = canonical_root
+            self._word_to_score[word] = score
 
             refs = self.corpus.get_occurrences(word)
             root_data[canonical_root][word] = refs
@@ -354,6 +376,24 @@ class RootExtractor:
         """Return the Syriac root for a given word form, or None."""
         self.build_index()
         return self._word_to_root.get(word)
+
+    def lookup_word_confidence(self, word: str) -> float | None:
+        """Return the confidence score (0.0-1.0) for a word's root extraction.
+
+        Tiers: High (>=0.8), Medium (0.5-0.8), Low (<0.5).
+        Returns None if the word has no root.
+        """
+        self.build_index()
+        return self._word_to_score.get(word)
+
+    def lookup_word_root_with_confidence(self, word: str) -> tuple[str, float] | None:
+        """Return (root, confidence) for a word, or None."""
+        self.build_index()
+        root = self._word_to_root.get(word)
+        if root is None:
+            return None
+        score = self._word_to_score.get(word, 0.5)
+        return (root, score)
 
     def get_root_gloss(self, root_syriac: str) -> str:
         """Return the English gloss for a root from known_roots.json."""
