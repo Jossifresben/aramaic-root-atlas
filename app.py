@@ -96,7 +96,7 @@ def _init():
 
 # --- Helper ---
 VALID_SCRIPTS = ('latin', 'syriac', 'hebrew', 'arabic')
-VALID_TRANS = ('en', 'es', 'he', 'ar')
+VALID_TRANS = ('en', 'es', 'he', 'ar', 'el')
 
 
 def _get_lang() -> str:
