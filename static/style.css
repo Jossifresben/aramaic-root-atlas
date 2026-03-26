@@ -1714,6 +1714,8 @@ body {
 
 .ficha-word-arabic { font-family: 'Noto Sans Arabic', serif; direction: rtl; }
 
+.ficha-word-greek { font-family: 'Noto Serif', serif; font-size: 1.15rem; }
+
 .cell-arabic { text-align: right; direction: rtl; }
 .cell-arabic .ficha-translit,
 .cell-arabic .ficha-meaning { direction: ltr; text-align: right; }

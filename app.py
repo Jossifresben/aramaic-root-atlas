@@ -1135,6 +1135,19 @@ def api_root_family():
                 a['outlier'] = True
             arabic.append(a)
 
+    # Greek cognates (from raw cognates JSON, not CognateLookup dataclass)
+    greek = []
+    if cognate_entry:
+        root_key = cognate_entry.root_latin or normalize_root_to_latin(root_syriac)
+        raw = _cognates_raw.get(root_key, {})
+        if isinstance(raw, dict):
+            for gw in raw.get('cognates', {}).get('greek', []):
+                greek.append({
+                    'word': gw.get('word', ''),
+                    'translit': gw.get('transliteration', ''),
+                    'meaning': gw.get('meaning_es', gw.get('meaning_en', '')) if meaning_lang == 'es' else gw.get('meaning_en', ''),
+                })
+
     # Semantic bridges
     bridges = []
     if cognate_entry and cognate_entry.semantic_bridges:
@@ -1213,6 +1226,7 @@ def api_root_family():
         'syriac_words': syriac_words,
         'hebrew': hebrew,
         'arabic': arabic,
+        'greek': greek,
         'semantic_bridges': bridges,
         'paradigmatic_ref': paradigmatic_ref,
         'paradigmatic_verse': paradigmatic_verse,
