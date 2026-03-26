@@ -23,13 +23,22 @@
                 </button>
             </div>
             <div class="bookmarks-actions">
-                <button class="bm-action-btn" onclick="exportBookmarks()" title="{{ t('bookmarks_export', lang) if t else 'Export' }}">
-                    <span class="material-symbols-outlined">download</span>
+                <button class="bm-action-btn" onclick="exportBookmarks()" title="Export JSON">
+                    <span class="material-symbols-outlined">download</span> JSON
+                </button>
+                <button class="bm-action-btn" onclick="exportCSV()" title="Export CSV">
+                    <span class="material-symbols-outlined">table_chart</span> CSV
                 </button>
                 <button class="bm-action-btn" onclick="clearAllBookmarks()" title="{{ t('bookmarks_clear', lang) if t else 'Clear all' }}">
                     <span class="material-symbols-outlined">delete_sweep</span>
                 </button>
             </div>
+        </div>
+
+        <div class="bm-tag-filter" id="tag-filter-bar" style="display:none">
+            <span class="bm-tag-label">Filter by tag:</span>
+            <span id="tag-chips"></span>
+            <button class="bm-tag-clear" onclick="clearTagFilter()">Show all</button>
         </div>
 
         <div class="bookmarks-panel" id="bm-verses-panel">
@@ -78,6 +87,7 @@ function renderBookmarks() {
     // Render verses
     var vh = '';
     bm.verses.forEach(function(v, i) {
+        if (_activeTag && !(v.tags || []).includes(_activeTag)) return;
         vh += '<div class="bm-card">';
         vh += '<div class="bm-card-header">';
         vh += '<a class="bm-ref" href="/read/' + encodeURIComponent(v.book) + '/' + v.chapter + '?lang=' + currentLang + '#v' + v.verse + '">' + escHtml(localizeRef(v.ref)) + '</a>';
@@ -86,7 +96,13 @@ function renderBookmarks() {
         vh += '</div>';
         if (v.syriac) vh += '<div class="bm-syriac syriac" dir="rtl">' + escHtml(v.syriac) + '</div>';
         if (v.translation) vh += '<div class="bm-translation">' + escHtml(v.translation) + '</div>';
-        vh += '<div class="bm-note-input"><input type="text" placeholder="' + escHtml('{{ t("bookmarks_add_note", lang) if t else "Add a note..." }}') + '" value="' + escHtml(v.note || '') + '" onchange="updateNote(\'verses\',' + i + ',this.value)"></div>';
+        var vTags = (v.tags || []).map(escHtml).join(', ');
+        vh += '<div class="bm-note-input"><input type="text" placeholder="Add a note..." value="' + escHtml(v.note || '') + '" onchange="updateNote(\'verses\',' + i + ',this.value)"></div>';
+        vh += '<div class="bm-tags-input"><span class="bm-tags-icon material-symbols-outlined" style="font-size:14px">sell</span><input type="text" placeholder="Tags (comma-separated)" value="' + escHtml(vTags) + '" onchange="updateTags(\'verses\',' + i + ',this.value)"></div>';
+        vh += '<div class="bm-card-actions">';
+        vh += '<button class="bm-cite-btn" onclick="copyCitation(\'verse\',' + i + ')" title="Copy citation"><span class="material-symbols-outlined" style="font-size:14px">content_copy</span> Cite</button>';
+        vh += '</div>';
+        if (v.tags && v.tags.length) { vh += '<div class="bm-tag-chips">'; v.tags.forEach(function(t) { vh += '<span class="bm-chip" onclick="filterByTag(\'' + escHtml(t) + '\')">' + escHtml(t) + '</span>'; }); vh += '</div>'; }
         vh += '</div>';
     });
     vList.innerHTML = vh;
@@ -94,6 +110,7 @@ function renderBookmarks() {
     // Render roots
     var rh = '';
     bm.roots.forEach(function(r, i) {
+        if (_activeTag && !(r.tags || []).includes(_activeTag)) return;
         rh += '<div class="bm-card">';
         rh += '<div class="bm-card-header">';
         rh += '<a class="bm-ref" href="/?q=' + encodeURIComponent(r.key) + '&lang=' + currentLang + '#results">';
@@ -103,7 +120,13 @@ function renderBookmarks() {
         rh += '<span class="bm-date">' + (r.date || '') + '</span>';
         rh += '<button class="bm-remove" onclick="removeBookmark(\'roots\',' + i + ')" title="Remove"><span class="material-symbols-outlined">close</span></button>';
         rh += '</div>';
-        rh += '<div class="bm-note-input"><input type="text" placeholder="' + escHtml('{{ t("bookmarks_add_note", lang) if t else "Add a note..." }}') + '" value="' + escHtml(r.note || '') + '" onchange="updateNote(\'roots\',' + i + ',this.value)"></div>';
+        var rTags = (r.tags || []).map(escHtml).join(', ');
+        rh += '<div class="bm-note-input"><input type="text" placeholder="Add a note..." value="' + escHtml(r.note || '') + '" onchange="updateNote(\'roots\',' + i + ',this.value)"></div>';
+        rh += '<div class="bm-tags-input"><span class="bm-tags-icon material-symbols-outlined" style="font-size:14px">sell</span><input type="text" placeholder="Tags (comma-separated)" value="' + escHtml(rTags) + '" onchange="updateTags(\'roots\',' + i + ',this.value)"></div>';
+        rh += '<div class="bm-card-actions">';
+        rh += '<button class="bm-cite-btn" onclick="copyCitation(\'root\',' + i + ')" title="Copy citation"><span class="material-symbols-outlined" style="font-size:14px">content_copy</span> Cite</button>';
+        rh += '</div>';
+        if (r.tags && r.tags.length) { rh += '<div class="bm-tag-chips">'; r.tags.forEach(function(t) { rh += '<span class="bm-chip" onclick="filterByTag(\'' + escHtml(t) + '\')">' + escHtml(t) + '</span>'; }); rh += '</div>'; }
         rh += '</div>';
     });
     rList.innerHTML = rh;
@@ -145,6 +168,83 @@ function clearAllBookmarks() {
     }
 }
 
+// --- Tags ---
+var _activeTag = '';
+
+function updateTags(type, idx, val) {
+    var bm = getBookmarks();
+    bm[type][idx].tags = val.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+    saveBookmarks(bm);
+    updateTagBar();
+}
+
+function filterByTag(tag) {
+    _activeTag = tag;
+    updateTagBar();
+    renderBookmarks();
+}
+
+function clearTagFilter() {
+    _activeTag = '';
+    updateTagBar();
+    renderBookmarks();
+}
+
+function updateTagBar() {
+    var bm = getBookmarks();
+    var allTags = new Set();
+    bm.verses.concat(bm.roots).forEach(function(item) {
+        (item.tags || []).forEach(function(t) { allTags.add(t); });
+    });
+    var bar = document.getElementById('tag-filter-bar');
+    var chips = document.getElementById('tag-chips');
+    if (allTags.size === 0) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    var html = '';
+    allTags.forEach(function(t) {
+        html += '<span class="bm-chip' + (t === _activeTag ? ' active' : '') + '" onclick="filterByTag(\'' + escHtml(t) + '\')">' + escHtml(t) + '</span>';
+    });
+    chips.innerHTML = html;
+}
+
+// --- CSV Export ---
+function exportCSV() {
+    var bm = getBookmarks();
+    var lines = ['Type,Reference/Key,Gloss,Note,Tags,Date'];
+    bm.verses.forEach(function(v) {
+        lines.push('verse,"' + (v.ref||'').replace(/"/g,'""') + '","","' + (v.note||'').replace(/"/g,'""') + '","' + (v.tags||[]).join(';') + '",' + (v.date||''));
+    });
+    bm.roots.forEach(function(r) {
+        lines.push('root,"' + (r.key||'').replace(/"/g,'""') + '","' + (r.gloss||'').replace(/"/g,'""') + '","' + (r.note||'').replace(/"/g,'""') + '","' + (r.tags||[]).join(';') + '",' + (r.date||''));
+    });
+    var blob = new Blob([lines.join('\n')], {type: 'text/csv'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'aramaic-atlas-bookmarks.csv';
+    a.click();
+}
+
+// --- Copy Citation ---
+function copyCitation(type, idx) {
+    var bm = getBookmarks();
+    var item = bm[type === 'verse' ? 'verses' : 'roots'][idx];
+    var cite = '';
+    if (type === 'verse') {
+        cite = item.ref + '. Aramaic Root Atlas, https://aramaic-root-atlas.onrender.com/read/' + encodeURIComponent(item.book) + '/' + item.chapter + '#v' + item.verse;
+    } else {
+        cite = item.key + (item.gloss ? ' (' + item.gloss + ')' : '') + '. Aramaic Root Atlas, https://aramaic-root-atlas.onrender.com/visualize/' + encodeURIComponent(item.key);
+    }
+    if (item.note) cite += ' — Note: ' + item.note;
+    navigator.clipboard.writeText(cite).then(function() {
+        var btns = document.querySelectorAll('.bm-cite-btn');
+        // Flash feedback on the specific button
+        var allCards = document.querySelectorAll('.bm-card');
+        // Simple feedback
+        alert('Citation copied!');
+    });
+}
+
+updateTagBar();
 renderBookmarks();
 </script>
 {% endblock %}

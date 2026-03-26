@@ -1019,9 +1019,6 @@ body {
 .wp-link:hover { text-decoration: underline; }
 
 /* Chapter roots summary */
-.chapter-roots-toggle {
-    margin: 0.5rem 0;
-}
 .ch-roots-btn {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -2221,4 +2218,96 @@ body {
 .bm-note-input input:focus {
     outline: none;
     border-color: var(--accent);
+}
+
+/* Tags input */
+.bm-tags-input {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.3rem;
+}
+.bm-tags-icon { color: var(--muted); }
+.bm-tags-input input {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.3rem 0.5rem;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 0.82rem;
+}
+.bm-tags-input input:focus { outline: none; border-color: var(--accent); }
+
+/* Tag chips */
+.bm-tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.4rem;
+}
+.bm-chip {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.78rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.bm-chip:hover { background: var(--accent); color: #fff; }
+.bm-chip.active { background: var(--accent); color: #fff; }
+
+/* Tag filter bar */
+.bm-tag-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 0.5rem 0.75rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.75rem;
+}
+.bm-tag-label { font-size: 0.82rem; color: var(--muted); }
+.bm-tag-clear {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2px 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    cursor: pointer;
+}
+.bm-tag-clear:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Card actions (cite button) */
+.bm-card-actions {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+}
+.bm-cite-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3px 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.bm-cite-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Action buttons with text */
+.bm-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.82rem;
 }
