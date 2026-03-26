@@ -28,18 +28,14 @@
         <span class="verse-num">{{ v.verse }}</span>
         <div class="verse-content">
             <div class="verse-syriac" dir="rtl">
-                {%- if hl_form -%}
-                    {%- for w in v.syriac.split() -%}
-                        {%- if w == hl_form -%}
-                            <span class="hl">{{ w }}</span>
-                        {%- else -%}
-                            {{ w }}
-                        {%- endif -%}
-                        {%- if not loop.last %} {% endif -%}
-                    {%- endfor -%}
-                {%- else -%}
-                    {{ v.syriac }}
-                {%- endif -%}
+                {%- for w in v.syriac.split() -%}
+                    {%- set idx = loop.index0 -%}
+                    {%- set wr = v.word_roots[idx] if v.word_roots and idx < v.word_roots|length else None -%}
+                    <span class="word-token{% if w == hl_form %} hl{% endif %}{% if wr %} has-root{% endif %}"
+                          {% if wr %}data-root="{{ wr.r }}" data-translit="{{ wr.t }}" data-gloss="{{ wr.g }}" data-conf="{{ wr.c }}"{% endif %}
+                          >{{ w }}</span>
+                    {%- if not loop.last %} {% endif -%}
+                {%- endfor -%}
             </div>
             {% if v.transliteration %}
             <div class="verse-translit">{{ v.transliteration }}</div>
@@ -123,6 +119,66 @@
             }, 300);
         }
     }
+})();
+
+// --- Word popover for root info ---
+(function() {
+    var popover = document.createElement('div');
+    popover.className = 'word-popover';
+    popover.style.display = 'none';
+    document.body.appendChild(popover);
+
+    function confTier(c) {
+        if (c >= 0.8) return { cls: 'conf-high', label: 'High' };
+        if (c >= 0.5) return { cls: 'conf-med', label: 'Medium' };
+        return { cls: 'conf-low', label: 'Low' };
+    }
+
+    document.addEventListener('click', function(e) {
+        var token = e.target.closest('.word-token.has-root');
+        if (!token) {
+            popover.style.display = 'none';
+            return;
+        }
+
+        var root = token.getAttribute('data-root');
+        var translit = token.getAttribute('data-translit');
+        var gloss = token.getAttribute('data-gloss');
+        var conf = parseFloat(token.getAttribute('data-conf'));
+        var tier = confTier(conf);
+
+        var vizKey = translit.replace(/-/g, '-').replace(/^'/, 'A').toLowerCase().replace(/-/g, '-');
+        // Build visualizer URL key from translit
+        var vizUrl = '/visualize/' + encodeURIComponent(translit) + '?lang={{ lang }}';
+
+        var html = '<div class="wp-header">';
+        html += '<span class="wp-root" dir="rtl">' + root + '</span>';
+        html += '<span class="wp-translit">' + translit + '</span>';
+        html += '<span class="wp-conf ' + tier.cls + '" title="Confidence: ' + tier.label + '"></span>';
+        html += '</div>';
+        if (gloss) html += '<div class="wp-gloss">' + gloss + '</div>';
+        html += '<div class="wp-actions">';
+        html += '<a href="' + vizUrl + '" class="wp-link">Visualize</a>';
+        html += '</div>';
+
+        popover.innerHTML = html;
+        popover.style.display = 'block';
+
+        // Position near the word
+        var rect = token.getBoundingClientRect();
+        var popRect = popover.getBoundingClientRect();
+        var top = rect.bottom + window.scrollY + 6;
+        var left = rect.left + window.scrollX + (rect.width / 2) - (popRect.width / 2);
+        // Keep within viewport
+        if (left < 8) left = 8;
+        if (left + popRect.width > window.innerWidth - 8) left = window.innerWidth - popRect.width - 8;
+        popover.style.top = top + 'px';
+        popover.style.left = left + 'px';
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') popover.style.display = 'none';
+    });
 })();
 </script>
 {% endblock %}

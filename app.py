@@ -411,6 +411,23 @@ def read(book, chapter):
             translit = ' '.join(transliterate_hebrew(w) for w in words)
         else:
             translit = ' '.join(transliterate_syriac(w) for w in words)
+        # Build word-level root data for popover
+        word_roots = []
+        for w in words:
+            result = _extractor.lookup_word_root_with_confidence(w)
+            if result:
+                root_syr, conf = result
+                root_translit = _translit_to_dash(root_syr)
+                gloss = _extractor.get_root_gloss(root_syr)
+                word_roots.append({
+                    'r': root_syr,
+                    't': root_translit,
+                    'g': gloss,
+                    'c': round(conf, 2),
+                })
+            else:
+                word_roots.append(None)
+
         verse_data.append({
             'verse': v_num,
             'reference': ref,
@@ -418,6 +435,7 @@ def read(book, chapter):
             'transliteration': translit,
             'translation': translation,
             'corpus_id': _corpus.get_verse_corpus(ref),
+            'word_roots': word_roots,
         })
 
     books = _corpus.get_books()
