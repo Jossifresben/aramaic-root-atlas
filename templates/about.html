@@ -433,7 +433,6 @@
             <li><strong>Distribuci&oacute;n l&eacute;xica</strong> &mdash; El mapa de calor revela qu&eacute; ra&iacute;ces son panarameas (atestiguadas en los 4 corpus) frente a las espec&iacute;ficas de un corpus. Exporte a CSV para an&aacute;lisis estad&iacute;stico.</li>
             <li><strong>Frecuencia de ra&iacute;ces</strong> &mdash; An&aacute;lisis cuantitativo de la frecuencia de ra&iacute;ces seg&uacute;n g&eacute;neros literarios (Tor&aacute; vs. Profetas vs. ep&iacute;stolas del NT).</li>
             <li><strong>Morfolog&iacute;a diacr&oacute;nica</strong> &mdash; Compare patrones de afijos entre el arameo b&iacute;blico (s. V a.&thinsp;C.) y el siríaco de la Peshitta (ss. II&ndash;V d.&thinsp;C.), visibles a trav&eacute;s de la tabla de formas l&eacute;xicas.</li>
-            <li><strong>Preparaci&oacute;n de homil&iacute;as</strong> &mdash; El clero que trabaja en tradiciones lit&uacute;rgicas siríacas puede explorar significados radicales, cognados y referencias cruzadas para enriquecer la reflexi&oacute;n teol&oacute;gica.</li>
             <li><strong>Herramienta pedag&oacute;gica</strong> &mdash; Los estudiantes de arameo y siríaco pueden usar los resultados KWIC y el visualizador para construir vocabulario mediante familias de ra&iacute;ces en lugar de palabras aisladas.</li>
 
         {% elif lang == 'he' %}
@@ -443,7 +442,6 @@
             <li><strong>תפוצה לקסיקלית</strong> &mdash; מפת החום חושפת אילו שורשים הם כל-ארמיים (מעידים בכל 4 הקורפוסים) לעומת ספציפיים לקורפוס. ייצאו ל-CSV לניתוח סטטיסטי.</li>
             <li><strong>חקר תדירות שורשים</strong> &mdash; ניתוח כמותי של תדירות שורשים לפי ז'אנרים ספרותיים (תורה מול נביאים מול איגרות הברית החדשה).</li>
             <li><strong>מורפולוגיה דיאכרונית</strong> &mdash; השוו דפוסי ניתוח בין הארמית המקראית (המאה ה-5 לפנה"ס) לסורית הפשיטתא (המאות 2&ndash;5 לספירה), הנראים דרך טבלת הצורות הלקסיקליות.</li>
-            <li><strong>הכנת דרשות</strong> &mdash; אנשי דת העובדים במסורות ליטורגיות סוריות יכולים לחקור משמעויות שורשיות, קוגנטים והפניות צולבות כדי להעשיר את ההגות התיאולוגית.</li>
             <li><strong>כלי הוראה</strong> &mdash; תלמידי ארמית וסורית יכולים להשתמש בתוצאות KWIC ובמחזיר כדי לבנות אוצר מילים דרך משפחות שורשים במקום מילים בודדות.</li>
 
         {% elif lang == 'ar' %}
@@ -453,7 +451,6 @@
             <li><strong>التوزيع المعجمي</strong> &mdash; تكشف خريطة الحرارة أيّ الجذور عابرة للآرامية (مشهودة في المدوّنات الأربع) مقابل الخاصة بمدوّنة واحدة. صدّروا إلى CSV للتحليل الإحصائي.</li>
             <li><strong>دراسات تواتر الجذور</strong> &mdash; تحليل كمّي لتواتر الجذور حسب الأنواع الأدبية (التوراة مقابل الأنبياء مقابل رسائل العهد الجديد).</li>
             <li><strong>الصرف التاريخي</strong> &mdash; قارنوا أنماط الزوائد بين الآرامية التوراتية (القرن 5 ق.م.) والسريانية الپشيطتانية (القرنان 2&ndash;5 م.) عبر جدول الصيغ المعجمية.</li>
-            <li><strong>إعداد الخُطب</strong> &mdash; يمكن لرجال الدين العاملين في التقاليد الليتورجية السريانية استكشاف المعاني الجذرية والمشتركات والإحالات المتقاطعة لإثراء التأمل اللاهوتي.</li>
             <li><strong>أداة تعليمية</strong> &mdash; يمكن لطلاب الآرامية والسريانية استخدام نتائج KWIC والعارض لبناء المفردات عبر عائلات الجذور بدلاً من الكلمات المعزولة.</li>
 
         {% else %}
@@ -467,6 +464,52 @@
 
         {% endif %}
         </ul>
+
+        {# ── 6b. METHODOLOGICAL NOTES ── #}
+
+        <h2>{% if lang == 'es' %}Notas metodol&oacute;gicas{% elif lang == 'he' %}הערות מתודולוגיות{% elif lang == 'ar' %}ملاحظات منهجية{% else %}Methodological Notes{% endif %}</h2>
+
+        {% if lang == 'es' %}
+
+        <p><strong>La Peshitta como traducci&oacute;n.</strong> La posici&oacute;n acad&eacute;mica mayoritaria sostiene que el Nuevo Testamento de la Peshitta es en gran medida una traducci&oacute;n del griego, no una composici&oacute;n aramea independiente. El an&aacute;lisis de ra&iacute;ces refleja las opciones l&eacute;xicas del traductor, no necesariamente el vocabulario original del autor. El Antiguo Testamento de la Peshitta fue traducido principalmente del hebreo, aunque algunas porciones pueden preservar tradiciones arameas independientes.</p>
+
+        <p><strong>Los t&aacute;rgumes como traducciones interpretativas.</strong> El T&aacute;rgum Onkelos es una interpretaci&oacute;n aramea del Pentateuco hebreo. Su vocabulario refleja la par&aacute;frasis y expansi&oacute;n exeg&eacute;tica del targumista, no una correspondencia directa con el texto hebreo fuente.</p>
+
+        <p><strong>Limitaciones de la extracci&oacute;n de ra&iacute;ces.</strong> La extracci&oacute;n de ra&iacute;ces se realiza estad&iacute;sticamente mediante eliminaci&oacute;n de afijos y cotejo con diccionario, sin etiquetado morfol&oacute;gico ni anotaci&oacute;n de categor&iacute;as gramaticales. No se ha medido una tasa formal de error. Las ra&iacute;ces con letras d&eacute;biles (<i>&rsquo;alep</i>, <i>waw</i>, <i>yod</i>) y las formas cuadrilit&eacute;ras son particularmente propensas a identificaci&oacute;n err&oacute;nea. Los usuarios deben tratar las atribuciones de ra&iacute;ces como probabil&iacute;sticas, no definitivas.</p>
+
+        <p><strong>Cognados generados con IA.</strong> De las 1.127 entradas de cognados, 493 fueron generadas con asistencia de IA (Claude API) y revisadas manualmente. Los investigadores que realicen trabajo formal deben verificar las relaciones de cognados de manera independiente.</p>
+
+        {% elif lang == 'he' %}
+
+        <p><strong>הפשיטתא כתרגום.</strong> עמדת המחקר הרווחת גורסת שהברית החדשה בפשיטתא היא ברובה תרגום מיוונית, ולא חיבור ארמי עצמאי. ניתוח השורשים משקף את בחירות המתרגם, לא בהכרח את אוצר המילים המקורי של המחבר. התנ"ך בפשיטתא תורגם בעיקר מעברית, אם כי חלקים מסוימים עשויים לשמר מסורות ארמיות עצמאיות.</p>
+
+        <p><strong>תרגומים כתרגומים פרשניים.</strong> תרגום אונקלוס הוא תרגום ארמי פרשני של התורה העברית. אוצר המילים שלו משקף פרפרזה והרחבה פרשנית של המתרגם, לא התאמה ישירה לטקסט העברי המקורי.</p>
+
+        <p><strong>מגבלות חילוץ השורשים.</strong> חילוץ השורשים מתבצע סטטיסטית באמצעות הסרת תחיליות וסיומות והתאמה למילון, ללא תיוג מורפולוגי או סיווג חלקי דיבר. לא נמדד שיעור שגיאות פורמלי. שורשים עם אותיות חלשות (אלף, וו, יוד) וצורות מרובעות עלולים להיות מזוהים באופן שגוי. יש להתייחס לייחוסי השורשים כהסתברותיים, לא כוודאיים.</p>
+
+        <p><strong>קוגנטים שנוצרו בסיוע AI.</strong> מתוך 1,127 ערכי הקוגנטים, 493 נוצרו בסיוע בינה מלאכותית (Claude API) ונבדקו ידנית. חוקרים המבצעים עבודה פורמלית מתבקשים לאמת את קשרי הקוגנטים באופן עצמאי.</p>
+
+        {% elif lang == 'ar' %}
+
+        <p><strong>الپشيطتا كترجمة.</strong> يرى الموقف الأكاديمي السائد أن العهد الجديد في الپشيطتا هو إلى حدٍّ كبير ترجمة عن اليونانية، وليس تأليفاً آرامياً مستقلاً. تحليل الجذور يعكس خيارات المترجم المعجمية، لا بالضرورة مفردات المؤلف الأصلي. أما العهد القديم في الپشيطتا فقد تُرجم أساساً عن العبرية، وإن كانت بعض الأجزاء قد تحفظ تقاليد آرامية مستقلة.</p>
+
+        <p><strong>الترجومات كترجمات تفسيرية.</strong> ترجوم أونكيلوس هو ترجمة آرامية تفسيرية للتوراة العبرية. مفرداته تعكس صياغة المترجم وتوسّعه التفسيري، لا مطابقةً حرفية للنص العبري المصدر.</p>
+
+        <p><strong>محدوديات استخلاص الجذور.</strong> يتمّ استخلاص الجذور إحصائياً عبر حذف الزوائد والمطابقة مع القاموس، دون تصنيف صرفي أو تعليق على أقسام الكلام. لم يُقَس معدل خطأ رسمي. الجذور ذات الحروف الضعيفة (ألف، واو، ياء) والصيغ الرباعية معرّضة بشكل خاص للتعريف الخاطئ. ينبغي التعامل مع نسب الجذور باعتبارها احتمالية لا قطعية.</p>
+
+        <p><strong>مشتركات مولّدة بالذكاء الاصطناعي.</strong> من بين 1,127 مدخلاً للمشتركات، وُلّد 493 بمساعدة الذكاء الاصطناعي (Claude API) وراجعها بشر يدوياً. على الباحثين في الأعمال الرسمية التحقق من علاقات الاشتراك بشكل مستقل.</p>
+
+        {% else %}
+
+        <p><strong>The Peshitta as translation.</strong> The mainstream scholarly position holds that the Peshitta New Testament is largely a translation from Greek originals, not an independent Aramaic composition. Root analysis therefore reflects the translator&rsquo;s lexical choices, not necessarily the original author&rsquo;s vocabulary. The Peshitta Old Testament was translated primarily from Hebrew, though some portions may preserve independent Aramaic traditions.</p>
+
+        <p><strong>Targums as interpretive translations.</strong> Targum Onkelos is an interpretive Aramaic rendering of the Hebrew Torah. Its vocabulary reflects the targumist&rsquo;s paraphrase and exegetical expansion, not a verbatim correspondence with the Hebrew source text.</p>
+
+        <p><strong>Root extraction limitations.</strong> Root extraction is performed statistically via affix stripping and dictionary matching, without morphological tagging or part-of-speech annotation. No formal error rate has been measured. Weak-letter roots (containing <i>&#x02be;alep</i>, <i>waw</i>, <i>yod</i>) and quadriliteral forms are particularly prone to misidentification. Users should treat root attributions as probabilistic, not definitive.</p>
+
+        <p><strong>AI-generated cognates.</strong> Of the 1,127 cognate entries, 493 were generated with AI assistance (Claude API) and manually reviewed. Researchers conducting formal work should independently verify cognate relationships.</p>
+
+        {% endif %}
 
         {# ── 7. DATA SOURCES & LICENSES ── #}
 
