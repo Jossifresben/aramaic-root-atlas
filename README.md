@@ -11,13 +11,11 @@
 - **Word-level root display** -- click any Syriac word in the reader to see its extracted root, gloss, confidence score, and link to the root visualizer
 - **Root confidence scoring** -- three-tier system (High >= 0.8, Medium 0.5--0.8, Low < 0.5) with methodological notes on the About page
 - **Chapter root summary** -- toggle panel showing all roots in a chapter sorted by frequency, with CSV/JSON export
-- **Root search with autocomplete** -- look up any triliteral root in Latin, Syriac, Hebrew, or Arabic script
+- **5-tab search system** -- search by root (with autocomplete), by cognate (Hebrew/Arabic/transliteration reverse lookup), by meaning (English/Spanish reverse search), co-occurrence (proximity search for two roots), or full-text across translations
 - **Root family visualizer** -- D3.js force-directed graph showing word forms, cognates, sister roots, and semantic bridges
 - **Passage constellation** -- visualize all roots and their relationships within a selected passage
 - **Parallel viewer** -- side-by-side comparison of Peshitta OT, Targum Onkelos, and Biblical Aramaic
 - **Root frequency heat map** -- cross-corpus root distribution with filter, sort, and CSV/JSON export
-- **Text search** -- full-text search across translation tracks with KWIC inline expansion and verse modal
-- **Proximity search** -- find co-occurring roots at verse or chapter scope
 - **Bookmarks** -- save verses and roots with tags, export as CSV/JSON, copy formatted citations
 - **Quadrilingual UI** -- full interface in English, Spanish, Hebrew, and Arabic with RTL support
 - **Greek cognates** -- 2,192 Greek NT equivalents linked to Aramaic roots in the visualizer (e.g., SH-L-M -> eirene "peace")
@@ -86,6 +84,8 @@ The Atlas exposes a full JSON API for programmatic access. All endpoints support
 | `GET /api/proximity-search?root1=SH-L-M&root2=K-TH-B` | Co-occurring roots at verse/chapter scope |
 | `GET /api/passage-constellation` | D3 constellation graph data for a passage range |
 | `GET /api/parallel?ref=Genesis+1:1` | Parallel texts for a verse across all corpora |
+| `GET /api/cognate-lookup?word=shalom` | Reverse lookup roots by Hebrew/Arabic/transliterated cognate |
+| `GET /api/reverse-search?q=peace&lang=en` | Search roots by English/Spanish meaning (ranked by relevance) |
 | `GET /api/heatmap?limit=100&sort=total` | Root frequency heat map across corpora |
 
 **Root input formats:** Dash-separated Latin (`SH-L-M`), Syriac Unicode (`ܫܠܡ`), Hebrew (`שלם`), or Arabic (`سلم`). The API auto-detects and normalizes.

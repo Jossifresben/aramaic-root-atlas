@@ -66,6 +66,8 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - `GET /api/suggest?prefix=SH` — Autocomplete suggestions for root search
 - `GET /api/chapter-roots?book=Matthew&chapter=5` — All roots in a chapter sorted by frequency
 - `GET /api/verse?ref=Matthew+5:3` — Single verse with word-level root data
+- `GET /api/cognate-lookup?word=shalom` — Reverse lookup roots by Hebrew/Arabic/transliterated cognate
+- `GET /api/reverse-search?q=peace&lang=en` — Search roots by English/Spanish meaning
 
 ## Run
 ```bash

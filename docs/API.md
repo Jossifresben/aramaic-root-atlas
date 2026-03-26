@@ -775,6 +775,87 @@ Return root frequency data across all corpora for heat map display.
 
 ---
 
+### GET /api/cognate-lookup
+
+Reverse lookup Aramaic roots by Hebrew, Arabic, or transliterated cognate word.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `word` | string | yes | -- | Cognate word to search for (Hebrew, Arabic, or Latin transliteration, e.g., `shalom`, `salima`). |
+
+**Response (200):**
+
+```json
+{
+  "query": "shalom",
+  "results": [
+    {
+      "root_syriac": "\u072b\u0720\u0721",
+      "root_translit": "SH-L-M",
+      "gloss": "peace, completeness, wholeness",
+      "occurrences": 312
+    }
+  ]
+}
+```
+
+**Notes:**
+- Matches against Hebrew and Arabic cognate words and their transliterations in cognates.json.
+- Search is case-insensitive.
+
+**Error Responses:**
+
+| Status | Body | Cause |
+|--------|------|-------|
+| 400 | `{"error": "Missing query parameter word"}` | No `word` parameter provided. |
+
+---
+
+### GET /api/reverse-search
+
+Search roots by English or Spanish meaning. Scores and ranks results by relevance.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `q` | string | yes | -- | Meaning to search for (e.g., `peace`, `escribir`). |
+| `lang` | string | no | `en` | Language of the search term: `en` or `es`. |
+
+**Response (200):**
+
+```json
+{
+  "query": "peace",
+  "lang": "en",
+  "results": [
+    {
+      "root_syriac": "\u072b\u0720\u0721",
+      "root_translit": "SH-L-M",
+      "gloss": "peace, completeness, wholeness",
+      "sabor": "the fullness that comes when nothing is missing",
+      "occurrences": 312,
+      "score": 0.95
+    }
+  ]
+}
+```
+
+**Notes:**
+- Returns the top 30 matches ranked by relevance score.
+- Searches against gloss and sabor (root essence) fields in cognates.json.
+- Higher `score` indicates a closer match to the query term.
+
+**Error Responses:**
+
+| Status | Body | Cause |
+|--------|------|-------|
+| 400 | `{"error": "Missing query parameter q"}` | No `q` parameter provided. |
+
+---
+
 ## Page Routes (HTML)
 
 These routes return rendered HTML pages, not JSON. They accept the common `lang`, `script`, and `trans` query parameters.

@@ -13,7 +13,7 @@ from aramaic_core.glosser import WordGlosser
 from aramaic_core.characters import (
     parse_root_input, transliterate_syriac, semitic_root_variants,
     transliterate_syriac_academic, transliterate_syriac_to_hebrew,
-    transliterate_syriac_to_arabic,
+    transliterate_syriac_to_arabic, normalize_root_to_latin,
 )
 
 app = Flask(__name__)
@@ -375,10 +375,24 @@ def api_search():
                 r['transliteration'] = transliterate_hebrew(r['syriac'])
             else:
                 r['transliteration'] = transliterate_syriac(r['syriac'])
+    total = len(results)
+    # Interleave results from all corpora so "All Corpora" shows a mix
+    if not corpus_filter and total > 50:
+        from collections import defaultdict
+        by_corpus = defaultdict(list)
+        for r in results:
+            by_corpus[r['corpus_id']].append(r)
+        interleaved = []
+        max_per = max(len(v) for v in by_corpus.values()) if by_corpus else 0
+        for i in range(max_per):
+            for cid in sorted(by_corpus.keys()):
+                if i < len(by_corpus[cid]):
+                    interleaved.append(by_corpus[cid][i])
+        results = interleaved
     return jsonify({
         'query': query,
-        'count': len(results),
-        'results': results[:50],
+        'count': total,
+        'results': results[:100],
     })
 
 
@@ -549,6 +563,145 @@ def _get_translit_fn(script: str):
         return transliterate_syriac_to_arabic
     else:
         return transliterate_syriac
+
+
+@app.route('/api/cognate-lookup')
+def api_cognate_lookup():
+    """Look up Aramaic roots by Hebrew, Arabic, or transliterated cognate word."""
+    word = request.args.get('word', '').strip()
+    if not word:
+        return jsonify({'error': 'Missing word parameter'}), 400
+
+    entries = _cognate_lookup.lookup_by_cognate_word(word)
+    if not entries:
+        return jsonify({'word': word, 'count': 0, 'results': []})
+
+    results = []
+    for entry in entries:
+        occ = 0
+        root_entry = _extractor.lookup_root(entry.root_syriac)
+        if root_entry:
+            occ = root_entry.total_occurrences
+        results.append({
+            'key': _translit_to_dash(entry.root_syriac),
+            'root_syriac': entry.root_syriac,
+            'gloss': entry.gloss_en,
+            'gloss_es': entry.gloss_es,
+            'occurrences': occ,
+        })
+
+    return jsonify({'word': word, 'count': len(results), 'results': results})
+
+
+# Reverse search index (meaning → roots)
+_reverse_idx: dict = {}
+
+
+def _tokenize(text: str, min_len: int = 2) -> set:
+    """Split text into lowercase word tokens."""
+    import re
+    return {w for w in re.split(r'[^a-zA-ZáéíóúñüÁÉÍÓÚÑÜ]+', text.lower()) if len(w) >= min_len}
+
+
+def _build_reverse_index():
+    """Build reverse search index: English/Spanish terms → Syriac roots."""
+    global _reverse_idx
+    if _reverse_idx:
+        return
+    roots = _cognates_raw.get('roots', {})
+
+    idx = {}
+    for lang_code in ('en', 'es'):
+        entries = []
+        gloss_key = f'gloss_{lang_code}'
+        sabor_key = f'sabor_raiz_{lang_code}'
+        for key, data in roots.items():
+            if not isinstance(data, dict):
+                continue
+            gloss = data.get(gloss_key, '')
+            sabor = data.get(sabor_key, '')
+            root_syriac = data.get('root_syriac', '')
+
+            terms = _tokenize(gloss, min_len=2)
+            terms |= _tokenize(sabor, min_len=3)
+            for cognate_list in (data.get('cognates', {}).get('hebrew', []),
+                                 data.get('cognates', {}).get('arabic', []),
+                                 data.get('cognates', {}).get('greek', [])):
+                for cog in cognate_list:
+                    terms |= _tokenize(cog.get(f'meaning_{lang_code}', ''), min_len=3)
+
+            occ = 0
+            if root_syriac:
+                root_entry = _extractor.lookup_root(root_syriac)
+                if root_entry:
+                    occ = root_entry.total_occurrences
+
+            entries.append({
+                'key': _translit_to_dash(root_syriac) if root_syriac else key.upper(),
+                'root_syriac': root_syriac,
+                'gloss': gloss,
+                'sabor': sabor,
+                'terms': terms,
+                'occurrences': occ,
+            })
+        idx[lang_code] = entries
+
+    _reverse_idx.update(idx)
+
+
+@app.route('/api/reverse-search')
+def api_reverse_search():
+    """Search Syriac roots by English/Spanish meaning."""
+    _build_reverse_index()
+
+    query = request.args.get('q', '').strip().lower()
+    lang = request.args.get('lang', 'en')
+    if lang not in ('en', 'es'):
+        lang = 'en'
+
+    if not query or len(query) < 2:
+        return jsonify({'query': query, 'total': 0, 'results': []})
+
+    query_words = query.split()
+    entries = _reverse_idx.get(lang, [])
+
+    scored = []
+    for e in entries:
+        score = 0
+        if query == e['gloss'].lower():
+            score += 100
+        elif query in e['gloss'].lower():
+            score += 50
+        matched_words = 0
+        for qw in query_words:
+            for term in e['terms']:
+                if qw == term:
+                    matched_words += 3
+                    break
+                elif qw in term or term.startswith(qw):
+                    matched_words += 1
+                    break
+        if matched_words:
+            score += matched_words * 10
+        if e['sabor'] and query in e['sabor'].lower():
+            score += 5
+        if score > 0:
+            scored.append((score, e))
+
+    scored.sort(key=lambda x: (-x[0], -x[1]['occurrences']))
+
+    results = []
+    for score, e in scored[:30]:
+        results.append({
+            'key': e['key'],
+            'root_syriac': e['root_syriac'],
+            'gloss': e['gloss'],
+            'sabor': e['sabor'],
+            'occurrences': e['occurrences'],
+            'score': score,
+        })
+
+    return jsonify({'query': query, 'total': len(results), 'results': results})
 
 
 @app.route('/api/proximity-search')

@@ -309,7 +309,7 @@ class AramaicCorpus:
                         'match_type': 'syriac',
                         'corpus_id': self._verse_corpus.get(ref, ''),
                     })
-                    if len(results) >= 100:
+                    if len(results) >= 500:
                         break
         else:
             translations = self._ensure_translations(lang)
@@ -338,7 +338,7 @@ class AramaicCorpus:
                         'match_type': 'translation',
                         'corpus_id': self._verse_corpus.get(ref, ''),
                     })
-                    if len(results) >= 100:
+                    if len(results) >= 500:
                         break
 
         return results

@@ -284,6 +284,7 @@ body {
 .search-row {
     display: flex;
     gap: 0.5rem;
+    justify-content: center;
 }
 .autocomplete-wrapper {
     position: relative;
@@ -299,6 +300,9 @@ body {
     font-size: 1rem;
     font-family: monospace;
     letter-spacing: 2px;
+}
+#cognateInput, #meaningInput {
+    min-width: 400px;
 }
 .search-row input:focus {
     outline: none;
@@ -353,29 +357,131 @@ body {
     background: white;
     font-size: 0.9rem;
 }
-/* Search mode tabs */
-.search-mode-tabs {
+/* Search tabs (5-tab bar) */
+.search-tabs {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0;
     margin-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
 }
-.search-mode-tab {
+.search-tab {
     background: transparent;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: var(--radius);
-    padding: 0.4rem 1rem;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 0.5rem 1rem;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--muted);
     transition: all 0.2s;
+    margin-bottom: -2px;
+    white-space: nowrap;
 }
-.search-mode-tab.active {
+.search-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+}
+.search-tab:hover:not(.active) { color: var(--fg); }
+.search-panel { margin-bottom: 0.5rem; }
+.search-hint {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+}
+.search-hint a { color: var(--accent); }
+.translit-help-table {
+    margin: 0.5rem auto;
+    max-width: 500px;
+}
+.translit-help-table table {
+    width: 100%;
+    font-size: 0.82rem;
+    border-collapse: collapse;
+}
+.translit-help-table td {
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    text-align: center;
+    font-family: monospace;
+}
+
+/* Meaning/cognate search results */
+.meaning-results h3 { margin-bottom: 0.8rem; }
+.meaning-result-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.4rem;
+    text-decoration: none;
+    color: var(--fg);
+    transition: background 0.15s;
+}
+.meaning-result-card:hover { background: var(--accent-light); }
+.meaning-occ {
+    margin-left: auto;
+    font-size: 0.82rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+.meaning-sabor {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+/* Proximity results */
+.proximity-results h3 { margin-bottom: 0.8rem; }
+.prox-hl1 { color: var(--accent); font-weight: 600; }
+.prox-hl2 { color: #b45309; font-weight: 600; }
+
+/* Proximity search layout */
+.prox-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+.prox-input-wrap { flex: 1; max-width: 300px; }
+.prox-input-wrap input {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-family: monospace;
+    letter-spacing: 2px;
+}
+.prox-input-wrap input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+.prox-options {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+.prox-options select {
+    padding: 0.65rem 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+    font-size: 0.9rem;
+}
+.prox-options button {
+    padding: 0.65rem 1.5rem;
     background: var(--accent);
     color: white;
-    border-color: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
 }
-.search-mode-tab:hover:not(.active) { background: var(--accent-light); }
+.prox-options button:hover { opacity: 0.85; }
 
 /* Text search results */
 .text-search-results { margin-top: 1rem; }
@@ -461,14 +567,14 @@ body {
     justify-content: center;
 }
 .stat-grid .stat-card {
-    flex: 1 1 200px;
-    max-width: 280px;
+    flex: 1 1 140px;
+    max-width: 200px;
 }
 .stat-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.25rem;
+    padding: 0.7rem 0.5rem;
     text-align: center;
 }
 .browse-btn {
@@ -491,18 +597,18 @@ body {
     background: var(--accent-light);
 }
 .stat-label {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.15rem;
 }
 .stat-value {
-    font-size: 1.6rem;
+    font-size: 1.2rem;
     font-weight: 700;
 }
 .stat-detail {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: var(--muted);
 }
 
@@ -1397,8 +1503,10 @@ body {
     .hero .subtitle { font-size: 0.9rem; }
     .search-row { flex-direction: column; }
     .search-row input, .search-row select, .search-row button { width: 100%; }
-    .search-mode-tabs { gap: 0.3rem; }
-    .search-mode-tab { font-size: 0.8rem; padding: 0.3rem 0.7rem; }
+    .search-tabs { flex-direction: column; align-items: stretch; border-bottom: none; gap: 0; }
+    .search-tab { border-bottom: none; border-left: 3px solid transparent; text-align: left; padding: 0.4rem 0.8rem; margin-bottom: 0; font-size: 0.85rem; }
+    .search-tab.active { border-left-color: var(--accent); border-bottom-color: transparent; }
+    #cognateInput, #meaningInput { min-width: unset; width: 100%; }
     .stat-grid .stat-card { flex: 1 1 45%; max-width: none; }
     .stat-card .stat-value { font-size: 1.2rem; }
     .stat-card .stat-label { font-size: 0.75rem; }
