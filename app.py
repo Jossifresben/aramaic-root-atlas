@@ -1138,8 +1138,10 @@ def api_root_family():
     # Greek cognates (from raw cognates JSON, not CognateLookup dataclass)
     greek = []
     if cognate_entry:
-        root_key = cognate_entry.root_latin or normalize_root_to_latin(root_syriac)
-        raw = _cognates_raw.get(root_key, {})
+        # Try both key formats: dashed (sh-l-m) and undashed (shlm/shlm')
+        root_key_dashed = _translit_to_dash(root_syriac).lower()
+        root_key_plain = transliterate_syriac(root_syriac)
+        raw = _cognates_raw.get(root_key_plain) or _cognates_raw.get(root_key_dashed) or _cognates_raw.get('roots', {}).get(root_key_dashed, {})
         if isinstance(raw, dict):
             for gw in raw.get('cognates', {}).get('greek', []):
                 greek.append({
