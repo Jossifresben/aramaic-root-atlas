@@ -115,6 +115,20 @@
 
 // --- Chapter Roots Summary ---
 var _chRootsLoaded = false;
+var _chRootsData = null;
+
+function exportChapterRootsCSV() {
+    if (!_chRootsData) return;
+    var lines = ['Root,Transliteration,Gloss,Count,Confidence,Forms'];
+    _chRootsData.roots.forEach(function(r) {
+        lines.push('"' + r.root + '","' + r.translit + '","' + (r.gloss||'').replace(/"/g,'""') + '",' + r.count + ',' + r.confidence + ',"' + r.forms.join('; ') + '"');
+    });
+    var blob = new Blob([lines.join('\n')], {type: 'text/csv'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '{{ book }}-ch{{ chapter }}-roots.csv';
+    a.click();
+}
 function toggleChapterRoots() {
     var panel = document.getElementById('chRootsPanel');
     if (panel.style.display === 'none') {
@@ -145,7 +159,11 @@ function toggleChapterRoots() {
                         html += '</tr>';
                     }
                     html += '</tbody></table>';
+                    html += '<div class="ch-roots-footer">';
                     html += '<p class="ch-roots-summary">' + data.total_roots + ' roots in ' + data.roots.reduce(function(s,r){return s+r.count},0) + ' word tokens</p>';
+                    html += '<button class="ch-roots-csv-btn" onclick="exportChapterRootsCSV()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> CSV</button>';
+                    html += '</div>';
+                    _chRootsData = data;
                     document.getElementById('chRootsContent').innerHTML = html;
                 });
         }
