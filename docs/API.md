@@ -662,6 +662,13 @@ Return full root family data for the visualizer: word forms, cognates, sister ro
   ],
   "hebrew_cognates": [...],
   "arabic_cognates": [...],
+  "greek_cognates": [
+    {
+      "word": "\u03b5\u1f30\u03c1\u03ae\u03bd\u03b7",
+      "transliteration": "eir\u0113n\u0113",
+      "meaning": "peace"
+    }
+  ],
   "bridges": [...],
   "sister_roots": [
     {

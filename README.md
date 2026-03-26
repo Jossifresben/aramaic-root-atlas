@@ -20,7 +20,8 @@
 - **Proximity search** -- find co-occurring roots at verse or chapter scope
 - **Bookmarks** -- save verses and roots with tags, export as CSV/JSON, copy formatted citations
 - **Quadrilingual UI** -- full interface in English, Spanish, Hebrew, and Arabic with RTL support
-- **Four translation tracks** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR)
+- **Greek cognates** -- 2,192 Greek NT equivalents linked to Aramaic roots in the visualizer (e.g., SH-L-M -> eirene "peace")
+- **Five translation tracks** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek)
 - **Three Syriac font styles** -- Estrangela, Eastern (Madnhaya), Western (Serto)
 - **Dark mode** and QR sharing
 
@@ -120,8 +121,8 @@ aramaic-root-atlas/
 - **Peshitta OT** -- ETCBC/peshitta, Leiden Peshitta Institute (CC-BY-NC)
 - **Biblical Aramaic** -- Westminster Leningrad Codex via Sefaria API (CC-BY-SA)
 - **Targum Onkelos** -- Sefaria API (CC-BY-SA)
-- **Translations** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR) via [bible.helloao.org](https://bible.helloao.org)
-- **Cognates** -- 1,127 entries with Hebrew/Arabic cognates, generated and curated with the Claude API
+- **Translations** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek) via [bible.helloao.org](https://bible.helloao.org)
+- **Cognates** -- 1,127 entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates, generated and curated with the Claude API
 
 See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details.
 

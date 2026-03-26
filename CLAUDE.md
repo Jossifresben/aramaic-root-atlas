@@ -10,7 +10,7 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
   - `affixes_hebrew.py` — Biblical Aramaic affix stripping (Hebrew square script)
   - `corpus.py` — `AramaicCorpus` class: multi-corpus CSV loader with corpus_id filtering
   - `extractor.py` — `RootExtractor`: triliteral root extraction + scoring engine
-  - `cognates.py` — `CognateLookup`: Hebrew & Arabic cognate lookup
+  - `cognates.py` — `CognateLookup`: Hebrew, Arabic & Greek cognate lookup
   - `glosser.py` — `WordGlosser`: compositional word-level glossing (EN/ES)
 - **app.py** — Flask app (port 5001)
 - **templates/** — Jinja2 templates (base, index, browse, read, about)
@@ -30,7 +30,9 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - **Total**: 36,627 verses, 498,922 words, 72,566 unique forms
 - **5,039 roots** indexed across all corpora
 - **1,127 cognate entries** with Hebrew/Arabic cognates, semantic bridges
-- Quadrilingual UI (EN/ES/HE/AR) with 4 translation tracks
+- **2,192 Greek NT cognates** linking Aramaic roots to Greek equivalents in the visualizer
+- Greek NT translation track (SBLGNT) — 7,939 verses from bible.helloao.org (grc_sbl)
+- Quadrilingual UI (EN/ES/HE/AR) with 5 translation tracks
 - Corpus filtering on all API endpoints (?corpus=peshitta_nt|peshitta_ot|biblical_aramaic|targum_onkelos)
 - Root family visualizer (D3.js force graph + root card)
 - Parallel viewer (Peshitta OT ↔ Targum Onkelos / Biblical Aramaic)
@@ -39,7 +41,7 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - Chapter root summary panel with frequency table and export
 - Bookmarks with tags, CSV/JSON export, copy citation
 - Production deployment: https://aramaic-root-atlas.onrender.com
-- Data sources: ETCBC/peshitta (CC-BY-NC), Sefaria (CC-BY-SA), bible.helloao.org
+- Data sources: ETCBC/peshitta (CC-BY-NC), Sefaria (CC-BY-SA), bible.helloao.org, SBLGNT (CC-BY-SA)
 
 ## API Routes
 - `GET /` — Home page with search + stats
