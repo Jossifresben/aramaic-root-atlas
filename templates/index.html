@@ -246,8 +246,7 @@ function translateRef(ref) {
     });
 })();
 
-document.getElementById('rootSearchForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+async function doRootSearch() {
     const q = document.getElementById('rootInput').value.trim();
     const corpus = document.getElementById('corpusFilter').value;
     if (!q) return;
@@ -389,7 +388,7 @@ document.getElementById('rootSearchForm').addEventListener('submit', async (e) =
     _bmRootSyriac = rootBmSyriac;
     _bmRootGloss = rootBmGloss;
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
+}
 
 // --- Tab switching ---
 function switchResultTab(btn) {
@@ -505,6 +504,11 @@ function toggleContext(el) {
             el.insertAdjacentElement('afterend', kwic);
         });
 }
+
+document.getElementById('rootSearchForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    doRootSearch();
+});
 
 // --- Verse Modal ---
 var modalVerses = [];
@@ -680,7 +684,7 @@ document.getElementById('cognateSearchForm').addEventListener('submit', async fu
         // Single match — trigger root search inline
         document.getElementById('rootInput').value = data.results[0].key;
         switchTab('root');
-        document.getElementById('rootSearchForm').dispatchEvent(new Event('submit', { cancelable: true }));
+        doRootSearch();
         return;
     }
     var html = '<div class="meaning-results"><h3>' + data.count + ' roots match "' + word.replace(/</g, '&lt;') + '"</h3>';
@@ -698,7 +702,7 @@ document.getElementById('cognateSearchForm').addEventListener('submit', async fu
         card.addEventListener('click', function() {
             document.getElementById('rootInput').value = this.getAttribute('data-root');
             switchTab('root');
-            document.getElementById('rootSearchForm').dispatchEvent(new Event('submit', { cancelable: true }));
+            doRootSearch();
         });
     });
 });
@@ -717,24 +721,33 @@ document.getElementById('meaningSearchForm').addEventListener('submit', async fu
         el.innerHTML = '<div class="no-results">{{ t("no_results_found", lang) }}: "' + q.replace(/</g, '&lt;') + '"</div>';
         return;
     }
-    var html = '<div class="meaning-results"><h3>' + data.total + ' roots for "' + q.replace(/</g, '&lt;') + '"</h3>';
-    data.results.forEach(function(r) {
-        html += '<div class="meaning-result-card" data-root="' + r.key + '" style="cursor:pointer">';
-        html += '<span class="syriac" style="font-size:1.2em">' + (r.root_syriac || '') + '</span> ';
-        html += '<strong>' + r.key + '</strong>';
+    // If single result, show root card directly
+    if (data.results.length === 1) {
+        document.getElementById('rootInput').value = data.results[0].key;
+        doRootSearch();
+        return;
+    }
+    // Multiple results: show summary header then load first root card
+    var html = '<div class="meaning-results-header"><h3>' + data.total + ' roots for "' + q.replace(/</g, '&lt;') + '"</h3>';
+    html += '<div class="meaning-pills">';
+    data.results.forEach(function(r, idx) {
+        html += '<button class="meaning-pill' + (idx === 0 ? ' active' : '') + '" data-root="' + r.key + '">';
+        html += '<span class="syriac">' + (r.root_syriac || '') + '</span> ' + r.key;
         if (r.gloss) html += ' — ' + r.gloss;
-        if (r.sabor) html += ' <em class="meaning-sabor">' + r.sabor + '</em>';
-        html += '<span class="meaning-occ">' + r.occurrences + ' {{ t("occurrences_count", lang) }}</span>';
-        html += '</div>';
+        html += '</button>';
     });
-    html += '</div>';
+    html += '</div></div><div id="meaning-root-detail"></div>';
     el.innerHTML = html;
-    // Click a result → trigger root search inline
-    el.querySelectorAll('.meaning-result-card[data-root]').forEach(function(card) {
-        card.addEventListener('click', function() {
+    // Load first root immediately
+    document.getElementById('rootInput').value = data.results[0].key;
+    doRootSearch();
+    // Click a pill → load that root
+    el.querySelectorAll('.meaning-pill[data-root]').forEach(function(pill) {
+        pill.addEventListener('click', function() {
+            el.querySelectorAll('.meaning-pill').forEach(function(p) { p.classList.remove('active'); });
+            this.classList.add('active');
             document.getElementById('rootInput').value = this.getAttribute('data-root');
-            switchTab('root');
-            document.getElementById('rootSearchForm').dispatchEvent(new Event('submit', { cancelable: true }));
+            doRootSearch();
         });
     });
 });
@@ -866,7 +879,7 @@ document.getElementById('proximitySearchForm').addEventListener('submit', async 
         document.getElementById('rootInput').value = q;
         var corpus = urlParams.get('corpus');
         if (corpus) document.getElementById('corpusFilter').value = corpus;
-        document.getElementById('rootSearchForm').dispatchEvent(new Event('submit', { cancelable: true }));
+        doRootSearch();
     }
 })();
 
