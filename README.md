@@ -1,6 +1,10 @@
 # Aramaic Root Atlas
 
-**[Live App](https://aramaic-root-atlas.onrender.com)** · A cross-corpus triliteral root explorer spanning ~1,500 years of Aramaic literary history.
+**[Live App](https://aramaic-root-atlas.onrender.com)**
+
+The Aramaic Root Atlas is an open-access tool for exploring triliteral roots across the major corpora of Aramaic literature. It spans approximately 1,500 years of literary history — from the Biblical Aramaic passages of Daniel and Ezra (~6th–2nd c. BCE) through Targum Onkelos (~1st–3rd c. CE) to the Peshitta Old and New Testaments (~2nd–5th c. CE) — indexing 5,039 roots across 36,627 verses and 498,922 words.
+
+The tool is designed for scholars, students, and linguists who want to study Aramaic vocabulary across time and tradition: tracing how a root is used in different dialects and genres, finding rare or unique attestations, comparing parallel passages, or analyzing verb stem distributions. Every word form in the corpus is linked to its extracted root, gloss, confidence score, and verb stem, accessible directly from the verse reader.
 
 **36,627 verses** · **498,922 words** · **5,039 roots** · **1,127 cognate families** · **4 corpora**
 
