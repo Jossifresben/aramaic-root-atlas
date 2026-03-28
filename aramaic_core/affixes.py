@@ -38,6 +38,7 @@ COMPOUND_PROCLITICS = [
 VERBAL_PREFIXES = [
     '\u0710\u072C',  # ܐܬ at- (Ethpeel/Ethpaal reflexive/passive)
     '\u0710\u072B\u072C',  # ܐܫܬ asht- (Eshtaphal)
+    '\u072B',  # ܫ sh- (Shafel causative)
     '\u0721',  # ܡ m- (participle prefix)
     '\u0722',  # ܢ n- (3ms imperfect)
     '\u072C',  # ܬ t- (2ms/3fs imperfect)

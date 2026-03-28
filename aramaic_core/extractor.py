@@ -13,6 +13,7 @@ from .characters import (
 from .corpus import AramaicCorpus
 from .affixes import generate_candidate_stems
 from .affixes_hebrew import generate_candidate_stems_hebrew
+from .glosser import detect_verb_stem
 
 
 @dataclass
@@ -54,6 +55,8 @@ class RootExtractor:
         self._word_to_root: dict[str, str] = {}
         # Word -> confidence score (built during build_index)
         self._word_to_score: dict[str, float] = {}
+        # Word -> verb stem label (built during build_index)
+        self._word_to_stem: dict[str, str | None] = {}
         self._built = False
 
     def load_data(self) -> None:
@@ -81,6 +84,28 @@ class RootExtractor:
 
     def _is_stopword(self, word: str) -> bool:
         return word in self._stopwords
+
+    def _get_word_stem(self, word: str, root_syriac: str) -> str | None:
+        """Return the verb stem label for a Syriac word form, or None."""
+        script = detect_script(word)
+        if script != 'syriac':
+            return None
+        candidates = generate_candidate_stems(word)
+        # Find the candidate whose stem consonants best match the root
+        root_consonants = syriac_consonants_of(root_syriac)
+        best = None
+        best_score = -1
+        for candidate in candidates:
+            stem_consonants = syriac_consonants_of(candidate.stem)
+            if stem_consonants == root_consonants:
+                # Exact match — prefer fewer affixes stripped
+                score = 10 - len(candidate.prefixes_removed) - len(candidate.suffixes_removed)
+                if score > best_score:
+                    best_score = score
+                    best = candidate
+        if best is None:
+            return None
+        return detect_verb_stem(best.prefixes_removed, best.suffixes_removed, best.stem, root_syriac)
 
     def _extract_root_for_word(self, word: str) -> str | None:
         """Try to extract a root from a single word.
@@ -306,6 +331,7 @@ class RootExtractor:
 
             self._word_to_root[word] = canonical_root
             self._word_to_score[word] = score
+            self._word_to_stem[word] = self._get_word_stem(word, canonical_root)
 
             refs = self.corpus.get_occurrences(word)
             root_data[canonical_root][word] = refs
@@ -394,6 +420,11 @@ class RootExtractor:
             return None
         score = self._word_to_score.get(word, 0.5)
         return (root, score)
+
+    def lookup_word_stem(self, word: str) -> str | None:
+        """Return the verb stem label for a word (e.g., 'Peal', 'Ethpeel'), or None."""
+        self.build_index()
+        return self._word_to_stem.get(word)
 
     def get_root_gloss(self, root_syriac: str) -> str:
         """Return the English gloss for a root from known_roots.json."""

@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+{% block title %}{{ t('diachronic_title', lang) }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem;">
+    <div style="margin-bottom:1.2rem;">
+        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('diachronic_title', lang) }}</h1>
+        <p style="color:var(--muted);margin:0;">{{ t('diachronic_subtitle', lang) }}</p>
+    </div>
+
+    <!-- Tab switcher -->
+    <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.2rem;">
+        <button class="diac-tab active" id="tab-root" onclick="switchTab('root')"
+                style="padding:.5rem 1.2rem;border:none;background:none;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--accent);border-bottom:2px solid var(--accent);margin-bottom:-2px;">
+            {{ t('diachronic_root_view', lang) }}
+        </button>
+        <button class="diac-tab" id="tab-shifts" onclick="switchTab('shifts')"
+                style="padding:.5rem 1.2rem;border:none;background:none;cursor:pointer;font-weight:500;font-size:.9rem;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;">
+            {{ t('diachronic_shifts_view', lang) }}
+        </button>
+    </div>
+
+    <!-- Root View -->
+    <div id="panel-root">
+        <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+            <input type="text" id="diac-root-input" placeholder="e.g. SH-L-M, K-T-B"
+                   value="{{ initial_root }}"
+                   style="flex:1;min-width:160px;max-width:260px;padding:.5rem .8rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
+            <button onclick="loadRootView()" style="padding:.5rem 1.2rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;">
+                Analyze
+            </button>
+        </div>
+
+        <div id="diac-root-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">
+            <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
+        </div>
+        <div id="diac-root-empty" style="text-align:center;padding:3rem;color:var(--muted);">
+            Enter a root to view its usage across time.
+        </div>
+        <div id="diac-root-results" style="display:none;">
+            <div style="margin-bottom:1rem;">
+                <span id="diac-root-title" style="font-size:1.1rem;font-weight:600;"></span>
+                <span id="diac-root-gloss" style="color:var(--muted);font-style:italic;margin-left:.5rem;font-size:.9rem;"></span>
+            </div>
+
+            <!-- Bar chart -->
+            <div id="diac-chart" class="diachronic-bars" style="margin-bottom:1.5rem;max-width:600px;"></div>
+
+            <!-- Per-corpus detail table -->
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:.85rem;">
+                    <thead>
+                        <tr style="border-bottom:2px solid var(--border);">
+                            <th style="padding:.4rem .6rem;text-align:left;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">Corpus</th>
+                            <th style="padding:.4rem .6rem;text-align:left;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">{{ t('diachronic_period', lang) }}</th>
+                            <th style="padding:.4rem .6rem;text-align:right;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">{{ t('diachronic_raw_count', lang) }}</th>
+                            <th style="padding:.4rem .6rem;text-align:right;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">{{ t('diachronic_normalized', lang) }}</th>
+                            <th style="padding:.4rem .6rem;text-align:left;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">Forms</th>
+                        </tr>
+                    </thead>
+                    <tbody id="diac-detail-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shifts View -->
+    <div id="panel-shifts" style="display:none;">
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;padding:.6rem .9rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);font-size:.85rem;">
+            <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
+                Direction:
+                <select id="shifts-direction" style="padding:.25rem .5rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
+                    <option value="all">All</option>
+                    <option value="emerging">{{ t('diachronic_emerging', lang) }}</option>
+                    <option value="declining">{{ t('diachronic_declining', lang) }}</option>
+                </select>
+            </label>
+            <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
+                Min occurrences:
+                <input type="number" id="shifts-min" value="5" min="1" max="100"
+                       style="width:60px;padding:.25rem .4rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
+            </label>
+            <button onclick="loadShifts()" style="padding:.3rem .9rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.85rem;">
+                Load
+            </button>
+            <button class="btn-secondary" onclick="exportShifts()">{{ t('diachronic_export', lang) }}</button>
+        </div>
+
+        <div id="shifts-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">
+            <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
+        </div>
+        <div id="shifts-empty" style="display:none;text-align:center;padding:3rem;color:var(--muted);">No shifts found.</div>
+
+        <div id="shifts-results" style="display:none;overflow-x:auto;">
+            <div id="shifts-summary" style="font-size:.85rem;color:var(--muted);margin-bottom:.6rem;"></div>
+            <table style="width:100%;border-collapse:collapse;font-size:.85rem;">
+                <thead>
+                    <tr style="border-bottom:2px solid var(--border);">
+                        <th style="padding:.4rem .6rem;text-align:left;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">Root</th>
+                        <th style="padding:.4rem .6rem;text-align:left;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">Gloss</th>
+                        <th style="padding:.4rem .6rem;text-align:center;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">BA → NT/OT</th>
+                        <th style="padding:.4rem .6rem;text-align:right;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">{{ t('diachronic_shift_magnitude', lang) }}</th>
+                        <th style="padding:.4rem .6rem;text-align:center;color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;">Direction</th>
+                    </tr>
+                </thead>
+                <tbody id="shifts-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    var LANG = {{ lang|tojson }};
+    var currentShifts = [];
+    var CORPUS_COLORS = {
+        'biblical_aramaic': '#7c3aed',
+        'targum_onkelos':   '#059669',
+        'peshitta_nt':      '#1a4d6b',
+        'peshitta_ot':      '#6b5a1a',
+    };
+
+    function escHtml(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    window.switchTab = function(tab) {
+        ['root','shifts'].forEach(function(t) {
+            document.getElementById('panel-' + t).style.display = t === tab ? '' : 'none';
+            var btn = document.getElementById('tab-' + t);
+            if (t === tab) {
+                btn.style.color = 'var(--accent)';
+                btn.style.borderBottomColor = 'var(--accent)';
+                btn.style.fontWeight = '600';
+            } else {
+                btn.style.color = 'var(--muted)';
+                btn.style.borderBottomColor = 'transparent';
+                btn.style.fontWeight = '500';
+            }
+        });
+    };
+
+    document.getElementById('diac-root-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') loadRootView();
+    });
+
+    window.loadRootView = function() {
+        var root = document.getElementById('diac-root-input').value.trim();
+        if (!root) return;
+        document.getElementById('diac-root-loading').style.display = 'block';
+        document.getElementById('diac-root-results').style.display = 'none';
+        document.getElementById('diac-root-empty').style.display = 'none';
+
+        fetch('/api/diachronic/root?root=' + encodeURIComponent(root) + '&lang=' + LANG)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                document.getElementById('diac-root-loading').style.display = 'none';
+                if (data.error) {
+                    document.getElementById('diac-root-empty').style.display = 'block';
+                    document.getElementById('diac-root-empty').textContent = data.error;
+                    return;
+                }
+                document.getElementById('diac-root-title').textContent = data.root_translit;
+                document.getElementById('diac-root-gloss').textContent = data.gloss || '';
+
+                var corpora = data.corpora || [];
+                var maxNorm = Math.max.apply(null, corpora.map(function(c) { return c.normalized; }));
+
+                // Bar chart
+                var chart = document.getElementById('diac-chart');
+                chart.innerHTML = '';
+                corpora.forEach(function(c) {
+                    var pct = maxNorm > 0 ? Math.round(c.normalized / maxNorm * 100) : 0;
+                    var row = document.createElement('div');
+                    row.className = 'diac-row';
+                    row.innerHTML =
+                        '<span class="diac-label corpus-badge corpus-' + c.corpus_id + '" style="font-size:.72rem;">' + escHtml(c.label) + '</span>' +
+                        '<div class="diac-bar-wrap">' +
+                        '<div class="diac-bar-fill" style="width:' + pct + '%;background:' + (CORPUS_COLORS[c.corpus_id]||'var(--accent)') + ';"></div>' +
+                        '</div>' +
+                        '<span class="diac-count">' + (c.raw_count || '—') + '</span>' +
+                        '<span style="font-size:.72rem;color:var(--muted);width:4.5rem;">' + (c.normalized > 0 ? c.normalized.toFixed(2) + '/1k' : '') + '</span>';
+                    chart.appendChild(row);
+                });
+
+                // Detail table
+                var tbody = document.getElementById('diac-detail-tbody');
+                tbody.innerHTML = '';
+                corpora.forEach(function(c) {
+                    var tr = document.createElement('tr');
+                    tr.style.borderBottom = '1px solid var(--border)';
+                    var formsBadges = (c.forms||[]).slice(0,5).map(function(f) {
+                        return '<span dir="rtl" style="font-family:var(--syriac-font);margin-right:.3rem;">' + escHtml(f) + '</span>';
+                    }).join('');
+                    tr.innerHTML =
+                        '<td style="padding:.4rem .6rem;"><span class="corpus-badge corpus-' + c.corpus_id + '" style="font-size:.72rem;">' + escHtml(c.label) + '</span></td>' +
+                        '<td style="padding:.4rem .6rem;color:var(--muted);font-size:.8rem;">' + escHtml(c.period) + '</td>' +
+                        '<td style="padding:.4rem .6rem;text-align:right;font-weight:' + (c.raw_count ? '600' : '400') + ';">' + (c.raw_count || '—') + '</td>' +
+                        '<td style="padding:.4rem .6rem;text-align:right;color:var(--muted);">' + (c.normalized > 0 ? c.normalized.toFixed(3) : '—') + '</td>' +
+                        '<td style="padding:.4rem .6rem;">' + formsBadges + '</td>';
+                    tbody.appendChild(tr);
+                });
+
+                document.getElementById('diac-root-results').style.display = '';
+            }).catch(function() {
+                document.getElementById('diac-root-loading').style.display = 'none';
+                document.getElementById('diac-root-empty').style.display = 'block';
+            });
+    };
+
+    window.loadShifts = function() {
+        var dir = document.getElementById('shifts-direction').value;
+        var minOcc = document.getElementById('shifts-min').value;
+        document.getElementById('shifts-loading').style.display = 'block';
+        document.getElementById('shifts-results').style.display = 'none';
+        document.getElementById('shifts-empty').style.display = 'none';
+
+        fetch('/api/diachronic/shifts?direction=' + dir + '&min_occurrences=' + minOcc + '&limit=100&lang=' + LANG)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                document.getElementById('shifts-loading').style.display = 'none';
+                currentShifts = data.results || [];
+                if (!currentShifts.length) {
+                    document.getElementById('shifts-empty').style.display = 'block';
+                    return;
+                }
+                document.getElementById('shifts-summary').textContent =
+                    currentShifts.length + ' roots with significant frequency shifts';
+
+                var tbody = document.getElementById('shifts-tbody');
+                tbody.innerHTML = '';
+                var corpIds = (data.corpora||[]).map(function(c) { return c.id; });
+
+                currentShifts.forEach(function(row) {
+                    var tr = document.createElement('tr');
+                    tr.style.borderBottom = '1px solid var(--border)';
+                    tr.style.cursor = 'pointer';
+                    tr.addEventListener('click', function() {
+                        document.getElementById('diac-root-input').value = row.root_translit;
+                        switchTab('root');
+                        loadRootView();
+                    });
+
+                    // Mini sparkline: 4 dots
+                    var freqs = row.freqs || [];
+                    var maxF = Math.max.apply(null, freqs.concat([0.001]));
+                    var sparkSvg = '<svg width="80" height="20" style="vertical-align:middle;">';
+                    freqs.forEach(function(f, i) {
+                        var x = 10 + i * 20;
+                        var r = f > 0 ? Math.max(3, Math.round(f / maxF * 7)) : 2;
+                        var col = f > 0 ? (CORPUS_COLORS[corpIds[i]]||'#888') : '#ddd';
+                        sparkSvg += '<circle cx="' + x + '" cy="10" r="' + r + '" fill="' + col + '"/>';
+                    });
+                    sparkSvg += '</svg>';
+
+                    var vizUrl = '/visualize/' + encodeURIComponent(row.root_translit) + '?lang=' + LANG;
+                    var dirBadge = row.direction === 'emerging'
+                        ? '<span style="background:#d1fae5;color:#065f46;padding:1px 7px;border-radius:10px;font-size:.72rem;font-weight:600;">↑ Emerging</span>'
+                        : '<span style="background:#fee2e2;color:#991b1b;padding:1px 7px;border-radius:10px;font-size:.72rem;font-weight:600;">↓ Declining</span>';
+
+                    tr.innerHTML =
+                        '<td style="padding:.4rem .6rem;">' +
+                            '<a href="' + vizUrl + '" style="color:var(--accent);font-weight:600;text-decoration:none;" onclick="event.stopPropagation();">' + escHtml(row.root_translit) + '</a>' +
+                        '</td>' +
+                        '<td style="padding:.4rem .6rem;color:var(--muted);font-style:italic;font-size:.82rem;">' + escHtml(row.gloss||'') + '</td>' +
+                        '<td style="padding:.4rem .6rem;text-align:center;">' + sparkSvg + '</td>' +
+                        '<td style="padding:.4rem .6rem;text-align:right;font-weight:600;">' + row.magnitude + '×</td>' +
+                        '<td style="padding:.4rem .6rem;text-align:center;">' + dirBadge + '</td>';
+                    tbody.appendChild(tr);
+                });
+
+                document.getElementById('shifts-results').style.display = '';
+            }).catch(function() {
+                document.getElementById('shifts-loading').style.display = 'none';
+                document.getElementById('shifts-empty').style.display = 'block';
+            });
+    };
+
+    window.exportShifts = function() {
+        if (!currentShifts.length) return;
+        var rows = [['Root','Gloss','BA freq','Targum freq','NT freq','OT freq','Magnitude','Direction']];
+        currentShifts.forEach(function(r) {
+            rows.push([r.root_translit, r.gloss||''].concat(r.freqs||[]).concat([r.magnitude, r.direction]));
+        });
+        var csv = '\uFEFF' + rows.map(function(r) {
+            return r.map(function(c) { return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
+        }).join('\n');
+        var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+        var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'diachronic-shifts.csv'; a.click();
+    };
+
+    // Auto-load if root passed
+    if ('{{ initial_root }}') {
+        loadRootView();
+    }
+})();
+</script>
+{% endblock %}

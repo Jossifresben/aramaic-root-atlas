@@ -1154,6 +1154,60 @@ body {
     font-weight: 500;
 }
 .wp-link:hover { text-decoration: underline; }
+.wp-stem { margin-bottom: 0.3rem; }
+
+/* Verb stem badges */
+.stem-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.02em;
+    color: #fff;
+}
+.stem-peal      { background: #6b7280; }
+.stem-ethpeel   { background: #2563eb; }
+.stem-pael      { background: #d97706; }
+.stem-ethpaal   { background: #4f46e5; }
+.stem-aphel     { background: #059669; }
+.stem-shafel    { background: #7c3aed; }
+.stem-ettaphal  { background: #0d9488; }
+.stem-unknown   { background: #9ca3af; }
+
+/* KWIC Concordance table */
+.kwic-wrap { overflow-x: auto; }
+.kwic-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: .88rem; }
+.kwic-table th, .kwic-table td { padding: .35rem .5rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.kwic-table th { background: var(--bg); font-weight: 600; color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+.kwic-left  { width: 30%; text-align: right; direction: rtl; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--syriac-font); }
+.kwic-kw    { width: 14%; text-align: center; font-family: var(--syriac-font); font-weight: 700; color: var(--accent); }
+.kwic-right { width: 30%; text-align: left; direction: rtl; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--syriac-font); }
+.kwic-ref   { width: 12%; font-size: .78rem; white-space: nowrap; }
+.kwic-meta  { width: 14%; }
+.kwic-group-header { background: var(--border); font-weight: 600; padding: .4rem .5rem; font-size: .82rem; }
+
+/* Diachronic bars */
+.diachronic-bars { display: flex; flex-direction: column; gap: .25rem; }
+.diac-row { display: flex; align-items: center; gap: .5rem; font-size: .82rem; }
+.diac-label { width: 8rem; flex-shrink: 0; }
+.diac-bar-wrap { flex: 1; background: var(--border); border-radius: 3px; height: 12px; overflow: hidden; }
+.diac-bar-fill { height: 100%; border-radius: 3px; transition: width .4s; }
+.diac-count { width: 3rem; text-align: right; color: var(--muted); }
+
+/* Hapax table */
+.hapax-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.hapax-table th, .hapax-table td { padding: .4rem .6rem; border-bottom: 1px solid var(--border); }
+.hapax-table th { background: var(--bg); font-weight: 600; color: var(--muted); font-size: .78rem; text-transform: uppercase; }
+.hapax-table .hx-root { font-family: var(--syriac-font); font-size: 1rem; direction: rtl; }
+
+/* Shared: btn-secondary */
+.btn-secondary {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: .4rem .9rem; border-radius: 6px; font-size: .85rem; font-weight: 500;
+    background: var(--border); color: var(--fg); text-decoration: none; border: none; cursor: pointer;
+}
+.btn-secondary:hover { background: var(--accent-light); color: var(--accent); }
 
 /* Chapter roots summary */
 .ch-roots-btn {

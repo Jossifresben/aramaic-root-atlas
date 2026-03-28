@@ -112,6 +112,44 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- Stem Distribution -->
+                    <div class="ficha-section ficha-stems-section" id="ficha-stems-section" style="display:none;">
+                        <h3 class="ficha-section-title">
+                            <span class="material-symbols-outlined">bar_chart</span>
+                            {{ t('stem_distribution') }}
+                        </h3>
+                        <div id="ficha-stem-bars"></div>
+                    </div>
+
+                    <!-- Paradigm Table -->
+                    <div class="ficha-section ficha-paradigm-section" id="ficha-paradigm-section" style="display:none;">
+                        <h3 class="ficha-section-title">
+                            <span class="material-symbols-outlined">grid_on</span>
+                            {{ t('paradigm_table') }}
+                        </h3>
+                        <div id="ficha-paradigm"></div>
+                    </div>
+
+                    <!-- Diachronic Usage -->
+                    <div class="ficha-section ficha-diachronic-section" id="ficha-diachronic-section" style="display:none;">
+                        <h3 class="ficha-section-title">
+                            <span class="material-symbols-outlined">timeline</span>
+                            {{ t('diachronic_title') }}
+                        </h3>
+                        <div id="ficha-diachronic-bars" class="diachronic-bars"></div>
+                        <a id="ficha-diachronic-link" href="#" class="ficha-read-link" style="font-size:.8rem;margin-top:.5rem;display:inline-block;">
+                            {{ t('diachronic_root_view') }} &rarr;
+                        </a>
+                    </div>
+
+                    <!-- Concordance link -->
+                    <div class="ficha-section" style="padding:.75rem 1rem;">
+                        <a id="ficha-concordance-link" href="#" class="btn-secondary" style="font-size:.85rem;">
+                            <span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">format_list_bulleted</span>
+                            {{ t('concordance_view') }}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -363,6 +401,97 @@
                 tr.appendChild(tdG);
                 tbody.appendChild(tr);
             }
+
+            // Stem distribution
+            var stemDist = data.stem_distribution || {};
+            var stemSec = document.getElementById('ficha-stems-section');
+            var stemBars = document.getElementById('ficha-stem-bars');
+            var stemNames = Object.keys(stemDist);
+            if (stemNames.length > 0) {
+                stemSec.style.display = '';
+                var stemTotal = stemNames.reduce(function(s, k) { return s + stemDist[k]; }, 0);
+                stemBars.innerHTML = '';
+                var stemOrder = ['Peal','Ethpeel','Pael','Ethpaal','Aphel','Shafel','Ettaphal'];
+                stemOrder.concat(stemNames.filter(function(s) { return stemOrder.indexOf(s) < 0; })).forEach(function(stem) {
+                    if (!stemDist[stem]) return;
+                    var pct = Math.round(stemDist[stem] / stemTotal * 100);
+                    var row = document.createElement('div');
+                    row.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin:.25rem 0;font-size:.85rem;';
+                    row.innerHTML = '<span class="stem-badge stem-' + stem.toLowerCase() + '" style="width:6rem;text-align:center;">' + escHtml(stem) + '</span>' +
+                        '<div style="flex:1;background:var(--border);border-radius:3px;height:10px;overflow:hidden;">' +
+                        '<div style="width:' + pct + '%;height:100%;background:var(--accent);opacity:.7;"></div></div>' +
+                        '<span style="width:3rem;text-align:right;color:var(--muted);">' + stemDist[stem] + '\u00d7</span>';
+                    stemBars.appendChild(row);
+                });
+            } else {
+                stemSec.style.display = 'none';
+            }
+
+            // Paradigm table (fetched separately)
+            var paradigmSec = document.getElementById('ficha-paradigm-section');
+            var paradigmEl = document.getElementById('ficha-paradigm');
+            fetch('/api/paradigm?root=' + encodeURIComponent(ROOT_KEY) + '&lang=' + LANG)
+                .then(function(r) { return r.json(); })
+                .then(function(pd) {
+                    var stems = pd.stems || {};
+                    var stemKeys = Object.keys(stems);
+                    if (stemKeys.length === 0) { paradigmSec.style.display = 'none'; return; }
+                    paradigmSec.style.display = '';
+                    paradigmEl.innerHTML = '';
+                    stemKeys.forEach(function(stem) {
+                        var group = document.createElement('details');
+                        group.style.cssText = 'margin-bottom:.5rem;';
+                        group.innerHTML = '<summary style="cursor:pointer;font-weight:600;padding:.3rem 0;">' +
+                            '<span class="stem-badge stem-' + stem.toLowerCase() + '">' + escHtml(stem) + '</span>' +
+                            ' <span style="color:var(--muted);font-size:.8rem;">(' + stems[stem].length + ' forms)</span></summary>';
+                        var tbl = document.createElement('table');
+                        tbl.className = 'ficha-table';
+                        tbl.style.marginTop = '.25rem';
+                        tbl.innerHTML = '<thead><tr><th>Form</th><th>Translit</th><th>Count</th><th>Example</th></tr></thead>';
+                        var tb = document.createElement('tbody');
+                        stems[stem].forEach(function(f) {
+                            var tr = document.createElement('tr');
+                            tr.innerHTML = '<td dir="rtl">' + escHtml(f.form) + '</td>' +
+                                '<td>' + escHtml(f.transliteration) + '</td>' +
+                                '<td>' + f.count + '</td>' +
+                                '<td style="font-size:.78rem;color:var(--muted);">' + escHtml((f.references||[])[0]||'') + '</td>';
+                            tb.appendChild(tr);
+                        });
+                        tbl.appendChild(tb);
+                        group.appendChild(tbl);
+                        paradigmEl.appendChild(group);
+                    });
+                }).catch(function() { paradigmSec.style.display = 'none'; });
+
+            // Diachronic bars (compact)
+            var diacSec = document.getElementById('ficha-diachronic-section');
+            var diacBars = document.getElementById('ficha-diachronic-bars');
+            var diacLink = document.getElementById('ficha-diachronic-link');
+            if (diacLink) diacLink.href = '/diachronic?root=' + encodeURIComponent(ROOT_KEY) + '&lang=' + LANG;
+            fetch('/api/diachronic/root?root=' + encodeURIComponent(ROOT_KEY) + '&lang=' + LANG)
+                .then(function(r) { return r.json(); })
+                .then(function(dd) {
+                    var corpora = dd.corpora || [];
+                    var hasAny = corpora.some(function(c) { return c.raw_count > 0; });
+                    if (!hasAny) { diacSec.style.display = 'none'; return; }
+                    diacSec.style.display = '';
+                    diacBars.innerHTML = '';
+                    var maxNorm = Math.max.apply(null, corpora.map(function(c) { return c.normalized; }));
+                    corpora.forEach(function(c) {
+                        var pct = maxNorm > 0 ? Math.round(c.normalized / maxNorm * 100) : 0;
+                        var row = document.createElement('div');
+                        row.style.cssText = 'display:flex;align-items:center;gap:.4rem;margin:.2rem 0;font-size:.78rem;';
+                        row.innerHTML = '<span class="corpus-badge corpus-' + c.corpus_id + '" style="width:7rem;font-size:.7rem;">' + escHtml(c.label) + '</span>' +
+                            '<div style="flex:1;background:var(--border);border-radius:3px;height:8px;overflow:hidden;">' +
+                            '<div style="width:' + pct + '%;height:100%;background:var(--accent);opacity:.75;"></div></div>' +
+                            '<span style="width:2.5rem;text-align:right;color:var(--muted);">' + (c.raw_count || '—') + '</span>';
+                        diacBars.appendChild(row);
+                    });
+                }).catch(function() { diacSec.style.display = 'none'; });
+
+            // Concordance link
+            var concLink = document.getElementById('ficha-concordance-link');
+            if (concLink) concLink.href = '/concordance?root=' + encodeURIComponent(ROOT_KEY) + '&lang=' + LANG;
         }
 
         // Fullscreen toggle
