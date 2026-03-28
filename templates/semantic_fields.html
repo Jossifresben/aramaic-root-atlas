@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('sf_title', lang) if t else 'Semantic Fields' }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem;">
+
+    <header style="margin-bottom:1.2rem">
+        <h1 style="margin-bottom:0.3rem">{{ t('sf_title', lang) if t else 'Semantic Fields' }}</h1>
+        <p class="subtitle">{{ t('sf_subtitle', lang) if t else 'Browse roots organized by semantic domain.' }}</p>
+    </header>
+
+    {% if not has_data %}
+    <div class="hapax-empty" style="padding:2rem;text-align:center">
+        <span class="material-symbols-outlined" style="font-size:48px;color:var(--text-muted)">category</span>
+        <p>{{ t('sf_no_data', lang) if t else 'Semantic field data not yet generated.' }}</p>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-top:0.5rem">
+            Run: <code>ANTHROPIC_API_KEY=... python scripts/generate_semantic_fields.py</code>
+        </p>
+    </div>
+    {% else %}
+
+    <!-- Domain grid -->
+    <div id="sf-domain-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.8rem;margin-bottom:1.5rem">
+        <p style="text-align:center;color:var(--text-muted)">{{ t('sf_loading', lang) if t else 'Loading domains...' }}</p>
+    </div>
+
+    <!-- Root list section (hidden until domain selected) -->
+    <div id="sf-root-section" style="display:none">
+        <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem">
+            <button class="bm-action-btn" onclick="showDomainGrid()">
+                <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">arrow_back</span>
+                {{ t('sf_back', lang) if t else 'Back' }}
+            </button>
+            <h2 id="sf-field-title" style="font-size:1.1rem;margin:0"></h2>
+        </div>
+        <div id="sf-root-loading" style="text-align:center;color:var(--text-muted);display:none">{{ t('sf_loading', lang) if t else 'Loading...' }}</div>
+        <table class="hapax-table" id="sf-root-table" style="width:100%;display:none;table-layout:fixed">
+            <colgroup>
+                <col style="width:20%">
+                <col style="width:25%">
+                <col style="width:40%">
+                <col style="width:15%">
+            </colgroup>
+            <thead><tr>
+                <th>{{ t('sf_col_root', lang) if t else 'Root' }}</th>
+                <th>{{ t('sf_col_gloss', lang) if t else 'Gloss' }}</th>
+                <th>{{ t('sf_col_corpora', lang) if t else 'Corpora' }}</th>
+                <th style="text-align:right">{{ t('sf_col_occurrences', lang) if t else 'Occurrences' }}</th>
+            </tr></thead>
+            <tbody id="sf-root-tbody"></tbody>
+        </table>
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if has_data %}
+<script>
+var currentLang = '{{ lang }}';
+var currentTrans = '{{ trans }}';
+
+var _corpusLabels = {
+    peshitta_nt: 'NT', peshitta_ot: 'OT',
+    biblical_aramaic: 'BA', targum_onkelos: 'TO'
+};
+
+var _domainIcons = {
+    'creation/cosmos': 'public',
+    'body/anatomy': 'accessibility_new',
+    'kinship/family': 'group',
+    'speech/communication': 'chat',
+    'motion/travel': 'directions_walk',
+    'legal/covenant': 'gavel',
+    'worship/cultic': 'church',
+    'agriculture/food': 'grain',
+    'war/conflict': 'shield',
+    'knowledge/wisdom': 'psychology',
+    'time': 'schedule',
+    'emotion/mental': 'mood',
+    'commerce/material': 'storefront',
+    'nature/elements': 'water',
+    'existence/being': 'blur_on',
+};
+
+var _domainLabels = {
+    'creation/cosmos': '{{ t("sf_domain_creation_cosmos", lang) if t else "Creation / Cosmos" }}',
+    'body/anatomy': '{{ t("sf_domain_body_anatomy", lang) if t else "Body / Anatomy" }}',
+    'kinship/family': '{{ t("sf_domain_kinship_family", lang) if t else "Kinship / Family" }}',
+    'speech/communication': '{{ t("sf_domain_speech_communication", lang) if t else "Speech / Communication" }}',
+    'motion/travel': '{{ t("sf_domain_motion_travel", lang) if t else "Motion / Travel" }}',
+    'legal/covenant': '{{ t("sf_domain_legal_covenant", lang) if t else "Legal / Covenant" }}',
+    'worship/cultic': '{{ t("sf_domain_worship_cultic", lang) if t else "Worship / Cultic" }}',
+    'agriculture/food': '{{ t("sf_domain_agriculture_food", lang) if t else "Agriculture / Food" }}',
+    'war/conflict': '{{ t("sf_domain_war_conflict", lang) if t else "War / Conflict" }}',
+    'knowledge/wisdom': '{{ t("sf_domain_knowledge_wisdom", lang) if t else "Knowledge / Wisdom" }}',
+    'time': '{{ t("sf_domain_time", lang) if t else "Time" }}',
+    'emotion/mental': '{{ t("sf_domain_emotion_mental", lang) if t else "Emotion / Mental" }}',
+    'commerce/material': '{{ t("sf_domain_commerce_material", lang) if t else "Commerce / Material" }}',
+    'nature/elements': '{{ t("sf_domain_nature_elements", lang) if t else "Nature / Elements" }}',
+    'existence/being': '{{ t("sf_domain_existence_being", lang) if t else "Existence / Being" }}',
+};
+
+function loadDomains() {
+    fetch('/api/semantic-fields')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var grid = document.getElementById('sf-domain-grid');
+            if (!data.domains || !data.domains.length) {
+                grid.innerHTML = '<p>{{ t("sf_no_domains", lang) if t else "No domains found." }}</p>';
+                return;
+            }
+            var html = '';
+            data.domains.forEach(function(d) {
+                var icon = _domainIcons[d.domain] || 'category';
+                var label = _domainLabels[d.domain] || d.domain.split('/').map(function(w) {
+                    return w.charAt(0).toUpperCase() + w.slice(1);
+                }).join(' / ');
+                html += '<div class="sf-domain-card" onclick="loadField(\'' + d.domain + '\', \'' + label.replace(/'/g, "\\'") + '\')">';
+                html += '<span class="material-symbols-outlined sf-domain-icon">' + icon + '</span>';
+                html += '<div class="sf-domain-name">' + label + '</div>';
+                html += '<div class="sf-domain-count">' + d.count + ' {{ t("sf_root_count", lang) if t else "roots" }}</div>';
+                html += '</div>';
+            });
+            grid.innerHTML = html;
+        });
+}
+
+function loadField(field, label) {
+    document.getElementById('sf-domain-grid').style.display = 'none';
+    document.getElementById('sf-root-section').style.display = 'block';
+    document.getElementById('sf-field-title').textContent = label;
+    document.getElementById('sf-root-loading').style.display = 'block';
+    document.getElementById('sf-root-table').style.display = 'none';
+
+    fetch('/api/semantic-fields/' + encodeURIComponent(field) + '?lang=' + currentLang)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            document.getElementById('sf-root-loading').style.display = 'none';
+            var tbody = document.getElementById('sf-root-tbody');
+            var rows = '';
+            (data.roots || []).forEach(function(r) {
+                rows += '<tr>';
+                var vizUrl = '/visualize/' + encodeURIComponent(r.key) + '?lang=' + currentLang;
+                rows += '<td>';
+                rows += '<a href="' + vizUrl + '" class="wp-link">';
+                if (r.root) rows += '<span class="syriac" dir="rtl" style="font-size:1.2rem;margin-right:0.4rem">' + r.root + '</span>';
+                rows += '<span style="color:var(--text-muted);font-size:0.85rem">' + r.key.toUpperCase() + '</span>';
+                rows += '</a>';
+                rows += '</td>';
+                rows += '<td dir="auto">' + (r.gloss || '') + '</td>';
+                rows += '<td>';
+                Object.entries(r.corpus_counts || {}).forEach(function(e) {
+                    var lbl = _corpusLabels[e[0]] || e[0];
+                    rows += '<span class="corpus-badge corpus-' + e[0] + '" style="white-space:nowrap;display:inline-block;margin-bottom:2px">' + lbl + ' ' + e[1] + '</span>';
+                });
+                rows += '</td>';
+                rows += '<td style="text-align:right;white-space:nowrap"><strong>' + r.total_occurrences + '</strong></td>';
+                rows += '</tr>';
+            });
+            tbody.innerHTML = rows;
+            document.getElementById('sf-root-table').style.display = 'table';
+        });
+}
+
+function showDomainGrid() {
+    document.getElementById('sf-root-section').style.display = 'none';
+    document.getElementById('sf-domain-grid').style.display = 'grid';
+}
+
+loadDomains();
+</script>
+{% endif %}
+{% endblock %}

@@ -4,6 +4,11 @@
 
 {% block content %}
     <div class="container">
+        <div class="storage-warning" id="storage-warning" style="display:none">
+            <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">warning</span>
+            {{ t('storage_warning', lang) if t else 'Notes and bookmarks are stored in your browser\'s local storage. Clearing your browser cache will permanently delete them. Export regularly to keep a backup.' }}
+            <button class="storage-warning-dismiss" onclick="dismissStorageWarning()">{{ t('storage_warning_dismiss', lang) if t else 'Got it' }}</button>
+        </div>
         <header>
             <h1>{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}</h1>
             <p class="subtitle">{{ t('bookmarks_subtitle', lang) if t else 'Your saved verses and roots. Stored locally in your browser.' }}</p>
@@ -28,6 +33,12 @@
                 </button>
                 <button class="bm-action-btn" onclick="exportCSV()" title="Export CSV">
                     <span class="material-symbols-outlined">table_chart</span> CSV
+                </button>
+                <button class="bm-action-btn" onclick="exportBibTeX()" title="{{ t('bookmarks_export_bibtex', lang) if t else 'Export BibTeX' }}">
+                    <span class="material-symbols-outlined">format_quote</span> BibTeX
+                </button>
+                <button class="bm-action-btn" onclick="exportZoteroRDF()" title="{{ t('bookmarks_export_zotero', lang) if t else 'Export Zotero RDF' }}">
+                    <span class="material-symbols-outlined">library_books</span> Zotero
                 </button>
                 <button class="bm-action-btn" onclick="clearAllBookmarks()" title="{{ t('bookmarks_clear', lang) if t else 'Clear all' }}">
                     <span class="material-symbols-outlined">delete_sweep</span>
@@ -63,6 +74,15 @@
 <script>
 var currentLang = '{{ lang }}';
 var bookNames = {{ book_names_json|safe }};
+
+// Storage warning
+function dismissStorageWarning() {
+    localStorage.setItem('ann_warning_dismissed', '1');
+    document.getElementById('storage-warning').style.display = 'none';
+}
+if (!localStorage.getItem('ann_warning_dismissed')) {
+    document.getElementById('storage-warning').style.display = 'flex';
+}
 
 function escHtml(s) {
     var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
@@ -221,6 +241,80 @@ function exportCSV() {
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'aramaic-atlas-bookmarks.csv';
+    a.click();
+}
+
+// --- BibTeX Export ---
+function exportBibTeX() {
+    var bm = getBookmarks();
+    var lines = [];
+    bm.verses.forEach(function(v) {
+        if (!v.ref) return;
+        var key = 'atlas-' + (v.ref || '').replace(/[^a-zA-Z0-9]/g, '-');
+        var url = 'https://aramaic-root-atlas.onrender.com/read/' + encodeURIComponent(v.book || '') + '/' + (v.chapter || '') + '#v' + (v.verse || '');
+        var note = (v.note || '').replace(/[{}]/g, '');
+        lines.push('@misc{' + key + ',');
+        lines.push('  title = {' + (v.ref || '') + '},');
+        lines.push('  howpublished = {\\url{' + url + '}},');
+        lines.push('  note = {Aramaic Root Atlas. ' + note + '}');
+        lines.push('}');
+        lines.push('');
+    });
+    bm.roots.forEach(function(r) {
+        if (!r.key) return;
+        var slug = (r.key || '').replace(/[^a-zA-Z0-9]/g, '-');
+        var url = 'https://aramaic-root-atlas.onrender.com/visualize/' + encodeURIComponent(r.key || '');
+        var note = (r.note || '').replace(/[{}]/g, '');
+        lines.push('@misc{atlas-root-' + slug + ',');
+        lines.push('  title = {Root ' + (r.key || '') + (r.gloss ? ': ' + r.gloss : '') + '},');
+        lines.push('  howpublished = {\\url{' + url + '}},');
+        lines.push('  note = {Aramaic Root Atlas. ' + note + '}');
+        lines.push('}');
+        lines.push('');
+    });
+    var blob = new Blob([lines.join('\n')], {type: 'text/plain'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'aramaic-atlas-bookmarks.bib';
+    a.click();
+}
+
+// --- Zotero RDF Export ---
+function exportZoteroRDF() {
+    var bm = getBookmarks();
+    var items = '';
+    var now = new Date().toISOString().slice(0, 10);
+    bm.verses.forEach(function(v) {
+        if (!v.ref) return;
+        var url = 'https://aramaic-root-atlas.onrender.com/read/' + encodeURIComponent(v.book || '') + '/' + (v.chapter || '') + '#v' + (v.verse || '');
+        items += '  <bib:Memo>\n';
+        items += '    <dc:title>' + escHtml(v.ref || '') + '</dc:title>\n';
+        items += '    <dc:identifier>' + escHtml(url) + '</dc:identifier>\n';
+        items += '    <dc:date>' + escHtml(v.date || now) + '</dc:date>\n';
+        if (v.note) items += '    <dc:description>' + escHtml(v.note) + '</dc:description>\n';
+        items += '  </bib:Memo>\n';
+    });
+    bm.roots.forEach(function(r) {
+        if (!r.key) return;
+        var url = 'https://aramaic-root-atlas.onrender.com/visualize/' + encodeURIComponent(r.key || '');
+        var title = 'Root ' + (r.key || '') + (r.gloss ? ': ' + r.gloss : '');
+        items += '  <bib:Memo>\n';
+        items += '    <dc:title>' + escHtml(title) + '</dc:title>\n';
+        items += '    <dc:identifier>' + escHtml(url) + '</dc:identifier>\n';
+        items += '    <dc:date>' + escHtml(r.date || now) + '</dc:date>\n';
+        if (r.note) items += '    <dc:description>' + escHtml(r.note) + '</dc:description>\n';
+        items += '  </bib:Memo>\n';
+    });
+    var rdf = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+        '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n' +
+        '         xmlns:bib="http://purl.org/net/biblio#"\n' +
+        '         xmlns:dc="http://purl.org/dc/elements/1.1/">\n' +
+        items +
+        '</rdf:RDF>';
+    var blob = new Blob([rdf], {type: 'application/rdf+xml'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'aramaic-atlas-bookmarks.rdf';
     a.click();
 }
 

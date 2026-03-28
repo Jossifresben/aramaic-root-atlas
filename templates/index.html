@@ -5,7 +5,7 @@
 {% block content %}
 <section class="hero">
     <h1>Aramaic Root Atlas</h1>
-    <p class="subtitle">Trace triliteral roots across centuries of Aramaic literature and explore every derived word across multiple Aramaic corpora. <a href="/about?lang={{ lang }}" class="subtitle-link">Learn more</a></p>
+    <p class="subtitle">{{ t('home_subtitle', lang) }} <a href="/about?lang={{ lang }}" class="subtitle-link">{{ t('learn_more', lang) }}</a></p>
 
     <div class="search-tabs">
         <button class="search-tab active" id="tab-root" onclick="switchTab('root')">{{ t('tab_root', lang) }}</button>
@@ -34,7 +34,7 @@
                 <button type="submit">{{ t('search', lang) }}</button>
             </div>
         </form>
-        <p class="search-hint">Enter a root (dashes are added automatically). <a href="javascript:void(0)" onclick="document.getElementById('translit-help').style.display=document.getElementById('translit-help').style.display==='none'?'':'none'">Show transliteration table</a></p>
+        <p class="search-hint">{{ t('root_hint', lang) }} <a href="javascript:void(0)" onclick="document.getElementById('translit-help').style.display=document.getElementById('translit-help').style.display==='none'?'':'none'">{{ t('show_translit_table', lang) }}</a></p>
         <div id="translit-help" style="display:none" class="translit-help-table">
             <table><tr><td>B=ܒ</td><td>G=ܓ</td><td>D=ܕ</td><td>H=ܗ</td><td>W=ܘ</td><td>Z=ܙ</td></tr>
             <tr><td>KH=ܚ</td><td>T=ܛ</td><td>Y=ܝ</td><td>K=ܟ</td><td>L=ܠ</td><td>M=ܡ</td></tr>
@@ -133,14 +133,14 @@
         {% for c in corpora %}
         <div class="stat-card">
             <div class="stat-label">{{ c.label }}</div>
-            <div class="stat-value">{{ "{:,}".format(c.verses) }} verses</div>
-            <div class="stat-detail">{{ "{:,}".format(c.words) }} words</div>
+            <div class="stat-value">{{ "{:,}".format(c.verses) }} {{ t('verses', lang) }}</div>
+            <div class="stat-detail">{{ "{:,}".format(c.words) }} {{ t('words', lang) }}</div>
         </div>
         {% endfor %}
         <div class="stat-card stat-card-accent">
-            <div class="stat-label">Roots Indexed</div>
+            <div class="stat-label">{{ t('roots_indexed', lang) }}</div>
             <div class="stat-value">{{ "{:,}".format(root_count) }}</div>
-            <div class="stat-detail">across all corpora</div>
+            <div class="stat-detail">{{ t('across_all_corpora', lang) }}</div>
         </div>
     </div>
     <div style="text-align:center; margin-top:1rem;">

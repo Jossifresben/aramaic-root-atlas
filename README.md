@@ -6,7 +6,7 @@ The Aramaic Root Atlas is an open-access tool for exploring triliteral roots acr
 
 The tool is designed for scholars, students, and linguists who want to study Aramaic vocabulary across time and tradition: tracing how a root is used in different dialects and genres, finding rare or unique attestations, comparing parallel passages, or analyzing verb stem distributions. Every word form in the corpus is linked to its extracted root, gloss, confidence score, and verb stem, accessible directly from the verse reader.
 
-**36,627 verses** · **498,922 words** · **5,039 roots** · **1,127 cognate families** · **4 corpora**
+**36,627 verses** · **498,922 words** · **5,039 roots** · **1,127+ cognate families** · **4 corpora**
 
 ---
 
@@ -16,7 +16,11 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 - **Verb Stem (Binyan) Analysis** -- classifies every word form into Peal/Ethpeel/Pael/Ethpaal/Aphel/Shafel/Ettaphal; stem badge in word popover; stem distribution chart + paradigm table in root card; `/api/paradigm` endpoint
 - **Hapax Legomena Finder** -- `/hapax` page surfaces roots and forms with 1–5 occurrences across any corpus; frequency slider, corpus filter, scope toggle, CSV/JSON export
 - **KWIC Concordance with Export** -- `/concordance` page shows all attestations in traditional left-context | keyword | right-context layout; group by form or stem; export as CSV, JSON, plain text, or TEI XML
-- **Diachronic Root Analysis** -- `/diachronic` page compares root usage across four corpora in chronological order (Biblical Aramaic → Targum Onkelos → Peshitta NT → Peshitta OT) as normalized frequency; Shifts View ranks roots by frequency change magnitude
+- **Diachronic Root Analysis** -- `/diachronic` page compares root usage across four corpora in chronological order (Biblical Aramaic → Targum Onkelos → Peshitta NT → Peshitta OT) as normalized frequency; Shifts View ranks roots by frequency change magnitude with color-coded corpus dots
+- **Collocations** -- `/collocations` page computes Pointwise Mutual Information (PMI) between roots co-occurring in the same verse or chapter; filter by corpus and minimum co-occurrence count to surface statistically significant lexical associations; CSV/JSON export
+- **Semantic Fields** -- `/semantic-fields` page organizes all roots into 15 semantic domains (legal/covenant, cultic, kinship, war, knowledge, etc.) via AI classification; each domain lists roots sorted by frequency with corpus badges and links to the visualizer
+- **Researcher Annotations** -- `/annotations` page for inline notes on verses and roots, stored in localStorage; tag-based filtering, export as JSON/CSV/Markdown; inline note icons in the verse reader and root card
+- **BibTeX & Zotero Export** -- generate academic citations from bookmarks in BibTeX (`.bib`) or Zotero RDF (`.rdf`) formats directly from the bookmarks page
 
 ### Exploration & Reading
 - **Word-level root display** -- click any Syriac word in the reader to see its extracted root, gloss, confidence score, verb stem, and link to the root visualizer
@@ -49,6 +53,14 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 | KWIC Concordance | Diachronic Analysis |
 |:---:|:---:|
 | ![Concordance](docs/screenshots/concordance.png) | ![Diachronic](docs/screenshots/diachronic.png) |
+
+| Collocations | Semantic Fields |
+|:---:|:---:|
+| ![Collocations](docs/screenshots/collocations.png) | ![Semantic Fields](docs/screenshots/semantic-fields.png) |
+
+| Researcher Annotations | BibTeX / Zotero Export |
+|:---:|:---:|
+| ![Annotations](docs/screenshots/annotations.png) | ![BibTeX Export](docs/screenshots/bibtex-export.png) |
 
 ### Exploration & Reading
 
@@ -119,6 +131,9 @@ The Atlas exposes a full JSON API for programmatic access. All endpoints support
 | `GET /api/diachronic/root?root=K-T-B` | Normalized frequency per corpus in chronological order |
 | `GET /api/diachronic/shifts?direction=emerging` | Roots ranked by cross-corpus frequency shift magnitude |
 | `GET /api/diachronic/unique?corpus=biblical_aramaic` | Roots attested in only one corpus |
+| `GET /api/collocations?root=SH-L-M&scope=verse` | PMI-scored co-occurring roots at verse or chapter scope |
+| `GET /api/semantic-fields` | All 15 semantic domains with root counts |
+| `GET /api/semantic-fields/<field>` | Roots in a domain sorted by frequency with corpus counts |
 
 **Root input formats:** Dash-separated Latin (`SH-L-M`), Syriac Unicode (`ܫܠܡ`), Hebrew (`שלם`), or Arabic (`سلم`). The API auto-detects and normalizes.
 
@@ -155,7 +170,7 @@ aramaic-root-atlas/
 - **Biblical Aramaic** -- Westminster Leningrad Codex via Sefaria API (CC-BY-SA)
 - **Targum Onkelos** -- Sefaria API (CC-BY-SA)
 - **Translations** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek) via [bible.helloao.org](https://bible.helloao.org)
-- **Cognates** -- 1,127 entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates, generated and curated with the Claude API
+- **Cognates** -- 1,127+ entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates, generated and curated with the Claude API; semantic field classifications for all roots via Claude Haiku
 
 See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details.
 

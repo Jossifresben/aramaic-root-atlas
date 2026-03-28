@@ -44,6 +44,8 @@ class CognateEntry:
     root_syriac: str
     gloss_es: str
     gloss_en: str
+    gloss_he: str = ''
+    gloss_ar: str = ''
     sabor_raiz_es: str = ''
     sabor_raiz_en: str = ''
     hebrew: list[CognateWord] = field(default_factory=list)
@@ -138,6 +140,8 @@ class CognateLookup:
                 root_syriac=root_syriac,
                 gloss_es=entry_data.get('gloss_es', ''),
                 gloss_en=entry_data.get('gloss_en', ''),
+                gloss_he=entry_data.get('gloss_he', ''),
+                gloss_ar=entry_data.get('gloss_ar', ''),
                 sabor_raiz_es=entry_data.get('sabor_raiz_es', ''),
                 sabor_raiz_en=entry_data.get('sabor_raiz_en', ''),
                 hebrew=hebrew_words,
