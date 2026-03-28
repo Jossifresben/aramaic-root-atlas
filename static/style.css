@@ -159,6 +159,11 @@ body {
     color: white;
     background: rgba(255,255,255,0.1);
 }
+.nav-drop-sep {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    margin: 0.3rem 0;
+}
 .nav-icons {
     display: flex;
     align-items: center;
@@ -2326,6 +2331,19 @@ body {
     direction: rtl;
 }
 
+/* RTL language adjustments */
+[dir="rtl"] .search-tab {
+    font-size: 1rem;
+}
+[dir="rtl"] .stat-card .stat-label,
+[dir="rtl"] .stat-card .stat-value,
+[dir="rtl"] .stat-card .stat-detail {
+    text-align: center;
+}
+[dir="rtl"] .search-hint {
+    direction: rtl;
+}
+
 /* --- Bookmarks --- */
 
 /* Bookmark button on verse rows */
@@ -2609,4 +2627,314 @@ body {
 
     /* Concordance controls: stack vertically */
     .kwic-wrap { font-size: .8rem; }
+}
+
+/* ─── Storage Warning Banner ─── */
+.storage-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.7rem 1rem;
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    font-size: 0.87rem;
+    color: #78350f;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+}
+[data-theme="dark"] .storage-warning {
+    background: #3d2e00;
+    border-color: #b45309;
+    color: #fde68a;
+}
+.storage-warning-dismiss {
+    background: none;
+    border: 1px solid #f59e0b;
+    border-radius: 4px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    color: inherit;
+    white-space: nowrap;
+    margin-left: auto;
+}
+.storage-warning-dismiss:hover { background: rgba(245,158,11,0.15); }
+
+/* ─── Verse / Root Note Blocks ─── */
+.verse-note-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0.2rem;
+    border-radius: 4px;
+    line-height: 1;
+    opacity: 0.6;
+    transition: opacity 0.15s, color 0.15s;
+}
+.verse-note-btn:hover, .verse-note-btn.has-note { opacity: 1; color: var(--accent); }
+.verse-note-block {
+    margin: 0.4rem 0 0.6rem 2.2rem;
+    padding: 0.6rem;
+    background: var(--card-bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+}
+.verse-note-ta {
+    width: 100%;
+    min-height: 4rem;
+    padding: 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    background: var(--bg);
+    color: var(--text);
+    resize: vertical;
+    box-sizing: border-box;
+}
+.verse-note-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.35rem;
+}
+.verse-note-count { font-size: 0.75rem; color: var(--text-muted); }
+.verse-note-save {
+    padding: 0.2rem 0.7rem;
+    font-size: 0.82rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.verse-note-save:hover { opacity: 0.9; }
+.verse-note-cancel {
+    padding: 0.2rem 0.7rem;
+    font-size: 0.82rem;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+.verse-note-cancel:hover { background: var(--hover); }
+
+/* ─── Ficha note toggle ─── */
+.ficha-note-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.ficha-note-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── Semantic Field Cards ─── */
+.sf-domain-card {
+    padding: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.sf-domain-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.sf-domain-icon {
+    font-size: 28px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.4rem;
+}
+.sf-domain-name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-bottom: 0.2rem;
+}
+.sf-domain-count {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* ─── Collocations Page ─── */
+.coll-page { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+.coll-header { margin-bottom: 1.2rem; }
+.coll-header h1 { margin-bottom: 0.25rem; }
+
+/* Controls bar */
+.coll-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+}
+.coll-input-wrap { flex: 1; min-width: 180px; }
+.coll-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-family: monospace;
+    letter-spacing: 1px;
+    background: var(--bg);
+    color: var(--text);
+    box-sizing: border-box;
+}
+.coll-input:focus { outline: none; border-color: var(--accent); }
+.coll-select {
+    padding: 0.5rem 0.65rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+}
+.coll-select:focus { outline: none; border-color: var(--accent); }
+.coll-slider-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    color: var(--text-muted);
+}
+.coll-slider-val {
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 1.6rem;
+}
+.coll-analyze-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.coll-analyze-btn .material-symbols-outlined { font-size: 18px; }
+.coll-analyze-btn:hover { opacity: 0.9; }
+
+/* Meta bar */
+.coll-meta-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 2rem;
+    margin-bottom: 0.6rem;
+}
+.coll-summary { font-size: 0.9rem; color: var(--text-muted); }
+.coll-meta-detail { font-size: 0.82rem; color: var(--text-muted); opacity: 0.75; }
+.coll-export { display: flex; gap: 0.4rem; }
+
+/* Loading spinner */
+.coll-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.coll-spin { animation: coll-spin-anim 1s linear infinite; }
+@keyframes coll-spin-anim { to { transform: rotate(360deg); } }
+
+/* Empty state */
+.coll-empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+/* Results table */
+.coll-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+.coll-table thead th {
+    padding: 0.45rem 0.7rem;
+    background: var(--bg);
+    border-bottom: 2px solid var(--border);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+.coll-table tbody tr { border-bottom: 1px solid var(--border); }
+.coll-table tbody tr:hover { background: var(--hover); }
+.coll-table td { padding: 0.45rem 0.7rem; vertical-align: middle; }
+
+.coll-root-cell a { text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
+.coll-root-cell a:hover .coll-syriac { color: var(--accent); }
+.coll-root-cell a:hover .coll-translit { color: var(--accent); }
+.coll-syriac {
+    font-family: var(--syriac-font);
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--fg);
+    transition: color 0.15s;
+}
+.coll-translit { font-family: monospace; font-size: 0.82rem; color: var(--text-muted); transition: color 0.15s; }
+.coll-gloss { color: var(--text-muted); font-size: 0.85rem; }
+.coll-num { text-align: right; white-space: nowrap; }
+
+/* PMI bar cell */
+.coll-pmi-cell { min-width: 110px; }
+.coll-pmi-bar-wrap {
+    display: inline-block;
+    width: 50px;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 0.35rem;
+}
+.coll-pmi-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+}
+.coll-pmi-val { font-variant-numeric: tabular-nums; font-size: 0.85rem; }
+
+.coll-example { font-size: 0.8rem; }
+.coll-ref { color: var(--text-muted); text-decoration: none; }
+.coll-ref:hover { color: var(--accent); text-decoration: underline; }
+
+/* Mobile */
+@media (max-width: 640px) {
+    .coll-controls { gap: 0.5rem; }
+    .coll-input-wrap { min-width: 100%; }
+    .coll-table .coll-example { display: none; }
+    .coll-pmi-bar-wrap { display: none; }
 }

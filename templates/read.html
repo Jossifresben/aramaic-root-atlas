@@ -57,6 +57,15 @@
                class="verse-action-link" title="{{ t('constellation', lang) if t else 'Constellation' }}">
                 <span class="material-symbols-outlined">scatter_plot</span>
             </a>
+            <button class="verse-note-btn" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}" title="{{ t('ann_add_note', lang) if t else 'Add note' }}"><span class="material-symbols-outlined">edit_note</span></button>
+        </div>
+        <div class="verse-note-block" id="vnote-{{ v.verse }}" style="display:none">
+            <textarea class="verse-note-ta" maxlength="500" placeholder="{{ t('ann_placeholder', lang) if t else 'Add a research note...' }}"></textarea>
+            <div class="verse-note-footer">
+                <span class="verse-note-count">0/500</span>
+                <button class="verse-note-save" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}">{{ t('ann_save', lang) if t else 'Save' }}</button>
+                <button class="verse-note-cancel" data-verse="{{ v.verse }}">{{ t('ann_cancel', lang) if t else 'Cancel' }}</button>
+            </div>
         </div>
     </div>
     {% endfor %}
@@ -257,6 +266,84 @@ function toggleChapterRoots() {
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') popover.style.display = 'none';
+    });
+})();
+
+// --- Verse annotations ---
+(function() {
+    var ann = getAnnotations();
+    // Pre-fill existing notes and mark buttons
+    document.querySelectorAll('.verse-note-btn').forEach(function(btn) {
+        var ref = btn.getAttribute('data-ref');
+        if (ann.verses[ref]) {
+            btn.classList.add('has-note');
+            btn.querySelector('.material-symbols-outlined').textContent = 'sticky_note_2';
+        }
+    });
+
+    // Toggle note block
+    document.querySelectorAll('.verse-note-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var ref = this.getAttribute('data-ref');
+            var verseNum = ref.split(':')[1];
+            var block = document.getElementById('vnote-' + verseNum);
+            if (!block) return;
+            var isOpen = block.style.display !== 'none';
+            // Close all open note blocks first
+            document.querySelectorAll('.verse-note-block').forEach(function(b) { b.style.display = 'none'; });
+            if (!isOpen) {
+                var ann = getAnnotations();
+                var ta = block.querySelector('.verse-note-ta');
+                ta.value = ann.verses[ref] ? ann.verses[ref].text : '';
+                var counter = block.querySelector('.verse-note-count');
+                counter.textContent = ta.value.length + '/500';
+                block.style.display = 'block';
+                ta.focus();
+            }
+        });
+    });
+
+    // Char counter
+    document.querySelectorAll('.verse-note-ta').forEach(function(ta) {
+        ta.addEventListener('input', function() {
+            this.closest('.verse-note-block').querySelector('.verse-note-count').textContent = this.value.length + '/500';
+        });
+    });
+
+    // Save
+    document.querySelectorAll('.verse-note-save').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var ref = this.getAttribute('data-ref');
+            var verseNum = ref.split(':')[1];
+            var block = document.getElementById('vnote-' + verseNum);
+            var text = block.querySelector('.verse-note-ta').value.trim();
+            if (text) {
+                setAnnotation('verses', ref, text, []);
+                var noteBtn = document.querySelector('.verse-note-btn[data-ref="' + ref + '"]');
+                if (noteBtn) {
+                    noteBtn.classList.add('has-note');
+                    noteBtn.querySelector('.material-symbols-outlined').textContent = 'sticky_note_2';
+                }
+            } else {
+                deleteAnnotation('verses', ref);
+                var noteBtn = document.querySelector('.verse-note-btn[data-ref="' + ref + '"]');
+                if (noteBtn) {
+                    noteBtn.classList.remove('has-note');
+                    noteBtn.querySelector('.material-symbols-outlined').textContent = 'edit_note';
+                }
+            }
+            block.style.display = 'none';
+        });
+    });
+
+    // Cancel
+    document.querySelectorAll('.verse-note-cancel').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var verseNum = this.getAttribute('data-verse');
+            var block = document.getElementById('vnote-' + verseNum);
+            if (block) block.style.display = 'none';
+        });
     });
 })();
 </script>

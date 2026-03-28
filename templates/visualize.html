@@ -60,6 +60,21 @@
                         <p class="ficha-semantic-text" id="ficha-sabor"></p>
                         <!-- Corpus attestation badges -->
                         <div class="ficha-attestation" id="ficha-attestation"></div>
+                        <!-- Research note -->
+                        <div class="ficha-note-area" id="ficha-note-area" style="margin-top:0.8rem">
+                            <button class="ficha-note-toggle" id="ficha-note-toggle" onclick="toggleRootAnnotation()">
+                                <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">edit_note</span>
+                                <span id="ficha-note-toggle-label">{{ t('ann_add_note', lang) if t else 'Add note' }}</span>
+                            </button>
+                            <div class="ficha-note-block" id="ficha-note-block" style="display:none;margin-top:0.5rem">
+                                <textarea id="ficha-note-ta" class="verse-note-ta" maxlength="500" placeholder="{{ t('ann_placeholder', lang) if t else 'Add a research note...' }}" style="width:100%"></textarea>
+                                <div class="verse-note-footer">
+                                    <span id="ficha-note-count" class="verse-note-count">0/500</span>
+                                    <button class="verse-note-save" onclick="saveRootAnnotation()">{{ t('ann_save', lang) if t else 'Save' }}</button>
+                                    <button class="verse-note-cancel" onclick="toggleRootAnnotation()">{{ t('ann_cancel', lang) if t else 'Cancel' }}</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Paradigmatic citation -->
@@ -1033,5 +1048,47 @@
             if (d.type !== 'center') { d.fx = null; d.fy = null; }
         }
     })();
+
+    // --- Root annotation ---
+    var _rootKey = '{{ root_key }}'.toLowerCase();
+    (function() {
+        var ann = getAnnotations();
+        if (ann.roots[_rootKey]) {
+            var ta = document.getElementById('ficha-note-ta');
+            if (ta) ta.value = ann.roots[_rootKey].text;
+            var lbl = document.getElementById('ficha-note-toggle-label');
+            if (lbl) lbl.textContent = '{{ t("ann_edit_note", lang) if t else "Edit note" }}';
+        }
+    })();
+
+    function toggleRootAnnotation() {
+        var block = document.getElementById('ficha-note-block');
+        if (!block) return;
+        var isOpen = block.style.display !== 'none';
+        block.style.display = isOpen ? 'none' : 'block';
+        if (!isOpen) {
+            var ta = document.getElementById('ficha-note-ta');
+            if (ta) { ta.focus(); document.getElementById('ficha-note-count').textContent = ta.value.length + '/500'; }
+        }
+    }
+
+    document.getElementById('ficha-note-ta') && document.getElementById('ficha-note-ta').addEventListener('input', function() {
+        document.getElementById('ficha-note-count').textContent = this.value.length + '/500';
+    });
+
+    function saveRootAnnotation() {
+        var ta = document.getElementById('ficha-note-ta');
+        var text = ta ? ta.value.trim() : '';
+        if (text) {
+            setAnnotation('roots', _rootKey, text, []);
+            var lbl = document.getElementById('ficha-note-toggle-label');
+            if (lbl) lbl.textContent = '{{ t("ann_edit_note", lang) if t else "Edit note" }}';
+        } else {
+            deleteAnnotation('roots', _rootKey);
+            var lbl = document.getElementById('ficha-note-toggle-label');
+            if (lbl) lbl.textContent = '{{ t("ann_add_note", lang) if t else "Add note" }}';
+        }
+        toggleRootAnnotation();
+    }
     </script>
 {% endblock %}

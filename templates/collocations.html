@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('coll_title', lang) if t else 'Collocations' }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<div class="container coll-page">
+
+    <header class="coll-header">
+        <h1>{{ t('coll_title', lang) if t else 'Collocations' }}</h1>
+        <p class="subtitle">{{ t('coll_subtitle', lang) if t else 'PMI-scored statistical co-occurrence analysis across the corpus.' }}</p>
+    </header>
+
+    <!-- Controls bar -->
+    <div class="coll-controls">
+        <div class="autocomplete-wrapper coll-input-wrap">
+            <input type="text" id="coll-root-input" class="coll-input"
+                   placeholder="{{ t('coll_root_label', lang) if t else 'Root (e.g. SH-L-M)' }}"
+                   value="{{ initial_root }}" autocomplete="off">
+            <div id="coll-ac-list" class="autocomplete-list"></div>
+        </div>
+
+        <select id="coll-corpus" class="coll-select">
+            <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
+            <option value="peshitta_nt">Peshitta NT</option>
+            <option value="peshitta_ot">Peshitta OT</option>
+            <option value="biblical_aramaic">Biblical Aramaic</option>
+            <option value="targum_onkelos">Targum Onkelos</option>
+        </select>
+
+        <select id="coll-scope" class="coll-select">
+            <option value="verse">{{ t('coll_scope_verse', lang) if t else 'Verse scope' }}</option>
+            <option value="chapter">{{ t('coll_scope_chapter', lang) if t else 'Chapter scope' }}</option>
+        </select>
+
+        <label class="coll-slider-label">
+            {{ t('coll_min_count', lang) if t else 'Min co-occ:' }}
+            <input type="range" id="coll-min-count" min="1" max="20" value="3">
+            <span id="coll-min-count-val" class="coll-slider-val">3</span>
+        </label>
+
+        <select id="coll-sort" class="coll-select">
+            <option value="pmi">{{ t('coll_sort_pmi', lang) if t else 'Sort by PMI' }}</option>
+            <option value="count">{{ t('coll_sort_count', lang) if t else 'Sort by count' }}</option>
+        </select>
+
+        <button class="coll-analyze-btn" onclick="loadCollocations()">
+            <span class="material-symbols-outlined">scatter_plot</span>
+            {{ t('coll_analyze', lang) if t else 'Analyze' }}
+        </button>
+    </div>
+
+    <!-- Summary + export bar -->
+    <div class="coll-meta-bar">
+        <span id="coll-summary" class="coll-summary"></span>
+        <div id="coll-export-bar" class="coll-export" style="display:none">
+            <button class="bm-action-btn" onclick="exportCollCSV()">
+                <span class="material-symbols-outlined">table_chart</span> CSV
+            </button>
+            <button class="bm-action-btn" onclick="exportCollJSON()">
+                <span class="material-symbols-outlined">download</span> JSON
+            </button>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div id="coll-results" class="coll-results"></div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/autocomplete.js"></script>
+<script>
+var currentLang = '{{ lang }}';
+var currentTrans = '{{ trans }}';
+var _collData = null;
+
+// Autocomplete (same pattern as concordance/home)
+initRootAutocomplete('coll-root-input', 'coll-ac-list', function() { loadCollocations(); });
+
+// Min-count slider display
+document.getElementById('coll-min-count').addEventListener('input', function() {
+    document.getElementById('coll-min-count-val').textContent = this.value;
+});
+
+function loadCollocations() {
+    var root = document.getElementById('coll-root-input').value.trim();
+    if (!root) return;
+    var corpus   = document.getElementById('coll-corpus').value;
+    var scope    = document.getElementById('coll-scope').value;
+    var minCount = document.getElementById('coll-min-count').value;
+    var sort     = document.getElementById('coll-sort').value;
+
+    document.getElementById('coll-results').innerHTML =
+        '<div class="coll-loading"><span class="material-symbols-outlined coll-spin">autorenew</span> {{ t("coll_loading", lang) if t else "Analyzing…" }}</div>';
+    document.getElementById('coll-summary').textContent = '';
+    document.getElementById('coll-export-bar').style.display = 'none';
+
+    var url = '/api/collocations?root=' + encodeURIComponent(root) +
+              '&scope=' + scope + '&corpus=' + corpus +
+              '&min_count=' + minCount + '&limit=100&lang=' + currentLang;
+
+    fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.error) {
+                document.getElementById('coll-results').innerHTML =
+                    '<p class="coll-empty">' + data.error + '</p>';
+                return;
+            }
+            _collData = data;
+            var collocates = data.collocates || [];
+            if (sort === 'count') {
+                collocates = collocates.slice().sort(function(a, b) {
+                    return b.cooccurrences - a.cooccurrences;
+                });
+            }
+
+            var gloss = data.root_gloss ? ' — ' + data.root_gloss : '';
+            document.getElementById('coll-summary').innerHTML =
+                '<strong>' + collocates.length + '</strong> {{ t("coll_no_results", lang) if t else "collocates" }} ' +
+                '{{ t("coll_summary", lang) if t else "found for" }} ' +
+                '<strong>' + data.root_translit + '</strong>' + gloss +
+                ' <span class="coll-meta-detail">(' + data.target_refs + ' attestations · ' +
+                data.total_refs + ' total refs)</span>';
+
+            if (collocates.length === 0) {
+                document.getElementById('coll-results').innerHTML =
+                    '<p class="coll-empty">{{ t("coll_empty", lang) if t else "No collocates found. Try lowering the minimum co-occurrence threshold." }}</p>';
+                return;
+            }
+
+            document.getElementById('coll-export-bar').style.display = 'flex';
+
+            var html = '<table class="coll-table"><thead><tr>';
+            html += '<th>{{ t("coll_col_root", lang) if t else "Root" }}</th>';
+            html += '<th>{{ t("coll_col_gloss", lang) if t else "Gloss" }}</th>';
+            html += '<th class="coll-num">{{ t("coll_col_cooccur", lang) if t else "Co-occ." }}</th>';
+            html += '<th class="coll-num">{{ t("coll_col_pmi", lang) if t else "PMI" }}</th>';
+            html += '<th>{{ t("coll_col_example", lang) if t else "Example" }}</th>';
+            html += '</tr></thead><tbody>';
+
+            var maxPmi = collocates.length ? collocates[0].pmi : 1;
+
+            collocates.forEach(function(c) {
+                var pmiPct = Math.max(0, Math.min(100, (c.pmi / (maxPmi || 1)) * 100));
+                var exampleUrl = '';
+                if (c.example_ref) {
+                    var parts = c.example_ref.match(/^(.+)\s(\d+):(\d+)$/);
+                    exampleUrl = parts
+                        ? '/read/' + encodeURIComponent(parts[1]) + '/' + parts[2] + '?lang=' + currentLang + '#v' + parts[3]
+                        : '#';
+                }
+                html += '<tr>';
+                html += '<td class="coll-root-cell">' +
+                        '<a href="/visualize/' + encodeURIComponent(c.root_translit) + '?lang=' + currentLang + '">' +
+                        '<span class="syriac coll-syriac" dir="rtl">' + c.root + '</span> ' +
+                        '<span class="coll-translit">' + c.root_translit + '</span>' +
+                        '</a></td>';
+                html += '<td class="coll-gloss" dir="auto">' + (c.gloss || '') + '</td>';
+                html += '<td class="coll-num"><strong>' + c.cooccurrences + '</strong></td>';
+                html += '<td class="coll-num coll-pmi-cell">' +
+                        '<div class="coll-pmi-bar-wrap">' +
+                        '<div class="coll-pmi-bar" style="width:' + pmiPct + '%"></div>' +
+                        '</div>' +
+                        '<span class="coll-pmi-val">' + c.pmi.toFixed(2) + '</span>' +
+                        '</td>';
+                html += '<td class="coll-example">';
+                if (c.example_ref) {
+                    html += '<a href="' + exampleUrl + '" class="coll-ref">' + c.example_ref + '</a>';
+                }
+                html += '</td></tr>';
+            });
+            html += '</tbody></table>';
+            document.getElementById('coll-results').innerHTML = html;
+        })
+        .catch(function(err) {
+            document.getElementById('coll-results').innerHTML =
+                '<p class="coll-empty">Error: ' + err.message + '</p>';
+        });
+}
+
+function exportCollCSV() {
+    if (!_collData) return;
+    var lines = ['Root,Transliteration,Gloss,Co-occurrences,PMI,Example'];
+    (_collData.collocates || []).forEach(function(c) {
+        lines.push('"' + c.root + '","' + c.root_translit + '","' +
+            (c.gloss || '').replace(/"/g, '""') + '",' +
+            c.cooccurrences + ',' + c.pmi + ',"' + (c.example_ref || '') + '"');
+    });
+    var blob = new Blob([lines.join('\n')], {type: 'text/csv'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'collocations-' + (_collData.root_translit || 'root') + '.csv';
+    a.click();
+}
+
+function exportCollJSON() {
+    if (!_collData) return;
+    var blob = new Blob([JSON.stringify(_collData, null, 2)], {type: 'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'collocations-' + (_collData.root_translit || 'root') + '.json';
+    a.click();
+}
+
+{% if initial_root %}
+window.addEventListener('DOMContentLoaded', function() { loadCollocations(); });
+{% endif %}
+</script>
+{% endblock %}

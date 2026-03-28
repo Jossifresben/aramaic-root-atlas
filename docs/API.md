@@ -869,8 +869,107 @@ These routes return rendered HTML pages, not JSON. They accept the common `lang`
 | `GET /visualize/<root_key>` | Root family visualizer page (D3.js force graph + root card). `root_key` is a dash-separated Latin transliteration (e.g., `SH-L-M`). |
 | `GET /parallel` | Synoptic parallel viewer for comparing texts across corpora. Accepts `book`, `chapter`. |
 | `GET /heatmap` | Root frequency heat map page with interactive filter, sort, and export. |
-| `GET /bookmarks` | Bookmarks page (localStorage-based verse & root favorites with tags, CSV/JSON export, copy citation). |
+| `GET /bookmarks` | Bookmarks page (localStorage-based verse & root favorites with tags, CSV/JSON/BibTeX/Zotero RDF export, copy citation). |
+| `GET /hapax` | Hapax legomena finder with frequency slider, corpus filter, and CSV/JSON export. |
+| `GET /concordance` | KWIC concordance page with left/keyword/right context layout, group by form or stem, and CSV/JSON/TEI export. |
+| `GET /diachronic` | Diachronic analysis page with Root View (normalized frequency bars) and Frequency Shifts view. |
+| `GET /collocations` | PMI-scored collocations page. Accepts `root` param to pre-fill and auto-analyze on load. |
+| `GET /semantic-fields` | Semantic field browser: 15 domain cards, click to see roots sorted by frequency. |
+| `GET /annotations` | Researcher annotations page: manage, filter, and export inline notes on verses and roots. |
 | `GET /about` | About page with project information, methodological notes, and credits. |
+
+---
+
+## Collocations
+
+### `GET /api/collocations`
+
+Returns PMI-scored roots that co-occur with the target root.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `root` | string | required | Root in any input format (e.g., `SH-L-M`, `ܫܠܡ`). |
+| `scope` | `verse` \| `chapter` | `verse` | Co-occurrence window. `chapter` is looser and returns more collocates. |
+| `corpus` | string | `` (all) | Filter to a single corpus ID. |
+| `min_count` | integer | `3` | Minimum number of co-occurrences to include a result. |
+| `limit` | integer | `50` | Maximum number of results to return. |
+| `trans` | `en` \| `es` | `en` | Gloss language. |
+
+**Response:**
+
+```json
+{
+  "root": "SH-L-M",
+  "root_gloss": "peace, be complete",
+  "attestations": 1087,
+  "total_refs": 30500,
+  "scope": "verse",
+  "collocates": [
+    {
+      "root": "ܚܝܠ",
+      "root_translit": "KH-Y-L",
+      "gloss": "power, strength",
+      "cooccurrences": 12,
+      "pmi": 3.41,
+      "example_ref": "Matthew 28:18",
+      "example_text": "ܐܬܝܗܒ ܠܝ ܟܠ ܫܘܠܛܢܐ..."
+    }
+  ]
+}
+```
+
+---
+
+## Semantic Fields
+
+### `GET /api/semantic-fields`
+
+Returns all 15 semantic domains with root counts.
+
+**Response:**
+
+```json
+{
+  "total_roots": 1123,
+  "domains": [
+    { "domain": "legal/covenant", "count": 87 },
+    { "domain": "worship/cultic", "count": 74 },
+    ...
+  ]
+}
+```
+
+### `GET /api/semantic-fields/<field>`
+
+Returns all roots classified under a domain, sorted by total occurrences descending.
+
+**Path parameter:** `field` — a domain string such as `legal/covenant` or `war/conflict` (URL-encode the `/`).
+
+**Query parameters:** `trans` (`en`|`es`, default `en`) for gloss language.
+
+**Response:**
+
+```json
+{
+  "field": "legal/covenant",
+  "count": 87,
+  "roots": [
+    {
+      "key": "d-n-h",
+      "root": "ܕܢܗ",
+      "gloss": "judge",
+      "total_occurrences": 412,
+      "corpus_counts": {
+        "peshitta_nt": 98,
+        "peshitta_ot": 241,
+        "targum_onkelos": 73
+      }
+    }
+  ]
+}
+```
 
 ---
 

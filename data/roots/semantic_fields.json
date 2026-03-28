@@ -1,0 +1,3551 @@
+{
+  "'-k-r": [
+    "agriculture/food",
+    "commerce/material"
+  ],
+  "'-l-l": [
+    "motion/travel"
+  ],
+  "'-l-m": [
+    "emotion/mental"
+  ],
+  "'-l-y": [
+    "motion/travel"
+  ],
+  "'-m-l": [
+    "commerce/material"
+  ],
+  "'-m-q": [
+    "nature/elements"
+  ],
+  "'-m-ḥ": [
+    "war/conflict"
+  ],
+  "'-n-n": [
+    "nature/elements"
+  ],
+  "'-p-q": [
+    "creation/cosmos"
+  ],
+  "'-p-r": [
+    "nature/elements"
+  ],
+  "'-r-d": [
+    "motion/travel"
+  ],
+  "'-r-ḥ": [
+    "motion/travel"
+  ],
+  "'-ts-r": [
+    "commerce/material"
+  ],
+  "'-w-r": [
+    "nature/elements"
+  ],
+  "'-z-r": [
+    "war/conflict"
+  ],
+  "S-l-y": [
+    "worship/cultic"
+  ],
+  "T-'-b": [
+    "emotion/mental"
+  ],
+  "T-'-y": [
+    "emotion/mental"
+  ],
+  "T-b-w": [
+    "emotion/mental"
+  ],
+  "T-l-l": [
+    "nature/elements"
+  ],
+  "T-l-y": [
+    "kinship/family",
+    "time"
+  ],
+  "T-m-'": [
+    "worship/cultic"
+  ],
+  "T-m-m": [
+    "existence/being"
+  ],
+  "T-n-n": [
+    "commerce/material"
+  ],
+  "T-r-p": [
+    "war/conflict"
+  ],
+  "T-w-b": [
+    "emotion/mental",
+    "existence/being"
+  ],
+  "T-w-p": [
+    "motion/travel"
+  ],
+  "T-w-r": [
+    "nature/elements",
+    "creation/cosmos"
+  ],
+  "T-y-b": [
+    "emotion/mental"
+  ],
+  "a-b-d": [
+    "existence/being"
+  ],
+  "a-b-h": [
+    "kinship/family"
+  ],
+  "a-g-r": [
+    "commerce/material"
+  ],
+  "a-k-l": [
+    "agriculture/food"
+  ],
+  "a-kh-d": [
+    "motion/travel"
+  ],
+  "a-kh-r": [
+    "time"
+  ],
+  "a-kh-y": [
+    "kinship/family"
+  ],
+  "a-l-h": [
+    "worship/cultic"
+  ],
+  "a-l-p": [
+    "knowledge/wisdom",
+    "commerce/material"
+  ],
+  "a-l-ts": [
+    "war/conflict"
+  ],
+  "a-m-n": [
+    "emotion/mental",
+    "legal/covenant"
+  ],
+  "a-m-r": [
+    "speech/communication"
+  ],
+  "a-n-sh": [
+    "kinship/family"
+  ],
+  "a-r-e": [
+    "nature/elements"
+  ],
+  "a-r-l": [
+    "body/anatomy"
+  ],
+  "a-r-z": [
+    "knowledge/wisdom"
+  ],
+  "a-s-r": [
+    "commerce/material"
+  ],
+  "a-s-y": [
+    "body/anatomy"
+  ],
+  "a-th-a": [
+    "motion/travel"
+  ],
+  "a-th-r": [
+    "existence/being",
+    "nature/elements"
+  ],
+  "a-th-y": [
+    "motion/travel"
+  ],
+  "a-y-d": [
+    "body/anatomy"
+  ],
+  "a-y-l": [
+    "nature/elements"
+  ],
+  "a-y-n": [
+    "body/anatomy"
+  ],
+  "a-z-l": [
+    "motion/travel"
+  ],
+  "b-'-th": [
+    "knowledge/wisdom"
+  ],
+  "b-T-l": [
+    "motion/travel",
+    "existence/being"
+  ],
+  "b-T-n": [
+    "body/anatomy"
+  ],
+  "b-b-l": [
+    "emotion/mental"
+  ],
+  "b-d-l": [
+    "motion/travel"
+  ],
+  "b-d-q": [
+    "knowledge/wisdom",
+    "legal/covenant"
+  ],
+  "b-d-r": [
+    "motion/travel"
+  ],
+  "b-e-a": [
+    "speech/communication"
+  ],
+  "b-e-l": [
+    "kinship/family"
+  ],
+  "b-e-y": [
+    "speech/communication",
+    "emotion/mental"
+  ],
+  "b-g-l": [
+    "speech/communication"
+  ],
+  "b-h-l": [
+    "emotion/mental",
+    "motion/travel"
+  ],
+  "b-h-r": [
+    "nature/elements",
+    "creation/cosmos"
+  ],
+  "b-h-th": [
+    "emotion/mental"
+  ],
+  "b-k-y": [
+    "emotion/mental"
+  ],
+  "b-k-ʾ": [
+    "emotion/mental"
+  ],
+  "b-kh-l": [
+    "legal/covenant",
+    "emotion/mental"
+  ],
+  "b-kh-r": [
+    "kinship/family"
+  ],
+  "b-l-g": [
+    "nature/elements"
+  ],
+  "b-l-y": [
+    "existence/being"
+  ],
+  "b-l-ʿ": [
+    "body/anatomy"
+  ],
+  "b-n-a": [
+    "creation/cosmos"
+  ],
+  "b-n-y": [
+    "creation/cosmos"
+  ],
+  "b-q-'": [
+    "existence/being",
+    "motion/travel"
+  ],
+  "b-q-r": [
+    "knowledge/wisdom"
+  ],
+  "b-q-y": [
+    "existence/being"
+  ],
+  "b-q-ʿ": [
+    "motion/travel"
+  ],
+  "b-r-a": [
+    "creation/cosmos",
+    "kinship/family"
+  ],
+  "b-r-d": [
+    "nature/elements",
+    "war/conflict"
+  ],
+  "b-r-h": [
+    "creation/cosmos"
+  ],
+  "b-r-k": [
+    "worship/cultic"
+  ],
+  "b-r-m": [
+    "speech/communication"
+  ],
+  "b-r-q": [
+    "nature/elements"
+  ],
+  "b-r-r": [
+    "existence/being"
+  ],
+  "b-r-y": [
+    "creation/cosmos"
+  ],
+  "b-r-ʿ": [
+    "creation/cosmos"
+  ],
+  "b-s-m": [
+    "agriculture/food"
+  ],
+  "b-s-p": [
+    "commerce/material"
+  ],
+  "b-s-r": [
+    "body/anatomy",
+    "agriculture/food"
+  ],
+  "b-w-'": [
+    "nature/elements"
+  ],
+  "b-w-r": [
+    "motion/travel"
+  ],
+  "b-w-sh": [
+    "emotion/mental"
+  ],
+  "b-w-z": [
+    "emotion/mental",
+    "speech/communication"
+  ],
+  "b-y-n": [
+    "knowledge/wisdom"
+  ],
+  "b-y-r": [
+    "nature/elements"
+  ],
+  "b-y-sh": [
+    "emotion/mental"
+  ],
+  "b-y-th": [
+    "existence/being"
+  ],
+  "b-z-z": [
+    "war/conflict",
+    "commerce/material"
+  ],
+  "b-ʾ-s": [
+    "emotion/mental"
+  ],
+  "b-ʿ-r": [
+    "war/conflict",
+    "nature/elements"
+  ],
+  "b-ʿ-w": [
+    "speech/communication"
+  ],
+  "b-ḥ-n": [
+    "knowledge/wisdom"
+  ],
+  "b-ḥ-r": [
+    "knowledge/wisdom"
+  ],
+  "b-ṣ-l": [
+    "agriculture/food"
+  ],
+  "b-ṭ-l": [
+    "existence/being",
+    "motion/travel"
+  ],
+  "d-b-kh": [
+    "worship/cultic"
+  ],
+  "d-b-q": [
+    "existence/being"
+  ],
+  "d-b-r": [
+    "motion/travel"
+  ],
+  "d-b-sh": [
+    "agriculture/food"
+  ],
+  "d-d-m": [
+    "war/conflict"
+  ],
+  "d-f-q": [
+    "war/conflict"
+  ],
+  "d-g-l": [
+    "speech/communication"
+  ],
+  "d-h-b": [
+    "commerce/material"
+  ],
+  "d-h-l": [
+    "emotion/mental"
+  ],
+  "d-k-y": [
+    "knowledge/wisdom"
+  ],
+  "d-kh-l": [
+    "emotion/mental"
+  ],
+  "d-kh-r": [
+    "knowledge/wisdom"
+  ],
+  "d-l-q": [
+    "creation/cosmos"
+  ],
+  "d-m-a": [
+    "body/anatomy"
+  ],
+  "d-m-h": [
+    "knowledge/wisdom"
+  ],
+  "d-m-k": [
+    "emotion/mental"
+  ],
+  "d-m-kh": [
+    "emotion/mental"
+  ],
+  "d-m-r": [
+    "emotion/mental"
+  ],
+  "d-m-y": [
+    "knowledge/wisdom"
+  ],
+  "d-m-ʿ": [
+    "emotion/mental"
+  ],
+  "d-n-kh": [
+    "nature/elements",
+    "creation/cosmos"
+  ],
+  "d-p-r": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "d-r-'": [
+    "agriculture/food"
+  ],
+  "d-r-b": [
+    "knowledge/wisdom"
+  ],
+  "d-r-k": [
+    "motion/travel"
+  ],
+  "d-r-m": [
+    "motion/travel"
+  ],
+  "d-r-sh": [
+    "knowledge/wisdom"
+  ],
+  "d-w-k": [
+    "existence/being"
+  ],
+  "d-w-m": [
+    "emotion/mental"
+  ],
+  "d-w-r": [
+    "time"
+  ],
+  "d-w-š": [
+    "agriculture/food",
+    "war/conflict"
+  ],
+  "d-y-n": [
+    "legal/covenant"
+  ],
+  "d-y-r": [
+    "existence/being"
+  ],
+  "d-y-š": [
+    "agriculture/food"
+  ],
+  "e-b-d": [
+    "commerce/material"
+  ],
+  "e-b-r": [
+    "motion/travel"
+  ],
+  "e-d-l": [
+    "speech/communication"
+  ],
+  "e-d-n": [
+    "time"
+  ],
+  "e-d-r": [
+    "emotion/mental"
+  ],
+  "e-d-th": [
+    "worship/cultic"
+  ],
+  "e-g-l": [
+    "motion/travel"
+  ],
+  "e-h-d": [
+    "speech/communication"
+  ],
+  "e-l": [
+    "motion/travel"
+  ],
+  "e-l-l": [
+    "motion/travel"
+  ],
+  "e-l-m": [
+    "time"
+  ],
+  "e-l-th": [
+    "knowledge/wisdom"
+  ],
+  "e-l-y": [
+    "motion/travel"
+  ],
+  "e-m-d": [
+    "worship/cultic"
+  ],
+  "e-m-m": [
+    "kinship/family"
+  ],
+  "e-m-r": [
+    "existence/being"
+  ],
+  "e-n-a": [
+    "speech/communication"
+  ],
+  "e-n-y": [
+    "speech/communication"
+  ],
+  "e-q-r": [
+    "agriculture/food"
+  ],
+  "e-r-b": [
+    "commerce/material",
+    "nature/elements"
+  ],
+  "e-r-q": [
+    "motion/travel"
+  ],
+  "e-r-s": [
+    "commerce/material"
+  ],
+  "e-s-r": [
+    "time"
+  ],
+  "e-sh-n": [
+    "existence/being"
+  ],
+  "e-th-d": [
+    "worship/cultic"
+  ],
+  "e-th-r": [
+    "commerce/material"
+  ],
+  "e-w-l": [
+    "legal/covenant",
+    "emotion/mental"
+  ],
+  "e-y-n": [
+    "body/anatomy"
+  ],
+  "e-y-r": [
+    "knowledge/wisdom"
+  ],
+  "e-z-l": [
+    "motion/travel"
+  ],
+  "e-z-z": [
+    "existence/being"
+  ],
+  "g-b-a": [
+    "legal/covenant"
+  ],
+  "g-b-h": [
+    "knowledge/wisdom"
+  ],
+  "g-b-l": [
+    "creation/cosmos",
+    "agriculture/food"
+  ],
+  "g-b-r": [
+    "body/anatomy"
+  ],
+  "g-b-y": [
+    "legal/covenant"
+  ],
+  "g-b-ʿ": [
+    "nature/elements"
+  ],
+  "g-d-d": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "g-d-l": [
+    "existence/being"
+  ],
+  "g-d-m": [
+    "body/anatomy"
+  ],
+  "g-d-n": [
+    "war/conflict"
+  ],
+  "g-d-p": [
+    "speech/communication"
+  ],
+  "g-d-r": [
+    "commerce/material"
+  ],
+  "g-g-l": [
+    "motion/travel"
+  ],
+  "g-l-a": [
+    "speech/communication"
+  ],
+  "g-l-d": [
+    "body/anatomy",
+    "nature/elements"
+  ],
+  "g-l-g": [
+    "motion/travel"
+  ],
+  "g-l-h": [
+    "knowledge/wisdom"
+  ],
+  "g-l-l": [
+    "nature/elements",
+    "motion/travel"
+  ],
+  "g-l-m": [
+    "motion/travel"
+  ],
+  "g-l-n": [
+    "speech/communication"
+  ],
+  "g-l-p": [
+    "speech/communication"
+  ],
+  "g-l-t": [
+    "legal/covenant",
+    "motion/travel"
+  ],
+  "g-l-w": [
+    "speech/communication"
+  ],
+  "g-l-y": [
+    "speech/communication"
+  ],
+  "g-l-z": [
+    "motion/travel"
+  ],
+  "g-m-l": [
+    "commerce/material"
+  ],
+  "g-m-r": [
+    "existence/being"
+  ],
+  "g-n-b": [
+    "commerce/material"
+  ],
+  "g-n-s": [
+    "knowledge/wisdom"
+  ],
+  "g-n-y": [
+    "agriculture/food"
+  ],
+  "g-n-z": [
+    "commerce/material"
+  ],
+  "g-p-n": [
+    "agriculture/food"
+  ],
+  "g-r-b": [
+    "motion/travel"
+  ],
+  "g-r-d": [
+    "body/anatomy",
+    "motion/travel"
+  ],
+  "g-r-p": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "g-r-r": [
+    "motion/travel"
+  ],
+  "g-r-s": [
+    "motion/travel"
+  ],
+  "g-r-sh": [
+    "motion/travel",
+    "kinship/family"
+  ],
+  "g-r-y": [
+    "emotion/mental"
+  ],
+  "g-r-ʿ": [
+    "motion/travel"
+  ],
+  "g-sh": [
+    "body/anatomy"
+  ],
+  "g-sh-m": [
+    "nature/elements",
+    "creation/cosmos"
+  ],
+  "g-sh-sh": [
+    "body/anatomy",
+    "emotion/mental"
+  ],
+  "g-w-b": [
+    "creation/cosmos"
+  ],
+  "g-w-l": [
+    "legal/covenant"
+  ],
+  "g-w-p": [
+    "body/anatomy"
+  ],
+  "g-w-r": [
+    "motion/travel"
+  ],
+  "g-w-y": [
+    "existence/being"
+  ],
+  "g-w-z": [
+    "agriculture/food"
+  ],
+  "g-y-d": [
+    "body/anatomy"
+  ],
+  "g-y-l": [
+    "emotion/mental"
+  ],
+  "g-y-z": [
+    "motion/travel"
+  ],
+  "g-z-l": [
+    "commerce/material",
+    "war/conflict"
+  ],
+  "g-z-m": [
+    "war/conflict"
+  ],
+  "g-z-r": [
+    "war/conflict"
+  ],
+  "g-z-y": [
+    "agriculture/food"
+  ],
+  "g-z-z": [
+    "agriculture/food"
+  ],
+  "g-ʿ-l": [
+    "speech/communication"
+  ],
+  "g-ʿ-r": [
+    "speech/communication"
+  ],
+  "g-ʿ-ʾ": [
+    "speech/communication"
+  ],
+  "g-ʿ-ṣ": [
+    "speech/communication"
+  ],
+  "h-b-l": [
+    "emotion/mental"
+  ],
+  "h-d-m": [
+    "body/anatomy"
+  ],
+  "h-d-r": [
+    "emotion/mental"
+  ],
+  "h-g-y": [
+    "knowledge/wisdom"
+  ],
+  "h-k-n": [
+    "existence/being"
+  ],
+  "h-l-k": [
+    "motion/travel"
+  ],
+  "h-l-q": [
+    "motion/travel"
+  ],
+  "h-m-d": [
+    "emotion/mental"
+  ],
+  "h-m-n": [
+    "emotion/mental"
+  ],
+  "h-n-y": [
+    "commerce/material"
+  ],
+  "h-p-k": [
+    "motion/travel"
+  ],
+  "h-r-m": [
+    "motion/travel"
+  ],
+  "h-r-y": [
+    "body/anatomy"
+  ],
+  "h-w-a": [
+    "existence/being"
+  ],
+  "h-w-r": [
+    "nature/elements"
+  ],
+  "h-w-w": [
+    "existence/being"
+  ],
+  "h-w-y": [
+    "existence/being"
+  ],
+  "h-y-m-n": [
+    "worship/cultic"
+  ],
+  "k-'-b": [
+    "body/anatomy"
+  ],
+  "k-a-n": [
+    "existence/being",
+    "legal/covenant"
+  ],
+  "k-a-p": [
+    "nature/elements",
+    "creation/cosmos"
+  ],
+  "k-b-d": [
+    "emotion/mental"
+  ],
+  "k-b-l": [
+    "commerce/material"
+  ],
+  "k-b-r": [
+    "existence/being"
+  ],
+  "k-b-y": [
+    "existence/being"
+  ],
+  "k-b-š": [
+    "war/conflict"
+  ],
+  "k-h-n": [
+    "worship/cultic"
+  ],
+  "k-k-b": [
+    "creation/cosmos"
+  ],
+  "k-k-r": [
+    "commerce/material"
+  ],
+  "k-l-'": [
+    "legal/covenant"
+  ],
+  "k-l-b": [
+    "body/anatomy"
+  ],
+  "k-l-h": [
+    "existence/being"
+  ],
+  "k-l-l": [
+    "existence/being"
+  ],
+  "k-l-m": [
+    "emotion/mental"
+  ],
+  "k-l-y": [
+    "existence/being"
+  ],
+  "k-m-n": [
+    "emotion/mental"
+  ],
+  "k-m-r": [
+    "worship/cultic"
+  ],
+  "k-n-p": [
+    "body/anatomy",
+    "nature/elements"
+  ],
+  "k-n-sh": [
+    "motion/travel"
+  ],
+  "k-n-y": [
+    "speech/communication"
+  ],
+  "k-n-ʿ": [
+    "war/conflict"
+  ],
+  "k-p-'": [
+    "nature/elements"
+  ],
+  "k-p-h": [
+    "motion/travel"
+  ],
+  "k-p-n": [
+    "emotion/mental"
+  ],
+  "k-p-r": [
+    "commerce/material"
+  ],
+  "k-r-'": [
+    "motion/travel"
+  ],
+  "k-r-b": [
+    "motion/travel"
+  ],
+  "k-r-h": [
+    "body/anatomy"
+  ],
+  "k-r-k": [
+    "motion/travel",
+    "creation/cosmos"
+  ],
+  "k-r-m": [
+    "agriculture/food"
+  ],
+  "k-r-n": [
+    "body/anatomy"
+  ],
+  "k-r-s": [
+    "body/anatomy"
+  ],
+  "k-r-y": [
+    "motion/travel"
+  ],
+  "k-r-z": [
+    "speech/communication",
+    "worship/cultic"
+  ],
+  "k-r-š": [
+    "body/anatomy"
+  ],
+  "k-s-h": [
+    "existence/being"
+  ],
+  "k-s-p": [
+    "commerce/material"
+  ],
+  "k-s-y": [
+    "motion/travel",
+    "existence/being"
+  ],
+  "k-sh-l": [
+    "motion/travel"
+  ],
+  "k-t-m": [
+    "speech/communication"
+  ],
+  "k-t-p": [
+    "body/anatomy"
+  ],
+  "k-th-b": [
+    "speech/communication"
+  ],
+  "k-w-l": [
+    "existence/being"
+  ],
+  "k-w-n": [
+    "knowledge/wisdom"
+  ],
+  "k-w-r": [
+    "agriculture/food"
+  ],
+  "k-y-b": [
+    "emotion/mental"
+  ],
+  "k-y-l": [
+    "knowledge/wisdom",
+    "commerce/material"
+  ],
+  "k-y-n": [
+    "existence/being"
+  ],
+  "k-š-p": [
+    "knowledge/wisdom"
+  ],
+  "k-š-r": [
+    "existence/being"
+  ],
+  "k-ḥ-l": [
+    "knowledge/wisdom"
+  ],
+  "kh-'-p": [
+    "motion/travel"
+  ],
+  "kh-T-y": [
+    "legal/covenant",
+    "emotion/mental"
+  ],
+  "kh-a-r": [
+    "knowledge/wisdom"
+  ],
+  "kh-b-b": [
+    "emotion/mental"
+  ],
+  "kh-b-l": [
+    "war/conflict"
+  ],
+  "kh-b-r": [
+    "kinship/family",
+    "speech/communication"
+  ],
+  "kh-b-sh": [
+    "war/conflict"
+  ],
+  "kh-d-a": [
+    "emotion/mental"
+  ],
+  "kh-d-r": [
+    "motion/travel"
+  ],
+  "kh-d-th": [
+    "time"
+  ],
+  "kh-d-y": [
+    "emotion/mental"
+  ],
+  "kh-g-g": [
+    "worship/cultic",
+    "time"
+  ],
+  "kh-k-m": [
+    "knowledge/wisdom"
+  ],
+  "kh-l-'": [
+    "agriculture/food"
+  ],
+  "kh-l-b": [
+    "agriculture/food"
+  ],
+  "kh-l-l": [
+    "existence/being",
+    "worship/cultic"
+  ],
+  "kh-l-m": [
+    "emotion/mental"
+  ],
+  "kh-l-p": [
+    "commerce/material"
+  ],
+  "kh-l-q": [
+    "body/anatomy",
+    "commerce/material"
+  ],
+  "kh-l-sh": [
+    "body/anatomy"
+  ],
+  "kh-l-ts": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "kh-l-y": [
+    "agriculture/food"
+  ],
+  "kh-m-e": [
+    "agriculture/food"
+  ],
+  "kh-m-l": [
+    "motion/travel"
+  ],
+  "kh-m-r": [
+    "agriculture/food"
+  ],
+  "kh-m-sh": [
+    "time"
+  ],
+  "kh-n-p": [
+    "worship/cultic"
+  ],
+  "kh-n-q": [
+    "war/conflict"
+  ],
+  "kh-p-t": [
+    "speech/communication"
+  ],
+  "kh-p-y": [
+    "body/anatomy"
+  ],
+  "kh-q-l": [
+    "agriculture/food"
+  ],
+  "kh-r-b": [
+    "war/conflict"
+  ],
+  "kh-r-m": [
+    "legal/covenant"
+  ],
+  "kh-r-n": [
+    "knowledge/wisdom"
+  ],
+  "kh-r-p": [
+    "emotion/mental",
+    "time"
+  ],
+  "kh-r-q": [
+    "body/anatomy"
+  ],
+  "kh-r-r": [
+    "motion/travel",
+    "legal/covenant"
+  ],
+  "kh-r-sh": [
+    "agriculture/food"
+  ],
+  "kh-r-th": [
+    "time"
+  ],
+  "kh-r-y": [
+    "legal/covenant"
+  ],
+  "kh-s-d": [
+    "emotion/mental"
+  ],
+  "kh-s-m": [
+    "emotion/mental"
+  ],
+  "kh-s-n": [
+    "emotion/mental"
+  ],
+  "kh-s-r": [
+    "emotion/mental"
+  ],
+  "kh-sh": [
+    "emotion/mental"
+  ],
+  "kh-sh-b": [
+    "knowledge/wisdom"
+  ],
+  "kh-sh-k": [
+    "nature/elements"
+  ],
+  "kh-sh-kh": [
+    "nature/elements"
+  ],
+  "kh-t-a": [
+    "legal/covenant"
+  ],
+  "kh-t-m": [
+    "legal/covenant"
+  ],
+  "kh-ts-d": [
+    "agriculture/food"
+  ],
+  "kh-w-b": [
+    "emotion/mental"
+  ],
+  "kh-w-h": [
+    "speech/communication"
+  ],
+  "kh-w-r": [
+    "body/anatomy"
+  ],
+  "kh-w-s": [
+    "emotion/mental"
+  ],
+  "kh-w-y": [
+    "speech/communication"
+  ],
+  "kh-y-a": [
+    "existence/being"
+  ],
+  "kh-y-b": [
+    "legal/covenant"
+  ],
+  "kh-y-l": [
+    "war/conflict"
+  ],
+  "kh-y-y": [
+    "existence/being"
+  ],
+  "kh-z-a": [
+    "knowledge/wisdom"
+  ],
+  "kh-z-q": [
+    "body/anatomy",
+    "war/conflict"
+  ],
+  "kh-z-y": [
+    "knowledge/wisdom"
+  ],
+  "l-b-n": [
+    "nature/elements"
+  ],
+  "l-b-sh": [
+    "body/anatomy"
+  ],
+  "l-g-n": [
+    "commerce/material"
+  ],
+  "l-h-b": [
+    "nature/elements"
+  ],
+  "l-kh-m": [
+    "agriculture/food",
+    "war/conflict"
+  ],
+  "l-m-d": [
+    "knowledge/wisdom"
+  ],
+  "l-q-t": [
+    "commerce/material",
+    "motion/travel"
+  ],
+  "l-q-ʾ": [
+    "motion/travel"
+  ],
+  "l-q-ḥ": [
+    "motion/travel",
+    "commerce/material"
+  ],
+  "l-sh-n": [
+    "speech/communication"
+  ],
+  "l-w-y": [
+    "kinship/family"
+  ],
+  "l-w-z": [
+    "agriculture/food"
+  ],
+  "l-w-š": [
+    "agriculture/food"
+  ],
+  "l-w-ḥ": [
+    "commerce/material",
+    "creation/cosmos"
+  ],
+  "l-y-l": [
+    "time"
+  ],
+  "l-y-ḥ": [
+    "body/anatomy"
+  ],
+  "m-T-n": [
+    "motion/travel"
+  ],
+  "m-T-r": [
+    "nature/elements"
+  ],
+  "m-T-y": [
+    "motion/travel"
+  ],
+  "m-d-m": [
+    "existence/being"
+  ],
+  "m-d-r": [
+    "existence/being"
+  ],
+  "m-g-n": [
+    "war/conflict"
+  ],
+  "m-g-z": [
+    "war/conflict"
+  ],
+  "m-h-l": [
+    "body/anatomy"
+  ],
+  "m-h-r": [
+    "motion/travel",
+    "emotion/mental"
+  ],
+  "m-k-r": [
+    "commerce/material"
+  ],
+  "m-k-s": [
+    "commerce/material"
+  ],
+  "m-l-'": [
+    "commerce/material"
+  ],
+  "m-l-k": [
+    "legal/covenant"
+  ],
+  "m-l-l": [
+    "speech/communication"
+  ],
+  "m-l-p": [
+    "speech/communication"
+  ],
+  "m-l-th": [
+    "speech/communication"
+  ],
+  "m-l-y": [
+    "existence/being",
+    "commerce/material"
+  ],
+  "m-l-ḥ": [
+    "agriculture/food"
+  ],
+  "m-l-ṭ": [
+    "motion/travel"
+  ],
+  "m-m-r": [
+    "speech/communication"
+  ],
+  "m-n-'": [
+    "legal/covenant"
+  ],
+  "m-n-s": [
+    "knowledge/wisdom",
+    "legal/covenant"
+  ],
+  "m-n-y": [
+    "knowledge/wisdom"
+  ],
+  "m-r-'": [
+    "kinship/family"
+  ],
+  "m-r-d": [
+    "war/conflict"
+  ],
+  "m-r-e": [
+    "body/anatomy",
+    "emotion/mental"
+  ],
+  "m-r-k": [
+    "commerce/material"
+  ],
+  "m-r-r": [
+    "emotion/mental"
+  ],
+  "m-r-y": [
+    "kinship/family"
+  ],
+  "m-s-'": [
+    "motion/travel"
+  ],
+  "m-s-k": [
+    "motion/travel",
+    "commerce/material"
+  ],
+  "m-s-l": [
+    "speech/communication",
+    "knowledge/wisdom"
+  ],
+  "m-s-r": [
+    "motion/travel",
+    "legal/covenant"
+  ],
+  "m-sh-k": [
+    "motion/travel"
+  ],
+  "m-sh-kh": [
+    "worship/cultic",
+    "body/anatomy"
+  ],
+  "m-sh-q": [
+    "motion/travel"
+  ],
+  "m-sh-r": [
+    "motion/travel"
+  ],
+  "m-t-q": [
+    "agriculture/food",
+    "emotion/mental"
+  ],
+  "m-t-y": [
+    "motion/travel"
+  ],
+  "m-th-l": [
+    "speech/communication"
+  ],
+  "m-ts-'": [
+    "knowledge/wisdom"
+  ],
+  "m-w-t": [
+    "existence/being",
+    "body/anatomy"
+  ],
+  "m-w-th": [
+    "existence/being"
+  ],
+  "m-w-ʿ": [
+    "motion/travel"
+  ],
+  "m-y-a": [
+    "nature/elements"
+  ],
+  "m-y-t": [
+    "existence/being"
+  ],
+  "m-z-g": [
+    "commerce/material"
+  ],
+  "m-z-k": [
+    "commerce/material"
+  ],
+  "m-ʾ-n": [
+    "emotion/mental"
+  ],
+  "m-ʾ-s": [
+    "emotion/mental",
+    "speech/communication"
+  ],
+  "m-ʿ-d": [
+    "motion/travel"
+  ],
+  "m-ʿ-r": [
+    "motion/travel"
+  ],
+  "m-ḥ-h": [
+    "war/conflict"
+  ],
+  "m-ḥ-y": [
+    "war/conflict"
+  ],
+  "n-T-p": [
+    "nature/elements"
+  ],
+  "n-T-r": [
+    "legal/covenant"
+  ],
+  "n-b-a": [
+    "speech/communication"
+  ],
+  "n-b-l": [
+    "emotion/mental"
+  ],
+  "n-b-y": [
+    "speech/communication"
+  ],
+  "n-b-z": [
+    "emotion/mental"
+  ],
+  "n-b-ʿ": [
+    "nature/elements"
+  ],
+  "n-b-ṭ": [
+    "agriculture/food",
+    "creation/cosmos"
+  ],
+  "n-d-h": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "n-d-m": [
+    "emotion/mental",
+    "time"
+  ],
+  "n-d-r": [
+    "legal/covenant"
+  ],
+  "n-d-w": [
+    "motion/travel"
+  ],
+  "n-d-ʿ": [
+    "knowledge/wisdom"
+  ],
+  "n-g-b": [
+    "nature/elements"
+  ],
+  "n-g-d": [
+    "motion/travel"
+  ],
+  "n-g-r": [
+    "motion/travel",
+    "nature/elements"
+  ],
+  "n-h-l": [
+    "legal/covenant",
+    "kinship/family"
+  ],
+  "n-h-m": [
+    "emotion/mental",
+    "speech/communication"
+  ],
+  "n-h-p": [
+    "motion/travel"
+  ],
+  "n-h-r": [
+    "nature/elements"
+  ],
+  "n-h-y": [
+    "speech/communication",
+    "emotion/mental"
+  ],
+  "n-k-l": [
+    "war/conflict",
+    "emotion/mental"
+  ],
+  "n-k-m": [
+    "war/conflict"
+  ],
+  "n-k-s": [
+    "war/conflict"
+  ],
+  "n-kh-m": [
+    "emotion/mental"
+  ],
+  "n-kh-r": [
+    "emotion/mental"
+  ],
+  "n-kh-sh": [
+    "nature/elements"
+  ],
+  "n-kh-th": [
+    "motion/travel"
+  ],
+  "n-l-p": [
+    "knowledge/wisdom",
+    "speech/communication"
+  ],
+  "n-m-k": [
+    "existence/being"
+  ],
+  "n-m-r": [
+    "nature/elements"
+  ],
+  "n-p-l": [
+    "motion/travel"
+  ],
+  "n-p-q": [
+    "motion/travel"
+  ],
+  "n-p-sh": [
+    "body/anatomy"
+  ],
+  "n-p-ḥ": [
+    "nature/elements"
+  ],
+  "n-q-d": [
+    "war/conflict"
+  ],
+  "n-q-m": [
+    "war/conflict"
+  ],
+  "n-q-p": [
+    "motion/travel"
+  ],
+  "n-q-r": [
+    "war/conflict"
+  ],
+  "n-q-y": [
+    "worship/cultic",
+    "existence/being"
+  ],
+  "n-q-ʿ": [
+    "war/conflict"
+  ],
+  "n-s-b": [
+    "motion/travel"
+  ],
+  "n-s-g": [
+    "motion/travel"
+  ],
+  "n-s-q": [
+    "motion/travel"
+  ],
+  "n-s-r": [
+    "legal/covenant"
+  ],
+  "n-s-y": [
+    "knowledge/wisdom"
+  ],
+  "n-s-ʿ": [
+    "knowledge/wisdom"
+  ],
+  "n-s-ḥ": [
+    "motion/travel"
+  ],
+  "n-sh-a": [
+    "kinship/family"
+  ],
+  "n-sh-b": [
+    "nature/elements",
+    "motion/travel"
+  ],
+  "n-sh-q": [
+    "body/anatomy",
+    "emotion/mental"
+  ],
+  "n-sh-r": [
+    "nature/elements"
+  ],
+  "n-ts-b": [
+    "motion/travel"
+  ],
+  "n-ts-r": [
+    "legal/covenant"
+  ],
+  "n-w-d": [
+    "motion/travel"
+  ],
+  "n-w-m": [
+    "time"
+  ],
+  "n-w-n": [
+    "nature/elements"
+  ],
+  "n-w-r": [
+    "nature/elements"
+  ],
+  "n-w-ʿ": [
+    "motion/travel"
+  ],
+  "n-w-ḥ": [
+    "emotion/mental"
+  ],
+  "n-y-kh": [
+    "emotion/mental"
+  ],
+  "n-y-r": [
+    "nature/elements"
+  ],
+  "n-y-s": [
+    "motion/travel"
+  ],
+  "n-z-l": [
+    "motion/travel"
+  ],
+  "n-z-r": [
+    "worship/cultic"
+  ],
+  "n-š-h": [
+    "emotion/mental"
+  ],
+  "n-š-m": [
+    "body/anatomy"
+  ],
+  "n-š-y": [
+    "emotion/mental"
+  ],
+  "n-ʿ-l": [
+    "body/anatomy"
+  ],
+  "n-ʿ-m": [
+    "emotion/mental"
+  ],
+  "n-ʿ-r": [
+    "speech/communication",
+    "emotion/mental"
+  ],
+  "n-ʿ-š": [
+    "nature/elements",
+    "body/anatomy"
+  ],
+  "n-ṣ-b": [
+    "motion/travel"
+  ],
+  "n-ṣ-ḥ": [
+    "war/conflict"
+  ],
+  "n-ṭ-l": [
+    "motion/travel"
+  ],
+  "p-T-y": [
+    "motion/travel"
+  ],
+  "p-a-r": [
+    "agriculture/food"
+  ],
+  "p-d-y": [
+    "legal/covenant"
+  ],
+  "p-g-r": [
+    "body/anatomy",
+    "existence/being"
+  ],
+  "p-g-ʿ": [
+    "motion/travel"
+  ],
+  "p-kh-m": [
+    "nature/elements"
+  ],
+  "p-l-T": [
+    "motion/travel"
+  ],
+  "p-l-g": [
+    "motion/travel"
+  ],
+  "p-l-kh": [
+    "worship/cultic"
+  ],
+  "p-l-t": [
+    "motion/travel"
+  ],
+  "p-l-y": [
+    "knowledge/wisdom"
+  ],
+  "p-l-ʾ": [
+    "knowledge/wisdom",
+    "emotion/mental"
+  ],
+  "p-l-ʿ": [
+    "war/conflict"
+  ],
+  "p-n-h": [
+    "motion/travel"
+  ],
+  "p-n-y": [
+    "motion/travel"
+  ],
+  "p-q-d": [
+    "legal/covenant"
+  ],
+  "p-q-n": [
+    "emotion/mental"
+  ],
+  "p-q-ʿ": [
+    "motion/travel"
+  ],
+  "p-q-ḥ": [
+    "speech/communication"
+  ],
+  "p-r-d": [
+    "motion/travel",
+    "commerce/material"
+  ],
+  "p-r-e": [
+    "commerce/material",
+    "agriculture/food"
+  ],
+  "p-r-k": [
+    "motion/travel"
+  ],
+  "p-r-q": [
+    "legal/covenant"
+  ],
+  "p-r-s": [
+    "motion/travel"
+  ],
+  "p-r-sh": [
+    "motion/travel"
+  ],
+  "p-r-ts": [
+    "war/conflict"
+  ],
+  "p-r-w": [
+    "agriculture/food"
+  ],
+  "p-r-y": [
+    "agriculture/food",
+    "creation/cosmos"
+  ],
+  "p-r-ḥ": [
+    "motion/travel",
+    "nature/elements"
+  ],
+  "p-s-l": [
+    "commerce/material"
+  ],
+  "p-s-q": [
+    "legal/covenant"
+  ],
+  "p-s-ḥ": [
+    "worship/cultic"
+  ],
+  "p-sh-T": [
+    "motion/travel"
+  ],
+  "p-sh-q": [
+    "speech/communication"
+  ],
+  "p-sh-r": [
+    "knowledge/wisdom"
+  ],
+  "p-t-ḥ": [
+    "motion/travel"
+  ],
+  "p-th-kh": [
+    "motion/travel"
+  ],
+  "p-ts-kh": [
+    "worship/cultic",
+    "motion/travel"
+  ],
+  "p-w-m": [
+    "body/anatomy"
+  ],
+  "p-w-q": [
+    "motion/travel"
+  ],
+  "p-y-l": [
+    "nature/elements"
+  ],
+  "p-y-s": [
+    "speech/communication"
+  ],
+  "p-y-ʿ": [
+    "nature/elements"
+  ],
+  "p-š-k": [
+    "motion/travel"
+  ],
+  "p-š-ḥ": [
+    "worship/cultic"
+  ],
+  "p-ʿ-l": [
+    "motion/travel",
+    "knowledge/wisdom"
+  ],
+  "p-ḥ-r": [
+    "commerce/material"
+  ],
+  "p-ṭ-r": [
+    "legal/covenant"
+  ],
+  "q-'-d": [
+    "motion/travel"
+  ],
+  "q-'-m": [
+    "motion/travel"
+  ],
+  "q-b-l": [
+    "commerce/material"
+  ],
+  "q-b-r": [
+    "existence/being"
+  ],
+  "q-b-ʿ": [
+    "legal/covenant",
+    "existence/being"
+  ],
+  "q-d-d": [
+    "nature/elements"
+  ],
+  "q-d-m": [
+    "motion/travel",
+    "time"
+  ],
+  "q-d-s": [
+    "worship/cultic"
+  ],
+  "q-d-sh": [
+    "worship/cultic"
+  ],
+  "q-d-ḥ": [
+    "creation/cosmos"
+  ],
+  "q-h-l": [
+    "speech/communication"
+  ],
+  "q-l-l": [
+    "motion/travel",
+    "emotion/mental"
+  ],
+  "q-l-m": [
+    "war/conflict"
+  ],
+  "q-l-n": [
+    "emotion/mental"
+  ],
+  "q-l-p": [
+    "motion/travel",
+    "agriculture/food"
+  ],
+  "q-l-s": [
+    "speech/communication"
+  ],
+  "q-l-y": [
+    "agriculture/food"
+  ],
+  "q-m-'": [
+    "motion/travel"
+  ],
+  "q-m-y": [
+    "motion/travel",
+    "existence/being"
+  ],
+  "q-m-ḥ": [
+    "agriculture/food",
+    "commerce/material"
+  ],
+  "q-m-ṣ": [
+    "motion/travel",
+    "commerce/material"
+  ],
+  "q-n-m": [
+    "existence/being"
+  ],
+  "q-n-n": [
+    "commerce/material"
+  ],
+  "q-n-y": [
+    "commerce/material"
+  ],
+  "q-n-z": [
+    "commerce/material"
+  ],
+  "q-n-ʾ": [
+    "commerce/material"
+  ],
+  "q-p-'": [
+    "nature/elements"
+  ],
+  "q-p-p": [
+    "emotion/mental"
+  ],
+  "q-p-ḥ": [
+    "motion/travel"
+  ],
+  "q-r-a": [
+    "speech/communication"
+  ],
+  "q-r-b": [
+    "motion/travel"
+  ],
+  "q-r-m": [
+    "existence/being"
+  ],
+  "q-r-n": [
+    "nature/elements"
+  ],
+  "q-r-r": [
+    "nature/elements"
+  ],
+  "q-r-s": [
+    "commerce/material"
+  ],
+  "q-r-sh": [
+    "nature/elements"
+  ],
+  "q-r-y": [
+    "speech/communication",
+    "knowledge/wisdom"
+  ],
+  "q-r-ṭ": [
+    "commerce/material"
+  ],
+  "q-s-r": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "q-s-y": [
+    "existence/being"
+  ],
+  "q-sh-sh": [
+    "kinship/family"
+  ],
+  "q-sh-y": [
+    "emotion/mental"
+  ],
+  "q-t-l": [
+    "war/conflict"
+  ],
+  "q-w-l": [
+    "speech/communication"
+  ],
+  "q-w-m": [
+    "motion/travel"
+  ],
+  "q-w-sh": [
+    "emotion/mental"
+  ],
+  "q-w-w": [
+    "emotion/mental",
+    "time"
+  ],
+  "q-w-y": [
+    "existence/being"
+  ],
+  "q-y-T": [
+    "time",
+    "agriculture/food"
+  ],
+  "q-y-m": [
+    "motion/travel",
+    "existence/being"
+  ],
+  "q-y-n": [
+    "speech/communication"
+  ],
+  "q-y-r": [
+    "nature/elements"
+  ],
+  "q-y-s": [
+    "knowledge/wisdom"
+  ],
+  "q-ʿ-y": [
+    "speech/communication"
+  ],
+  "q-ʿ-ʾ": [
+    "speech/communication"
+  ],
+  "q-ṣ-ṣ": [
+    "war/conflict"
+  ],
+  "q-ṭ-m": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "q-ṭ-n": [
+    "existence/being"
+  ],
+  "q-ṭ-p": [
+    "motion/travel"
+  ],
+  "q-ṭ-r": [
+    "existence/being"
+  ],
+  "q-ṭ-ʿ": [
+    "war/conflict"
+  ],
+  "r-'-'": [
+    "emotion/mental"
+  ],
+  "r-'-w": [
+    "knowledge/wisdom"
+  ],
+  "r-'-y": [
+    "kinship/family"
+  ],
+  "r-'-z": [
+    "knowledge/wisdom"
+  ],
+  "r-T-T": [
+    "emotion/mental"
+  ],
+  "r-b-a": [
+    "knowledge/wisdom"
+  ],
+  "r-b-b": [
+    "existence/being"
+  ],
+  "r-b-e": [
+    "time"
+  ],
+  "r-b-n": [
+    "kinship/family"
+  ],
+  "r-b-w": [
+    "existence/being"
+  ],
+  "r-b-y": [
+    "kinship/family",
+    "knowledge/wisdom"
+  ],
+  "r-b-ḥ": [
+    "commerce/material"
+  ],
+  "r-d-'": [
+    "war/conflict"
+  ],
+  "r-d-d": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "r-d-p": [
+    "war/conflict"
+  ],
+  "r-d-w": [
+    "motion/travel"
+  ],
+  "r-d-y": [
+    "motion/travel"
+  ],
+  "r-d-ʿ": [
+    "war/conflict"
+  ],
+  "r-e-a": [
+    "agriculture/food"
+  ],
+  "r-e-m": [
+    "nature/elements"
+  ],
+  "r-e-n": [
+    "knowledge/wisdom"
+  ],
+  "r-e-y": [
+    "agriculture/food"
+  ],
+  "r-g-b": [
+    "emotion/mental"
+  ],
+  "r-g-g": [
+    "emotion/mental"
+  ],
+  "r-g-l": [
+    "body/anatomy"
+  ],
+  "r-g-m": [
+    "war/conflict"
+  ],
+  "r-g-sh": [
+    "knowledge/wisdom"
+  ],
+  "r-g-w": [
+    "emotion/mental"
+  ],
+  "r-g-y": [
+    "emotion/mental"
+  ],
+  "r-g-z": [
+    "emotion/mental"
+  ],
+  "r-h-b": [
+    "emotion/mental"
+  ],
+  "r-h-n": [
+    "legal/covenant",
+    "commerce/material"
+  ],
+  "r-h-t": [
+    "motion/travel"
+  ],
+  "r-k-b": [
+    "motion/travel"
+  ],
+  "r-k-n": [
+    "motion/travel"
+  ],
+  "r-k-s": [
+    "motion/travel"
+  ],
+  "r-k-sh": [
+    "commerce/material"
+  ],
+  "r-kh-m": [
+    "emotion/mental"
+  ],
+  "r-kh-n": [
+    "agriculture/food"
+  ],
+  "r-kh-q": [
+    "motion/travel"
+  ],
+  "r-kh-ts": [
+    "body/anatomy"
+  ],
+  "r-m-h": [
+    "motion/travel"
+  ],
+  "r-m-l": [
+    "nature/elements"
+  ],
+  "r-m-m": [
+    "motion/travel"
+  ],
+  "r-m-n": [
+    "agriculture/food",
+    "nature/elements"
+  ],
+  "r-m-sh": [
+    "motion/travel"
+  ],
+  "r-m-w": [
+    "motion/travel"
+  ],
+  "r-m-y": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "r-m-z": [
+    "speech/communication",
+    "knowledge/wisdom"
+  ],
+  "r-m-ʾ": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "r-m-ḥ": [
+    "war/conflict"
+  ],
+  "r-n-n": [
+    "speech/communication",
+    "worship/cultic"
+  ],
+  "r-n-w": [
+    "speech/communication"
+  ],
+  "r-n-y": [
+    "speech/communication"
+  ],
+  "r-p-'": [
+    "body/anatomy"
+  ],
+  "r-p-a": [
+    "body/anatomy"
+  ],
+  "r-p-d": [
+    "motion/travel"
+  ],
+  "r-p-q": [
+    "motion/travel"
+  ],
+  "r-p-y": [
+    "knowledge/wisdom"
+  ],
+  "r-q-'": [
+    "body/anatomy",
+    "emotion/mental"
+  ],
+  "r-q-b": [
+    "nature/elements"
+  ],
+  "r-q-d": [
+    "motion/travel"
+  ],
+  "r-q-m": [
+    "agriculture/food",
+    "creation/cosmos"
+  ],
+  "r-q-q": [
+    "body/anatomy"
+  ],
+  "r-q-y": [
+    "body/anatomy"
+  ],
+  "r-q-ʿ": [
+    "motion/travel"
+  ],
+  "r-r-b": [
+    "commerce/material"
+  ],
+  "r-s-n": [
+    "commerce/material"
+  ],
+  "r-s-p": [
+    "agriculture/food"
+  ],
+  "r-sh-a": [
+    "body/anatomy"
+  ],
+  "r-sh-m": [
+    "speech/communication",
+    "knowledge/wisdom"
+  ],
+  "r-sh-y": [
+    "emotion/mental"
+  ],
+  "r-sh-ʿ": [
+    "emotion/mental",
+    "war/conflict"
+  ],
+  "r-t-kh": [
+    "nature/elements"
+  ],
+  "r-w-b": [
+    "existence/being"
+  ],
+  "r-w-kh": [
+    "nature/elements"
+  ],
+  "r-w-m": [
+    "motion/travel"
+  ],
+  "r-w-q": [
+    "body/anatomy"
+  ],
+  "r-w-sh": [
+    "body/anatomy"
+  ],
+  "r-w-y": [
+    "emotion/mental",
+    "agriculture/food"
+  ],
+  "r-w-z": [
+    "knowledge/wisdom"
+  ],
+  "r-w-ṣ": [
+    "motion/travel"
+  ],
+  "r-y-b": [
+    "war/conflict"
+  ],
+  "r-y-kh": [
+    "body/anatomy"
+  ],
+  "r-y-m": [
+    "motion/travel",
+    "emotion/mental"
+  ],
+  "r-y-sh": [
+    "body/anatomy"
+  ],
+  "r-y-ʾ": [
+    "knowledge/wisdom"
+  ],
+  "r-y-ʿ": [
+    "agriculture/food"
+  ],
+  "r-y-ḥ": [
+    "body/anatomy"
+  ],
+  "r-y-ṣ": [
+    "motion/travel"
+  ],
+  "r-ū-ʿ": [
+    "speech/communication"
+  ],
+  "r-ḥ-b": [
+    "creation/cosmos"
+  ],
+  "r-ḥ-m": [
+    "emotion/mental"
+  ],
+  "r-ḥ-p": [
+    "motion/travel"
+  ],
+  "r-ḥ-y": [
+    "emotion/mental"
+  ],
+  "r-ṣ-n": [
+    "emotion/mental"
+  ],
+  "s-'-b": [
+    "time"
+  ],
+  "s-'-m": [
+    "commerce/material"
+  ],
+  "s-T-'": [
+    "motion/travel"
+  ],
+  "s-T-d": [
+    "emotion/mental"
+  ],
+  "s-T-n": [
+    "war/conflict"
+  ],
+  "s-b-'": [
+    "kinship/family"
+  ],
+  "s-b-e": [
+    "agriculture/food"
+  ],
+  "s-b-k": [
+    "commerce/material"
+  ],
+  "s-b-l": [
+    "motion/travel",
+    "commerce/material"
+  ],
+  "s-b-n": [
+    "commerce/material"
+  ],
+  "s-b-r": [
+    "speech/communication"
+  ],
+  "s-b-r-th": [
+    "speech/communication"
+  ],
+  "s-d-m": [
+    "war/conflict"
+  ],
+  "s-d-q": [
+    "legal/covenant",
+    "worship/cultic"
+  ],
+  "s-d-r": [
+    "commerce/material"
+  ],
+  "s-e-r": [
+    "motion/travel",
+    "body/anatomy"
+  ],
+  "s-g-a": [
+    "existence/being"
+  ],
+  "s-g-d": [
+    "worship/cultic"
+  ],
+  "s-g-n": [
+    "legal/covenant"
+  ],
+  "s-g-r": [
+    "existence/being"
+  ],
+  "s-g-y": [
+    "existence/being"
+  ],
+  "s-h-d": [
+    "legal/covenant"
+  ],
+  "s-k-l": [
+    "knowledge/wisdom",
+    "emotion/mental"
+  ],
+  "s-k-n": [
+    "motion/travel"
+  ],
+  "s-kh-p": [
+    "motion/travel"
+  ],
+  "s-kh-r": [
+    "motion/travel"
+  ],
+  "s-l-k": [
+    "motion/travel"
+  ],
+  "s-l-q": [
+    "motion/travel"
+  ],
+  "s-l-ʿ": [
+    "motion/travel"
+  ],
+  "s-m": [
+    "motion/travel"
+  ],
+  "s-m-'": [
+    "commerce/material"
+  ],
+  "s-m-d": [
+    "commerce/material"
+  ],
+  "s-m-k": [
+    "body/anatomy",
+    "legal/covenant"
+  ],
+  "s-m-l": [
+    "body/anatomy"
+  ],
+  "s-m-n": [
+    "agriculture/food"
+  ],
+  "s-m-q": [
+    "nature/elements"
+  ],
+  "s-m-y": [
+    "body/anatomy"
+  ],
+  "s-n-a": [
+    "emotion/mental"
+  ],
+  "s-n-h": [
+    "emotion/mental"
+  ],
+  "s-n-q": [
+    "emotion/mental",
+    "existence/being"
+  ],
+  "s-n-y": [
+    "emotion/mental"
+  ],
+  "s-p-k": [
+    "motion/travel"
+  ],
+  "s-p-l": [
+    "existence/being"
+  ],
+  "s-p-n": [
+    "commerce/material",
+    "motion/travel"
+  ],
+  "s-p-q": [
+    "existence/being"
+  ],
+  "s-p-r": [
+    "speech/communication"
+  ],
+  "s-p-s": [
+    "commerce/material"
+  ],
+  "s-q-l": [
+    "war/conflict"
+  ],
+  "s-q-n": [
+    "time"
+  ],
+  "s-q-p": [
+    "creation/cosmos"
+  ],
+  "s-q-r": [
+    "motion/travel"
+  ],
+  "s-q-y": [
+    "agriculture/food"
+  ],
+  "s-r-d": [
+    "existence/being"
+  ],
+  "s-r-g": [
+    "commerce/material"
+  ],
+  "s-r-q": [
+    "emotion/mental"
+  ],
+  "s-r-r": [
+    "commerce/material"
+  ],
+  "s-r-y": [
+    "motion/travel"
+  ],
+  "s-t-b": [
+    "speech/communication"
+  ],
+  "s-t-m": [
+    "motion/travel"
+  ],
+  "s-t-r": [
+    "emotion/mental"
+  ],
+  "s-w-b": [
+    "motion/travel"
+  ],
+  "s-w-g": [
+    "motion/travel"
+  ],
+  "s-w-k": [
+    "worship/cultic"
+  ],
+  "s-w-p": [
+    "time"
+  ],
+  "s-w-q": [
+    "motion/travel",
+    "commerce/material"
+  ],
+  "s-w-r": [
+    "war/conflict",
+    "motion/travel"
+  ],
+  "s-w-s": [
+    "commerce/material"
+  ],
+  "s-y-b": [
+    "time",
+    "body/anatomy"
+  ],
+  "s-y-m": [
+    "motion/travel",
+    "existence/being"
+  ],
+  "s-y-p": [
+    "war/conflict"
+  ],
+  "s-y-r": [
+    "emotion/mental"
+  ],
+  "s-y-ʿ": [
+    "speech/communication"
+  ],
+  "s-ḥ-r": [
+    "commerce/material"
+  ],
+  "s-ṭ-m": [
+    "emotion/mental"
+  ],
+  "s-ṭ-r": [
+    "speech/communication"
+  ],
+  "sh-T-h": [
+    "motion/travel"
+  ],
+  "sh-T-t": [
+    "motion/travel"
+  ],
+  "sh-a-d": [
+    "existence/being"
+  ],
+  "sh-a-l": [
+    "speech/communication"
+  ],
+  "sh-a-th": [
+    "time"
+  ],
+  "sh-b-'": [
+    "war/conflict"
+  ],
+  "sh-b-T": [
+    "kinship/family"
+  ],
+  "sh-b-b": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "sh-b-e": [
+    "time"
+  ],
+  "sh-b-kh": [
+    "worship/cultic"
+  ],
+  "sh-b-l": [
+    "agriculture/food"
+  ],
+  "sh-b-q": [
+    "emotion/mental"
+  ],
+  "sh-b-th": [
+    "time"
+  ],
+  "sh-b-y": [
+    "war/conflict"
+  ],
+  "sh-d-r": [
+    "motion/travel"
+  ],
+  "sh-e-y": [
+    "time"
+  ],
+  "sh-f-n": [
+    "motion/travel"
+  ],
+  "sh-g-r": [
+    "motion/travel"
+  ],
+  "sh-k-kh": [
+    "knowledge/wisdom"
+  ],
+  "sh-k-l": [
+    "knowledge/wisdom"
+  ],
+  "sh-kh-kh": [
+    "knowledge/wisdom"
+  ],
+  "sh-kh-n": [
+    "existence/being",
+    "worship/cultic"
+  ],
+  "sh-kh-p": [
+    "body/anatomy"
+  ],
+  "sh-kh-r": [
+    "emotion/mental"
+  ],
+  "sh-l-d": [
+    "motion/travel",
+    "war/conflict"
+  ],
+  "sh-l-h": [
+    "motion/travel"
+  ],
+  "sh-l-kh": [
+    "motion/travel"
+  ],
+  "sh-l-m": [
+    "emotion/mental",
+    "existence/being"
+  ],
+  "sh-l-t": [
+    "legal/covenant"
+  ],
+  "sh-l-y": [
+    "emotion/mental"
+  ],
+  "sh-m": [
+    "speech/communication"
+  ],
+  "sh-m-e": [
+    "speech/communication"
+  ],
+  "sh-m-n": [
+    "agriculture/food"
+  ],
+  "sh-m-r": [
+    "legal/covenant"
+  ],
+  "sh-m-sh": [
+    "worship/cultic",
+    "nature/elements"
+  ],
+  "sh-m-y": [
+    "creation/cosmos"
+  ],
+  "sh-n-a": [
+    "time"
+  ],
+  "sh-n-y": [
+    "time"
+  ],
+  "sh-p-e": [
+    "nature/elements"
+  ],
+  "sh-p-l": [
+    "emotion/mental"
+  ],
+  "sh-p-m": [
+    "body/anatomy"
+  ],
+  "sh-p-r": [
+    "speech/communication"
+  ],
+  "sh-q-l": [
+    "motion/travel"
+  ],
+  "sh-q-r": [
+    "speech/communication"
+  ],
+  "sh-q-y": [
+    "agriculture/food"
+  ],
+  "sh-r": [
+    "motion/travel"
+  ],
+  "sh-r-'": [
+    "time"
+  ],
+  "sh-r-a": [
+    "motion/travel"
+  ],
+  "sh-r-b": [
+    "kinship/family"
+  ],
+  "sh-r-k": [
+    "motion/travel"
+  ],
+  "sh-r-r": [
+    "existence/being"
+  ],
+  "sh-r-sh": [
+    "creation/cosmos",
+    "existence/being"
+  ],
+  "sh-r-y": [
+    "motion/travel",
+    "existence/being"
+  ],
+  "sh-t-q": [
+    "emotion/mental"
+  ],
+  "sh-t-y": [
+    "agriculture/food"
+  ],
+  "sh-th-a": [
+    "agriculture/food"
+  ],
+  "sh-th-p": [
+    "kinship/family"
+  ],
+  "sh-w-T": [
+    "war/conflict"
+  ],
+  "sh-w-a": [
+    "existence/being",
+    "emotion/mental"
+  ],
+  "sh-w-q": [
+    "commerce/material"
+  ],
+  "sh-w-th": [
+    "existence/being",
+    "emotion/mental"
+  ],
+  "sh-w-y": [
+    "existence/being"
+  ],
+  "sh-y-d": [
+    "war/conflict"
+  ],
+  "sh-y-l": [
+    "speech/communication"
+  ],
+  "sh-y-sh": [
+    "nature/elements"
+  ],
+  "sh-z-b": [
+    "motion/travel"
+  ],
+  "t-'-m": [
+    "kinship/family",
+    "commerce/material"
+  ],
+  "t-e-n": [
+    "motion/travel",
+    "body/anatomy"
+  ],
+  "t-e-y": [
+    "motion/travel"
+  ],
+  "t-g-r": [
+    "commerce/material"
+  ],
+  "t-h-m": [
+    "creation/cosmos"
+  ],
+  "t-h-r": [
+    "emotion/mental"
+  ],
+  "t-kh-n": [
+    "agriculture/food"
+  ],
+  "t-l-g": [
+    "nature/elements"
+  ],
+  "t-l-y": [
+    "motion/travel"
+  ],
+  "t-l-ʾ": [
+    "motion/travel"
+  ],
+  "t-m-h": [
+    "emotion/mental"
+  ],
+  "t-m-l": [
+    "time"
+  ],
+  "t-n-p": [
+    "worship/cultic"
+  ],
+  "t-n-y": [
+    "speech/communication"
+  ],
+  "t-sh-'": [
+    "time"
+  ],
+  "t-w-b": [
+    "emotion/mental"
+  ],
+  "t-w-r": [
+    "nature/elements"
+  ],
+  "th-b-e": [
+    "legal/covenant"
+  ],
+  "th-kh-l": [
+    "emotion/mental"
+  ],
+  "th-l-m": [
+    "knowledge/wisdom"
+  ],
+  "th-l-th": [
+    "time"
+  ],
+  "th-m-'": [
+    "emotion/mental"
+  ],
+  "th-q-l": [
+    "knowledge/wisdom"
+  ],
+  "th-q-n": [
+    "commerce/material"
+  ],
+  "th-r-e": [
+    "existence/being"
+  ],
+  "th-r-ts": [
+    "motion/travel",
+    "knowledge/wisdom"
+  ],
+  "th-r-y": [
+    "time"
+  ],
+  "th-w-b": [
+    "motion/travel"
+  ],
+  "ts-b-a": [
+    "emotion/mental"
+  ],
+  "ts-b-n": [
+    "emotion/mental"
+  ],
+  "ts-b-y": [
+    "emotion/mental"
+  ],
+  "ts-d-q": [
+    "legal/covenant"
+  ],
+  "ts-e-r": [
+    "emotion/mental"
+  ],
+  "ts-kh-y": [
+    "body/anatomy"
+  ],
+  "ts-l-a": [
+    "worship/cultic"
+  ],
+  "ts-l-m": [
+    "creation/cosmos"
+  ],
+  "ts-l-y": [
+    "worship/cultic",
+    "war/conflict"
+  ],
+  "ts-p-r": [
+    "time"
+  ],
+  "ts-r-y": [
+    "emotion/mental"
+  ],
+  "ts-w-m": [
+    "worship/cultic"
+  ],
+  "ts-y-d": [
+    "war/conflict"
+  ],
+  "w-h-b": [
+    "commerce/material"
+  ],
+  "w-l-d": [
+    "kinship/family"
+  ],
+  "w-r-q": [
+    "nature/elements"
+  ],
+  "w-s-m": [
+    "speech/communication"
+  ],
+  "y-'-r": [
+    "nature/elements"
+  ],
+  "y-b-b": [
+    "nature/elements",
+    "time"
+  ],
+  "y-b-l": [
+    "motion/travel"
+  ],
+  "y-b-s": [
+    "nature/elements"
+  ],
+  "y-b-sh": [
+    "nature/elements"
+  ],
+  "y-b-y": [
+    "nature/elements"
+  ],
+  "y-d-'": [
+    "knowledge/wisdom"
+  ],
+  "y-d-e": [
+    "knowledge/wisdom"
+  ],
+  "y-d-y": [
+    "knowledge/wisdom"
+  ],
+  "y-d-ʿ": [
+    "speech/communication"
+  ],
+  "y-h-b": [
+    "commerce/material"
+  ],
+  "y-h-d": [
+    "kinship/family"
+  ],
+  "y-l-d": [
+    "kinship/family"
+  ],
+  "y-l-n": [
+    "nature/elements"
+  ],
+  "y-l-p": [
+    "knowledge/wisdom"
+  ],
+  "y-m-'": [
+    "nature/elements"
+  ],
+  "y-m-m": [
+    "nature/elements",
+    "time"
+  ],
+  "y-m-n": [
+    "body/anatomy",
+    "existence/being"
+  ],
+  "y-n-q": [
+    "kinship/family"
+  ],
+  "y-p-t": [
+    "motion/travel"
+  ],
+  "y-q-d": [
+    "nature/elements"
+  ],
+  "y-q-r": [
+    "emotion/mental",
+    "commerce/material"
+  ],
+  "y-q-š": [
+    "war/conflict"
+  ],
+  "y-r-d": [
+    "motion/travel"
+  ],
+  "y-r-k": [
+    "body/anatomy"
+  ],
+  "y-r-kh": [
+    "time"
+  ],
+  "y-r-q": [
+    "agriculture/food",
+    "nature/elements"
+  ],
+  "y-r-th": [
+    "kinship/family"
+  ],
+  "y-s-p": [
+    "motion/travel"
+  ],
+  "y-sh-e": [
+    "existence/being"
+  ],
+  "y-t-b": [
+    "motion/travel"
+  ],
+  "y-th-b": [
+    "motion/travel"
+  ],
+  "y-th-r": [
+    "existence/being",
+    "emotion/mental"
+  ],
+  "y-th-y": [
+    "existence/being"
+  ],
+  "y-w-b": [
+    "emotion/mental"
+  ],
+  "y-w-m": [
+    "time"
+  ],
+  "y-ḥ-d": [
+    "existence/being"
+  ],
+  "y-ṣ-f": [
+    "motion/travel",
+    "commerce/material"
+  ],
+  "y-ṣ-r": [
+    "creation/cosmos"
+  ],
+  "y-ṣ-y": [
+    "existence/being"
+  ],
+  "z-b-d": [
+    "commerce/material"
+  ],
+  "z-b-l": [
+    "motion/travel"
+  ],
+  "z-b-n": [
+    "time"
+  ],
+  "z-b-r": [
+    "motion/travel"
+  ],
+  "z-b-ḥ": [
+    "worship/cultic"
+  ],
+  "z-d-n": [
+    "agriculture/food"
+  ],
+  "z-d-q": [
+    "legal/covenant"
+  ],
+  "z-e-r": [
+    "nature/elements"
+  ],
+  "z-g-ʾ": [
+    "commerce/material"
+  ],
+  "z-h-r": [
+    "nature/elements",
+    "knowledge/wisdom"
+  ],
+  "z-k-a": [
+    "knowledge/wisdom"
+  ],
+  "z-k-n": [
+    "time"
+  ],
+  "z-k-r": [
+    "knowledge/wisdom",
+    "speech/communication"
+  ],
+  "z-k-y": [
+    "knowledge/wisdom"
+  ],
+  "z-l-g": [
+    "motion/travel"
+  ],
+  "z-l-l": [
+    "emotion/mental",
+    "motion/travel"
+  ],
+  "z-l-q": [
+    "motion/travel"
+  ],
+  "z-l-w": [
+    "motion/travel"
+  ],
+  "z-l-y": [
+    "motion/travel",
+    "nature/elements"
+  ],
+  "z-m-n": [
+    "time",
+    "speech/communication"
+  ],
+  "z-m-r": [
+    "speech/communication"
+  ],
+  "z-n-y": [
+    "emotion/mental"
+  ],
+  "z-q-'": [
+    "commerce/material"
+  ],
+  "z-q-p": [
+    "motion/travel"
+  ],
+  "z-q-r": [
+    "commerce/material"
+  ],
+  "z-r-e": [
+    "agriculture/food"
+  ],
+  "z-r-p": [
+    "commerce/material"
+  ],
+  "z-r-ḥ": [
+    "nature/elements"
+  ],
+  "z-w-d": [
+    "commerce/material"
+  ],
+  "z-w-g": [
+    "kinship/family"
+  ],
+  "z-w-q": [
+    "speech/communication"
+  ],
+  "z-w-r": [
+    "motion/travel"
+  ],
+  "z-w-y": [
+    "commerce/material",
+    "motion/travel"
+  ],
+  "z-w-z": [
+    "motion/travel"
+  ],
+  "z-w-ʿ": [
+    "motion/travel"
+  ],
+  "z-w-ḥ": [
+    "motion/travel"
+  ],
+  "z-y-b": [
+    "motion/travel"
+  ],
+  "z-y-n": [
+    "war/conflict"
+  ],
+  "z-y-p": [
+    "speech/communication"
+  ],
+  "z-y-r": [
+    "existence/being"
+  ],
+  "z-y-t": [
+    "agriculture/food"
+  ],
+  "z-y-ʿ": [
+    "motion/travel"
+  ],
+  "š-'-ṭ": [
+    "emotion/mental"
+  ],
+  "š-T-p": [
+    "nature/elements"
+  ],
+  "š-b-r": [
+    "war/conflict"
+  ],
+  "š-b-ḥ": [
+    "speech/communication",
+    "worship/cultic"
+  ],
+  "š-d-d": [
+    "war/conflict"
+  ],
+  "š-d-y": [
+    "motion/travel"
+  ],
+  "š-k-m": [
+    "body/anatomy"
+  ],
+  "š-l-ʾ": [
+    "emotion/mental"
+  ],
+  "š-m-l": [
+    "existence/being"
+  ],
+  "š-m-ṭ": [
+    "legal/covenant"
+  ],
+  "š-p-p": [
+    "commerce/material"
+  ],
+  "š-p-ṭ": [
+    "legal/covenant"
+  ],
+  "š-q-p": [
+    "knowledge/wisdom",
+    "speech/communication"
+  ],
+  "š-r-g": [
+    "creation/cosmos"
+  ],
+  "š-r-q": [
+    "speech/communication"
+  ],
+  "š-r-y": [
+    "time"
+  ],
+  "š-t-y": [
+    "agriculture/food"
+  ],
+  "š-w-b": [
+    "motion/travel"
+  ],
+  "š-w-m": [
+    "motion/travel"
+  ],
+  "š-w-r": [
+    "knowledge/wisdom"
+  ],
+  "š-w-w": [
+    "existence/being"
+  ],
+  "š-y-p": [
+    "emotion/mental"
+  ],
+  "š-y-r": [
+    "speech/communication"
+  ],
+  "š-y-ḥ": [
+    "speech/communication"
+  ],
+  "š-ʿ-w": [
+    "time"
+  ],
+  "š-ʿ-ʾ": [
+    "time"
+  ],
+  "š-ḥ-d": [
+    "legal/covenant"
+  ],
+  "š-ḥ-k": [
+    "knowledge/wisdom"
+  ],
+  "š-ḥ-l": [
+    "knowledge/wisdom"
+  ],
+  "š-ḥ-m": [
+    "body/anatomy",
+    "agriculture/food"
+  ],
+  "š-ḥ-q": [
+    "emotion/mental",
+    "speech/communication"
+  ],
+  "š-ḥ-r": [
+    "time"
+  ],
+  "š-ṭ-r": [
+    "speech/communication"
+  ],
+  "š-ṭ-y": [
+    "agriculture/food"
+  ],
+  "ʕ-ṭ-ʾ": [
+    "body/anatomy",
+    "existence/being"
+  ],
+  "ʾ-d-m": [
+    "body/anatomy"
+  ],
+  "ʾ-d-š": [
+    "motion/travel"
+  ],
+  "ʾ-p-r": [
+    "nature/elements"
+  ],
+  "ʾ-s-p": [
+    "commerce/material"
+  ],
+  "ʾ-s-y": [
+    "existence/being"
+  ],
+  "ʾ-sh-q": [
+    "agriculture/food",
+    "commerce/material"
+  ],
+  "ʾ-t-q": [
+    "time"
+  ],
+  "ʾ-š-y": [
+    "emotion/mental"
+  ],
+  "ʾ-ḥ-z": [
+    "commerce/material",
+    "motion/travel"
+  ],
+  "ʿ-b-d": [
+    "worship/cultic",
+    "commerce/material"
+  ],
+  "ʿ-b-r": [
+    "motion/travel"
+  ],
+  "ʿ-d-m": [
+    "time"
+  ],
+  "ʿ-l-l": [
+    "motion/travel"
+  ],
+  "ʿ-m-l": [
+    "commerce/material"
+  ],
+  "ʿ-n-b": [
+    "agriculture/food",
+    "nature/elements"
+  ],
+  "ʿ-q-b": [
+    "body/anatomy"
+  ],
+  "ʿ-q-m": [
+    "motion/travel"
+  ],
+  "ʿ-q-n": [
+    "motion/travel"
+  ],
+  "ʿ-q-r": [
+    "emotion/mental",
+    "war/conflict"
+  ],
+  "ʿ-q-w": [
+    "motion/travel"
+  ],
+  "ʿ-r-k": [
+    "motion/travel"
+  ],
+  "ʿ-r-m": [
+    "knowledge/wisdom"
+  ],
+  "ʿ-s-b": [
+    "agriculture/food"
+  ],
+  "ʿ-t-q": [
+    "time",
+    "existence/being"
+  ],
+  "ʿ-w-b": [
+    "war/conflict"
+  ],
+  "ʿ-w-d": [
+    "motion/travel"
+  ],
+  "ʿ-w-n": [
+    "emotion/mental"
+  ],
+  "ʿ-w-r": [
+    "emotion/mental",
+    "motion/travel"
+  ],
+  "ʿ-z-q": [
+    "war/conflict",
+    "legal/covenant"
+  ],
+  "ʿ-z-y": [
+    "emotion/mental"
+  ],
+  "ʿ-z-z": [
+    "existence/being"
+  ],
+  "ʿ-š-q": [
+    "war/conflict",
+    "emotion/mental"
+  ],
+  "ʿ-ṣ-b": [
+    "commerce/material"
+  ],
+  "ʿ-ṣ-m": [
+    "body/anatomy"
+  ],
+  "ʿ-ṭ-p": [
+    "commerce/material"
+  ],
+  "ʿ-ṭ-r": [
+    "body/anatomy",
+    "worship/cultic"
+  ],
+  "ḥ-b-'": [
+    "speech/communication"
+  ],
+  "ḥ-b-ṭ": [
+    "war/conflict"
+  ],
+  "ḥ-d-d": [
+    "war/conflict"
+  ],
+  "ḥ-d-š": [
+    "time"
+  ],
+  "ḥ-g-'": [
+    "worship/cultic"
+  ],
+  "ḥ-g-r": [
+    "body/anatomy"
+  ],
+  "ḥ-l-d": [
+    "time"
+  ],
+  "ḥ-l-ṭ": [
+    "motion/travel"
+  ],
+  "ḥ-m-h": [
+    "kinship/family"
+  ],
+  "ḥ-m-s": [
+    "nature/elements"
+  ],
+  "ḥ-m-y": [
+    "nature/elements"
+  ],
+  "ḥ-n-ṭ": [
+    "body/anatomy"
+  ],
+  "ḥ-p-r": [
+    "agriculture/food"
+  ],
+  "ḥ-p-s": [
+    "knowledge/wisdom"
+  ],
+  "ḥ-p-w": [
+    "existence/being"
+  ],
+  "ḥ-t-n": [
+    "kinship/family"
+  ],
+  "ḥ-w-l": [
+    "motion/travel"
+  ],
+  "ḥ-w-š": [
+    "knowledge/wisdom",
+    "emotion/mental"
+  ],
+  "ḥ-w-ʾ": [
+    "speech/communication"
+  ],
+  "ḥ-y-m": [
+    "motion/travel"
+  ],
+  "ḥ-y-r": [
+    "emotion/mental"
+  ],
+  "ḥ-y-s": [
+    "emotion/mental"
+  ],
+  "ḥ-y-y": [
+    "existence/being"
+  ],
+  "ḥ-z-n": [
+    "knowledge/wisdom",
+    "emotion/mental"
+  ],
+  "ḥ-z-r": [
+    "motion/travel",
+    "existence/being"
+  ],
+  "ḥ-z-w": [
+    "knowledge/wisdom"
+  ],
+  "ḥ-z-y": [
+    "knowledge/wisdom"
+  ],
+  "ḥ-ʾ-s": [
+    "emotion/mental"
+  ],
+  "ḥ-ṣ-r": [
+    "war/conflict",
+    "motion/travel"
+  ],
+  "ḥ-ṭ-h": [
+    "legal/covenant"
+  ],
+  "ḥ-ṭ-n": [
+    "worship/cultic"
+  ],
+  "ḥ-ṭ-p": [
+    "motion/travel",
+    "commerce/material"
+  ],
+  "ṣ-'-m": [
+    "worship/cultic"
+  ],
+  "ṣ-b-ʿ": [
+    "body/anatomy"
+  ],
+  "ṣ-d-d": [
+    "war/conflict"
+  ],
+  "ṣ-d-y": [
+    "war/conflict"
+  ],
+  "ṣ-h-l": [
+    "body/anatomy"
+  ],
+  "ṣ-l-b": [
+    "war/conflict"
+  ],
+  "ṣ-l-l": [
+    "nature/elements"
+  ],
+  "ṣ-l-p": [
+    "war/conflict"
+  ],
+  "ṣ-l-w": [
+    "worship/cultic"
+  ],
+  "ṣ-l-ḥ": [
+    "emotion/mental",
+    "knowledge/wisdom"
+  ],
+  "ṣ-m-ḥ": [
+    "agriculture/food"
+  ],
+  "ṣ-p-y": [
+    "knowledge/wisdom"
+  ],
+  "ṣ-r-r": [
+    "war/conflict",
+    "legal/covenant"
+  ],
+  "ṣ-r-ʾ": [
+    "creation/cosmos"
+  ],
+  "ṣ-w-d": [
+    "war/conflict"
+  ],
+  "ṣ-w-r": [
+    "creation/cosmos"
+  ],
+  "ṣ-y-r": [
+    "creation/cosmos"
+  ],
+  "ṣ-y-ḥ": [
+    "speech/communication"
+  ],
+  "ṣ-ʾ-d": [
+    "war/conflict"
+  ],
+  "ṭ-b-'": [
+    "emotion/mental"
+  ],
+  "ṭ-b-ʿ": [
+    "nature/elements",
+    "motion/travel"
+  ],
+  "ṭ-b-ḥ": [
+    "agriculture/food"
+  ],
+  "ṭ-h-r": [
+    "worship/cultic"
+  ],
+  "ṭ-l-m": [
+    "war/conflict"
+  ],
+  "ṭ-m-r": [
+    "emotion/mental"
+  ],
+  "ṭ-p-r": [
+    "body/anatomy"
+  ],
+  "ṭ-p-s": [
+    "commerce/material",
+    "motion/travel"
+  ],
+  "ṭ-r-d": [
+    "motion/travel"
+  ],
+  "ṭ-r-y": [
+    "nature/elements",
+    "agriculture/food"
+  ],
+  "ṭ-w-ʿ": [
+    "motion/travel"
+  ],
+  "ṭ-y-n": [
+    "nature/elements"
+  ],
+  "ṭ-ʾ-m": [
+    "agriculture/food",
+    "knowledge/wisdom"
+  ],
+  "ṭ-ʿ-y": [
+    "motion/travel"
+  ]
+}

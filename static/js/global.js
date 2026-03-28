@@ -244,3 +244,23 @@ function getBookmarks() {
     catch(e) { return {verses:[], roots:[]}; }
 }
 function saveBookmarks(bm) { localStorage.setItem('atlas_bookmarks', JSON.stringify(bm)); }
+
+// --- Shared annotation utilities ---
+function getAnnotations() {
+    try { return JSON.parse(localStorage.getItem('atlas_annotations') || '{"verses":{},"roots":{}}'); }
+    catch(e) { return {verses:{}, roots:{}}; }
+}
+function saveAnnotations(ann) { localStorage.setItem('atlas_annotations', JSON.stringify(ann)); }
+function setAnnotation(type, key, text, tags) {
+    var ann = getAnnotations();
+    var now = new Date().toISOString().slice(0,10);
+    if (!ann[type]) ann[type] = {};
+    var existing = ann[type][key];
+    ann[type][key] = { text: text, tags: tags || [], created: existing ? existing.created : now, updated: now };
+    saveAnnotations(ann);
+}
+function deleteAnnotation(type, key) {
+    var ann = getAnnotations();
+    if (ann[type]) delete ann[type][key];
+    saveAnnotations(ann);
+}

@@ -30,7 +30,7 @@
                 <div id="diac-ac-list" class="autocomplete-list"></div>
             </div>
             <button onclick="loadRootView()" style="padding:.5rem 1.2rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;">
-                Analyze
+                {{ t('diachronic_analyze', lang) if t else 'Analyze' }}
             </button>
         </div>
 
@@ -38,7 +38,7 @@
             <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
         </div>
         <div id="diac-root-empty" style="text-align:center;padding:3rem;color:var(--muted);">
-            Enter a root to view its usage across time.
+            {{ t('diachronic_enter_root', lang) if t else 'Enter a root to view its usage across time.' }}
         </div>
         <div id="diac-root-results" style="display:none;">
             <div style="margin-bottom:1rem;">
@@ -71,20 +71,20 @@
     <div id="panel-shifts" style="display:none;">
         <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;padding:.6rem .9rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);font-size:.85rem;">
             <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
-                Direction:
+                {{ t('diachronic_direction_label', lang) if t else 'Direction:' }}
                 <select id="shifts-direction" style="padding:.25rem .5rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
-                    <option value="all">All</option>
+                    <option value="all">{{ t('diachronic_direction_all', lang) if t else 'All' }}</option>
                     <option value="emerging">{{ t('diachronic_emerging', lang) }}</option>
                     <option value="declining">{{ t('diachronic_declining', lang) }}</option>
                 </select>
             </label>
             <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
-                Min occurrences:
+                {{ t('diachronic_min_occ', lang) if t else 'Min occurrences:' }}
                 <input type="number" id="shifts-min" value="5" min="1" max="100"
                        style="width:60px;padding:.25rem .4rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
             </label>
             <button onclick="loadShifts()" style="padding:.3rem .9rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.85rem;">
-                Load
+                {{ t('diachronic_load', lang) if t else 'Load' }}
             </button>
             <button class="btn-secondary" onclick="exportShifts()">{{ t('diachronic_export', lang) }}</button>
         </div>
@@ -92,7 +92,7 @@
         <div id="shifts-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">
             <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
         </div>
-        <div id="shifts-empty" style="display:none;text-align:center;padding:3rem;color:var(--muted);">No shifts found.</div>
+        <div id="shifts-empty" style="display:none;text-align:center;padding:3rem;color:var(--muted);">{{ t('diachronic_no_shifts', lang) if t else 'No shifts found.' }}</div>
 
         <div id="shifts-results" style="display:none;overflow-x:auto;">
             <div id="shifts-summary" style="font-size:.85rem;color:var(--muted);margin-bottom:.6rem;"></div>
@@ -118,6 +118,7 @@
 <script>
 (function() {
     var LANG = {{ lang|tojson }};
+    var TRANS = {{ trans|tojson }};
     var currentShifts = [];
     var CORPUS_COLORS = {
         'biblical_aramaic': '#7c3aed',
@@ -155,7 +156,7 @@
         document.getElementById('diac-root-results').style.display = 'none';
         document.getElementById('diac-root-empty').style.display = 'none';
 
-        fetch('/api/diachronic/root?root=' + encodeURIComponent(root) + '&lang=' + LANG)
+        fetch('/api/diachronic/root?root=' + encodeURIComponent(root) + '&lang=' + LANG + '&trans=' + TRANS)
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 document.getElementById('diac-root-loading').style.display = 'none';
@@ -219,7 +220,7 @@
         document.getElementById('shifts-results').style.display = 'none';
         document.getElementById('shifts-empty').style.display = 'none';
 
-        fetch('/api/diachronic/shifts?direction=' + dir + '&min_occurrences=' + minOcc + '&limit=100&lang=' + LANG)
+        fetch('/api/diachronic/shifts?direction=' + dir + '&min_occurrences=' + minOcc + '&limit=100&lang=' + LANG + '&trans=' + TRANS)
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 document.getElementById('shifts-loading').style.display = 'none';
@@ -264,7 +265,10 @@
 
                     tr.innerHTML =
                         '<td style="padding:.4rem .6rem;">' +
-                            '<a href="' + vizUrl + '" style="color:var(--accent);font-weight:600;text-decoration:none;" onclick="event.stopPropagation();">' + escHtml(row.root_translit) + '</a>' +
+                            '<a href="' + vizUrl + '" class="wp-link" onclick="event.stopPropagation();">' +
+                                (row.root ? '<span class="syriac" dir="rtl" style="font-size:1.1rem;margin-right:.35rem">' + escHtml(row.root) + '</span>' : '') +
+                                '<span style="font-size:.85rem;color:var(--text-muted)">' + escHtml(row.root_translit) + '</span>' +
+                            '</a>' +
                         '</td>' +
                         '<td style="padding:.4rem .6rem;color:var(--muted);font-style:italic;font-size:.82rem;">' + escHtml(row.gloss||'') + '</td>' +
                         '<td style="padding:.4rem .6rem;text-align:center;">' + sparkSvg + '</td>' +

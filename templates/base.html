@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ lang }}" dir="ltr">
+<html lang="{{ lang }}" dir="{{ 'rtl' if lang in ('he', 'ar') else 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,6 +50,11 @@
                         <a href="/hapax?lang={{ lang }}">{{ t('hapax_title', lang) if t else 'Hapax Legomena' }}</a>
                         <a href="/concordance?lang={{ lang }}">{{ t('concordance_title', lang) if t else 'Concordance' }}</a>
                         <a href="/diachronic?lang={{ lang }}">{{ t('diachronic_title', lang) if t else 'Diachronic Analysis' }}</a>
+                        <a href="/collocations?lang={{ lang }}">{{ t('coll_title', lang) if t else 'Collocations' }}</a>
+                        <a href="/semantic-fields?lang={{ lang }}">{{ t('sf_title', lang) if t else 'Semantic Fields' }}</a>
+                        <hr class="nav-drop-sep">
+                        <a href="/bookmarks?lang={{ lang }}">{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}</a>
+                        <a href="/annotations?lang={{ lang }}">{{ t('ann_page_title', lang) if t else 'Research Notes' }}</a>
                     </div>
                 </div>
 

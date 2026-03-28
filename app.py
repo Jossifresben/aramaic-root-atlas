@@ -37,7 +37,7 @@ TRANSLATIONS_DIR = os.path.join(DATA_DIR, 'translations')
 
 def _init():
     global _corpus, _extractor, _cognate_lookup, _glosser
-    global _i18n, _cognates_raw, _initialized
+    global _i18n, _cognates_raw, _initialized, _semantic_fields
 
     if _initialized:
         return
@@ -91,6 +91,12 @@ def _init():
         # Initialize word glosser
         _glosser = WordGlosser(_cognate_lookup, _extractor, ROOTS_DIR)
 
+        # Load semantic fields if available
+        sf_path = os.path.join(ROOTS_DIR, 'semantic_fields.json')
+        if os.path.exists(sf_path):
+            with open(sf_path, 'r', encoding='utf-8') as f:
+                _semantic_fields = json.load(f)
+
         _initialized = True
 
 
@@ -111,6 +117,17 @@ def _get_script() -> str:
 def _get_trans() -> str:
     t = request.args.get('trans', _get_lang())
     return t if t in VALID_TRANS else _get_lang()
+
+
+def _pick_gloss(cog, lang_code: str) -> str:
+    """Pick the best available gloss from a CognateEntry for the given UI language."""
+    if lang_code == 'es':
+        return cog.gloss_es or cog.gloss_en or ''
+    if lang_code == 'he':
+        return cog.gloss_he or cog.gloss_en or ''
+    if lang_code == 'ar':
+        return cog.gloss_ar or cog.gloss_en or ''
+    return cog.gloss_en or ''
 
 
 class TranslationProxy:
@@ -1776,11 +1793,12 @@ def api_diachronic_root():
     if root_syriac is None:
         return jsonify({'error': 'Invalid root'}), 400
 
+    trans = request.args.get('trans', 'en')
     root_entry = _extractor.lookup_root(root_syriac)
     gloss = _extractor.get_root_gloss(root_syriac)
     cognate = _cognate_lookup.lookup(root_syriac)
     if cognate and not gloss:
-        gloss = cognate.gloss_en
+        gloss = (cognate.gloss_es if trans == 'es' else cognate.gloss_en) or cognate.gloss_en
 
     # Build per-corpus data from root entry
     corpus_forms: dict[str, list[str]] = {}
@@ -1836,6 +1854,7 @@ def api_diachronic_shifts():
     except ValueError:
         return jsonify({'error': 'limit must be an integer'}), 400
     direction = request.args.get('direction', 'all')  # 'emerging', 'declining', 'all'
+    trans = request.args.get('trans', 'en')
     try:
         min_occurrences = int(request.args.get('min_occurrences', 3))
     except ValueError:
@@ -1878,7 +1897,7 @@ def api_diachronic_shifts():
         gloss = _extractor.get_root_gloss(root_syr)
         cognate = _cognate_lookup.lookup(root_syr)
         if cognate and not gloss:
-            gloss = cognate.gloss_en
+            gloss = (cognate.gloss_es if trans == 'es' else cognate.gloss_en) or cognate.gloss_en
 
         results.append({
             'root': root_syr,
@@ -1905,6 +1924,7 @@ def api_diachronic_unique():
     """Return roots attested in only one corpus."""
     _init()
     corpus_filter = request.args.get('corpus', '').strip() or None
+    trans = request.args.get('trans', 'en')
 
     results = []
     for root_entry in _extractor.get_all_roots():
@@ -1922,7 +1942,7 @@ def api_diachronic_unique():
             gloss = _extractor.get_root_gloss(root_syr)
             cognate = _cognate_lookup.lookup(root_syr)
             if cognate and not gloss:
-                gloss = cognate.gloss_en
+                gloss = (cognate.gloss_es if trans == 'es' else cognate.gloss_en) or cognate.gloss_en
             results.append({
                 'root': root_syr,
                 'root_translit': _translit_to_dash(root_syr),
@@ -1937,6 +1957,245 @@ def api_diachronic_unique():
         'total': len(results),
         'results': results,
     })
+
+
+_coll_ref_cache: dict = {}
+_semantic_fields: dict = {}
+
+
+@app.route('/api/collocations')
+def api_collocations():
+    """PMI-scored collocations for a target root."""
+    _init()
+    import math
+    root_input = request.args.get('root', '').strip()
+    if not root_input:
+        return jsonify({'error': 'root parameter required'}), 400
+    scope = request.args.get('scope', 'verse')  # 'verse' or 'chapter'
+    corpus_filter = request.args.get('corpus', '').strip() or None
+    try:
+        min_count = int(request.args.get('min_count', 3))
+    except ValueError:
+        min_count = 3
+    try:
+        limit = int(request.args.get('limit', 50))
+    except ValueError:
+        limit = 50
+
+    # Normalise root input
+    root_syriac = parse_root_input(root_input)
+    if not root_syriac:
+        return jsonify({'error': 'Could not parse root: ' + root_input}), 400
+
+    target_entry = _extractor.lookup_root(root_syriac)
+    if not target_entry:
+        for v in semitic_root_variants(root_syriac):
+            target_entry = _extractor.lookup_root(v)
+            if target_entry:
+                root_syriac = v
+                break
+    if not target_entry:
+        return jsonify({'error': 'Root not found', 'root': root_input}), 404
+
+    def _ref_key(ref: str) -> str:
+        if scope == 'chapter':
+            parts = ref.rsplit(':', 1)
+            return parts[0] if len(parts) == 2 else ref
+        return ref
+
+    def _build_refs(entry) -> set:
+        refs = set()
+        for m in entry.matches:
+            for ref in m.references:
+                if corpus_filter and _corpus.get_verse_corpus(ref) != corpus_filter:
+                    continue
+                refs.add(_ref_key(ref))
+        return refs
+
+    # Cache total ref universe
+    cache_key = (scope, corpus_filter or '')
+    if cache_key not in _coll_ref_cache:
+        total = set()
+        for re_ in _extractor.get_all_roots():
+            for m in re_.matches:
+                for ref in m.references:
+                    if corpus_filter and _corpus.get_verse_corpus(ref) != corpus_filter:
+                        continue
+                    total.add(_ref_key(ref))
+        _coll_ref_cache[cache_key] = total
+    total_refs = _coll_ref_cache[cache_key]
+    N = len(total_refs)
+    if N == 0:
+        return jsonify({'root': root_input, 'collocates': []})
+
+    target_refs = _build_refs(target_entry)
+    target_n = len(target_refs)
+    if target_n == 0:
+        return jsonify({'root': root_input, 'collocates': []})
+
+    lang_code = request.args.get('lang', 'en')
+    target_translit = _translit_to_dash(root_syriac)
+    target_gloss = _extractor.get_root_gloss(root_syriac)
+    cognate = _cognate_lookup.lookup(root_syriac)
+    if cognate:
+        cog_gloss = _pick_gloss(cognate, lang_code)
+        if cog_gloss:
+            target_gloss = cog_gloss
+
+    results = []
+    for other_entry in _extractor.get_all_roots():
+        other_syr = other_entry.root
+        if other_syr == root_syriac:
+            continue
+        other_refs = _build_refs(other_entry)
+        other_n = len(other_refs)
+        if other_n == 0:
+            continue
+        cooccur = len(target_refs & other_refs)
+        if cooccur < min_count:
+            continue
+        pmi = math.log2((N * cooccur) / (target_n * other_n))
+        gloss = _extractor.get_root_gloss(other_syr)
+        cog = _cognate_lookup.lookup(other_syr)
+        if cog:
+            cog_gloss = _pick_gloss(cog, lang_code)
+            if cog_gloss:
+                gloss = cog_gloss
+        # Example reference
+        example_ref = ''
+        example_text = ''
+        for m in other_entry.matches:
+            for ref in m.references:
+                if _ref_key(ref) in (target_refs & other_refs):
+                    example_ref = ref
+                    example_text = _corpus.get_verse_text(ref) or ''
+                    break
+            if example_ref:
+                break
+        results.append({
+            'root': other_syr,
+            'root_translit': _translit_to_dash(other_syr),
+            'gloss': gloss or '',
+            'cooccurrences': cooccur,
+            'pmi': round(pmi, 3),
+            'example_ref': example_ref,
+            'example_text': example_text[:120] if example_text else '',
+        })
+
+    results.sort(key=lambda x: -x['pmi'])
+    results = results[:limit]
+
+    return jsonify({
+        'root': root_input,
+        'root_translit': target_translit,
+        'root_gloss': target_gloss or '',
+        'target_refs': target_n,
+        'total_refs': N,
+        'scope': scope,
+        'corpus_filter': corpus_filter or 'all',
+        'collocates': results,
+    })
+
+
+@app.route('/collocations')
+def collocations_page():
+    _init()
+    lang = _get_lang()
+    initial_root = request.args.get('root', '')
+    return render_template('collocations.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang),
+                           initial_root=initial_root)
+
+
+@app.route('/annotations')
+def annotations_page():
+    _init()
+    lang = _get_lang()
+    return render_template('annotations.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang))
+
+
+_SEMANTIC_DOMAINS = [
+    'creation/cosmos', 'body/anatomy', 'kinship/family', 'speech/communication',
+    'motion/travel', 'legal/covenant', 'worship/cultic', 'agriculture/food',
+    'war/conflict', 'knowledge/wisdom', 'time', 'emotion/mental',
+    'commerce/material', 'nature/elements', 'existence/being',
+]
+
+
+@app.route('/api/semantic-fields')
+def api_semantic_fields_list():
+    """List all domains with root counts."""
+    _init()
+    if not _semantic_fields:
+        return jsonify({'domains': [], 'no_data': True})
+    counts = {}
+    for key, fields in _semantic_fields.items():
+        for field in fields:
+            counts[field] = counts.get(field, 0) + 1
+    domains = [{'domain': d, 'count': counts.get(d, 0)} for d in _SEMANTIC_DOMAINS]
+    return jsonify({'domains': domains})
+
+
+@app.route('/api/semantic-fields/<path:field>')
+def api_semantic_fields_detail(field: str):
+    """Return roots in a domain."""
+    _init()
+    if not _semantic_fields:
+        return jsonify({'field': field, 'roots': [], 'no_data': True})
+    lang_code = request.args.get('lang', 'en')
+    results = []
+    for key, fields in _semantic_fields.items():
+        if field not in fields:
+            continue
+        # Look up root data
+        root_syr = None
+        for re_ in _extractor.get_all_roots():
+            if _translit_to_dash(re_.root).lower() == key:
+                root_syr = re_.root
+                break
+        gloss = ''
+        corpus_counts = {}
+        total = 0
+        if root_syr:
+            gloss = _extractor.get_root_gloss(root_syr) or ''
+            cog = _cognate_lookup.lookup(root_syr)
+            if cog:
+                cog_gloss = _pick_gloss(cog, lang_code)
+                if cog_gloss:
+                    gloss = cog_gloss
+            re_entry = _extractor.lookup_root(root_syr)
+            if re_entry:
+                total = re_entry.total_occurrences
+                for m in re_entry.matches:
+                    for ref in m.references:
+                        cid = _corpus.get_verse_corpus(ref)
+                        if cid:
+                            corpus_counts[cid] = corpus_counts.get(cid, 0) + 1
+        else:
+            # Try cognates for gloss
+            cog_entry = _cognates_raw.get(key)
+            if cog_entry:
+                _lang_to_field = {'es': 'gloss_es', 'he': 'gloss_he', 'ar': 'gloss_ar'}
+                gloss_field = _lang_to_field.get(lang_code, 'gloss_en')
+                gloss = cog_entry.get(gloss_field, '') or cog_entry.get('gloss_en', '')
+        if total > 0:
+            results.append({
+                'key': key,
+                'root': root_syr or '',
+                'gloss': gloss,
+                'total_occurrences': total,
+                'corpus_counts': corpus_counts,
+            })
+    results.sort(key=lambda x: -x['total_occurrences'])
+    return jsonify({'field': field, 'count': len(results), 'roots': results})
+
+
+@app.route('/semantic-fields')
+def semantic_fields_page():
+    _init()
+    lang = _get_lang()
+    has_data = bool(_semantic_fields)
+    return render_template('semantic_fields.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang),
+                           has_data=has_data)
 
 
 if __name__ == '__main__':

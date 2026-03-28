@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('ann_page_title', lang) if t else 'Research Notes' }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:1000px;margin:0 auto;padding:1.5rem 1rem;">
+
+    <div class="storage-warning" id="storage-warning" style="display:none">
+        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">warning</span>
+        {{ t('storage_warning', lang) if t else 'Notes and bookmarks are stored in your browser\'s local storage. Clearing your browser cache will permanently delete them. Export regularly to keep a backup.' }}
+        <button class="storage-warning-dismiss" onclick="dismissStorageWarning()">{{ t('storage_warning_dismiss', lang) if t else 'Got it' }}</button>
+    </div>
+
+    <header style="margin-bottom:1.5rem">
+        <h1 style="margin-bottom:0.3rem">{{ t('ann_page_title', lang) if t else 'Research Notes' }}</h1>
+        <p class="subtitle">{{ t('ann_page_subtitle', lang) if t else 'Your inline annotations on verses and roots.' }}</p>
+    </header>
+
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center">
+        <button class="bm-action-btn" onclick="exportAnnJSON()">
+            <span class="material-symbols-outlined">download</span> JSON
+        </button>
+        <button class="bm-action-btn" onclick="exportAnnCSV()">
+            <span class="material-symbols-outlined">table_chart</span> CSV
+        </button>
+        <button class="bm-action-btn" onclick="exportAnnMarkdown()">
+            <span class="material-symbols-outlined">description</span> Markdown
+        </button>
+        <div id="tag-filter-chips" style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-left:0.5rem"></div>
+        <button id="tag-clear-btn" class="bm-tag-clear" onclick="clearAnnTagFilter()" style="display:none">
+            {{ t('ann_filter_tag', lang) if t else 'Show all' }}
+        </button>
+    </div>
+
+    <section>
+        <h2 style="font-size:1.1rem;margin-bottom:0.8rem;color:var(--muted)">
+            <span class="material-symbols-outlined" style="vertical-align:middle;font-size:18px">menu_book</span>
+            {{ t('ann_verses_heading', lang) if t else 'Annotated Verses' }}
+            <span id="verse-ann-count" style="font-size:0.85rem;font-weight:400"></span>
+        </h2>
+        <div id="verses-ann-list">
+            <div class="bookmarks-empty" id="verses-ann-empty" style="display:none">
+                <span class="material-symbols-outlined" style="font-size:36px;color:var(--text-muted)">edit_note</span>
+                <p>{{ t('ann_empty', lang) if t else 'No verse annotations yet. Click the note icon on any verse in the reader.' }}</p>
+            </div>
+        </div>
+    </section>
+
+    <section style="margin-top:2rem">
+        <h2 style="font-size:1.1rem;margin-bottom:0.8rem;color:var(--muted)">
+            <span class="material-symbols-outlined" style="vertical-align:middle;font-size:18px">hub</span>
+            {{ t('ann_roots_heading', lang) if t else 'Annotated Roots' }}
+            <span id="root-ann-count" style="font-size:0.85rem;font-weight:400"></span>
+        </h2>
+        <div id="roots-ann-list">
+            <div class="bookmarks-empty" id="roots-ann-empty" style="display:none">
+                <span class="material-symbols-outlined" style="font-size:36px;color:var(--text-muted)">edit_note</span>
+                <p>{{ t('ann_empty', lang) if t else 'No root annotations yet. Click "Add note" in the root card on the visualizer.' }}</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var currentLang = '{{ lang }}';
+var _annTagFilter = '';
+
+function dismissStorageWarning() {
+    localStorage.setItem('ann_warning_dismissed', '1');
+    document.getElementById('storage-warning').style.display = 'none';
+}
+if (!localStorage.getItem('ann_warning_dismissed')) {
+    document.getElementById('storage-warning').style.display = 'flex';
+}
+
+function escHtml(s) {
+    var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+}
+
+function renderAnnotations() {
+    var ann = getAnnotations();
+    var allTags = new Set();
+
+    // --- Verse annotations ---
+    var verseEntries = Object.entries(ann.verses || {});
+    if (_annTagFilter) {
+        verseEntries = verseEntries.filter(function(e) { return (e[1].tags || []).indexOf(_annTagFilter) >= 0; });
+    }
+    verseEntries.forEach(function(e) { (e[1].tags || []).forEach(function(t) { allTags.add(t); }); });
+
+    var vList = document.getElementById('verses-ann-list');
+    var vEmpty = document.getElementById('verses-ann-empty');
+    document.getElementById('verse-ann-count').textContent = '(' + verseEntries.length + ')';
+    if (verseEntries.length === 0) {
+        vEmpty.style.display = '';
+        vList.innerHTML = '';
+        vList.appendChild(vEmpty);
+    } else {
+        vEmpty.style.display = 'none';
+        var vh = '';
+        verseEntries.forEach(function(entry) {
+            var ref = entry[0], note = entry[1];
+            var parts = ref.match(/^(.+)\s(\d+):(\d+)$/);
+            var readUrl = parts ? '/read/' + encodeURIComponent(parts[1]) + '/' + parts[2] + '?lang=' + currentLang + '#v' + parts[3] : '#';
+            vh += '<div class="bm-card">';
+            vh += '<div class="bm-card-header"><a class="bm-ref" href="' + escHtml(readUrl) + '">' + escHtml(ref) + '</a>';
+            vh += '<span class="bm-date" style="font-size:0.78rem;color:var(--muted);margin-left:0.5rem">' + escHtml(note.updated || note.created || '') + '</span></div>';
+            vh += '<div class="bm-note-text" style="margin:0.4rem 0;font-size:0.92rem">' + escHtml(note.text) + '</div>';
+            if (note.tags && note.tags.length) {
+                vh += '<div class="bm-tag-chips">';
+                note.tags.forEach(function(t) { vh += '<span class="bm-chip" onclick="setAnnTagFilter(\'' + escHtml(t) + '\')">' + escHtml(t) + '</span>'; });
+                vh += '</div>';
+            }
+            vh += '<div style="display:flex;gap:0.4rem;margin-top:0.5rem">';
+            vh += '<button class="bm-action-btn" onclick="editAnnInline(\'verses\',\'' + escHtml(ref.replace(/'/g,"\\'")) + '\',this)">{{ t("ann_edit_note", lang) if t else "Edit" }}</button>';
+            vh += '<button class="bm-action-btn" onclick="deleteAnnEntry(\'verses\',\'' + escHtml(ref.replace(/'/g,"\\'")) + '\')">{{ t("ann_delete_confirm", lang) if t else "Delete" }}</button>';
+            vh += '</div></div>';
+        });
+        vList.innerHTML = vh;
+    }
+
+    // --- Root annotations ---
+    var rootEntries = Object.entries(ann.roots || {});
+    if (_annTagFilter) {
+        rootEntries = rootEntries.filter(function(e) { return (e[1].tags || []).indexOf(_annTagFilter) >= 0; });
+    }
+    rootEntries.forEach(function(e) { (e[1].tags || []).forEach(function(t) { allTags.add(t); }); });
+
+    var rList = document.getElementById('roots-ann-list');
+    var rEmpty = document.getElementById('roots-ann-empty');
+    document.getElementById('root-ann-count').textContent = '(' + rootEntries.length + ')';
+    if (rootEntries.length === 0) {
+        rEmpty.style.display = '';
+        rList.innerHTML = '';
+        rList.appendChild(rEmpty);
+    } else {
+        rEmpty.style.display = 'none';
+        var rh = '';
+        rootEntries.forEach(function(entry) {
+            var key = entry[0], note = entry[1];
+            var vizUrl = '/visualize/' + encodeURIComponent(key) + '?lang=' + currentLang;
+            rh += '<div class="bm-card">';
+            rh += '<div class="bm-card-header"><a class="bm-ref" href="' + escHtml(vizUrl) + '">' + escHtml(key.toUpperCase()) + '</a>';
+            rh += '<span class="bm-date" style="font-size:0.78rem;color:var(--muted);margin-left:0.5rem">' + escHtml(note.updated || note.created || '') + '</span></div>';
+            rh += '<div class="bm-note-text" style="margin:0.4rem 0;font-size:0.92rem">' + escHtml(note.text) + '</div>';
+            if (note.tags && note.tags.length) {
+                rh += '<div class="bm-tag-chips">';
+                note.tags.forEach(function(t) { rh += '<span class="bm-chip" onclick="setAnnTagFilter(\'' + escHtml(t) + '\')">' + escHtml(t) + '</span>'; });
+                rh += '</div>';
+            }
+            rh += '<div style="display:flex;gap:0.4rem;margin-top:0.5rem">';
+            rh += '<button class="bm-action-btn" onclick="editAnnInline(\'roots\',\'' + escHtml(key.replace(/'/g,"\\'")) + '\',this)">{{ t("ann_edit_note", lang) if t else "Edit" }}</button>';
+            rh += '<button class="bm-action-btn" onclick="deleteAnnEntry(\'roots\',\'' + escHtml(key.replace(/'/g,"\\'")) + '\')">{{ t("ann_delete_confirm", lang) if t else "Delete" }}</button>';
+            rh += '</div></div>';
+        });
+        rList.innerHTML = rh;
+    }
+
+    // Tag chips
+    var chipEl = document.getElementById('tag-filter-chips');
+    var clearBtn = document.getElementById('tag-clear-btn');
+    chipEl.innerHTML = '';
+    allTags.forEach(function(t) {
+        var span = document.createElement('span');
+        span.className = 'bm-chip' + (t === _annTagFilter ? ' active' : '');
+        span.textContent = t;
+        span.onclick = function() { setAnnTagFilter(t); };
+        chipEl.appendChild(span);
+    });
+    clearBtn.style.display = _annTagFilter ? '' : 'none';
+}
+
+function setAnnTagFilter(tag) {
+    _annTagFilter = tag;
+    renderAnnotations();
+}
+function clearAnnTagFilter() {
+    _annTagFilter = '';
+    renderAnnotations();
+}
+
+function editAnnInline(type, key, btn) {
+    var ann = getAnnotations();
+    var entry = (ann[type] || {})[key];
+    if (!entry) return;
+    var card = btn.closest('.bm-card');
+    var noteEl = card.querySelector('.bm-note-text');
+    if (card.querySelector('.ann-edit-ta')) return; // already open
+    var ta = document.createElement('textarea');
+    ta.className = 'verse-note-ta ann-edit-ta';
+    ta.maxLength = 500;
+    ta.value = entry.text;
+    ta.style.width = '100%';
+    noteEl.replaceWith(ta);
+    var saveBtn = document.createElement('button');
+    saveBtn.className = 'verse-note-save';
+    saveBtn.textContent = '{{ t("ann_save", lang) if t else "Save" }}';
+    saveBtn.onclick = function() {
+        var text = ta.value.trim();
+        if (text) setAnnotation(type, key, text, entry.tags || []);
+        else deleteAnnotation(type, key);
+        renderAnnotations();
+    };
+    btn.replaceWith(saveBtn);
+}
+
+function deleteAnnEntry(type, key) {
+    if (confirm('{{ t("ann_delete_confirm", lang) if t else "Delete this annotation?" }}')) {
+        deleteAnnotation(type, key);
+        renderAnnotations();
+    }
+}
+
+function exportAnnJSON() {
+    var ann = getAnnotations();
+    var blob = new Blob([JSON.stringify(ann, null, 2)], {type: 'application/json'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'aramaic-atlas-annotations.json'; a.click();
+}
+
+function exportAnnCSV() {
+    var ann = getAnnotations();
+    var lines = ['Type,Key,Note,Tags,Created,Updated'];
+    Object.entries(ann.verses || {}).forEach(function(e) {
+        lines.push('verse,"' + e[0].replace(/"/g,'""') + '","' + e[1].text.replace(/"/g,'""') + '","' + (e[1].tags||[]).join(';') + '",' + (e[1].created||'') + ',' + (e[1].updated||''));
+    });
+    Object.entries(ann.roots || {}).forEach(function(e) {
+        lines.push('root,"' + e[0].replace(/"/g,'""') + '","' + e[1].text.replace(/"/g,'""') + '","' + (e[1].tags||[]).join(';') + '",' + (e[1].created||'') + ',' + (e[1].updated||''));
+    });
+    var blob = new Blob([lines.join('\n')], {type: 'text/csv'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'aramaic-atlas-annotations.csv'; a.click();
+}
+
+function exportAnnMarkdown() {
+    var ann = getAnnotations();
+    var lines = ['# Aramaic Root Atlas — Research Notes', ''];
+    var vEntries = Object.entries(ann.verses || {});
+    if (vEntries.length) {
+        lines.push('## Verses', '');
+        vEntries.forEach(function(e) {
+            lines.push('### ' + e[0]);
+            lines.push(e[1].text);
+            if (e[1].tags && e[1].tags.length) lines.push('**Tags:** ' + e[1].tags.join(', '));
+            lines.push('*Updated: ' + (e[1].updated || e[1].created || '') + '*', '');
+        });
+    }
+    var rEntries = Object.entries(ann.roots || {});
+    if (rEntries.length) {
+        lines.push('## Roots', '');
+        rEntries.forEach(function(e) {
+            lines.push('### ' + e[0].toUpperCase());
+            lines.push(e[1].text);
+            if (e[1].tags && e[1].tags.length) lines.push('**Tags:** ' + e[1].tags.join(', '));
+            lines.push('*Updated: ' + (e[1].updated || e[1].created || '') + '*', '');
+        });
+    }
+    var blob = new Blob([lines.join('\n')], {type: 'text/markdown'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'aramaic-atlas-annotations.md'; a.click();
+}
+
+renderAnnotations();
+</script>
+{% endblock %}
