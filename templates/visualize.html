@@ -80,6 +80,36 @@
                         </div>
                     </div>
 
+                    <!-- Stem Distribution -->
+                    <div class="ficha-section ficha-stems-section" id="ficha-stems-section" style="display:none;">
+                        <h3 class="ficha-section-title">
+                            <span class="material-symbols-outlined">bar_chart</span>
+                            {{ t('stem_distribution') }}
+                        </h3>
+                        <div id="ficha-stem-bars"></div>
+                    </div>
+
+                    <!-- Paradigm Table -->
+                    <div class="ficha-section ficha-paradigm-section" id="ficha-paradigm-section" style="display:none;">
+                        <h3 class="ficha-section-title">
+                            <span class="material-symbols-outlined">grid_on</span>
+                            {{ t('paradigm_table') }}
+                        </h3>
+                        <div id="ficha-paradigm"></div>
+                    </div>
+
+                    <!-- Diachronic Usage -->
+                    <div class="ficha-section ficha-diachronic-section" id="ficha-diachronic-section" style="display:none;">
+                        <h3 class="ficha-section-title">
+                            <span class="material-symbols-outlined">timeline</span>
+                            {{ t('diachronic_title') }}
+                        </h3>
+                        <div id="ficha-diachronic-bars" class="diachronic-bars"></div>
+                        <a id="ficha-diachronic-link" href="#" class="ficha-read-link" style="font-size:.8rem;margin-top:.5rem;display:inline-block;">
+                            {{ t('diachronic_root_view') }} &rarr;
+                        </a>
+                    </div>
+
                     <!-- Sister roots -->
                     <div class="ficha-section ficha-sisters-section">
                         <h3 class="ficha-section-title">
@@ -111,36 +141,6 @@
                                 <tbody id="ficha-table-body"></tbody>
                             </table>
                         </div>
-                    </div>
-
-                    <!-- Stem Distribution -->
-                    <div class="ficha-section ficha-stems-section" id="ficha-stems-section" style="display:none;">
-                        <h3 class="ficha-section-title">
-                            <span class="material-symbols-outlined">bar_chart</span>
-                            {{ t('stem_distribution') }}
-                        </h3>
-                        <div id="ficha-stem-bars"></div>
-                    </div>
-
-                    <!-- Paradigm Table -->
-                    <div class="ficha-section ficha-paradigm-section" id="ficha-paradigm-section" style="display:none;">
-                        <h3 class="ficha-section-title">
-                            <span class="material-symbols-outlined">grid_on</span>
-                            {{ t('paradigm_table') }}
-                        </h3>
-                        <div id="ficha-paradigm"></div>
-                    </div>
-
-                    <!-- Diachronic Usage -->
-                    <div class="ficha-section ficha-diachronic-section" id="ficha-diachronic-section" style="display:none;">
-                        <h3 class="ficha-section-title">
-                            <span class="material-symbols-outlined">timeline</span>
-                            {{ t('diachronic_title') }}
-                        </h3>
-                        <div id="ficha-diachronic-bars" class="diachronic-bars"></div>
-                        <a id="ficha-diachronic-link" href="#" class="ficha-read-link" style="font-size:.8rem;margin-top:.5rem;display:inline-block;">
-                            {{ t('diachronic_root_view') }} &rarr;
-                        </a>
                     </div>
 
                     <!-- Concordance link -->
@@ -434,7 +434,7 @@
                 .then(function(r) { return r.json(); })
                 .then(function(pd) {
                     var stems = pd.stems || {};
-                    var stemKeys = Object.keys(stems);
+                    var stemKeys = Object.keys(stems).filter(function(k) { return k !== 'Unknown'; });
                     if (stemKeys.length === 0) { paradigmSec.style.display = 'none'; return; }
                     paradigmSec.style.display = '';
                     paradigmEl.innerHTML = '';

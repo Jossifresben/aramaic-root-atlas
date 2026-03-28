@@ -1334,6 +1334,8 @@ def api_root_family():
             paradigmatic_ref = best_match.references[0]
         if paradigmatic_ref:
             verse_text = _corpus.get_verse_translation(paradigmatic_ref, trans)
+            if not verse_text and trans != 'en':
+                verse_text = _corpus.get_verse_translation(paradigmatic_ref, 'en')
             if verse_text:
                 paradigmatic_verse = verse_text
             syriac_text = _corpus.get_verse_text(paradigmatic_ref)

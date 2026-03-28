@@ -23,9 +23,12 @@
     <!-- Root View -->
     <div id="panel-root">
         <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
-            <input type="text" id="diac-root-input" placeholder="e.g. SH-L-M, K-T-B"
-                   value="{{ initial_root }}"
-                   style="flex:1;min-width:160px;max-width:260px;padding:.5rem .8rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
+            <div class="autocomplete-wrapper" style="flex:1;min-width:160px;max-width:260px;">
+                <input type="text" id="diac-root-input" placeholder="e.g. SH-L-M, K-T-B"
+                       value="{{ initial_root }}" autocomplete="off"
+                       style="width:100%;padding:.5rem .8rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
+                <div id="diac-ac-list" class="autocomplete-list"></div>
+            </div>
             <button onclick="loadRootView()" style="padding:.5rem 1.2rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;">
                 Analyze
             </button>
@@ -142,9 +145,61 @@
         });
     };
 
-    document.getElementById('diac-root-input').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') loadRootView();
-    });
+    // Autocomplete for root input
+    (function() {
+        var inp = document.getElementById('diac-root-input');
+        var acList = document.getElementById('diac-ac-list');
+        var acTimeout = null;
+
+        inp.addEventListener('keydown', function(e) {
+            if (e.key === '-') e.preventDefault();
+            if (e.key === 'Enter') { acList.innerHTML = ''; loadRootView(); }
+        });
+
+        inp.addEventListener('input', function(e) {
+            var v = this.value.toUpperCase();
+            if (e.inputType && e.inputType.indexOf('delete') !== -1) { this.value = v; fetchAc(v); return; }
+            var clean = v.replace(/-+$/, '');
+            var parts = clean.split('-').filter(function(p) { return p.length > 0; });
+            var last = parts[parts.length - 1] || '';
+            var completedParts = parts.length - (last.length > 0 ? 1 : 0);
+            var digraphs = ['SH','KH','TH','TS'], digraphStarts = ['S','K','T'];
+            var isComplete = (last.length === 2 && digraphs.indexOf(last) !== -1) || (last.length === 1 && digraphStarts.indexOf(last) === -1);
+            var isInvalidDigraph = (last.length === 2 && digraphs.indexOf(last) === -1);
+            if (isComplete && completedParts < 2) { this.value = v + '-'; }
+            else if (isInvalidDigraph && completedParts < 2) { var np = parts.slice(0,-1).concat([last[0],last[1]]); var fx = np.join('-'); if (np.length < 3) fx += '-'; this.value = fx; }
+            else { this.value = v; }
+            fetchAc(this.value.replace(/-+$/,''));
+        });
+
+        function fetchAc(prefix) {
+            clearTimeout(acTimeout);
+            if (!prefix) { acList.innerHTML = ''; return; }
+            acTimeout = setTimeout(function() {
+                fetch('/api/suggest?prefix=' + encodeURIComponent(prefix))
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        acList.innerHTML = '';
+                        data.forEach(function(d) {
+                            var item = document.createElement('div');
+                            item.className = 'autocomplete-item';
+                            item.innerHTML = '<span class="ac-syriac">' + escHtml(d.root) + '</span> <span class="ac-translit">' + escHtml(d.translit) + '</span> <span class="ac-count">(' + d.count + ')</span>';
+                            item.setAttribute('data-value', d.translit);
+                            item.addEventListener('click', function() {
+                                inp.value = this.getAttribute('data-value');
+                                acList.innerHTML = '';
+                                loadRootView();
+                            });
+                            acList.appendChild(item);
+                        });
+                    });
+            }, 150);
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!inp.contains(e.target) && !acList.contains(e.target)) acList.innerHTML = '';
+        });
+    })();
 
     window.loadRootView = function() {
         var root = document.getElementById('diac-root-input').value.trim();
