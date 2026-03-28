@@ -109,6 +109,56 @@ body {
     font-size: 0.95rem;
 }
 .nav-links a:hover { color: white; }
+
+/* Nav dropdowns */
+.nav-dropdown {
+    position: relative;
+}
+.nav-drop-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-family: inherit;
+}
+.nav-drop-btn:hover { color: white; }
+.drop-arrow {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    transition: transform 0.15s;
+}
+.nav-dropdown.open .drop-arrow { transform: rotate(180deg); }
+.nav-drop-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    min-width: 170px;
+    z-index: 200;
+    padding: 0.3rem 0;
+    white-space: nowrap;
+}
+.nav-dropdown.open .nav-drop-menu { display: block; }
+.nav-drop-menu a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.nav-drop-menu a:hover {
+    color: white;
+    background: rgba(255,255,255,0.1);
+}
 .nav-icons {
     display: flex;
     align-items: center;
@@ -1561,12 +1611,30 @@ body {
         gap: 0;
     }
     .nav-links.open { display: flex; }
-    .nav-links > a {
+    .nav-links > a,
+    .nav-links .nav-drop-btn {
         padding: 0.6rem 1rem;
         font-size: 0.95rem;
         border-bottom: 1px solid rgba(255,255,255,0.1);
+        width: 100%;
+        text-align: left;
+        justify-content: space-between;
     }
-    .nav-links > a:hover { background: rgba(255,255,255,0.1); }
+    .nav-links > a:hover,
+    .nav-links .nav-drop-btn:hover { background: rgba(255,255,255,0.1); }
+    .nav-dropdown { width: 100%; }
+    .nav-drop-menu {
+        position: static;
+        transform: none;
+        box-shadow: none;
+        border-radius: 0;
+        background: rgba(0,0,0,0.15);
+        padding: 0;
+    }
+    .nav-drop-menu a {
+        padding-left: 2rem;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
     .nav-icons {
         display: flex;
         flex-direction: row;

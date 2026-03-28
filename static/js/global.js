@@ -91,7 +91,27 @@
         var ld = document.getElementById('lang-dropdown');
         if (sd) sd.classList.remove('open');
         if (ld) ld.classList.remove('open');
+        document.querySelectorAll('.nav-dropdown').forEach(function(d) { d.classList.remove('open'); });
     }
+
+    // --- Nav dropdowns (Explore / Research) ---
+    document.querySelectorAll('.nav-drop-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var dropdown = btn.closest('.nav-dropdown');
+            var wasOpen = dropdown.classList.contains('open');
+            closeAllDropdowns();
+            if (!wasOpen) {
+                dropdown.classList.add('open');
+                btn.setAttribute('aria-expanded', 'true');
+            } else {
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+    document.querySelectorAll('.nav-drop-menu').forEach(function(menu) {
+        menu.addEventListener('click', function(e) { e.stopPropagation(); });
+    });
 
     // --- Language Dropdown ---
     var langToggle = document.getElementById('lang-toggle');
