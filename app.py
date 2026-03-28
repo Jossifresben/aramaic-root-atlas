@@ -1462,12 +1462,18 @@ def hapax_page():
 def api_hapax():
     """Return roots/forms with occurrence count <= max_freq."""
     _init()
-    max_freq = int(request.args.get('max_freq', 1))
+    try:
+        max_freq = int(request.args.get('max_freq', 1))
+    except ValueError:
+        return jsonify({'error': 'max_freq must be an integer'}), 400
     max_freq = max(1, min(max_freq, 10))
     corpus_filter = request.args.get('corpus', '').strip() or None
     scope = request.args.get('scope', 'root')  # 'root' or 'form'
     sort = request.args.get('sort', 'alpha')   # 'alpha', 'confidence', 'corpus'
-    limit = int(request.args.get('limit', 500))
+    try:
+        limit = int(request.args.get('limit', 500))
+    except ValueError:
+        return jsonify({'error': 'limit must be an integer'}), 400
 
     results = []
     for root_entry in _extractor.get_all_roots():
@@ -1542,7 +1548,10 @@ def api_hapax():
     if sort == 'confidence':
         results.sort(key=lambda x: x['confidence'], reverse=True)
     elif sort == 'corpus':
-        results.sort(key=lambda x: list(x['corpus_attestation'].keys())[0] if x['corpus_attestation'] else '')
+        corpus_order = {cid: i for i, (cid, _, _) in enumerate(CORPUS_CHRONOLOGY)}
+        results.sort(key=lambda x: min(
+            (corpus_order.get(c, 99) for c in x['corpus_attestation']), default=99
+        ))
     else:  # alpha
         results.sort(key=lambda x: x['root_translit'])
 
@@ -1583,9 +1592,15 @@ def api_concordance():
     corpus_filter = request.args.get('corpus', '').strip() or None
     sort = request.args.get('sort', 'book')       # 'book', 'frequency', 'form'
     group_by = request.args.get('group_by', 'none')  # 'form' or 'none'
-    context_words = int(request.args.get('context_words', 5))
+    try:
+        context_words = int(request.args.get('context_words', 5))
+    except ValueError:
+        return jsonify({'error': 'context_words must be an integer'}), 400
     context_words = max(2, min(context_words, 15))
-    limit = int(request.args.get('limit', 500))
+    try:
+        limit = int(request.args.get('limit', 500))
+    except ValueError:
+        return jsonify({'error': 'limit must be an integer'}), 400
     trans = _get_trans()
     lang = _get_lang()
 
@@ -1767,16 +1782,17 @@ def api_diachronic_root():
     if cognate and not gloss:
         gloss = cognate.gloss_en
 
-    # Build per-corpus occurrence lookup from root entry
-    corpus_counts: dict[str, int] = {}
+    # Build per-corpus data from root entry
     corpus_forms: dict[str, list[str]] = {}
     corpus_stems: dict[str, dict[str, int]] = {}
     if root_entry:
+        # Use pre-computed corpus_counts from build_index for raw counts
         for m in root_entry.matches:
             stem = _extractor.lookup_word_stem(m.form)
             for ref in m.references:
                 cid = _corpus.get_verse_corpus(ref)
-                corpus_counts[cid] = corpus_counts.get(cid, 0) + 1
+                if not cid:
+                    continue
                 if cid not in corpus_forms:
                     corpus_forms[cid] = []
                 if m.form not in corpus_forms[cid]:
@@ -1785,6 +1801,7 @@ def api_diachronic_root():
                     if cid not in corpus_stems:
                         corpus_stems[cid] = {}
                     corpus_stems[cid][stem] = corpus_stems[cid].get(stem, 0) + 1
+    corpus_counts = root_entry.corpus_counts if root_entry else {}
 
     data = []
     for cid, label, period in CORPUS_CHRONOLOGY:
@@ -1814,9 +1831,15 @@ def api_diachronic_root():
 def api_diachronic_shifts():
     """Return roots with the biggest frequency shifts across corpora."""
     _init()
-    limit = int(request.args.get('limit', 50))
+    try:
+        limit = int(request.args.get('limit', 50))
+    except ValueError:
+        return jsonify({'error': 'limit must be an integer'}), 400
     direction = request.args.get('direction', 'all')  # 'emerging', 'declining', 'all'
-    min_occurrences = int(request.args.get('min_occurrences', 3))
+    try:
+        min_occurrences = int(request.args.get('min_occurrences', 3))
+    except ValueError:
+        return jsonify({'error': 'min_occurrences must be an integer'}), 400
 
     # Pre-compute total words per corpus
     corpus_totals = {cid: _corpus.total_words(cid) for cid, _, _ in CORPUS_CHRONOLOGY}
@@ -1827,13 +1850,8 @@ def api_diachronic_shifts():
             continue
         root_syr = root_entry.root
 
-        # Count per corpus
-        counts = {cid: 0 for cid, _, _ in CORPUS_CHRONOLOGY}
-        for m in root_entry.matches:
-            for ref in m.references:
-                cid = _corpus.get_verse_corpus(ref)
-                if cid in counts:
-                    counts[cid] += 1
+        # Use pre-computed per-corpus counts from build_index
+        counts = {cid: root_entry.corpus_counts.get(cid, 0) for cid, _, _ in CORPUS_CHRONOLOGY}
 
         # Normalized frequencies
         freqs = []

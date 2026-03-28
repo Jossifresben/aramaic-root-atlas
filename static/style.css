@@ -2520,3 +2520,25 @@ body {
     gap: 0.25rem;
     font-size: 0.82rem;
 }
+/* ── Mobile breakpoints for scholarly feature tables ── */
+@media (max-width: 600px) {
+    /* KWIC: collapse to stacked layout on small screens */
+    .kwic-table { table-layout: auto; font-size: .78rem; }
+    .kwic-table colgroup { display: none; }
+    .kwic-left  { width: 30% !important; }
+    .kwic-kw    { width: 20% !important; }
+    .kwic-right { width: 30% !important; }
+    .kwic-ref, .kwic-meta { width: auto !important; font-size: .68rem; }
+
+    /* Hapax table: hide confidence column, compress */
+    .hapax-table th:nth-child(3),
+    .hapax-table td:nth-child(3) { display: none; }
+    .hapax-table { font-size: .78rem; }
+
+    /* Diachronic bars: tighten label width */
+    .diac-label { min-width: 5rem; font-size: .75rem; }
+    .diac-count { font-size: .72rem; }
+
+    /* Concordance controls: stack vertically */
+    .kwic-wrap { font-size: .8rem; }
+}

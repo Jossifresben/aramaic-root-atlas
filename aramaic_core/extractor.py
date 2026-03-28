@@ -32,6 +32,7 @@ class RootEntry:
     root_transliteration: str
     matches: list[RootMatch] = field(default_factory=list)
     total_occurrences: int = 0
+    corpus_counts: dict[str, int] = field(default_factory=dict)
 
 
 class RootExtractor:
@@ -357,6 +358,10 @@ class RootExtractor:
                 )
                 entry.matches.append(match)
                 entry.total_occurrences += len(refs)
+                for ref in refs:
+                    cid = self.corpus.get_verse_corpus(ref)
+                    if cid:
+                        entry.corpus_counts[cid] = entry.corpus_counts.get(cid, 0) + 1
 
             entry.matches.sort(key=lambda m: m.count, reverse=True)
             self._root_index[root_str] = entry

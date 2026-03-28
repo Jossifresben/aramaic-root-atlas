@@ -33,7 +33,7 @@ PROCLITIC_GLOSSES = {
 
 VERBAL_PREFIX_GLOSSES = {
     '\u0710\u072C':             {'en': '[pass]', 'es': '[pas]'},     # ܐܬ Ethpeel
-    '\u0710\u072B\u072C':       {'en': '[pass]', 'es': '[pas]'},     # ܐܫܬ Eshtaphal
+    '\u0710\u072B\u072C':       {'en': '[pass]', 'es': '[pas]'},     # ܐܫܬ Ettaphal (passive of Shafel)
     '\u072B':                   {'en': '[caus]', 'es': '[caus]'},    # ܫ Shafel causative
     '\u0721':                   {'en': '[ptcp]', 'es': '[part]'},    # ܡ participle
     '\u0722':                   {'en': '[impf]', 'es': '[impf]'},    # ܢ 3ms imperfect
