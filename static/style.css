@@ -109,6 +109,56 @@ body {
     font-size: 0.95rem;
 }
 .nav-links a:hover { color: white; }
+
+/* Nav dropdowns */
+.nav-dropdown {
+    position: relative;
+}
+.nav-drop-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-family: inherit;
+}
+.nav-drop-btn:hover { color: white; }
+.drop-arrow {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    transition: transform 0.15s;
+}
+.nav-dropdown.open .drop-arrow { transform: rotate(180deg); }
+.nav-drop-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    min-width: 170px;
+    z-index: 200;
+    padding: 0.3rem 0;
+    white-space: nowrap;
+}
+.nav-dropdown.open .nav-drop-menu { display: block; }
+.nav-drop-menu a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.nav-drop-menu a:hover {
+    color: white;
+    background: rgba(255,255,255,0.1);
+}
 .nav-icons {
     display: flex;
     align-items: center;
@@ -1154,6 +1204,60 @@ body {
     font-weight: 500;
 }
 .wp-link:hover { text-decoration: underline; }
+.wp-stem { margin-bottom: 0.3rem; }
+
+/* Verb stem badges */
+.stem-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.02em;
+    color: #fff;
+}
+.stem-peal      { background: #6b7280; }
+.stem-ethpeel   { background: #2563eb; }
+.stem-pael      { background: #d97706; }
+.stem-ethpaal   { background: #4f46e5; }
+.stem-aphel     { background: #059669; }
+.stem-shafel    { background: #7c3aed; }
+.stem-ettaphal  { background: #0d9488; }
+.stem-unknown   { background: #9ca3af; }
+
+/* KWIC Concordance table */
+.kwic-wrap { overflow-x: auto; }
+.kwic-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: .88rem; }
+.kwic-table th, .kwic-table td { padding: .35rem .5rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.kwic-table th { background: var(--bg); font-weight: 600; color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+.kwic-left  { width: 30%; text-align: right; direction: rtl; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--syriac-font); }
+.kwic-kw    { width: 14%; text-align: center; font-family: var(--syriac-font); font-weight: 700; color: var(--accent); }
+.kwic-right { width: 30%; text-align: left; direction: rtl; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--syriac-font); }
+.kwic-ref   { width: 12%; font-size: .78rem; white-space: nowrap; }
+.kwic-meta  { width: 14%; }
+.kwic-group-header { background: var(--border); font-weight: 600; padding: .4rem .5rem; font-size: .82rem; }
+
+/* Diachronic bars */
+.diachronic-bars { display: flex; flex-direction: column; gap: .25rem; }
+.diac-row { display: flex; align-items: center; gap: .5rem; font-size: .82rem; }
+.diac-label { width: 8rem; flex-shrink: 0; }
+.diac-bar-wrap { flex: 1; background: var(--border); border-radius: 3px; height: 12px; overflow: hidden; }
+.diac-bar-fill { height: 100%; border-radius: 3px; transition: width .4s; }
+.diac-count { width: 3rem; text-align: right; color: var(--muted); }
+
+/* Hapax table */
+.hapax-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.hapax-table th, .hapax-table td { padding: .4rem .6rem; border-bottom: 1px solid var(--border); }
+.hapax-table th { background: var(--bg); font-weight: 600; color: var(--muted); font-size: .78rem; text-transform: uppercase; }
+.hapax-table .hx-root { font-family: var(--syriac-font); font-size: 1rem; direction: rtl; }
+
+/* Shared: btn-secondary */
+.btn-secondary {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: .4rem .9rem; border-radius: 6px; font-size: .85rem; font-weight: 500;
+    background: var(--border); color: var(--fg); text-decoration: none; border: none; cursor: pointer;
+}
+.btn-secondary:hover { background: var(--accent-light); color: var(--accent); }
 
 /* Chapter roots summary */
 .ch-roots-btn {
@@ -1507,12 +1611,30 @@ body {
         gap: 0;
     }
     .nav-links.open { display: flex; }
-    .nav-links > a {
+    .nav-links > a,
+    .nav-links .nav-drop-btn {
         padding: 0.6rem 1rem;
         font-size: 0.95rem;
         border-bottom: 1px solid rgba(255,255,255,0.1);
+        width: 100%;
+        text-align: left;
+        justify-content: space-between;
     }
-    .nav-links > a:hover { background: rgba(255,255,255,0.1); }
+    .nav-links > a:hover,
+    .nav-links .nav-drop-btn:hover { background: rgba(255,255,255,0.1); }
+    .nav-dropdown { width: 100%; }
+    .nav-drop-menu {
+        position: static;
+        transform: none;
+        box-shadow: none;
+        border-radius: 0;
+        background: rgba(0,0,0,0.15);
+        padding: 0;
+    }
+    .nav-drop-menu a {
+        padding-left: 2rem;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
     .nav-icons {
         display: flex;
         flex-direction: row;
@@ -2465,4 +2587,26 @@ body {
     align-items: center;
     gap: 0.25rem;
     font-size: 0.82rem;
+}
+/* ── Mobile breakpoints for scholarly feature tables ── */
+@media (max-width: 600px) {
+    /* KWIC: collapse to stacked layout on small screens */
+    .kwic-table { table-layout: auto; font-size: .78rem; }
+    .kwic-table colgroup { display: none; }
+    .kwic-left  { width: 30% !important; }
+    .kwic-kw    { width: 20% !important; }
+    .kwic-right { width: 30% !important; }
+    .kwic-ref, .kwic-meta { width: auto !important; font-size: .68rem; }
+
+    /* Hapax table: hide confidence column, compress */
+    .hapax-table th:nth-child(3),
+    .hapax-table td:nth-child(3) { display: none; }
+    .hapax-table { font-size: .78rem; }
+
+    /* Diachronic bars: tighten label width */
+    .diac-label { min-width: 5rem; font-size: .75rem; }
+    .diac-count { font-size: .72rem; }
+
+    /* Concordance controls: stack vertically */
+    .kwic-wrap { font-size: .8rem; }
 }

@@ -41,6 +41,7 @@ BA_VERBAL_PREFIXES = [
     'את',   # it- (reflexive, Aramaic)
     'אשת',  # isht- (Aramaic reflexive)
     'מת',   # mit- (participle reflexive)
+    'ש',    # sh- (Shafel causative)
     'מ',    # m- (participle)
     'נ',    # n- (N-stem)
     'ת',    # t- (2nd person / 3fs)

@@ -13,8 +13,9 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
   - `cognates.py` — `CognateLookup`: Hebrew, Arabic & Greek cognate lookup
   - `glosser.py` — `WordGlosser`: compositional word-level glossing (EN/ES)
 - **app.py** — Flask app (port 5001)
-- **templates/** — Jinja2 templates (base, index, browse, read, about)
-- **static/style.css** — CSS with corpus-coded color variables
+- **templates/** — Jinja2 templates (base, index, browse, read, about, hapax, concordance, diachronic)
+- **static/style.css** — CSS with corpus-coded color variables and stem-badge palette
+- **static/autocomplete.js** — Shared root autocomplete widget (`initRootAutocomplete`)
 - **data/** — Organized subdirectories:
   - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv, targum_onkelos.csv)
   - `roots/` — cognates.json, known_roots.json, stopwords.json, word_glosses_override.json
@@ -68,6 +69,16 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - `GET /api/verse?ref=Matthew+5:3` — Single verse with word-level root data
 - `GET /api/cognate-lookup?word=shalom` — Reverse lookup roots by Hebrew/Arabic/transliterated cognate
 - `GET /api/reverse-search?q=peace&lang=en` — Search roots by English/Spanish meaning
+- `GET /hapax` — Hapax legomena finder page
+- `GET /api/hapax?max_freq=1&corpus=&scope=root&sort=alpha&limit=200` — Rare-word data (roots/forms with ≤N occurrences)
+- `GET /concordance?root=SH-L-M` — KWIC concordance page
+- `GET /api/concordance?root=SH-L-M&corpus=&sort=book&group_by=form&context_words=5&limit=500` — Concordance data with left/keyword/right context
+- `GET /api/concordance/export?root=SH-L-M&format=tei` — Server-side TEI XML export
+- `GET /api/paradigm?root=K-T-B` — Word forms grouped by verb stem
+- `GET /diachronic` — Diachronic analysis page (Root View + Shifts View tabs)
+- `GET /api/diachronic/root?root=K-T-B` — Per-root normalized frequency across corpora in chronological order
+- `GET /api/diachronic/shifts?limit=50&direction=emerging&min_occurrences=3` — Roots with largest frequency shifts across corpora
+- `GET /api/diachronic/unique?corpus=biblical_aramaic` — Roots attested in only one corpus
 
 ## Run
 ```bash
@@ -129,11 +140,18 @@ python3 app.py  # starts on port 5001
 
 ## Scholarly Improvements
 - ✅ Root confidence scoring (High ≥0.8, Medium 0.5-0.8, Low <0.5)
-- ✅ Word-level root display in reader (click word → popover with root, gloss, confidence, visualizer link)
+- ✅ Word-level root display in reader (click word → popover with root, gloss, confidence, verb stem, visualizer link)
 - ✅ Chapter root summary ("Roots in this chapter" toggle with frequency table, CSV/JSON export)
 - ✅ Methodological caveats on About page
 - ✅ Enhanced bookmarks (tags, CSV export, copy citation)
 - ✅ CITATION.cff for academic citation
+
+## Scholarly Features (Research Expansion)
+- ✅ **Verb Stem (Binyan) Analysis** — classifies word forms into Peal/Ethpeel/Pael/Ethpaal/Aphel/Shafel/Ettaphal; stem badge in word popover; stem distribution bars + paradigm table in root card; `/api/paradigm` endpoint
+- ✅ **Hapax Legomena Finder** — `/hapax` page with frequency slider (1–5), corpus filter, scope toggle (root/form), sort options, CSV/JSON export; `/api/hapax` endpoint
+- ✅ **KWIC Concordance with Export** — `/concordance` page with left-context | keyword | right-context layout; group by form or stem; context-width slider; CSV/JSON/plain-text/TEI XML export; `/api/concordance` + `/api/concordance/export` endpoints
+- ✅ **Diachronic Root Analysis** — `/diachronic` page with Root View (normalized frequency bars in chronological order) and Shifts View (roots with largest frequency changes, magnitude + direction); `/api/diachronic/root`, `/api/diachronic/shifts`, `/api/diachronic/unique` endpoints
+- ✅ Shared `static/autocomplete.js` — `initRootAutocomplete()` used on concordance, diachronic, and home pages
 
 ## Conventions
 - Syriac text uses Unicode (U+0710-U+074F), stored as-is in CSV

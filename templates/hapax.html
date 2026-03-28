@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}{{ t('hapax_title', lang) }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem;">
+    <div style="margin-bottom:1.5rem;">
+        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('hapax_title', lang) }}</h1>
+        <p style="color:var(--muted);margin:0;">{{ t('hapax_subtitle', lang) }}</p>
+    </div>
+
+    <!-- Controls -->
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem;padding:.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);">
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
+            {{ t('hapax_threshold', lang) }}:
+            <input type="range" id="freq-slider" min="1" max="10" value="1" style="width:100px;">
+            <span id="freq-val" style="font-weight:700;color:var(--accent);min-width:1.2rem;">1</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
+            Corpus:
+            <select id="corpus-filter" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);font-size:.88rem;">
+                <option value="">{{ t('hapax_all_corpora', lang) }}</option>
+                <option value="peshitta_nt">Peshitta NT</option>
+                <option value="peshitta_ot">Peshitta OT</option>
+                <option value="biblical_aramaic">Biblical Aramaic</option>
+                <option value="targum_onkelos">Targum Onkelos</option>
+            </select>
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
+            Scope:
+            <select id="scope-filter" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);font-size:.88rem;">
+                <option value="root">{{ t('hapax_scope_root', lang) }}</option>
+                <option value="form">{{ t('hapax_scope_form', lang) }}</option>
+            </select>
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
+            Sort:
+            <select id="sort-filter" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);font-size:.88rem;">
+                <option value="alpha">A–Z</option>
+                <option value="confidence">Confidence</option>
+            </select>
+        </label>
+    </div>
+
+    <!-- Summary + Export -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;">
+        <div id="hapax-summary" style="font-size:.9rem;color:var(--muted);"></div>
+        <div style="display:flex;gap:.5rem;">
+            <button class="btn-secondary" onclick="exportHapax('csv')">{{ t('hapax_export_csv', lang) }}</button>
+            <button class="btn-secondary" onclick="exportHapax('json')">{{ t('hapax_export_json', lang) }}</button>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="hapax-loading" style="text-align:center;padding:3rem;color:var(--muted);display:none;">
+        <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
+    </div>
+
+    <!-- Results table -->
+    <div style="overflow-x:auto;">
+        <table class="hapax-table" id="hapax-table" style="display:none;">
+            <thead>
+                <tr>
+                    <th style="width:12%;">Root</th>
+                    <th style="width:10%;">Translit</th>
+                    <th style="width:18%;">Gloss</th>
+                    <th style="width:14%;">Form</th>
+                    <th style="width:8%;text-align:center;">Count</th>
+                    <th style="width:14%;">Reference</th>
+                    <th style="width:14%;">Corpus</th>
+                    <th style="width:10%;text-align:center;">Confidence</th>
+                </tr>
+            </thead>
+            <tbody id="hapax-tbody"></tbody>
+        </table>
+        <div id="hapax-empty" style="display:none;text-align:center;padding:3rem;color:var(--muted);">
+            {{ t('hapax_no_results', lang) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    var LANG = {{ lang|tojson }};
+    var currentData = [];
+
+    var slider = document.getElementById('freq-slider');
+    var freqVal = document.getElementById('freq-val');
+    var corpusFilter = document.getElementById('corpus-filter');
+    var scopeFilter = document.getElementById('scope-filter');
+    var sortFilter = document.getElementById('sort-filter');
+
+    slider.addEventListener('input', function() {
+        freqVal.textContent = this.value;
+    });
+
+    [slider, corpusFilter, scopeFilter, sortFilter].forEach(function(el) {
+        el.addEventListener('change', loadHapax);
+    });
+
+    function corpusLabel(cid) {
+        var map = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos'};
+        return map[cid] || cid;
+    }
+
+    function confTier(c) {
+        if (c >= 0.8) return {cls:'conf-high',label:'High'};
+        if (c >= 0.5) return {cls:'conf-med',label:'Med'};
+        return {cls:'conf-low',label:'Low'};
+    }
+
+    function escHtml(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function loadHapax() {
+        var maxFreq = slider.value;
+        var corpus = corpusFilter.value;
+        var scope = scopeFilter.value;
+        var sort = sortFilter.value;
+        var url = '/api/hapax?max_freq=' + maxFreq + '&scope=' + scope + '&sort=' + sort + '&lang=' + LANG;
+        if (corpus) url += '&corpus=' + corpus;
+
+        document.getElementById('hapax-loading').style.display = 'block';
+        document.getElementById('hapax-table').style.display = 'none';
+        document.getElementById('hapax-empty').style.display = 'none';
+        document.getElementById('hapax-summary').textContent = '';
+
+        fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+            currentData = data.results || [];
+            document.getElementById('hapax-loading').style.display = 'none';
+            document.getElementById('hapax-summary').textContent =
+                currentData.length + ' ' + (LANG === 'es' ? 'entradas raras encontradas' : 'rare entries found');
+
+            var tbody = document.getElementById('hapax-tbody');
+            tbody.innerHTML = '';
+            if (currentData.length === 0) {
+                document.getElementById('hapax-empty').style.display = 'block';
+                return;
+            }
+            document.getElementById('hapax-table').style.display = '';
+            currentData.forEach(function(row) {
+                var ref = (row.references || [])[0] || '';
+                var corpAtt = row.corpus_attestation || {};
+                var corpBadges = Object.keys(corpAtt).map(function(cid) {
+                    return '<span class="corpus-badge corpus-' + cid + '" style="font-size:.68rem;padding:1px 6px;">' + corpusLabel(cid) + '</span>';
+                }).join(' ');
+                var tier = confTier(row.confidence || 0.5);
+                var readUrl = '/read/' + encodeURIComponent((ref.split(' ')[0]||'')) + '/' + encodeURIComponent((ref.split(' ')[1]||'').split(':')[0]||'1') + '?lang=' + LANG;
+                var vizUrl = '/visualize/' + encodeURIComponent(row.root_translit) + '?lang=' + LANG;
+                var tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td class="hx-root"><a href="' + vizUrl + '" style="text-decoration:none;color:inherit;">' + escHtml(row.root) + '</a></td>' +
+                    '<td style="font-size:.82rem;"><a href="' + vizUrl + '" style="color:var(--accent);text-decoration:none;">' + escHtml(row.root_translit) + '</a></td>' +
+                    '<td style="font-style:italic;color:var(--muted);font-size:.82rem;">' + escHtml(row.gloss || '') + '</td>' +
+                    '<td dir="rtl" style="font-family:var(--syriac-font);">' + escHtml(row.form || '') + '</td>' +
+                    '<td style="text-align:center;font-weight:600;">' + row.count + '</td>' +
+                    '<td style="font-size:.78rem;"><a href="' + readUrl + '" style="color:var(--accent);">' + escHtml(ref) + '</a></td>' +
+                    '<td>' + corpBadges + '</td>' +
+                    '<td style="text-align:center;"><span class="wp-conf ' + tier.cls + '" title="' + tier.label + '"></span></td>';
+                tbody.appendChild(tr);
+            });
+        }).catch(function() {
+            document.getElementById('hapax-loading').style.display = 'none';
+            document.getElementById('hapax-empty').style.display = 'block';
+        });
+    }
+
+    window.exportHapax = function(fmt) {
+        if (!currentData.length) return;
+        if (fmt === 'json') {
+            var blob = new Blob([JSON.stringify(currentData, null, 2)], {type:'application/json'});
+            var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'hapax-legomena.json'; a.click();
+        } else {
+            var rows = [['Root','Transliteration','Gloss','Form','Count','Reference','Corpora','Confidence']];
+            currentData.forEach(function(r) {
+                rows.push([r.root, r.root_translit, r.gloss||'', r.form||'', r.count,
+                    (r.references||[])[0]||'', Object.keys(r.corpus_attestation||{}).join(';'), r.confidence]);
+            });
+            var csv = '\uFEFF' + rows.map(function(r) {
+                return r.map(function(c) { return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
+            }).join('\n');
+            var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+            var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'hapax-legomena.csv'; a.click();
+        }
+    };
+
+    loadHapax();
+})();
+</script>
+{% endblock %}

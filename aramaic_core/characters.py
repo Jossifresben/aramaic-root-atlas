@@ -328,7 +328,7 @@ def parse_root_input(user_input: str) -> str | None:
     else:
         parts = user_input.split()
 
-    if len(parts) not in (2, 3):
+    if not (2 <= len(parts) <= 4):
         return None
 
     syriac_chars = []
@@ -364,7 +364,7 @@ def semitic_root_variants(root_syriac: str) -> list[str]:
 
     Returns a list of alternative roots (not including the original).
     """
-    if not root_syriac or len(root_syriac) not in (2, 3):
+    if not root_syriac or not (2 <= len(root_syriac) <= 4):
         return []
 
     variants = set()

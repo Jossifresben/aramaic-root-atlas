@@ -8,15 +8,24 @@
 
 ## Features
 
-- **Word-level root display** -- click any Syriac word in the reader to see its extracted root, gloss, confidence score, and link to the root visualizer
+### Research Tools
+- **Verb Stem (Binyan) Analysis** -- classifies every word form into Peal/Ethpeel/Pael/Ethpaal/Aphel/Shafel/Ettaphal; stem badge in word popover; stem distribution chart + paradigm table in root card; `/api/paradigm` endpoint
+- **Hapax Legomena Finder** -- `/hapax` page surfaces roots and forms with 1–5 occurrences across any corpus; frequency slider, corpus filter, scope toggle, CSV/JSON export
+- **KWIC Concordance with Export** -- `/concordance` page shows all attestations in traditional left-context | keyword | right-context layout; group by form or stem; export as CSV, JSON, plain text, or TEI XML
+- **Diachronic Root Analysis** -- `/diachronic` page compares root usage across four corpora in chronological order (Biblical Aramaic → Targum Onkelos → Peshitta NT → Peshitta OT) as normalized frequency; Shifts View ranks roots by frequency change magnitude
+
+### Exploration & Reading
+- **Word-level root display** -- click any Syriac word in the reader to see its extracted root, gloss, confidence score, verb stem, and link to the root visualizer
 - **Root confidence scoring** -- three-tier system (High >= 0.8, Medium 0.5--0.8, Low < 0.5) with methodological notes on the About page
 - **Chapter root summary** -- toggle panel showing all roots in a chapter sorted by frequency, with CSV/JSON export
 - **5-tab search system** -- search by root (with autocomplete), by cognate (Hebrew/Arabic/transliteration reverse lookup), by meaning (English/Spanish reverse search), co-occurrence (proximity search for two roots), or full-text across translations
-- **Root family visualizer** -- D3.js force-directed graph showing word forms, cognates, sister roots, and semantic bridges
+- **Root family visualizer** -- D3.js force-directed graph showing word forms, cognates, sister roots, semantic bridges, stem distribution, paradigm table, and diachronic usage bars
 - **Passage constellation** -- visualize all roots and their relationships within a selected passage
 - **Parallel viewer** -- side-by-side comparison of Peshitta OT, Targum Onkelos, and Biblical Aramaic
 - **Root frequency heat map** -- cross-corpus root distribution with filter, sort, and CSV/JSON export
 - **Bookmarks** -- save verses and roots with tags, export as CSV/JSON, copy formatted citations
+
+### Interface
 - **Quadrilingual UI** -- full interface in English, Spanish, Hebrew, and Arabic with RTL support
 - **Greek cognates** -- 2,192 Greek NT equivalents linked to Aramaic roots in the visualizer (e.g., SH-L-M -> eirene "peace")
 - **Five translation tracks** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek)
@@ -26,6 +35,18 @@
 ## Screenshots
 
 ![Homepage](docs/screenshots/homepage.png)
+
+### Scholarly Research Tools
+
+| Verb Stem Analysis | Hapax Legomena |
+|:---:|:---:|
+| ![Verb Stems](docs/screenshots/verb-stems.png) | ![Hapax](docs/screenshots/hapax.png) |
+
+| KWIC Concordance | Diachronic Analysis |
+|:---:|:---:|
+| ![Concordance](docs/screenshots/concordance.png) | ![Diachronic](docs/screenshots/diachronic.png) |
+
+### Exploration & Reading
 
 | Verse Reader | Constellation | Root Visualizer |
 |:---:|:---:|:---:|
@@ -87,6 +108,13 @@ The Atlas exposes a full JSON API for programmatic access. All endpoints support
 | `GET /api/cognate-lookup?word=shalom` | Reverse lookup roots by Hebrew/Arabic/transliterated cognate |
 | `GET /api/reverse-search?q=peace&lang=en` | Search roots by English/Spanish meaning (ranked by relevance) |
 | `GET /api/heatmap?limit=100&sort=total` | Root frequency heat map across corpora |
+| `GET /api/paradigm?root=K-T-B` | Word forms grouped by verb stem (Peal/Ethpeel/Pael/…) |
+| `GET /api/hapax?max_freq=1&corpus=&scope=root` | Roots or forms with ≤N total occurrences |
+| `GET /api/concordance?root=SH-L-M&context_words=5` | KWIC data with left/keyword/right context windows |
+| `GET /api/concordance/export?root=SH-L-M&format=tei` | Server-side TEI XML concordance export |
+| `GET /api/diachronic/root?root=K-T-B` | Normalized frequency per corpus in chronological order |
+| `GET /api/diachronic/shifts?direction=emerging` | Roots ranked by cross-corpus frequency shift magnitude |
+| `GET /api/diachronic/unique?corpus=biblical_aramaic` | Roots attested in only one corpus |
 
 **Root input formats:** Dash-separated Latin (`SH-L-M`), Syriac Unicode (`ܫܠܡ`), Hebrew (`שלם`), or Arabic (`سلم`). The API auto-detects and normalizes.
 
@@ -105,8 +133,9 @@ aramaic-root-atlas/
     cognates.py          #   CognateLookup: Hebrew & Arabic cognate lookup
     glosser.py           #   WordGlosser: compositional word-level glossing
   app.py                 # Flask application (port 5001)
-  templates/             # Jinja2 templates
-  static/style.css       # CSS with corpus-coded color variables
+  templates/             # Jinja2 templates (read, browse, visualize, hapax, concordance, diachronic, …)
+  static/style.css       # CSS with corpus-coded color variables and stem-badge palette
+  static/autocomplete.js # Shared root autocomplete widget
   data/
     corpora/             # CSV corpus files (peshitta_nt, peshitta_ot, biblical_aramaic, targum_onkelos)
     roots/               # cognates.json, known_roots.json, stopwords.json

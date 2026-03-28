@@ -433,11 +433,13 @@ def read(book, chapter):
                 root_syr, conf = result
                 root_translit = _translit_to_dash(root_syr)
                 gloss = _extractor.get_root_gloss(root_syr)
+                stem = _extractor.lookup_word_stem(w)
                 word_roots.append({
                     'r': root_syr,
                     't': root_translit,
                     'g': gloss,
                     'c': round(conf, 2),
+                    's': stem or '',
                 })
             else:
                 word_roots.append(None)
@@ -1263,6 +1265,7 @@ def api_root_family():
                 'references': m.references[:5],
                 'count': m.count,
                 'corpus_counts': corpus_counts,
+                'stem': _extractor.lookup_word_stem(m.form) or '',
             })
 
     # Cognates
@@ -1331,6 +1334,8 @@ def api_root_family():
             paradigmatic_ref = best_match.references[0]
         if paradigmatic_ref:
             verse_text = _corpus.get_verse_translation(paradigmatic_ref, trans)
+            if not verse_text and trans != 'en':
+                verse_text = _corpus.get_verse_translation(paradigmatic_ref, 'en')
             if verse_text:
                 paradigmatic_verse = verse_text
             syriac_text = _corpus.get_verse_text(paradigmatic_ref)
@@ -1374,6 +1379,14 @@ def api_root_family():
                 cid = _corpus.get_verse_corpus(ref)
                 corpus_attestation[cid] = corpus_attestation.get(cid, 0) + 1
 
+    # Stem distribution across all forms
+    stem_distribution = {}
+    if root_entry:
+        for m in root_entry.matches:
+            stem = _extractor.lookup_word_stem(m.form)
+            if stem:
+                stem_distribution[stem] = stem_distribution.get(stem, 0) + m.count
+
     return jsonify({
         'root': root_syriac,
         'root_translit': _translit_to_dash(root_syriac) if root_syriac else root_input.upper(),
@@ -1391,6 +1404,538 @@ def api_root_family():
         'paradigmatic_form_translit': ((_get_translit_fn(script) if script != 'syriac' else transliterate_syriac)(paradigmatic_form)) if paradigmatic_form else '',
         'sister_roots': sister_roots,
         'corpus_attestation': corpus_attestation,
+        'stem_distribution': stem_distribution,
+    })
+
+
+@app.route('/api/paradigm')
+def api_paradigm():
+    """Return forms grouped by verb stem for a root."""
+    _init()
+    root_input = request.args.get('root', '').strip()
+    if not root_input:
+        return jsonify({'error': 'Missing root parameter'}), 400
+    root_syriac = parse_root_input(root_input)
+    if root_syriac is None:
+        return jsonify({'error': 'Invalid root'}), 400
+
+    root_entry = _extractor.lookup_root(root_syriac)
+    if not root_entry:
+        return jsonify({'root': root_input, 'stems': {}}), 200
+
+    stems: dict[str, list[dict]] = {}
+    for m in root_entry.matches:
+        stem = _extractor.lookup_word_stem(m.form) or 'Unknown'
+        if stem not in stems:
+            stems[stem] = []
+        stems[stem].append({
+            'form': m.form,
+            'transliteration': m.transliteration,
+            'count': m.count,
+            'references': m.references[:5],
+        })
+
+    # Sort each stem's forms by frequency
+    for stem in stems:
+        stems[stem].sort(key=lambda x: x['count'], reverse=True)
+
+    return jsonify({
+        'root': root_syriac,
+        'root_translit': _translit_to_dash(root_syriac),
+        'stems': stems,
+    })
+
+
+# ---------------------------------------------------------------------------
+# Phase 2: Hapax Legomena
+# ---------------------------------------------------------------------------
+
+@app.route('/hapax')
+def hapax_page():
+    """Hapax legomena finder page."""
+    lang = _get_lang()
+    return render_template('hapax.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn)
+
+
+@app.route('/api/hapax')
+def api_hapax():
+    """Return roots/forms with occurrence count <= max_freq."""
+    _init()
+    try:
+        max_freq = int(request.args.get('max_freq', 1))
+    except ValueError:
+        return jsonify({'error': 'max_freq must be an integer'}), 400
+    max_freq = max(1, min(max_freq, 10))
+    corpus_filter = request.args.get('corpus', '').strip() or None
+    scope = request.args.get('scope', 'root')  # 'root' or 'form'
+    sort = request.args.get('sort', 'alpha')   # 'alpha', 'confidence', 'corpus'
+    try:
+        limit = int(request.args.get('limit', 500))
+    except ValueError:
+        return jsonify({'error': 'limit must be an integer'}), 400
+
+    results = []
+    for root_entry in _extractor.get_all_roots():
+        root_syr = root_entry.root
+        gloss = _extractor.get_root_gloss(root_syr)
+        cognate = _cognate_lookup.lookup(root_syr)
+        if cognate and not gloss:
+            gloss = cognate.gloss_en
+
+        if scope == 'form':
+            # Count per surface form
+            for m in root_entry.matches:
+                if corpus_filter:
+                    count = sum(1 for ref in m.references
+                                if _corpus.get_verse_corpus(ref) == corpus_filter)
+                else:
+                    count = m.count
+                if 0 < count <= max_freq:
+                    conf = _extractor.lookup_word_confidence(m.form) or 0.5
+                    corpus_att = {}
+                    for ref in m.references:
+                        cid = _corpus.get_verse_corpus(ref)
+                        corpus_att[cid] = corpus_att.get(cid, 0) + 1
+                    results.append({
+                        'root': root_syr,
+                        'root_translit': _translit_to_dash(root_syr),
+                        'gloss': gloss,
+                        'form': m.form,
+                        'form_translit': m.transliteration,
+                        'count': count,
+                        'references': m.references[:3],
+                        'corpus_attestation': corpus_att,
+                        'confidence': round(conf, 2),
+                    })
+        else:
+            # Count per root
+            if corpus_filter:
+                count = sum(
+                    sum(1 for ref in m.references
+                        if _corpus.get_verse_corpus(ref) == corpus_filter)
+                    for m in root_entry.matches
+                )
+            else:
+                count = root_entry.total_occurrences
+            if 0 < count <= max_freq:
+                corpus_att = {}
+                all_refs = []
+                for m in root_entry.matches:
+                    for ref in m.references:
+                        cid = _corpus.get_verse_corpus(ref)
+                        corpus_att[cid] = corpus_att.get(cid, 0) + 1
+                        all_refs.append(ref)
+                # Best confidence across all forms
+                confs = [_extractor.lookup_word_confidence(m.form) or 0.5
+                         for m in root_entry.matches]
+                best_conf = max(confs) if confs else 0.5
+                best_form = root_entry.matches[0] if root_entry.matches else None
+                results.append({
+                    'root': root_syr,
+                    'root_translit': _translit_to_dash(root_syr),
+                    'gloss': gloss,
+                    'form': best_form.form if best_form else '',
+                    'form_translit': best_form.transliteration if best_form else '',
+                    'count': count,
+                    'references': all_refs[:3],
+                    'corpus_attestation': corpus_att,
+                    'confidence': round(best_conf, 2),
+                    'forms': [{'form': m.form, 'translit': m.transliteration, 'count': m.count}
+                              for m in root_entry.matches[:5]],
+                })
+
+    if sort == 'confidence':
+        results.sort(key=lambda x: x['confidence'], reverse=True)
+    elif sort == 'corpus':
+        corpus_order = {cid: i for i, (cid, _, _) in enumerate(CORPUS_CHRONOLOGY)}
+        results.sort(key=lambda x: min(
+            (corpus_order.get(c, 99) for c in x['corpus_attestation']), default=99
+        ))
+    else:  # alpha
+        results.sort(key=lambda x: x['root_translit'])
+
+    return jsonify({
+        'max_freq': max_freq,
+        'corpus': corpus_filter or 'all',
+        'scope': scope,
+        'total': len(results),
+        'results': results[:limit],
+    })
+
+
+# ---------------------------------------------------------------------------
+# Phase 3: KWIC Concordance
+# ---------------------------------------------------------------------------
+
+@app.route('/concordance')
+def concordance_page():
+    """KWIC concordance page."""
+    lang = _get_lang()
+    root = request.args.get('root', '')
+    return render_template('concordance.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn,
+                           initial_root=root)
+
+
+@app.route('/api/concordance')
+def api_concordance():
+    """Return KWIC concordance lines for a root."""
+    _init()
+    root_input = request.args.get('root', '').strip()
+    if not root_input:
+        return jsonify({'error': 'Missing root parameter'}), 400
+    root_syriac = parse_root_input(root_input)
+    if root_syriac is None:
+        return jsonify({'error': 'Invalid root'}), 400
+
+    corpus_filter = request.args.get('corpus', '').strip() or None
+    sort = request.args.get('sort', 'book')       # 'book', 'frequency', 'form'
+    group_by = request.args.get('group_by', 'none')  # 'form' or 'none'
+    try:
+        context_words = int(request.args.get('context_words', 5))
+    except ValueError:
+        return jsonify({'error': 'context_words must be an integer'}), 400
+    context_words = max(2, min(context_words, 15))
+    try:
+        limit = int(request.args.get('limit', 500))
+    except ValueError:
+        return jsonify({'error': 'limit must be an integer'}), 400
+    trans = _get_trans()
+    lang = _get_lang()
+
+    root_entry = _extractor.lookup_root(root_syriac)
+    if not root_entry:
+        return jsonify({'root': root_input, 'lines': [], 'total': 0}), 200
+
+    lines = []
+    for m in root_entry.matches:
+        for ref in m.references:
+            if corpus_filter and _corpus.get_verse_corpus(ref) != corpus_filter:
+                continue
+            verse_text = _corpus.get_verse_text(ref)
+            if not verse_text:
+                continue
+            words = verse_text.split()
+            # Find keyword position (first occurrence of this form)
+            try:
+                idx = words.index(m.form)
+            except ValueError:
+                # Try partial match (proclitic-stripped form)
+                idx = next((i for i, w in enumerate(words) if m.form in w), None)
+                if idx is None:
+                    continue
+
+            left = words[max(0, idx - context_words):idx]
+            right = words[idx + 1:idx + 1 + context_words]
+            translation = _corpus.get_verse_translation(ref, trans) or \
+                          _corpus.get_verse_translation(ref, lang) or ''
+
+            lines.append({
+                'reference': ref,
+                'left_context': left,
+                'keyword': words[idx],
+                'right_context': right,
+                'translation': translation,
+                'corpus_id': _corpus.get_verse_corpus(ref),
+                'form': m.form,
+                'form_translit': m.transliteration,
+                'stem': _extractor.lookup_word_stem(m.form) or '',
+            })
+            if len(lines) >= limit:
+                break
+        if len(lines) >= limit:
+            break
+
+    if sort == 'frequency':
+        form_counts = {m.form: m.count for m in root_entry.matches}
+        lines.sort(key=lambda x: form_counts.get(x['form'], 0), reverse=True)
+    elif sort == 'form':
+        lines.sort(key=lambda x: x['form'])
+    # Default 'book' order is natural corpus order
+
+    # Form breakdown summary
+    form_summary = {}
+    for line in lines:
+        f = line['form']
+        form_summary[f] = form_summary.get(f, 0) + 1
+
+    return jsonify({
+        'root': root_syriac,
+        'root_translit': _translit_to_dash(root_syriac),
+        'total': len(lines),
+        'group_by': group_by,
+        'form_summary': form_summary,
+        'lines': lines,
+    })
+
+
+@app.route('/api/concordance/export')
+def api_concordance_export():
+    """Export concordance as TEI XML."""
+    _init()
+    root_input = request.args.get('root', '').strip()
+    if not root_input:
+        return 'Missing root parameter', 400
+    root_syriac = parse_root_input(root_input)
+    if root_syriac is None:
+        return 'Invalid root', 400
+
+    corpus_filter = request.args.get('corpus', '').strip() or None
+    context_words = int(request.args.get('context_words', 5))
+    trans = _get_trans()
+    lang = _get_lang()
+
+    root_entry = _extractor.lookup_root(root_syriac)
+    root_translit = _translit_to_dash(root_syriac) if root_syriac else root_input.upper()
+    gloss = _extractor.get_root_gloss(root_syriac)
+
+    lines = []
+    if root_entry:
+        for m in root_entry.matches:
+            for ref in m.references:
+                if corpus_filter and _corpus.get_verse_corpus(ref) != corpus_filter:
+                    continue
+                verse_text = _corpus.get_verse_text(ref)
+                if not verse_text:
+                    continue
+                words = verse_text.split()
+                try:
+                    idx = words.index(m.form)
+                except ValueError:
+                    idx = next((i for i, w in enumerate(words) if m.form in w), None)
+                    if idx is None:
+                        continue
+                left = ' '.join(words[max(0, idx - context_words):idx])
+                right = ' '.join(words[idx + 1:idx + 1 + context_words])
+                translation = _corpus.get_verse_translation(ref, trans) or \
+                              _corpus.get_verse_translation(ref, lang) or ''
+                lines.append((ref, left, words[idx], right, translation))
+                if len(lines) >= 1000:
+                    break
+
+    # Build TEI XML
+    from xml.sax.saxutils import escape as xml_escape
+    tei_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<TEI xmlns="http://www.tei-c.org/ns/1.0">',
+        '  <teiHeader>',
+        f'    <fileDesc><titleStmt><title>Concordance for {xml_escape(root_translit)}</title></titleStmt>',
+        f'    <notesStmt><note>Root: {xml_escape(root_translit)} — {xml_escape(gloss)}</note></notesStmt></fileDesc>',
+        '  </teiHeader>',
+        '  <text><body>',
+        f'    <div type="concordance" n="{xml_escape(root_translit)}">',
+    ]
+    for ref, left, kw, right, transl in lines:
+        tei_lines.append(f'      <entry n="{xml_escape(ref)}">')
+        tei_lines.append(f'        <cit><quote xml:lang="syc">{xml_escape(left)} <term>{xml_escape(kw)}</term> {xml_escape(right)}</quote>')
+        tei_lines.append(f'        <bibl>{xml_escape(ref)}</bibl></cit>')
+        if transl:
+            tei_lines.append(f'        <cit type="translation"><quote>{xml_escape(transl)}</quote></cit>')
+        tei_lines.append('      </entry>')
+    tei_lines += ['    </div>', '  </body></text>', '</TEI>']
+
+    tei_xml = '\n'.join(tei_lines)
+    filename = f'concordance-{root_translit.lower()}.xml'
+    from flask import Response
+    return Response(tei_xml, mimetype='application/xml',
+                    headers={'Content-Disposition': f'attachment; filename="{filename}"'})
+
+
+# ---------------------------------------------------------------------------
+# Phase 4: Diachronic Analysis
+# ---------------------------------------------------------------------------
+
+# Chronological ordering of corpora
+CORPUS_CHRONOLOGY = [
+    ('biblical_aramaic', 'Biblical Aramaic', '~6th–2nd c. BCE'),
+    ('targum_onkelos',   'Targum Onkelos',   '~1st–3rd c. CE'),
+    ('peshitta_nt',      'Peshitta NT',      '~2nd–5th c. CE'),
+    ('peshitta_ot',      'Peshitta OT',      '~2nd–5th c. CE'),
+]
+
+
+@app.route('/diachronic')
+def diachronic_page():
+    """Diachronic root usage analysis page."""
+    lang = _get_lang()
+    root = request.args.get('root', '')
+    return render_template('diachronic.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn,
+                           initial_root=root)
+
+
+@app.route('/api/diachronic/root')
+def api_diachronic_root():
+    """Return per-corpus frequency data for a root in chronological order."""
+    _init()
+    root_input = request.args.get('root', '').strip()
+    if not root_input:
+        return jsonify({'error': 'Missing root parameter'}), 400
+    root_syriac = parse_root_input(root_input)
+    if root_syriac is None:
+        return jsonify({'error': 'Invalid root'}), 400
+
+    root_entry = _extractor.lookup_root(root_syriac)
+    gloss = _extractor.get_root_gloss(root_syriac)
+    cognate = _cognate_lookup.lookup(root_syriac)
+    if cognate and not gloss:
+        gloss = cognate.gloss_en
+
+    # Build per-corpus data from root entry
+    corpus_forms: dict[str, list[str]] = {}
+    corpus_stems: dict[str, dict[str, int]] = {}
+    if root_entry:
+        # Use pre-computed corpus_counts from build_index for raw counts
+        for m in root_entry.matches:
+            stem = _extractor.lookup_word_stem(m.form)
+            for ref in m.references:
+                cid = _corpus.get_verse_corpus(ref)
+                if not cid:
+                    continue
+                if cid not in corpus_forms:
+                    corpus_forms[cid] = []
+                if m.form not in corpus_forms[cid]:
+                    corpus_forms[cid].append(m.form)
+                if stem:
+                    if cid not in corpus_stems:
+                        corpus_stems[cid] = {}
+                    corpus_stems[cid][stem] = corpus_stems[cid].get(stem, 0) + 1
+    corpus_counts = root_entry.corpus_counts if root_entry else {}
+
+    data = []
+    for cid, label, period in CORPUS_CHRONOLOGY:
+        total_words = _corpus.total_words(cid)
+        raw = corpus_counts.get(cid, 0)
+        normalized = round((raw / total_words) * 1000, 4) if total_words else 0
+        data.append({
+            'corpus_id': cid,
+            'label': label,
+            'period': period,
+            'raw_count': raw,
+            'total_words': total_words,
+            'normalized': normalized,
+            'forms': corpus_forms.get(cid, [])[:10],
+            'stem_distribution': corpus_stems.get(cid, {}),
+        })
+
+    return jsonify({
+        'root': root_syriac,
+        'root_translit': _translit_to_dash(root_syriac),
+        'gloss': gloss,
+        'corpora': data,
+    })
+
+
+@app.route('/api/diachronic/shifts')
+def api_diachronic_shifts():
+    """Return roots with the biggest frequency shifts across corpora."""
+    _init()
+    try:
+        limit = int(request.args.get('limit', 50))
+    except ValueError:
+        return jsonify({'error': 'limit must be an integer'}), 400
+    direction = request.args.get('direction', 'all')  # 'emerging', 'declining', 'all'
+    try:
+        min_occurrences = int(request.args.get('min_occurrences', 3))
+    except ValueError:
+        return jsonify({'error': 'min_occurrences must be an integer'}), 400
+
+    # Pre-compute total words per corpus
+    corpus_totals = {cid: _corpus.total_words(cid) for cid, _, _ in CORPUS_CHRONOLOGY}
+
+    results = []
+    for root_entry in _extractor.get_all_roots():
+        if root_entry.total_occurrences < min_occurrences:
+            continue
+        root_syr = root_entry.root
+
+        # Use pre-computed per-corpus counts from build_index
+        counts = {cid: root_entry.corpus_counts.get(cid, 0) for cid, _, _ in CORPUS_CHRONOLOGY}
+
+        # Normalized frequencies
+        freqs = []
+        for cid, _, _ in CORPUS_CHRONOLOGY:
+            total = corpus_totals.get(cid, 0)
+            freqs.append((counts[cid] / total * 1000) if total else 0)
+
+        nonzero = [f for f in freqs if f > 0]
+        if len(nonzero) < 2:
+            continue
+
+        magnitude = max(nonzero) / min(nonzero) if min(nonzero) > 0 else 0
+        # Direction: compare first attested to last attested
+        first_idx = next((i for i, f in enumerate(freqs) if f > 0), None)
+        last_idx = next((i for i, f in enumerate(reversed(freqs)) if f > 0), None)
+        if first_idx is None or last_idx is None:
+            continue
+        last_idx = len(freqs) - 1 - last_idx
+        dir_label = 'emerging' if freqs[last_idx] > freqs[first_idx] else 'declining'
+
+        if direction != 'all' and dir_label != direction:
+            continue
+
+        gloss = _extractor.get_root_gloss(root_syr)
+        cognate = _cognate_lookup.lookup(root_syr)
+        if cognate and not gloss:
+            gloss = cognate.gloss_en
+
+        results.append({
+            'root': root_syr,
+            'root_translit': _translit_to_dash(root_syr),
+            'gloss': gloss,
+            'freqs': freqs,
+            'magnitude': round(magnitude, 2),
+            'direction': dir_label,
+        })
+
+    results.sort(key=lambda x: x['magnitude'], reverse=True)
+    return jsonify({
+        'direction': direction,
+        'min_occurrences': min_occurrences,
+        'total': len(results),
+        'corpora': [{'id': cid, 'label': lbl, 'period': per}
+                    for cid, lbl, per in CORPUS_CHRONOLOGY],
+        'results': results[:limit],
+    })
+
+
+@app.route('/api/diachronic/unique')
+def api_diachronic_unique():
+    """Return roots attested in only one corpus."""
+    _init()
+    corpus_filter = request.args.get('corpus', '').strip() or None
+
+    results = []
+    for root_entry in _extractor.get_all_roots():
+        root_syr = root_entry.root
+        attested = set()
+        for m in root_entry.matches:
+            for ref in m.references:
+                cid = _corpus.get_verse_corpus(ref)
+                attested.add(cid)
+
+        if len(attested) == 1:
+            only_corpus = list(attested)[0]
+            if corpus_filter and only_corpus != corpus_filter:
+                continue
+            gloss = _extractor.get_root_gloss(root_syr)
+            cognate = _cognate_lookup.lookup(root_syr)
+            if cognate and not gloss:
+                gloss = cognate.gloss_en
+            results.append({
+                'root': root_syr,
+                'root_translit': _translit_to_dash(root_syr),
+                'gloss': gloss,
+                'corpus': only_corpus,
+                'count': root_entry.total_occurrences,
+            })
+
+    results.sort(key=lambda x: x['root_translit'])
+    return jsonify({
+        'corpus_filter': corpus_filter or 'all',
+        'total': len(results),
+        'results': results,
     })
 
 

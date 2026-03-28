@@ -39,7 +39,7 @@
                     {%- set idx = loop.index0 -%}
                     {%- set wr = v.word_roots[idx] if v.word_roots and idx < v.word_roots|length else None -%}
                     <span class="word-token{% if w == hl_form %} hl{% endif %}{% if wr %} has-root{% endif %}"
-                          {% if wr %}data-root="{{ wr.r }}" data-translit="{{ wr.t }}" data-gloss="{{ wr.g }}" data-conf="{{ wr.c }}"{% endif %}
+                          {% if wr %}data-root="{{ wr.r }}" data-translit="{{ wr.t }}" data-gloss="{{ wr.g }}" data-conf="{{ wr.c }}" data-stem="{{ wr.s }}"{% endif %}
                           >{{ w }}</span>
                     {%- if not loop.last %} {% endif -%}
                 {%- endfor -%}
@@ -222,6 +222,7 @@ function toggleChapterRoots() {
         var translit = token.getAttribute('data-translit');
         var gloss = token.getAttribute('data-gloss');
         var conf = parseFloat(token.getAttribute('data-conf'));
+        var stem = token.getAttribute('data-stem') || '';
         var tier = confTier(conf);
 
         var vizKey = translit.replace(/-/g, '-').replace(/^'/, 'A').toLowerCase().replace(/-/g, '-');
@@ -234,6 +235,7 @@ function toggleChapterRoots() {
         html += '<span class="wp-conf ' + tier.cls + '" title="Confidence: ' + tier.label + '"></span>';
         html += '</div>';
         if (gloss) html += '<div class="wp-gloss">' + gloss + '</div>';
+        if (stem) html += '<div class="wp-stem"><span class="stem-badge stem-' + stem.toLowerCase() + '">' + stem + '</span></div>';
         html += '<div class="wp-actions">';
         html += '<a href="' + vizUrl + '" class="wp-link">Visualize</a>';
         html += '</div>';

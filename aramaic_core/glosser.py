@@ -33,7 +33,8 @@ PROCLITIC_GLOSSES = {
 
 VERBAL_PREFIX_GLOSSES = {
     '\u0710\u072C':             {'en': '[pass]', 'es': '[pas]'},     # ܐܬ Ethpeel
-    '\u0710\u072B\u072C':       {'en': '[pass]', 'es': '[pas]'},     # ܐܫܬ Eshtaphal
+    '\u0710\u072B\u072C':       {'en': '[pass]', 'es': '[pas]'},     # ܐܫܬ Ettaphal (passive of Shafel)
+    '\u072B':                   {'en': '[caus]', 'es': '[caus]'},    # ܫ Shafel causative
     '\u0721':                   {'en': '[ptcp]', 'es': '[part]'},    # ܡ participle
     '\u0722':                   {'en': '[impf]', 'es': '[impf]'},    # ܢ 3ms imperfect
     '\u072C':                   {'en': '[impf]', 'es': '[impf]'},    # ܬ 2ms/3fs imperfect
@@ -75,11 +76,29 @@ SUFFIX_GLOSSES = {
 }
 
 
+def _has_doubled_middle(stem: str, root_syriac: str) -> bool:
+    """Check if stem has a doubled middle radical (R1-R2-R2-R3 pattern).
+
+    In unvocalized Syriac, Pael forms sometimes show the middle radical
+    written twice (e.g., ܡܠܠ mll). This heuristic catches those cases.
+    """
+    stem_consonants = syriac_consonants_of(stem)
+    root_consonants = syriac_consonants_of(root_syriac)
+    # Need exactly 4 stem consonants matching R1-R2-R2-R3 where R2 == root[1]
+    if len(stem_consonants) == 4 and len(root_consonants) == 3:
+        if (stem_consonants[0] == root_consonants[0] and
+                stem_consonants[1] == root_consonants[1] and
+                stem_consonants[2] == root_consonants[1] and
+                stem_consonants[3] == root_consonants[2]):
+            return True
+    return False
+
+
 def detect_verb_stem(prefixes_removed: list[str], suffixes_removed: list[str], stem: str, root_syriac: str) -> str | None:
     """Detect the Syriac verb stem based on prefix heuristics.
 
     Returns stem name or None if uncertain.
-    Possible stems: Peal, Ethpeel, Pael, Ethpaal, Aphel, Ettaphal
+    Possible stems: Peal, Ethpeel, Pael, Ethpaal, Aphel, Shafel, Ettaphal
     """
     verbal_prefixes = set()
     for p in prefixes_removed:
@@ -91,10 +110,15 @@ def detect_verb_stem(prefixes_removed: list[str], suffixes_removed: list[str], s
     if '\u0710\u072B\u072C' in verbal_prefixes:
         return 'Ettaphal'
 
+    # ܫ alone (Shafel causative)
+    if '\u072B' in verbal_prefixes:
+        return 'Shafel'
+
     # ܐܬ (Ethpeel or Ethpaal)
     if '\u0710\u072C' in verbal_prefixes:
-        # Without vowels we can't distinguish Ethpeel from Ethpaal
-        # Use Ethpeel as default (more common)
+        # Ethpaal has a doubled middle radical in the stem
+        if _has_doubled_middle(stem, root_syriac):
+            return 'Ethpaal'
         return 'Ethpeel'
 
     # ܐ alone (could be Aphel causative or 1s imperfect)
@@ -109,11 +133,15 @@ def detect_verb_stem(prefixes_removed: list[str], suffixes_removed: list[str], s
     # ܡ prefix (participle — can be any stem, but often Peal)
     # Don't label a stem for participles — they're marked [ptcp] already
 
-    # No verbal prefix and form is just the root (± state markers) → Peal
-    # BUT only if the suffixes are verbal (not nominal state markers)
+    # No verbal prefix: check for Pael (doubled middle radical) or Peal
     if not verbal_prefixes:
         stem_consonants = syriac_consonants_of(stem)
         root_consonants = syriac_consonants_of(root_syriac)
+
+        # Pael: stem has doubled middle radical (R1-R2-R2-R3)
+        if _has_doubled_middle(stem, root_syriac):
+            return 'Pael'
+
         if stem_consonants == root_consonants:
             # Check if any suffix indicates a noun/adjective (not a verb)
             nominal_suffixes = {

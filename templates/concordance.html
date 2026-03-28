@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% block title %}{{ t('concordance_title', lang) }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:1200px;margin:0 auto;padding:1.5rem 1rem;">
+    <div style="margin-bottom:1.2rem;">
+        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('concordance_title', lang) }}</h1>
+        <p style="color:var(--muted);margin:0;">{{ t('concordance_subtitle', lang) }}</p>
+    </div>
+
+    <!-- Search bar -->
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <div class="autocomplete-wrapper" style="flex:1;min-width:160px;max-width:260px;">
+            <input type="text" id="conc-root-input" placeholder="e.g. SH-L-M, K-T-B"
+                   value="{{ initial_root }}" autocomplete="off"
+                   style="width:100%;padding:.5rem .8rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
+            <div id="conc-ac-list" class="autocomplete-list"></div>
+        </div>
+        <button onclick="loadConcordance()" style="padding:.5rem 1.2rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;">
+            Search
+        </button>
+    </div>
+
+    <!-- Controls -->
+    <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;padding:.6rem .9rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);font-size:.85rem;">
+        <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
+            Corpus:
+            <select id="conc-corpus" style="padding:.25rem .5rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
+                <option value="">All</option>
+                <option value="peshitta_nt">Peshitta NT</option>
+                <option value="peshitta_ot">Peshitta OT</option>
+                <option value="biblical_aramaic">Biblical Aramaic</option>
+                <option value="targum_onkelos">Targum Onkelos</option>
+            </select>
+        </label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
+            Sort:
+            <select id="conc-sort" style="padding:.25rem .5rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
+                <option value="book">Book order</option>
+                <option value="frequency">By frequency</option>
+                <option value="form">By form</option>
+            </select>
+        </label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
+            Context words:
+            <input type="range" id="conc-ctx" min="2" max="12" value="5" style="width:80px;">
+            <span id="conc-ctx-val">5</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
+            Group:
+            <select id="conc-group" style="padding:.25rem .5rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
+                <option value="none">None</option>
+                <option value="form">By form</option>
+                <option value="stem">By stem</option>
+            </select>
+        </label>
+    </div>
+
+    <!-- Summary + Export -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;">
+        <div id="conc-summary" style="font-size:.88rem;color:var(--muted);"></div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+            <button class="btn-secondary" onclick="exportConc('csv')">{{ t('concordance_export_csv', lang) }}</button>
+            <button class="btn-secondary" onclick="exportConc('json')">Export JSON</button>
+            <button class="btn-secondary" onclick="exportConc('text')">Export Text</button>
+            <button class="btn-secondary" id="conc-tei-btn" style="display:none;" onclick="exportConc('tei')">{{ t('concordance_export_tei', lang) }}</button>
+        </div>
+    </div>
+
+    <div id="conc-loading" style="display:none;text-align:center;padding:3rem;color:var(--muted);">
+        <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
+    </div>
+
+    <div id="conc-empty" style="display:none;text-align:center;padding:3rem;color:var(--muted);">Enter a root to view its concordance.</div>
+
+    <div class="kwic-wrap" id="conc-results" style="display:none;">
+        <table class="kwic-table" id="conc-table">
+            <thead>
+                <tr>
+                    <th class="kwic-left">{{ t('concordance_left_ctx', lang) }}</th>
+                    <th class="kwic-kw">{{ t('concordance_keyword', lang) }}</th>
+                    <th class="kwic-right">{{ t('concordance_right_ctx', lang) }}</th>
+                    <th class="kwic-ref">Ref</th>
+                    <th class="kwic-meta">Corpus / Stem</th>
+                </tr>
+            </thead>
+            <tbody id="conc-tbody"></tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/autocomplete.js"></script>
+<script>
+(function() {
+    var LANG = {{ lang|tojson }};
+    var currentData = null;
+    var currentRoot = '';
+
+    var ctxSlider = document.getElementById('conc-ctx');
+    var ctxVal = document.getElementById('conc-ctx-val');
+    ctxSlider.addEventListener('input', function() { ctxVal.textContent = this.value; });
+
+    initRootAutocomplete('conc-root-input', 'conc-ac-list', function() { loadConcordance(); });
+
+    function escHtml(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function corpusLabel(cid) {
+        var m = {'peshitta_nt':'NT','peshitta_ot':'OT','biblical_aramaic':'BA','targum_onkelos':'Tg'};
+        return m[cid] || cid;
+    }
+
+    window.loadConcordance = function() {
+        var root = document.getElementById('conc-root-input').value.trim();
+        if (!root) return;
+        currentRoot = root;
+        var corpus = document.getElementById('conc-corpus').value;
+        var sort = document.getElementById('conc-sort').value;
+        var ctx = ctxSlider.value;
+        var url = '/api/concordance?root=' + encodeURIComponent(root) + '&sort=' + sort +
+                  '&context_words=' + ctx + '&lang=' + LANG;
+        if (corpus) url += '&corpus=' + corpus;
+
+        document.getElementById('conc-loading').style.display = 'block';
+        document.getElementById('conc-results').style.display = 'none';
+        document.getElementById('conc-empty').style.display = 'none';
+        document.getElementById('conc-summary').textContent = '';
+
+        fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+            currentData = data;
+            document.getElementById('conc-loading').style.display = 'none';
+
+            var lines = data.lines || [];
+            if (lines.length === 0) {
+                document.getElementById('conc-empty').style.display = 'block';
+                document.getElementById('conc-empty').textContent = 'No results for ' + root;
+                return;
+            }
+
+            document.getElementById('conc-summary').textContent =
+                data.total + ' ' + (LANG === 'es' ? 'líneas' : 'lines') + ' — ' + data.root_translit;
+            document.getElementById('conc-tei-btn').style.display = '';
+
+            var groupBy = document.getElementById('conc-group').value;
+            renderTable(lines, groupBy);
+            document.getElementById('conc-results').style.display = '';
+        }).catch(function(err) {
+            document.getElementById('conc-loading').style.display = 'none';
+            document.getElementById('conc-empty').style.display = 'block';
+            document.getElementById('conc-empty').textContent = 'Error loading concordance.';
+        });
+    };
+
+    document.getElementById('conc-group').addEventListener('change', function() {
+        if (currentData) renderTable(currentData.lines || [], this.value);
+    });
+
+    function renderTable(lines, groupBy) {
+        var tbody = document.getElementById('conc-tbody');
+        tbody.innerHTML = '';
+
+        if (groupBy === 'form' || groupBy === 'stem') {
+            var key = groupBy === 'stem' ? 'stem' : 'form';
+            var groups = {};
+            var order = [];
+            lines.forEach(function(line) {
+                var k = line[key] || '—';
+                if (!groups[k]) { groups[k] = []; order.push(k); }
+                groups[k].push(line);
+            });
+            order.forEach(function(k) {
+                var grpLines = groups[k];
+                var hdr = document.createElement('tr');
+                var label = groupBy === 'stem'
+                    ? (k !== '—' ? '<span class="stem-badge stem-' + k.toLowerCase() + '">' + escHtml(k) + '</span>' : '<span style="color:var(--muted);">—</span>')
+                    : '<span dir="rtl" style="font-family:var(--syriac-font);font-size:1rem;">' + escHtml(k) + '</span>' +
+                      (grpLines[0].stem ? ' <span class="stem-badge stem-' + grpLines[0].stem.toLowerCase() + '">' + escHtml(grpLines[0].stem) + '</span>' : '');
+                hdr.innerHTML = '<td colspan="5" class="kwic-group-header">' + label +
+                    ' <span style="color:var(--muted);font-size:.8rem;font-weight:400;">— ' + grpLines.length + ' occ.</span></td>';
+                tbody.appendChild(hdr);
+                grpLines.forEach(function(line) { tbody.appendChild(makeLine(line)); });
+            });
+        } else {
+            lines.forEach(function(line) { tbody.appendChild(makeLine(line)); });
+        }
+    }
+
+    function makeLine(line) {
+        var ref = line.reference || '';
+        var book = ref.split(' ')[0] || '';
+        var chv = ref.split(' ')[1] || '';
+        var ch = chv.split(':')[0] || '1';
+        var readUrl = '/read/' + encodeURIComponent(book) + '/' + ch + '?lang=' + LANG;
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+            '<td class="kwic-left">' + escHtml((line.left_context||[]).join(' ')) + '</td>' +
+            '<td class="kwic-kw">' + escHtml(line.keyword||'') + '</td>' +
+            '<td class="kwic-right">' + escHtml((line.right_context||[]).join(' ')) + '</td>' +
+            '<td class="kwic-ref"><a href="' + readUrl + '" style="color:var(--accent);font-size:.75rem;">' + escHtml(ref) + '</a></td>' +
+            '<td class="kwic-meta">' +
+                '<span class="corpus-badge corpus-' + (line.corpus_id||'') + '" style="font-size:.65rem;padding:1px 5px;">' + corpusLabel(line.corpus_id||'') + '</span>' +
+                (line.stem ? ' <span class="stem-badge stem-' + line.stem.toLowerCase() + '" style="font-size:.65rem;">' + escHtml(line.stem) + '</span>' : '') +
+            '</td>';
+        return tr;
+    }
+
+    window.exportConc = function(fmt) {
+        if (!currentData) return;
+        var lines = currentData.lines || [];
+        if (fmt === 'tei') {
+            var root = document.getElementById('conc-root-input').value.trim();
+            var corpus = document.getElementById('conc-corpus').value;
+            var ctx = ctxSlider.value;
+            var url = '/api/concordance/export?root=' + encodeURIComponent(root) +
+                      '&context_words=' + ctx + (corpus ? '&corpus=' + corpus : '');
+            window.location.href = url;
+            return;
+        }
+        if (fmt === 'json') {
+            var blob = new Blob([JSON.stringify(currentData, null, 2)], {type:'application/json'});
+            var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'concordance-' + (currentData.root_translit||'root').toLowerCase() + '.json'; a.click();
+            return;
+        }
+        if (fmt === 'text') {
+            var txt = lines.map(function(l) {
+                var left = (l.left_context||[]).join(' ');
+                var right = (l.right_context||[]).join(' ');
+                return l.reference + '\t' + left + ' [' + l.keyword + '] ' + right;
+            }).join('\n');
+            var blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+            var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'concordance-' + (currentData.root_translit||'root').toLowerCase() + '.txt'; a.click();
+            return;
+        }
+        // CSV
+        var rows = [['Reference','Left Context','Keyword','Right Context','Translation','Corpus','Stem']];
+        lines.forEach(function(l) {
+            rows.push([l.reference, (l.left_context||[]).join(' '), l.keyword||'',
+                (l.right_context||[]).join(' '), l.translation||'', l.corpus_id||'', l.stem||'']);
+        });
+        var csv = '\uFEFF' + rows.map(function(r) {
+            return r.map(function(c) { return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
+        }).join('\n');
+        var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+        var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'concordance-' + (currentData.root_translit||'root').toLowerCase() + '.csv'; a.click();
+    };
+
+    // Auto-load if root passed in URL
+    if ('{{ initial_root }}') {
+        loadConcordance();
+    } else {
+        document.getElementById('conc-empty').style.display = 'block';
+    }
+})();
+</script>
+{% endblock %}
