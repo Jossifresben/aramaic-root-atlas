@@ -42,6 +42,10 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 - **Three Syriac font styles** -- Estrangela, Eastern (Madnhaya), Western (Serto)
 - **Dark mode** and QR sharing
 
+## Video Demo
+
+A full walkthrough of the app's features is available on the **[Guide page](https://aramaic-root-atlas.onrender.com/about)** — click **Watch Video** below the stats.
+
 ## Screenshots
 
 ![Homepage](docs/screenshots/homepage.png)
