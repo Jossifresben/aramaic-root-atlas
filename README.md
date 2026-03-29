@@ -41,6 +41,8 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 - **Five translation tracks** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek)
 - **Three Syriac font styles** -- Estrangela, Eastern (Madnhaya), Western (Serto)
 - **Dark mode** and QR sharing
+- **Guided Tour** -- 12-step interactive walkthrough of all features, available in all four UI languages; accessible via the ? button in the navbar or the Watch Video / Tour button on the Guide page
+- **Watch Video** -- in-app video walkthrough on the Guide page, plays in a viewport-wide modal with fullscreen support
 
 ## Video Demo
 
