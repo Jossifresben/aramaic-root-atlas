@@ -853,20 +853,25 @@
     };
 
     window.toggleVideoFullscreen = function() {
-        var el = inner;
-        if (!document.fullscreenElement) {
-            (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen).call(el);
-        } else {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
             (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen).call(document);
+            return;
         }
+        // Standard API — works on desktop + Android
+        var req = inner.requestFullscreen || inner.webkitRequestFullscreen || inner.mozRequestFullScreen;
+        if (req) { req.call(inner); return; }
+        // iOS Safari — only works on the <video> element itself
+        if (video.webkitEnterFullscreen) { video.webkitEnterFullscreen(); }
     };
 
-    document.addEventListener('fullscreenchange', function() {
-        fsIcon.textContent = document.fullscreenElement ? 'fullscreen_exit' : 'fullscreen';
-    });
-    document.addEventListener('webkitfullscreenchange', function() {
-        fsIcon.textContent = document.webkitFullscreenElement ? 'fullscreen_exit' : 'fullscreen';
-    });
+    function onFsChange() {
+        fsIcon.textContent = (document.fullscreenElement || document.webkitFullscreenElement) ? 'fullscreen_exit' : 'fullscreen';
+    }
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
+    // iOS: video element fires its own fullscreen events
+    video.addEventListener('webkitbeginfullscreen', function() { fsIcon.textContent = 'fullscreen_exit'; });
+    video.addEventListener('webkitendfullscreen',   function() { fsIcon.textContent = 'fullscreen'; });
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && modal.classList.contains('active')) closeVideoModal();
