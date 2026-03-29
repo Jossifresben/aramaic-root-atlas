@@ -2208,6 +2208,181 @@ def api_collocations():
     })
 
 
+@app.route('/api/passage-profile')
+def api_passage_profile():
+    """Lexical statistics for a passage (book + chapter range).
+
+    Query params:
+        book      — book name matching corpus (e.g. "Matthew")  [required]
+        ch_start  — first chapter number (int)                  [required]
+        ch_end    — last chapter number (int, default=ch_start)
+        v_start   — first verse in ch_start (int, optional)
+        v_end     — last verse in ch_end (int, optional)
+        corpus    — corpus filter: peshitta_nt|peshitta_ot|etc (optional)
+        lang      — gloss language: en|es|he|ar (default: en)
+    """
+    _init()
+    book = request.args.get('book', '').strip()
+    if not book:
+        return jsonify({'error': 'Missing book parameter'}), 400
+    try:
+        ch_start = int(request.args.get('ch_start', 1))
+        ch_end = int(request.args.get('ch_end', ch_start))
+    except ValueError:
+        return jsonify({'error': 'ch_start and ch_end must be integers'}), 400
+
+    v_start = None
+    v_end = None
+    try:
+        if request.args.get('v_start'):
+            v_start = int(request.args.get('v_start'))
+        if request.args.get('v_end'):
+            v_end = int(request.args.get('v_end'))
+    except ValueError:
+        pass  # ignore malformed optional verse range
+
+    corpus_filter = request.args.get('corpus', '').strip() or None
+    lang_code = request.args.get('lang', 'en')
+
+    # --- Collect all verses in the requested range ---
+    verse_texts: list[tuple[str, str]] = []  # [(ref, syriac_text)]
+    for ch in range(ch_start, ch_end + 1):
+        ch_verses = _corpus.get_chapter_verses(book, ch, corpus_filter)
+        for v_num, ref, text in ch_verses:
+            if ch == ch_start and v_start is not None and v_num < v_start:
+                continue
+            if ch == ch_end and v_end is not None and v_num > v_end:
+                continue
+            verse_texts.append((ref, text))
+
+    if not verse_texts:
+        return jsonify({'error': f'No verses found for {book} {ch_start}\u2013{ch_end}'}), 404
+
+    # --- Build corpus-wide root frequency dict for rarity classification ---
+    root_total_occ: dict[str, int] = {
+        entry.root: entry.total_occurrences
+        for entry in _extractor.get_all_roots()
+    }
+
+    # --- Aggregate per root within this passage ---
+    passage_root_counts: dict[str, int] = {}
+    verse_density: list[dict] = []
+    total_words = 0
+    stem_dist: dict[str, int] = {}
+    conf_dist = {'high': 0, 'medium': 0, 'low': 0}
+
+    for ref, text in verse_texts:
+        words = text.split()
+        verse_root_set: set[str] = set()
+        verse_root_count = 0
+        for w in words:
+            root_syr = _extractor.lookup_word_root(w)
+            if root_syr is None:
+                continue  # stopwords and unanalyzed forms return None
+            total_words += 1
+            passage_root_counts[root_syr] = passage_root_counts.get(root_syr, 0) + 1
+            verse_root_set.add(root_syr)
+            verse_root_count += 1
+            stem_lbl = (_extractor.lookup_word_stem(w) or 'unknown').lower()
+            stem_dist[stem_lbl] = stem_dist.get(stem_lbl, 0) + 1
+            conf = _extractor.lookup_word_confidence(w) or 0.5
+            if conf >= 0.8:
+                conf_dist['high'] += 1
+            elif conf >= 0.5:
+                conf_dist['medium'] += 1
+            else:
+                conf_dist['low'] += 1
+        verse_density.append({
+            'ref': ref,
+            'root_count': verse_root_count,
+            'unique': len(verse_root_set),
+        })
+
+    unique_roots = len(passage_root_counts)
+    lexical_density = round(unique_roots / total_words, 4) if total_words else 0.0
+
+    # --- Computed metrics ---
+    hapax_in_passage = sum(1 for c in passage_root_counts.values() if c == 1)
+    corpus_hapaxes = sum(
+        1 for r in passage_root_counts
+        if root_total_occ.get(r, 0) <= 1
+    )
+
+    rarity_buckets = {'hapax': 0, 'rare': 0, 'common': 0, 'very_common': 0}
+    for root_syr in passage_root_counts:
+        total = root_total_occ.get(root_syr, 0)
+        if total <= 1:
+            rarity_buckets['hapax'] += 1
+        elif total <= 5:
+            rarity_buckets['rare'] += 1
+        elif total <= 20:
+            rarity_buckets['common'] += 1
+        else:
+            rarity_buckets['very_common'] += 1
+
+    # --- Top 15 roots by passage frequency ---
+    top_roots_raw = sorted(passage_root_counts.items(), key=lambda x: x[1], reverse=True)[:15]
+    top_roots = []
+    for root_syr, count in top_roots_raw:
+        root_translit = _translit_to_dash(root_syr)
+        cognate = _cognate_lookup.lookup(root_syr)
+        gloss = _pick_gloss(cognate, lang_code) if cognate else _extractor.get_root_gloss(root_syr) or ''
+        top_roots.append({
+            'root': root_syr,
+            'root_key': root_translit,
+            'gloss': gloss,
+            'passage_count': count,
+            'corpus_total': root_total_occ.get(root_syr, 0),
+        })
+
+    # --- Semantic field distribution (graceful if not loaded) ---
+    sf_dist: dict[str, int] = {}
+    if _semantic_fields:
+        for root_syr, count in passage_root_counts.items():
+            key = _translit_to_dash(root_syr).lower()
+            for domain in _semantic_fields.get(key, []):
+                sf_dist[domain] = sf_dist.get(domain, 0) + count
+
+    # --- Passage label ---
+    if ch_start == ch_end:
+        passage_label = f'{book} {ch_start}'
+    else:
+        passage_label = f'{book} {ch_start}\u2013{ch_end}'
+
+    return jsonify({
+        'passage': passage_label,
+        'verse_count': len(verse_texts),
+        'word_count': total_words,
+        'unique_roots': unique_roots,
+        'lexical_density': lexical_density,
+        'hapax_in_passage': hapax_in_passage,
+        'corpus_hapaxes': corpus_hapaxes,
+        'rarity_buckets': rarity_buckets,
+        'stem_distribution': stem_dist,
+        'top_roots': top_roots,
+        'semantic_fields': sf_dist,
+        'verse_density': verse_density,
+        'confidence_dist': conf_dist,
+    })
+
+
+@app.route('/passage-profile')
+def passage_profile_page():
+    """Passage lexical profile analysis page."""
+    _init()
+    lang = _get_lang()
+    books = _corpus.get_books()
+    initial_book = request.args.get('book', '')
+    initial_ch_start = request.args.get('ch_start', '')
+    initial_ch_end = request.args.get('ch_end', '')
+    return render_template('passage_profile.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn,
+                           books=books,
+                           initial_book=initial_book,
+                           initial_ch_start=initial_ch_start,
+                           initial_ch_end=initial_ch_end)
+
+
 @app.route('/collocations')
 def collocations_page():
     _init()
