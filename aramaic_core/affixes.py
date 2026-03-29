@@ -83,6 +83,85 @@ SUFFIXES = [
 ]
 
 
+# --- Human-readable label maps for morpheme display ---
+
+PROCLITIC_LABELS: dict[str, str] = {
+    # Compound proclitics first (2 chars) — must take priority over single
+    '\u0718\u0712': 'and in (wb-)',
+    '\u0718\u0720': 'and to (wl-)',
+    '\u0718\u0721': 'and from (wm-)',
+    '\u0718\u0715': 'and of (wd-)',
+    '\u0715\u0712': 'that in (db-)',
+    '\u0715\u0720': 'that to (dl-)',
+    '\u0715\u0721': 'that from (dm-)',
+    '\u0720\u0721': 'in order to (lm-)',
+    # Single proclitics
+    '\u0718': 'conjunction (w-)',
+    '\u0715': 'relative/genitive (d-)',
+    '\u0712': 'preposition in/with (b-)',
+    '\u0720': 'preposition to/for (l-)',
+}
+
+VERBAL_PREFIX_LABELS: dict[str, str] = {
+    '\u0710\u072B\u072C': 'reflexive (Eshtaphal)',
+    '\u0710\u072C': 'reflexive/passive (Ethpeel)',
+    '\u072B': 'causative (Shafel sh-)',
+    '\u0721': 'participle prefix (m-)',
+    '\u0722': 'imperfect 3ms (n-)',
+    '\u072C': 'imperfect 2ms/3fs (t-)',
+    '\u0710': 'imperfect 1s / Aphel (a-)',
+}
+
+SUFFIX_LABELS: dict[str, str] = {
+    '\u072C\u0718\u0722': '2mp (-thwn)',
+    '\u072C\u071D\u0722': '2fp (-thyn)',
+    '\u071D\u072C\u0717': '3ms object (-yth)',
+    '\u0722\u0722': '1cp (-nn)',
+    '\u0717\u0718\u0722': '3mp possessive (-hwn)',
+    '\u0717\u071D\u0722': '3fp possessive (-hyn)',
+    '\u071F\u0718\u0722': '2mp possessive (-kwn)',
+    '\u071F\u071D\u0722': '2fp possessive (-kyn)',
+    '\u0718\u0717\u071D': '3fs possessive (-why)',
+    '\u072C\u0717': '3ms possessive (-th)',
+    '\u0722\u071D': '1s object (-ny)',
+    '\u071D\u0722': 'masc. plural (-yn)',
+    '\u072C\u0710': 'feminine/abstract (-tha)',
+    '\u0718\u072C\u0710': 'abstract noun (-wtha)',
+    '\u0718\u072C\u0717': 'abstract + 3ms (-wth)',
+    '\u0717': '3ms/3fs possessive (-h)',
+    '\u071D': '1s possessive / construct (-y)',
+    '\u071F': '2ms possessive (-k)',
+    '\u0722': '3mp / energic (-n)',
+    '\u0718': '3mp perfect / plural imperative (-w)',
+    '\u072C': '1s/2ms perfect / feminine (-th)',
+    '\u0710': 'emphatic state / 3fs (-a)',
+}
+
+
+def label_stripping_result(result: 'StrippingResult') -> dict:
+    """Convert a StrippingResult into dicts with human-readable labels.
+
+    Returns:
+        {
+            'prefixes': [{'char': str, 'label': str}, ...],
+            'suffixes': [{'char': str, 'label': str}, ...]
+        }
+    """
+    all_prefix_labels = {**PROCLITIC_LABELS, **VERBAL_PREFIX_LABELS}
+
+    prefixes = []
+    for char in result.prefixes_removed:
+        label = all_prefix_labels.get(char, char)
+        prefixes.append({'char': char, 'label': label})
+
+    suffixes = []
+    for char in result.suffixes_removed:
+        label = SUFFIX_LABELS.get(char, char)
+        suffixes.append({'char': char, 'label': label})
+
+    return {'prefixes': prefixes, 'suffixes': suffixes}
+
+
 def strip_proclitics(word: str) -> list[tuple[str, str]]:
     """Try stripping proclitic prefixes from the word.
 
