@@ -21,6 +21,8 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 - **Semantic Fields** -- `/semantic-fields` page organizes all roots into 15 semantic domains (legal/covenant, cultic, kinship, war, knowledge, etc.) via AI classification; each domain lists roots sorted by frequency with corpus badges and links to the visualizer
 - **Researcher Annotations** -- `/annotations` page for inline notes on verses and roots, stored in localStorage; tag-based filtering, export as JSON/CSV/Markdown; inline note icons in the verse reader and root card
 - **BibTeX & Zotero Export** -- generate academic citations from bookmarks in BibTeX (`.bib`) or Zotero RDF (`.rdf`) formats directly from the bookmarks page
+- **Word Parser** -- `/parse` page provides full morphological breakdown of any Syriac word: prefixes, root, suffixes shown as colour-coded morpheme boxes; stem badge; cognates with Hebrew/Arabic pills; corpus attestation counts; accepts Syriac Unicode or Latin transliteration input (`shlm`, `sh-l-m`)
+- **Passage Lexical Profile** -- `/passage-profile` page analyses any passage range (book + chapter span): word count, unique roots, lexical density, hapax count, stem distribution chart, root rarity breakdown, top-15 roots with corpus pills, verse-by-verse density sparkline
 
 ### Exploration & Reading
 - **Word-level root display** -- click any Syriac word in the reader to see its extracted root, gloss, confidence score, verb stem, and link to the root visualizer
@@ -61,6 +63,12 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 | Researcher Annotations | BibTeX / Zotero Export |
 |:---:|:---:|
 | ![Annotations](docs/screenshots/annotations.png) | ![BibTeX Export](docs/screenshots/bibtex-export.png) |
+
+| Word Parser | Passage Lexical Profile |
+|:---:|:---:|
+| ![Word Parser](docs/screenshots/word_parser.png) | ![Passage Profile](docs/screenshots/passage-lexical-profile-1.png) |
+
+![Passage Lexical Profile — Top Roots & Verse Density](docs/screenshots/passage-lexical-profile-2.png)
 
 ### Exploration & Reading
 
@@ -134,6 +142,8 @@ The Atlas exposes a full JSON API for programmatic access. All endpoints support
 | `GET /api/collocations?root=SH-L-M&scope=verse` | PMI-scored co-occurring roots at verse or chapter scope |
 | `GET /api/semantic-fields` | All 15 semantic domains with root counts |
 | `GET /api/semantic-fields/<field>` | Roots in a domain sorted by frequency with corpus counts |
+| `GET /api/word-parse?word=ܫܠܡ` | Full morphological parse: prefixes, root, suffixes, stem, gloss, cognates, corpus attestation |
+| `GET /api/passage-profile?book=Matthew&ch_start=5&ch_end=7` | Lexical profile for a passage: word count, unique roots, density, stem distribution, top roots, hapax count |
 
 **Root input formats:** Dash-separated Latin (`SH-L-M`), Syriac Unicode (`ܫܠܡ`), Hebrew (`שלם`), or Arabic (`سلم`). The API auto-detects and normalizes.
 
@@ -152,7 +162,7 @@ aramaic-root-atlas/
     cognates.py          #   CognateLookup: Hebrew & Arabic cognate lookup
     glosser.py           #   WordGlosser: compositional word-level glossing
   app.py                 # Flask application (port 5001)
-  templates/             # Jinja2 templates (read, browse, visualize, hapax, concordance, diachronic, …)
+  templates/             # Jinja2 templates (read, browse, visualize, hapax, concordance, diachronic, parse, passage_profile, …)
   static/style.css       # CSS with corpus-coded color variables and stem-badge palette
   static/autocomplete.js # Shared root autocomplete widget
   data/

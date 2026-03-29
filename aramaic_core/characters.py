@@ -307,6 +307,59 @@ def transliterate_arabic(text: str) -> str:
     return ''.join(result)
 
 
+def translit_word_to_syriac(text: str) -> str | None:
+    """Convert a Latin-script transliteration of a Syriac word to Syriac Unicode.
+
+    Accepts:
+    - Dash-separated consonants: 'sh-l-m', 'k-t-b', 'w-sh-l-m'
+    - Continuous consonant string: 'shlem', 'ktb', 'wshlem'
+
+    Uses greedy left-to-right matching, preferring digraphs (sh, kh, th, ts).
+    Adds 't' as a fallback mapping to ܬ Taw (common shorthand for 'th').
+
+    Returns the Syriac Unicode string, or None if any part cannot be mapped.
+    """
+    text = text.strip()
+    if not text:
+        return None
+
+    lower = text.lower()
+
+    # Extended map shared by both paths: adds 't' → ܬ Taw as a fallback
+    # so users can write 'k-t-b' or 'ktb' instead of requiring 'k-th-b'.
+    extended = dict(LATIN_TO_SYRIAC)
+    extended.setdefault('t', '\u072C')   # ܬ Taw
+
+    # Dash- or space-separated: each segment is one consonant label
+    if '-' in lower or (' ' in lower and len(lower.split()) > 1):
+        sep = '-' if '-' in lower else ' '
+        parts = [p.strip() for p in lower.split(sep) if p.strip()]
+        result = []
+        for part in parts:
+            if part in extended:
+                result.append(extended[part])
+            else:
+                return None
+        return ''.join(result) if result else None
+
+    # Continuous input: greedy left-to-right with digraph priority.
+
+    result = []
+    i = 0
+    while i < len(lower):
+        two = lower[i:i + 2]
+        if two and two in extended:
+            result.append(extended[two])
+            i += 2
+        elif lower[i] in extended:
+            result.append(extended[lower[i]])
+            i += 1
+        else:
+            return None  # unmappable character — give up
+
+    return ''.join(result) if result else None
+
+
 def parse_root_input(user_input: str) -> str | None:
     """Parse user input like 'K-T-B' or 'k t b' into Syriac root string.
 

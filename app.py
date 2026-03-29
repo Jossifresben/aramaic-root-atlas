@@ -542,6 +542,136 @@ def _translit_to_dash(syriac_root: str) -> str:
     return '-'.join(parts) if parts else ''
 
 
+@app.route('/api/word-parse')
+def api_word_parse():
+    """Full morphological breakdown for a single Syriac/Aramaic word.
+
+    Query params:
+        word  — Syriac/Aramaic word string (required)
+        lang  — UI language code for gloss selection: en|es|he|ar (default: en)
+    """
+    _init()
+    word = request.args.get('word', '').strip()
+    if not word:
+        return jsonify({'error': 'Missing word parameter'}), 400
+    lang_code = request.args.get('lang', 'en')
+
+    from aramaic_core.affixes import generate_candidate_stems, label_stripping_result
+    from aramaic_core.characters import detect_script, translit_word_to_syriac, SYRIAC_CONSONANTS
+
+    # Allow Latin transliteration input — silently convert before analysis
+    input_word = word
+    if detect_script(word) == 'latin':
+        converted = translit_word_to_syriac(word)
+        if converted:
+            word = converted
+
+    script = detect_script(word)
+
+    # Look up root, stem, confidence from pre-built index
+    root_syr = _extractor.lookup_word_root(word)
+    stem = _extractor.lookup_word_stem(word)
+    conf = _extractor.lookup_word_confidence(word) or 0.0
+
+    # Heuristic POS guess
+    _VERBAL_STEMS = frozenset({
+        'peal', 'ethpeel', 'pael', 'ethpaal', 'aphel', 'shafel', 'ettaphal'
+    })
+    stem_lower = (stem or '').lower()
+    if stem_lower in _VERBAL_STEMS:
+        pos_guess = 'verb'
+    elif word.endswith(('\u072C\u0710', '\u071D\u0722', '\u0718\u072C\u0710')):
+        # ܬܐ, ܝܢ, ܘܬܐ — common nominal endings
+        pos_guess = 'noun'
+    else:
+        pos_guess = 'unknown'
+
+    # Morpheme decomposition — Syriac script only; requires a known root
+    prefixes: list[dict] = []
+    suffixes: list[dict] = []
+    if root_syr and script == 'syriac':
+        candidates = generate_candidate_stems(word)
+        root_consonants = frozenset(ch for ch in root_syr if ch in SYRIAC_CONSONANTS)
+        best = None
+        # Prefer candidates whose stem consonants exactly equal the root (fully stripped).
+        # Fall back to candidates where root is a strict subset (partial stripping).
+        # Only use the unstripped word as a last resort.
+        exact_match = None
+        subset_match = None
+        for cand in candidates:
+            cand_consonants = frozenset(ch for ch in cand.stem if ch in SYRIAC_CONSONANTS)
+            if not root_consonants:
+                continue
+            if cand_consonants == root_consonants:
+                # Prefer the exact match with the most affixes stripped
+                if exact_match is None or (
+                    len(cand.prefixes_removed) + len(cand.suffixes_removed) >
+                    len(exact_match.prefixes_removed) + len(exact_match.suffixes_removed)
+                ):
+                    exact_match = cand
+            elif root_consonants < cand_consonants and subset_match is None:
+                subset_match = cand
+        best = exact_match or subset_match or (candidates[0] if candidates else None)
+        if best:
+            labeled = label_stripping_result(best)
+            prefixes = labeled['prefixes']
+            suffixes = labeled['suffixes']
+
+    # Gloss in all four UI languages (fall back to English)
+    cognate = _cognate_lookup.lookup(root_syr) if root_syr else None
+    gloss_en = (cognate.gloss_en if cognate else '') or _extractor.get_root_gloss(root_syr or '') or ''
+    gloss_es = (cognate.gloss_es if cognate else '') or gloss_en
+    gloss_he = (cognate.gloss_he if cognate else '') or gloss_en
+    gloss_ar = (cognate.gloss_ar if cognate else '') or gloss_en
+
+    # Hebrew and Arabic cognate display strings
+    cognate_data: dict[str, str] = {}
+    if cognate:
+        if cognate.hebrew:
+            cognate_data['hebrew'] = ' / '.join(hw.word for hw in cognate.hebrew[:3])
+        if cognate.arabic:
+            cognate_data['arabic'] = ' / '.join(aw.word for aw in cognate.arabic[:3])
+
+    # Corpus attestation counts for this root
+    corpus_att: dict[str, int] = {}
+    if root_syr:
+        for entry in _extractor.get_all_roots():
+            if entry.root == root_syr:
+                corpus_att = dict(entry.corpus_counts)
+                break
+
+    root_translit = _translit_to_dash(root_syr) if root_syr else ''
+
+    return jsonify({
+        'word': word,
+        'input': input_word,
+        'script': script,
+        'root': root_syr or '',
+        'root_key': root_translit,
+        'stem': stem or '',
+        'confidence': round(conf, 2),
+        'pos_guess': pos_guess,
+        'prefixes': prefixes,
+        'suffixes': suffixes,
+        'gloss_en': gloss_en,
+        'gloss_es': gloss_es,
+        'gloss_he': gloss_he,
+        'gloss_ar': gloss_ar,
+        'cognates': cognate_data,
+        'corpus_attestations': corpus_att,
+    })
+
+
+@app.route('/parse')
+def parse_page():
+    """Standalone word parser page."""
+    lang = _get_lang()
+    initial_word = request.args.get('word', '')
+    return render_template('parse.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn,
+                           initial_word=initial_word)
+
+
 @app.route('/api/suggest')
 def api_suggest():
     """Return roots matching a Latin-letter prefix for autocomplete."""
@@ -2095,6 +2225,195 @@ def api_collocations():
         'corpus_filter': corpus_filter or 'all',
         'collocates': results,
     })
+
+
+@app.route('/api/passage-profile')
+def api_passage_profile():
+    """Lexical statistics for a passage (book + chapter range).
+
+    Query params:
+        book      — book name matching corpus (e.g. "Matthew")  [required]
+        ch_start  — first chapter number (int)                  [required]
+        ch_end    — last chapter number (int, default=ch_start)
+        v_start   — first verse in ch_start (int, optional)
+        v_end     — last verse in ch_end (int, optional)
+        corpus    — corpus filter: peshitta_nt|peshitta_ot|etc (optional)
+        lang      — gloss language: en|es|he|ar (default: en)
+    """
+    _init()
+    book = request.args.get('book', '').strip()
+    if not book:
+        return jsonify({'error': 'Missing book parameter'}), 400
+    try:
+        ch_start = int(request.args.get('ch_start', 1))
+        ch_end = int(request.args.get('ch_end', ch_start))
+    except ValueError:
+        return jsonify({'error': 'ch_start and ch_end must be integers'}), 400
+
+    v_start = None
+    v_end = None
+    try:
+        if request.args.get('v_start'):
+            v_start = int(request.args.get('v_start'))
+        if request.args.get('v_end'):
+            v_end = int(request.args.get('v_end'))
+    except ValueError:
+        pass  # ignore malformed optional verse range
+
+    corpus_filter = request.args.get('corpus', '').strip() or None
+    lang_code = request.args.get('lang', 'en')
+
+    # --- Collect all verses in the requested range ---
+    verse_texts: list[tuple[str, str]] = []  # [(ref, syriac_text)]
+    for ch in range(ch_start, ch_end + 1):
+        ch_verses = _corpus.get_chapter_verses(book, ch, corpus_filter)
+        for v_num, ref, text in ch_verses:
+            if ch == ch_start and v_start is not None and v_num < v_start:
+                continue
+            if ch == ch_end and v_end is not None and v_num > v_end:
+                continue
+            verse_texts.append((ref, text))
+
+    if not verse_texts:
+        return jsonify({'error': f'No verses found for {book} {ch_start}\u2013{ch_end}'}), 404
+
+    # --- Build corpus-wide root frequency dict for rarity classification ---
+    all_root_entries = _extractor.get_all_roots()
+    root_total_occ: dict[str, int] = {
+        entry.root: entry.total_occurrences
+        for entry in all_root_entries
+    }
+    root_corpus_counts: dict[str, dict[str, int]] = {
+        entry.root: entry.corpus_counts
+        for entry in all_root_entries
+    }
+
+    # --- Aggregate per root within this passage ---
+    passage_root_counts: dict[str, int] = {}
+    verse_density: list[dict] = []
+    total_words = sum(len(text.split()) for _, text in verse_texts)  # all tokens
+    analyzed_words = 0  # tokens where a root was resolved
+    stem_dist: dict[str, int] = {}
+    conf_dist = {'high': 0, 'medium': 0, 'low': 0}
+
+    for ref, text in verse_texts:
+        words = text.split()
+        verse_root_set: set[str] = set()
+        verse_root_count = 0
+        for w in words:
+            root_syr = _extractor.lookup_word_root(w)
+            if root_syr is None:
+                continue  # stopwords and unanalyzed forms return None
+            analyzed_words += 1
+            passage_root_counts[root_syr] = passage_root_counts.get(root_syr, 0) + 1
+            verse_root_set.add(root_syr)
+            verse_root_count += 1
+            stem_lbl = (_extractor.lookup_word_stem(w) or 'unknown').lower()
+            stem_dist[stem_lbl] = stem_dist.get(stem_lbl, 0) + 1
+            conf = _extractor.lookup_word_confidence(w) or 0.5
+            if conf >= 0.8:
+                conf_dist['high'] += 1
+            elif conf >= 0.5:
+                conf_dist['medium'] += 1
+            else:
+                conf_dist['low'] += 1
+        verse_density.append({
+            'ref': ref,
+            'root_count': verse_root_count,
+            'unique': len(verse_root_set),
+        })
+
+    unique_roots = len(passage_root_counts)
+    lexical_density = round(unique_roots / total_words, 4) if total_words else 0.0
+    # lexical_density = unique distinct roots / total tokens (including stopwords)
+
+    # --- Computed metrics ---
+    hapax_in_passage = sum(1 for c in passage_root_counts.values() if c == 1)
+    corpus_hapaxes = sum(
+        1 for r in passage_root_counts
+        if root_total_occ.get(r, 0) <= 1
+    )
+
+    rarity_buckets = {'hapax': 0, 'rare': 0, 'common': 0, 'very_common': 0}
+    for root_syr in passage_root_counts:
+        total = root_total_occ.get(root_syr, 0)
+        if total <= 1:
+            rarity_buckets['hapax'] += 1
+        elif total <= 5:
+            rarity_buckets['rare'] += 1
+        elif total <= 20:
+            rarity_buckets['common'] += 1
+        else:
+            rarity_buckets['very_common'] += 1
+
+    # --- Top 15 roots by passage frequency ---
+    top_roots_raw = sorted(passage_root_counts.items(), key=lambda x: x[1], reverse=True)[:15]
+    top_roots = []
+    for root_syr, count in top_roots_raw:
+        root_translit = _translit_to_dash(root_syr)
+        cognate = _cognate_lookup.lookup(root_syr)
+        gloss = _pick_gloss(cognate, lang_code) if cognate else _extractor.get_root_gloss(root_syr) or ''
+        corpus_att = {
+            cid: cnt
+            for cid, cnt in root_corpus_counts.get(root_syr, {}).items()
+            if cnt > 0
+        }
+        top_roots.append({
+            'root': root_syr,
+            'root_key': root_translit,
+            'gloss': gloss,
+            'passage_count': count,
+            'corpus_total': root_total_occ.get(root_syr, 0),
+            'corpus_attestation': corpus_att,
+        })
+
+    # --- Semantic field distribution (graceful if not loaded) ---
+    sf_dist: dict[str, int] = {}
+    if _semantic_fields:
+        for root_syr, count in passage_root_counts.items():
+            key = _translit_to_dash(root_syr).lower()
+            for domain in _semantic_fields.get(key, []):
+                sf_dist[domain] = sf_dist.get(domain, 0) + count
+
+    # --- Passage label ---
+    if ch_start == ch_end:
+        passage_label = f'{book} {ch_start}'
+    else:
+        passage_label = f'{book} {ch_start}\u2013{ch_end}'
+
+    return jsonify({
+        'passage': passage_label,
+        'verse_count': len(verse_texts),
+        'word_count': total_words,
+        'analyzed_word_count': analyzed_words,
+        'unique_roots': unique_roots,
+        'lexical_density': lexical_density,
+        'hapax_in_passage': hapax_in_passage,
+        'corpus_hapaxes': corpus_hapaxes,
+        'rarity_buckets': rarity_buckets,
+        'stem_distribution': stem_dist,
+        'top_roots': top_roots,
+        'semantic_fields': sf_dist,
+        'verse_density': verse_density,
+        'confidence_dist': conf_dist,
+    })
+
+
+@app.route('/passage-profile')
+def passage_profile_page():
+    """Passage lexical profile analysis page."""
+    _init()
+    lang = _get_lang()
+    books = _corpus.get_books()
+    initial_book = request.args.get('book', '')
+    initial_ch_start = request.args.get('ch_start', '')
+    initial_ch_end = request.args.get('ch_end', '')
+    return render_template('passage_profile.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn,
+                           books=books,
+                           initial_book=initial_book,
+                           initial_ch_start=initial_ch_start,
+                           initial_ch_end=initial_ch_end)
 
 
 @app.route('/collocations')
