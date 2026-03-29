@@ -117,7 +117,27 @@
             }
         });
 
-        // Step 12: The tour button itself — wrap-up
+        // Step 12: Bookmarks
+        steps.push({
+            element: '#nav-bookmarks',
+            popover: {
+                title: t('bookmarks_title'),
+                description: t('bookmarks_body'),
+                side: 'left', align: 'start'
+            }
+        });
+
+        // Step 13: Share / QR
+        steps.push({
+            element: '#share-toggle',
+            popover: {
+                title: t('share_title'),
+                description: t('share_body'),
+                side: 'left', align: 'start'
+            }
+        });
+
+        // Step 14: The tour button itself — wrap-up
         steps.push({
             element: '#tour-nav-btn',
             popover: {

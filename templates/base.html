@@ -120,7 +120,7 @@
                     </div>
 
                     <!-- Bookmarks -->
-                    <a class="nav-btn" href="/bookmarks?lang={{ lang }}" aria-label="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}"
+                    <a class="nav-btn" id="nav-bookmarks" href="/bookmarks?lang={{ lang }}" aria-label="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}"
                        data-tooltip="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}">
                         <span class="material-symbols-outlined">bookmark</span>
                     </a>
@@ -217,6 +217,10 @@
         settings_body:         "{{ t('tour_settings_body',     lang)|e }}",
         lang_title:            "{{ t('tour_lang_title',        lang)|e }}",
         lang_body:             "{{ t('tour_lang_body',         lang)|e }}",
+        bookmarks_title:       "{{ t('tour_bookmarks_title',   lang)|e }}",
+        bookmarks_body:        "{{ t('tour_bookmarks_body',    lang)|e }}",
+        share_title:           "{{ t('tour_share_title',       lang)|e }}",
+        share_body:            "{{ t('tour_share_body',        lang)|e }}",
         end_title:             "{{ t('tour_end_title',         lang)|e }}",
         end_body:              "{{ t('tour_end_body',          lang)|e }}"
     };
