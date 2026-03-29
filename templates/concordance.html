@@ -193,7 +193,8 @@
         var book = ref.split(' ')[0] || '';
         var chv = ref.split(' ')[1] || '';
         var ch = chv.split(':')[0] || '1';
-        var readUrl = '/read/' + encodeURIComponent(book) + '/' + ch + '?lang=' + LANG;
+        var verse = chv.split(':')[1] || '';
+        var readUrl = '/read/' + encodeURIComponent(book) + '/' + ch + '?lang=' + LANG + (verse ? '#v' + verse : '');
 
         // Main Syriac row
         var tr = document.createElement('tr');
