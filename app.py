@@ -542,6 +542,117 @@ def _translit_to_dash(syriac_root: str) -> str:
     return '-'.join(parts) if parts else ''
 
 
+@app.route('/api/word-parse')
+def api_word_parse():
+    """Full morphological breakdown for a single Syriac/Aramaic word.
+
+    Query params:
+        word  — Syriac/Aramaic word string (required)
+        lang  — UI language code for gloss selection: en|es|he|ar (default: en)
+    """
+    _init()
+    word = request.args.get('word', '').strip()
+    if not word:
+        return jsonify({'error': 'Missing word parameter'}), 400
+    lang_code = request.args.get('lang', 'en')
+
+    from aramaic_core.affixes import generate_candidate_stems, label_stripping_result
+    from aramaic_core.characters import detect_script, SYRIAC_CONSONANTS
+
+    script = detect_script(word)
+
+    # Look up root, stem, confidence from pre-built index
+    root_syr = _extractor.lookup_word_root(word)
+    stem = _extractor.lookup_word_stem(word)
+    conf = _extractor.lookup_word_confidence(word) or 0.0
+
+    # Heuristic POS guess
+    _VERBAL_STEMS = frozenset({
+        'peal', 'ethpeel', 'pael', 'ethpaal', 'aphel', 'shafel', 'ettaphal'
+    })
+    stem_lower = (stem or '').lower()
+    if stem_lower in _VERBAL_STEMS:
+        pos_guess = 'verb'
+    elif word.endswith(('\u072C\u0710', '\u071D\u0722', '\u0718\u072C\u0710')):
+        # ܬܐ, ܝܢ, ܘܬܐ — common nominal endings
+        pos_guess = 'noun'
+    else:
+        pos_guess = 'unknown'
+
+    # Morpheme decomposition — Syriac script only; requires a known root
+    prefixes: list[dict] = []
+    suffixes: list[dict] = []
+    if root_syr and script == 'syriac':
+        candidates = generate_candidate_stems(word)
+        root_consonants = frozenset(ch for ch in root_syr if ch in SYRIAC_CONSONANTS)
+        best = None
+        # Pick the first candidate whose remaining stem contains all root consonants
+        for cand in candidates:
+            cand_consonants = frozenset(ch for ch in cand.stem if ch in SYRIAC_CONSONANTS)
+            if root_consonants and root_consonants.issubset(cand_consonants):
+                best = cand
+                break
+        if best is None and candidates:
+            best = candidates[0]
+        if best:
+            labeled = label_stripping_result(best)
+            prefixes = labeled['prefixes']
+            suffixes = labeled['suffixes']
+
+    # Gloss in all four UI languages (fall back to English)
+    cognate = _cognate_lookup.lookup(root_syr) if root_syr else None
+    gloss_en = (cognate.gloss_en if cognate else '') or _extractor.get_root_gloss(root_syr or '') or ''
+    gloss_es = (cognate.gloss_es if cognate else '') or gloss_en
+    gloss_he = (cognate.gloss_he if cognate else '') or gloss_en
+    gloss_ar = (cognate.gloss_ar if cognate else '') or gloss_en
+
+    # Hebrew and Arabic cognate display strings
+    cognate_data: dict[str, str] = {}
+    if cognate:
+        if cognate.hebrew:
+            cognate_data['hebrew'] = ' / '.join(hw.word for hw in cognate.hebrew[:3])
+        if cognate.arabic:
+            cognate_data['arabic'] = ' / '.join(aw.word for aw in cognate.arabic[:3])
+
+    # Corpus attestation counts for this root
+    corpus_att: dict[str, int] = {}
+    if root_syr:
+        for entry in _extractor.get_all_roots():
+            if entry.root == root_syr:
+                corpus_att = dict(entry.corpus_counts)
+                break
+
+    root_translit = _translit_to_dash(root_syr) if root_syr else ''
+
+    return jsonify({
+        'word': word,
+        'script': script,
+        'root': root_syr or '',
+        'root_key': root_translit,
+        'stem': stem or '',
+        'confidence': round(conf, 2),
+        'pos_guess': pos_guess,
+        'prefixes': prefixes,
+        'suffixes': suffixes,
+        'gloss_en': gloss_en,
+        'gloss_es': gloss_es,
+        'gloss_he': gloss_he,
+        'gloss_ar': gloss_ar,
+        'cognates': cognate_data,
+        'corpus_attestations': corpus_att,
+    })
+
+
+@app.route('/parse')
+def parse_page():
+    """Standalone word parser page."""
+    lang = _get_lang()
+    initial_word = request.args.get('word', '')
+    return render_template('parse.html', lang=lang, script=_get_script(),
+                           trans=_get_trans(), t=_t_proxy, bn=_bn,
+                           initial_word=initial_word)
+
+
 @app.route('/api/suggest')
 def api_suggest():
     """Return roots matching a Latin-letter prefix for autocomplete."""
