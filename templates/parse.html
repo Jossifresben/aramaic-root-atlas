@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% block title %}{{ t('parse_title', lang) }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:820px;margin:0 auto;padding:1.5rem 1rem;">
+    <div style="margin-bottom:1.2rem;">
+        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('parse_title', lang) }}</h1>
+        <p style="color:var(--muted);margin:0;">{{ t('parse_subtitle', lang) }}</p>
+    </div>
+
+    <!-- Input row -->
+    <div style="display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+        <input type="text" id="parse-input"
+               placeholder="{{ t('parse_input_placeholder', lang) }}"
+               value="{{ initial_word }}"
+               autocomplete="off" spellcheck="false"
+               dir="rtl"
+               style="flex:1;min-width:200px;padding:.6rem .9rem;font-family:var(--syriac-font);font-size:1.3rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
+        <button onclick="analyzeWord()"
+                style="padding:.6rem 1.4rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.95rem;">
+            {{ t('parse_analyze', lang) }}
+        </button>
+    </div>
+
+    <!-- States -->
+    <div id="parse-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">
+        <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
+    </div>
+    <div id="parse-empty" style="text-align:center;padding:3rem;color:var(--muted);font-style:italic;">
+        {{ t('parse_input_placeholder', lang) }}
+    </div>
+
+    <!-- Results -->
+    <div id="parse-results" style="display:none;">
+
+        <!-- Morpheme row -->
+        <div class="stat-card" style="padding:1.2rem;margin-bottom:1rem;">
+            <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;">
+                {{ t('parse_prefixes', lang) }} · {{ t('parse_root', lang) }} · {{ t('parse_suffixes', lang) }}
+            </div>
+            <div id="parse-morpheme-row" class="parse-morpheme-row"></div>
+        </div>
+
+        <!-- Two-column details -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem;">
+            <!-- Gloss + stem + POS + confidence -->
+            <div class="stat-card" style="padding:1rem;">
+                <div id="parse-gloss" style="font-size:1.05rem;font-style:italic;margin-bottom:.6rem;line-height:1.4;"></div>
+                <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+                    <span id="parse-stem-badge"></span>
+                    <span id="parse-pos" style="font-size:.78rem;background:var(--border);padding:2px 8px;border-radius:4px;color:var(--muted);"></span>
+                    <span id="parse-conf-dot" class="wp-conf"></span>
+                    <span id="parse-conf-label" style="font-size:.78rem;color:var(--muted);"></span>
+                </div>
+            </div>
+            <!-- Cognates + corpus attestations -->
+            <div class="stat-card" style="padding:1rem;">
+                <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;">
+                    {{ t('parse_cognates', lang) }}
+                </div>
+                <div id="parse-cognates" style="font-size:.95rem;margin-bottom:.7rem;direction:rtl;text-align:right;font-family:var(--syriac-font);line-height:1.6;"></div>
+                <div id="parse-corpus" style="font-size:.78rem;color:var(--muted);line-height:1.6;"></div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+            <button id="parse-copy-btn" onclick="copyGloss()"
+                    style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);cursor:pointer;font-size:.85rem;">
+                {{ t('parse_copy_gloss', lang) }}
+            </button>
+            <a id="parse-viz-link" href="#"
+               style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:var(--radius);color:var(--accent);text-decoration:none;font-size:.85rem;">
+                {{ t('visualize', lang) if t else 'Visualize Root' }} →
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    var LANG = {{ lang|tojson }};
+    var _parseData = null;
+
+    function escHtml(s) {
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function confTier(c) {
+        if (c >= 0.8) return {cls: 'conf-high', label: 'High'};
+        if (c >= 0.5) return {cls: 'conf-med', label: 'Medium'};
+        return {cls: 'conf-low', label: 'Low'};
+    }
+
+    window.analyzeWord = function() {
+        var word = document.getElementById('parse-input').value.trim();
+        if (!word) return;
+
+        document.getElementById('parse-empty').style.display = 'none';
+        document.getElementById('parse-results').style.display = 'none';
+        document.getElementById('parse-loading').style.display = 'block';
+
+        fetch('/api/word-parse?word=' + encodeURIComponent(word) + '&lang=' + LANG)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                _parseData = data;
+                renderResults(data);
+            })
+            .catch(function() {
+                document.getElementById('parse-loading').style.display = 'none';
+                document.getElementById('parse-empty').style.display = 'block';
+            });
+    };
+
+    function renderResults(data) {
+        document.getElementById('parse-loading').style.display = 'none';
+
+        // Morpheme boxes
+        var morphRow = document.getElementById('parse-morpheme-row');
+        morphRow.innerHTML = '';
+
+        function makeBox(char, label, cssClass) {
+            var div = document.createElement('div');
+            div.className = 'wp-morph ' + cssClass;
+            div.title = label;
+            div.innerHTML =
+                '<span class="wp-morph-char" dir="rtl">' + escHtml(char) + '</span>' +
+                '<span class="wp-morph-label">' + escHtml(label) + '</span>';
+            return div;
+        }
+
+        data.prefixes.forEach(function(p) {
+            morphRow.appendChild(makeBox(p.char, p.label, 'wp-prefix'));
+        });
+        if (data.root) {
+            morphRow.appendChild(makeBox(data.root, data.root_key, 'wp-root-box'));
+        }
+        data.suffixes.forEach(function(s) {
+            morphRow.appendChild(makeBox(s.char, s.label, 'wp-suffix'));
+        });
+        if (!data.root && data.prefixes.length === 0 && data.suffixes.length === 0) {
+            morphRow.innerHTML = '<span style="color:var(--muted);font-style:italic;font-size:.9rem;">No root identified for this word.</span>';
+        }
+
+        // Gloss
+        var gloss = data['gloss_' + LANG] || data.gloss_en || '';
+        document.getElementById('parse-gloss').textContent = gloss || '—';
+
+        // Stem badge
+        var stemEl = document.getElementById('parse-stem-badge');
+        stemEl.className = data.stem ? 'stem-badge stem-' + data.stem.toLowerCase() : '';
+        stemEl.textContent = data.stem || '';
+
+        // POS
+        document.getElementById('parse-pos').textContent = data.pos_guess !== 'unknown' ? data.pos_guess : '';
+
+        // Confidence
+        var tier = confTier(data.confidence);
+        document.getElementById('parse-conf-dot').className = 'wp-conf ' + tier.cls;
+        document.getElementById('parse-conf-label').textContent = tier.label;
+
+        // Cognates
+        var cogParts = [];
+        if (data.cognates.hebrew) cogParts.push(data.cognates.hebrew);
+        if (data.cognates.arabic) cogParts.push(data.cognates.arabic);
+        document.getElementById('parse-cognates').textContent = cogParts.join(' · ') || '—';
+
+        // Corpus attestations
+        var corpNames = {
+            peshitta_nt: 'Pesh. NT',
+            peshitta_ot: 'Pesh. OT',
+            biblical_aramaic: 'Bibl. Aram.',
+            targum_onkelos: 'Targ. Onk.'
+        };
+        var corpParts = [];
+        Object.keys(data.corpus_attestations).forEach(function(k) {
+            if (data.corpus_attestations[k] > 0) {
+                corpParts.push((corpNames[k] || k) + ': ' + data.corpus_attestations[k]);
+            }
+        });
+        document.getElementById('parse-corpus').textContent = corpParts.join(' · ');
+
+        // Viz link
+        if (data.root_key) {
+            document.getElementById('parse-viz-link').href =
+                '/visualize/' + encodeURIComponent(data.root_key) + '?lang=' + LANG;
+            document.getElementById('parse-viz-link').style.display = '';
+        } else {
+            document.getElementById('parse-viz-link').style.display = 'none';
+        }
+
+        document.getElementById('parse-results').style.display = 'block';
+    }
+
+    window.copyGloss = function() {
+        if (!_parseData) return;
+        var word = _parseData.word;
+        var gloss = _parseData['gloss_' + LANG] || _parseData.gloss_en || '?';
+        var morphemes = [];
+        _parseData.prefixes.forEach(function(p) {
+            morphemes.push(p.label.split('(')[0].trim().toUpperCase().replace(/\s+/g, '.'));
+        });
+        morphemes.push(_parseData.root_key || '\u221a');
+        _parseData.suffixes.forEach(function(s) {
+            morphemes.push(s.label.split('(')[0].trim().toUpperCase().replace(/\s+/g, '.'));
+        });
+        var text = word + '\n' + morphemes.join('-') + '\n"' + gloss + '"';
+        navigator.clipboard.writeText(text).then(function() {
+            var btn = document.getElementById('parse-copy-btn');
+            var orig = btn.textContent;
+            btn.textContent = '\u2713 Copied';
+            setTimeout(function() { btn.textContent = orig; }, 1500);
+        });
+    };
+
+    document.getElementById('parse-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') analyzeWord();
+    });
+
+    {% if initial_word %}
+    document.addEventListener('DOMContentLoaded', function() { analyzeWord(); });
+    {% endif %}
+})();
+</script>
+{% endblock %}
