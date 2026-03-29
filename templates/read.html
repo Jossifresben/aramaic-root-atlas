@@ -39,6 +39,7 @@
                     {%- set idx = loop.index0 -%}
                     {%- set wr = v.word_roots[idx] if v.word_roots and idx < v.word_roots|length else None -%}
                     <span class="word-token{% if w == hl_form %} hl{% endif %}{% if wr %} has-root{% endif %}"
+                          data-word="{{ w }}"
                           {% if wr %}data-root="{{ wr.r }}" data-translit="{{ wr.t }}" data-gloss="{{ wr.g }}" data-conf="{{ wr.c }}" data-stem="{{ wr.s }}"{% endif %}
                           >{{ w }}</span>
                     {%- if not loop.last %} {% endif -%}
@@ -207,61 +208,128 @@ function toggleChapterRoots() {
     }
 })();
 
-// --- Word popover for root info ---
+// --- Word popover for root info (AJAX morpheme breakdown) ---
 (function() {
     var popover = document.createElement('div');
     popover.className = 'word-popover';
     popover.style.display = 'none';
     document.body.appendChild(popover);
 
-    function confTier(c) {
-        if (c >= 0.8) return { cls: 'conf-high', label: 'High' };
-        if (c >= 0.5) return { cls: 'conf-med', label: 'Medium' };
-        return { cls: 'conf-low', label: 'Low' };
+    var LANG = {{ lang|tojson }};
+    var _cache = {};
+
+    function escHtml(s) {
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    document.addEventListener('click', function(e) {
-        var token = e.target.closest('.word-token.has-root');
-        if (!token) {
-            popover.style.display = 'none';
-            return;
-        }
+    function confTier(c) {
+        if (c >= 0.8) return {cls: 'conf-high', label: 'High'};
+        if (c >= 0.5) return {cls: 'conf-med', label: 'Medium'};
+        return {cls: 'conf-low', label: 'Low'};
+    }
 
-        var root = token.getAttribute('data-root');
-        var translit = token.getAttribute('data-translit');
-        var gloss = token.getAttribute('data-gloss');
-        var conf = parseFloat(token.getAttribute('data-conf'));
-        var stem = token.getAttribute('data-stem') || '';
-        var tier = confTier(conf);
-
-        var vizKey = translit.replace(/-/g, '-').replace(/^'/, 'A').toLowerCase().replace(/-/g, '-');
-        // Build visualizer URL key from translit
-        var vizUrl = '/visualize/' + encodeURIComponent(translit) + '?lang={{ lang }}';
-
-        var html = '<div class="wp-header">';
-        html += '<span class="wp-root" dir="rtl">' + root + '</span>';
-        html += '<span class="wp-translit">' + translit + '</span>';
-        html += '<span class="wp-conf ' + tier.cls + '" title="Confidence: ' + tier.label + '"></span>';
-        html += '</div>';
-        if (gloss) html += '<div class="wp-gloss">' + gloss + '</div>';
-        if (stem) html += '<div class="wp-stem"><span class="stem-badge stem-' + stem.toLowerCase() + '">' + stem + '</span></div>';
-        html += '<div class="wp-actions">';
-        html += '<a href="' + vizUrl + '" class="wp-link">Visualize</a>';
-        html += '</div>';
-
-        popover.innerHTML = html;
+    function positionPopover(token) {
         popover.style.display = 'block';
-
-        // Position near the word
         var rect = token.getBoundingClientRect();
         var popRect = popover.getBoundingClientRect();
         var top = rect.bottom + window.scrollY + 6;
         var left = rect.left + window.scrollX + (rect.width / 2) - (popRect.width / 2);
-        // Keep within viewport
         if (left < 8) left = 8;
         if (left + popRect.width > window.innerWidth - 8) left = window.innerWidth - popRect.width - 8;
         popover.style.top = top + 'px';
         popover.style.left = left + 'px';
+    }
+
+    function buildQuickHtml(token) {
+        var root = token.getAttribute('data-root') || '';
+        var translit = token.getAttribute('data-translit') || '';
+        var gloss = token.getAttribute('data-gloss') || '';
+        var conf = parseFloat(token.getAttribute('data-conf') || '0');
+        var stem = token.getAttribute('data-stem') || '';
+        var tier = confTier(conf);
+        var html = '<div class="wp-header">';
+        html += '<span class="wp-root" dir="rtl">' + escHtml(root) + '</span>';
+        html += '<span class="wp-translit">' + escHtml(translit) + '</span>';
+        html += '<span class="wp-conf ' + tier.cls + '" title="' + tier.label + '"></span>';
+        html += '</div>';
+        if (gloss) html += '<div class="wp-gloss">' + escHtml(gloss) + '</div>';
+        if (stem) html += '<div class="wp-meta"><span class="stem-badge stem-' + stem.toLowerCase() + '">' + escHtml(stem) + '</span></div>';
+        html += '<div class="wp-loading">Loading morphemes\u2026</div>';
+        var vizUrl = '/visualize/' + encodeURIComponent(translit) + '?lang=' + LANG;
+        html += '<div class="wp-actions"><a href="' + vizUrl + '" class="wp-link">{{ t("visualize", lang) if t else "Visualize" }}</a></div>';
+        return html;
+    }
+
+    function buildFullHtml(data) {
+        var html = '';
+        var hasPre = data.prefixes && data.prefixes.length > 0;
+        var hasSuf = data.suffixes && data.suffixes.length > 0;
+        if (hasPre || data.root || hasSuf) {
+            html += '<div class="wp-morphemes">';
+            (data.prefixes || []).forEach(function(p) {
+                html += '<div class="wp-morph wp-prefix" title="' + escHtml(p.label) + '">';
+                html += '<span class="wp-morph-char" dir="rtl">' + escHtml(p.char) + '</span>';
+                html += '<span class="wp-morph-label">' + escHtml(p.label) + '</span></div>';
+            });
+            if (data.root) {
+                html += '<div class="wp-morph wp-root-box">';
+                html += '<span class="wp-morph-char" dir="rtl">' + escHtml(data.root) + '</span>';
+                html += '<span class="wp-morph-label">' + escHtml(data.root_key) + '</span></div>';
+            }
+            (data.suffixes || []).forEach(function(s) {
+                html += '<div class="wp-morph wp-suffix" title="' + escHtml(s.label) + '">';
+                html += '<span class="wp-morph-char" dir="rtl">' + escHtml(s.char) + '</span>';
+                html += '<span class="wp-morph-label">' + escHtml(s.label) + '</span></div>';
+            });
+            html += '</div>';
+        }
+        var gloss = data['gloss_' + LANG] || data.gloss_en || '';
+        if (gloss) html += '<div class="wp-gloss">' + escHtml(gloss) + '</div>';
+        var tier = confTier(data.confidence);
+        html += '<div class="wp-meta">';
+        if (data.stem) html += '<span class="stem-badge stem-' + data.stem.toLowerCase() + '">' + escHtml(data.stem) + '</span>';
+        html += '<span class="wp-conf ' + tier.cls + '" title="' + tier.label + '"></span>';
+        html += '</div>';
+        var cogParts = [];
+        if (data.cognates && data.cognates.hebrew) cogParts.push(data.cognates.hebrew);
+        if (data.cognates && data.cognates.arabic) cogParts.push(data.cognates.arabic);
+        if (cogParts.length) html += '<div class="wp-cognates-row">' + escHtml(cogParts.join(' · ')) + '</div>';
+        var vizUrl = '/visualize/' + encodeURIComponent(data.root_key || '') + '?lang=' + LANG;
+        var parseUrl = '/parse?word=' + encodeURIComponent(data.word) + '&lang=' + LANG;
+        html += '<div class="wp-actions">';
+        if (data.root_key) html += '<a href="' + vizUrl + '" class="wp-link">{{ t("visualize", lang) if t else "Visualize" }}</a>';
+        html += '<a href="' + parseUrl + '" class="wp-link">{{ t("parse_title", lang) if t else "Parse" }}</a>';
+        html += '</div>';
+        return html;
+    }
+
+    document.addEventListener('click', function(e) {
+        var token = e.target.closest('.word-token.has-root');
+        if (!token) { popover.style.display = 'none'; return; }
+        e.stopPropagation();
+
+        // Show quick version immediately from data-attributes
+        popover.innerHTML = buildQuickHtml(token);
+        positionPopover(token);
+
+        // Then fetch full morpheme breakdown
+        var word = token.getAttribute('data-word') || token.textContent.trim();
+        var cacheKey = word + '_' + LANG;
+        if (_cache[cacheKey]) {
+            popover.innerHTML = buildFullHtml(_cache[cacheKey]);
+            positionPopover(token);
+            return;
+        }
+        fetch('/api/word-parse?word=' + encodeURIComponent(word) + '&lang=' + LANG)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                _cache[cacheKey] = data;
+                if (popover.style.display === 'block') {
+                    popover.innerHTML = buildFullHtml(data);
+                    positionPopover(token);
+                }
+            });
+        // On fetch error, the quick version stays visible
     });
 
     document.addEventListener('keydown', function(e) {
