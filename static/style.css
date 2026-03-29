@@ -1236,12 +1236,16 @@ body {
 .kwic-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: .88rem; }
 .kwic-table th, .kwic-table td { padding: .35rem .5rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
 .kwic-table th { background: var(--bg); font-weight: 600; color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
-.kwic-left  { width: 30%; text-align: right; direction: rtl; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--syriac-font); }
-.kwic-kw    { width: 14%; text-align: center; font-family: var(--syriac-font); font-weight: 700; color: var(--accent); }
-.kwic-right { width: 30%; text-align: left; direction: rtl; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--syriac-font); }
-.kwic-ref   { width: 12%; font-size: .78rem; white-space: nowrap; }
-.kwic-meta  { width: 14%; }
+.kwic-left  { width: 30%; text-align: right; direction: rtl; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--syriac-font); font-size: 1.05rem; }
+.kwic-kw    { width: 14%; text-align: center; font-family: var(--syriac-font); font-weight: 700; color: var(--accent); font-size: 1.1rem; line-height: 1.5; }
+.kwic-right { width: 30%; text-align: left; direction: rtl; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--syriac-font); font-size: 1.05rem; }
+.kwic-ref   { width: 12%; font-size: .78rem; white-space: nowrap; vertical-align: middle; }
+.kwic-meta  { width: 14%; vertical-align: middle; }
 .kwic-group-header { background: var(--border); font-weight: 600; padding: .4rem .5rem; font-size: .82rem; }
+.kwic-kw-translit { font-family: var(--font-body); font-size: .72rem; font-weight: 400; color: var(--muted); font-style: italic; }
+.kwic-syriac-row td { border-bottom: none; padding-bottom: .12rem; }
+.kwic-trans-row td { border-bottom: 1px solid var(--border); padding-top: .08rem; padding-bottom: .3rem; }
+.kwic-translation { font-size: .78rem; color: var(--muted); font-style: italic; direction: ltr; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Diachronic bars */
 .diachronic-bars { display: flex; flex-direction: column; gap: .25rem; }

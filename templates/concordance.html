@@ -181,10 +181,10 @@
                 hdr.innerHTML = '<td colspan="5" class="kwic-group-header">' + label +
                     ' <span style="color:var(--muted);font-size:.8rem;font-weight:400;">— ' + grpLines.length + ' occ.</span></td>';
                 tbody.appendChild(hdr);
-                grpLines.forEach(function(line) { tbody.appendChild(makeLine(line)); });
+                grpLines.forEach(function(line) { makeLine(line).forEach(function(r) { tbody.appendChild(r); }); });
             });
         } else {
-            lines.forEach(function(line) { tbody.appendChild(makeLine(line)); });
+            lines.forEach(function(line) { makeLine(line).forEach(function(r) { tbody.appendChild(r); }); });
         }
     }
 
@@ -194,17 +194,30 @@
         var chv = ref.split(' ')[1] || '';
         var ch = chv.split(':')[0] || '1';
         var readUrl = '/read/' + encodeURIComponent(book) + '/' + ch + '?lang=' + LANG;
+
+        // Main Syriac row
         var tr = document.createElement('tr');
+        tr.className = 'kwic-syriac-row';
         tr.innerHTML =
             '<td class="kwic-left">' + escHtml((line.left_context||[]).join(' ')) + '</td>' +
-            '<td class="kwic-kw">' + escHtml(line.keyword||'') + '</td>' +
+            '<td class="kwic-kw">' +
+                escHtml(line.keyword||'') +
+                (line.form_translit ? '<br><span class="kwic-kw-translit">' + escHtml(line.form_translit) + '</span>' : '') +
+            '</td>' +
             '<td class="kwic-right">' + escHtml((line.right_context||[]).join(' ')) + '</td>' +
-            '<td class="kwic-ref"><a href="' + readUrl + '" style="color:var(--accent);font-size:.75rem;">' + escHtml(ref) + '</a></td>' +
-            '<td class="kwic-meta">' +
+            '<td class="kwic-ref" rowspan="2"><a href="' + readUrl + '" style="color:var(--accent);font-size:.75rem;">' + escHtml(ref) + '</a></td>' +
+            '<td class="kwic-meta" rowspan="2">' +
                 '<span class="corpus-badge corpus-' + (line.corpus_id||'') + '" style="font-size:.65rem;padding:1px 5px;">' + corpusLabel(line.corpus_id||'') + '</span>' +
                 (line.stem ? ' <span class="stem-badge stem-' + line.stem.toLowerCase() + '" style="font-size:.65rem;">' + escHtml(line.stem) + '</span>' : '') +
             '</td>';
-        return tr;
+
+        // Translation sub-row
+        var tr2 = document.createElement('tr');
+        tr2.className = 'kwic-trans-row';
+        tr2.innerHTML =
+            '<td colspan="3" class="kwic-translation">' + escHtml(line.translation||'') + '</td>';
+
+        return [tr, tr2];
     }
 
     window.exportConc = function(fmt) {
