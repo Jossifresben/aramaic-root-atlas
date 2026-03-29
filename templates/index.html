@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="hero">
-    <h1>Aramaic Root Atlas</h1>
+    <h1>{{ t('atlas_title', lang) if t else 'Aramaic Root Atlas' }}</h1>
     <p class="subtitle">{{ t('home_subtitle', lang) }} <a href="/about?lang={{ lang }}" class="subtitle-link">{{ t('learn_more', lang) }}</a></p>
 
     <div class="search-tabs">
@@ -123,6 +123,15 @@
             <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">menu_book</span>
             {{ t('browse', lang) if t else 'Browse' }} &amp; {{ t('read', lang) if t else 'Read' }}
         </a>
+    </div>
+    <div id="tour-start-container" style="text-align:center; margin-top:0.6rem;">
+        <button class="tour-start-btn" onclick="startTourFromBtn()">
+            <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">help_outline</span>
+            {{ t('tour_start', lang) if t else 'Guided Tour' }}
+        </button>
+        <p id="tour-restart-hint" style="display:none; font-size:0.78rem; color:var(--muted); margin:.4rem 0 0; transition:opacity 0.6s;">
+            {{ t('tour_restart_hint', lang) if t else 'Use the ? button in the toolbar to restart the tour.' }}
+        </p>
     </div>
 </section>
 

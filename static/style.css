@@ -169,6 +169,7 @@ body {
     align-items: center;
     gap: 0.15rem;
     margin-left: auto;
+    overflow: visible;
 }
 /* Nav Buttons (shared style) */
 .nav-btn {
@@ -3023,4 +3024,76 @@ body {
     color: var(--muted);
     font-style: italic;
     padding: 0.3rem 0;
+}
+
+/* ---- Guided Tour -------------------------------------------------- */
+.tour-start-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 1.1rem;
+    background: transparent;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, color 0.15s;
+}
+.tour-start-btn:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Driver.js popover theme */
+.atlas-tour-popover .driver-popover-title {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--fg);
+}
+.atlas-tour-popover .driver-popover-description {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--fg);
+}
+/* RTL popover layout */
+.atlas-tour-popover.atlas-tour-rtl {
+    direction: rtl;
+    text-align: right;
+}
+.atlas-tour-popover.atlas-tour-rtl .driver-popover-footer {
+    flex-direction: row-reverse;
+}
+
+/* ---- Nav icon tooltips (desktop hover only) ----------------------- */
+@media (hover: hover) and (pointer: fine) {
+    .nav-icons [data-tooltip] {
+        position: relative;
+        overflow: visible;
+    }
+    .nav-icons [data-tooltip]::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(30,30,30,0.92);
+        color: #fff;
+        font-size: 0.72rem;
+        font-family: var(--font-body);
+        white-space: nowrap;
+        padding: 4px 8px;
+        border-radius: 4px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.15s;
+        z-index: 9999;
+    }
+    .nav-icons [data-tooltip]:hover::after {
+        opacity: 1;
+    }
 }

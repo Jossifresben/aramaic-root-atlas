@@ -557,7 +557,14 @@ def api_word_parse():
     lang_code = request.args.get('lang', 'en')
 
     from aramaic_core.affixes import generate_candidate_stems, label_stripping_result
-    from aramaic_core.characters import detect_script, SYRIAC_CONSONANTS
+    from aramaic_core.characters import detect_script, translit_word_to_syriac, SYRIAC_CONSONANTS
+
+    # Allow Latin transliteration input — silently convert before analysis
+    input_word = word
+    if detect_script(word) == 'latin':
+        converted = translit_word_to_syriac(word)
+        if converted:
+            word = converted
 
     script = detect_script(word)
 
@@ -586,14 +593,25 @@ def api_word_parse():
         candidates = generate_candidate_stems(word)
         root_consonants = frozenset(ch for ch in root_syr if ch in SYRIAC_CONSONANTS)
         best = None
-        # Pick the first candidate whose remaining stem contains all root consonants
+        # Prefer candidates whose stem consonants exactly equal the root (fully stripped).
+        # Fall back to candidates where root is a strict subset (partial stripping).
+        # Only use the unstripped word as a last resort.
+        exact_match = None
+        subset_match = None
         for cand in candidates:
             cand_consonants = frozenset(ch for ch in cand.stem if ch in SYRIAC_CONSONANTS)
-            if root_consonants and root_consonants.issubset(cand_consonants):
-                best = cand
-                break
-        if best is None and candidates:
-            best = candidates[0]
+            if not root_consonants:
+                continue
+            if cand_consonants == root_consonants:
+                # Prefer the exact match with the most affixes stripped
+                if exact_match is None or (
+                    len(cand.prefixes_removed) + len(cand.suffixes_removed) >
+                    len(exact_match.prefixes_removed) + len(exact_match.suffixes_removed)
+                ):
+                    exact_match = cand
+            elif root_consonants < cand_consonants and subset_match is None:
+                subset_match = cand
+        best = exact_match or subset_match or (candidates[0] if candidates else None)
         if best:
             labeled = label_stripping_result(best)
             prefixes = labeled['prefixes']
@@ -626,6 +644,7 @@ def api_word_parse():
 
     return jsonify({
         'word': word,
+        'input': input_word,
         'script': script,
         'root': root_syr or '',
         'root_key': root_translit,
@@ -2259,15 +2278,21 @@ def api_passage_profile():
         return jsonify({'error': f'No verses found for {book} {ch_start}\u2013{ch_end}'}), 404
 
     # --- Build corpus-wide root frequency dict for rarity classification ---
+    all_root_entries = _extractor.get_all_roots()
     root_total_occ: dict[str, int] = {
         entry.root: entry.total_occurrences
-        for entry in _extractor.get_all_roots()
+        for entry in all_root_entries
+    }
+    root_corpus_counts: dict[str, dict[str, int]] = {
+        entry.root: entry.corpus_counts
+        for entry in all_root_entries
     }
 
     # --- Aggregate per root within this passage ---
     passage_root_counts: dict[str, int] = {}
     verse_density: list[dict] = []
-    total_words = 0
+    total_words = sum(len(text.split()) for _, text in verse_texts)  # all tokens
+    analyzed_words = 0  # tokens where a root was resolved
     stem_dist: dict[str, int] = {}
     conf_dist = {'high': 0, 'medium': 0, 'low': 0}
 
@@ -2279,7 +2304,7 @@ def api_passage_profile():
             root_syr = _extractor.lookup_word_root(w)
             if root_syr is None:
                 continue  # stopwords and unanalyzed forms return None
-            total_words += 1
+            analyzed_words += 1
             passage_root_counts[root_syr] = passage_root_counts.get(root_syr, 0) + 1
             verse_root_set.add(root_syr)
             verse_root_count += 1
@@ -2300,6 +2325,7 @@ def api_passage_profile():
 
     unique_roots = len(passage_root_counts)
     lexical_density = round(unique_roots / total_words, 4) if total_words else 0.0
+    # lexical_density = unique distinct roots / total tokens (including stopwords)
 
     # --- Computed metrics ---
     hapax_in_passage = sum(1 for c in passage_root_counts.values() if c == 1)
@@ -2327,12 +2353,18 @@ def api_passage_profile():
         root_translit = _translit_to_dash(root_syr)
         cognate = _cognate_lookup.lookup(root_syr)
         gloss = _pick_gloss(cognate, lang_code) if cognate else _extractor.get_root_gloss(root_syr) or ''
+        corpus_att = {
+            cid: cnt
+            for cid, cnt in root_corpus_counts.get(root_syr, {}).items()
+            if cnt > 0
+        }
         top_roots.append({
             'root': root_syr,
             'root_key': root_translit,
             'gloss': gloss,
             'passage_count': count,
             'corpus_total': root_total_occ.get(root_syr, 0),
+            'corpus_attestation': corpus_att,
         })
 
     # --- Semantic field distribution (graceful if not loaded) ---
@@ -2353,6 +2385,7 @@ def api_passage_profile():
         'passage': passage_label,
         'verse_count': len(verse_texts),
         'word_count': total_words,
+        'analyzed_word_count': analyzed_words,
         'unique_roots': unique_roots,
         'lexical_density': lexical_density,
         'hapax_in_passage': hapax_in_passage,

@@ -42,6 +42,8 @@ def test_passage_profile_top_roots_structure(client):
         assert 'gloss' in entry
         assert 'passage_count' in entry
         assert 'corpus_total' in entry
+        assert 'corpus_attestation' in entry
+        assert isinstance(entry['corpus_attestation'], dict)
         assert entry['passage_count'] >= 1
 
 

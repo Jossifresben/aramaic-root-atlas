@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Syriac&family=Noto+Sans+Syriac+Eastern&family=Noto+Sans+Syriac+Western&family=Noto+Sans+Hebrew&family=Noto+Sans+Arabic&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.css">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XWZC618EC4"></script>
@@ -30,10 +31,10 @@
                 <span class="material-symbols-outlined">menu</span>
             </button>
             <div class="nav-links" id="nav-links">
-                <a href="/browse?lang={{ lang }}">{{ t('browse', lang) if t else 'Browse' }}</a>
+                <a href="/browse?lang={{ lang }}" id="nav-browse">{{ t('browse', lang) if t else 'Browse' }}</a>
 
                 <div class="nav-dropdown">
-                    <button class="nav-drop-btn" aria-haspopup="true" aria-expanded="false">
+                    <button class="nav-drop-btn" id="nav-explore-btn" aria-haspopup="true" aria-expanded="false">
                         {{ t('nav_explore', lang) if t else 'Explore' }}<span class="drop-arrow">▾</span>
                     </button>
                     <div class="nav-drop-menu">
@@ -43,7 +44,7 @@
                 </div>
 
                 <div class="nav-dropdown">
-                    <button class="nav-drop-btn" aria-haspopup="true" aria-expanded="false">
+                    <button class="nav-drop-btn" id="nav-research-btn" aria-haspopup="true" aria-expanded="false">
                         {{ t('nav_research', lang) if t else 'Research' }}<span class="drop-arrow">▾</span>
                     </button>
                     <div class="nav-drop-menu">
@@ -66,7 +67,8 @@
                     <!-- Language Dropdown -->
                     <div class="lang-wrapper">
                         <button class="nav-btn lang-toggle" id="lang-toggle" aria-label="Language"
-                                aria-haspopup="true" aria-expanded="false">
+                                aria-haspopup="true" aria-expanded="false"
+                                data-tooltip="{{ t('nav_language', lang) if t else 'Language' }}">
                             <span class="material-symbols-outlined">captive_portal</span>
                         </button>
                         <div class="lang-dropdown" id="lang-dropdown" role="menu">
@@ -80,7 +82,8 @@
                     <!-- Settings -->
                     <div class="settings-wrapper">
                         <button class="nav-btn settings-toggle" id="settings-toggle" aria-label="Settings"
-                                aria-haspopup="true" aria-expanded="false">
+                                aria-haspopup="true" aria-expanded="false"
+                                data-tooltip="{{ t('nav_settings', lang) if t else 'Settings' }}">
                             <span class="material-symbols-outlined">settings</span>
                         </button>
                         <div class="settings-dropdown" id="settings-dropdown" role="menu">
@@ -117,17 +120,27 @@
                     </div>
 
                     <!-- Bookmarks -->
-                    <a class="nav-btn" href="/bookmarks?lang={{ lang }}" aria-label="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}">
+                    <a class="nav-btn" href="/bookmarks?lang={{ lang }}" aria-label="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}"
+                       data-tooltip="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}">
                         <span class="material-symbols-outlined">bookmark</span>
                     </a>
 
+                    <!-- Guided Tour -->
+                    <button class="nav-btn" id="tour-nav-btn"
+                            aria-label="{{ t('tour_start', lang) if t else 'Guided Tour' }}"
+                            data-tooltip="{{ t('tour_start', lang) if t else 'Guided Tour' }}">
+                        <span class="material-symbols-outlined">help_outline</span>
+                    </button>
+
                     <!-- Theme Toggle -->
-                    <button class="nav-btn theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <button class="nav-btn theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"
+                            data-tooltip="{{ t('nav_dark_mode', lang) if t else 'Dark mode' }}">
                         <span class="material-symbols-outlined">sunny</span>
                     </button>
 
                     <!-- Share / QR -->
-                    <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share">
+                    <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share"
+                            data-tooltip="{{ t('share_title', lang) if t else 'Share' }}">
                         <span class="material-symbols-outlined">qr_code_2</span>
                     </button>
                 </div>{# /nav-icons #}
@@ -177,6 +190,40 @@
 
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="{{ url_for('static', filename='js/global.js') }}"></script>
+    <script>
+    window.TOUR_I18N = {
+        next:                  "{{ t('tour_next',              lang)|e }}",
+        skip:                  "{{ t('tour_skip',              lang)|e }}",
+        finish:                "{{ t('tour_finish',            lang)|e }}",
+        welcome_title:         "{{ t('tour_welcome_title',     lang)|e }}",
+        welcome_body:          "{{ t('tour_welcome_body',      lang)|e }}",
+        nav_browse_title:      "{{ t('tour_nav_browse_title',  lang)|e }}",
+        nav_browse_body:       "{{ t('tour_nav_browse_body',   lang)|e }}",
+        nav_explore_title:     "{{ t('tour_nav_explore_title', lang)|e }}",
+        nav_explore_body:      "{{ t('tour_nav_explore_body',  lang)|e }}",
+        nav_research_title:    "{{ t('tour_nav_research_title',lang)|e }}",
+        nav_research_body:     "{{ t('tour_nav_research_body', lang)|e }}",
+        search_title:          "{{ t('tour_search_title',      lang)|e }}",
+        search_body:           "{{ t('tour_search_body',       lang)|e }}",
+        cognate_title:         "{{ t('tour_cognate_title',     lang)|e }}",
+        cognate_body:          "{{ t('tour_cognate_body',      lang)|e }}",
+        meaning_title:         "{{ t('tour_meaning_title',     lang)|e }}",
+        meaning_body:          "{{ t('tour_meaning_body',      lang)|e }}",
+        text_title:            "{{ t('tour_text_title',        lang)|e }}",
+        text_body:             "{{ t('tour_text_body',         lang)|e }}",
+        reader_title:          "{{ t('tour_reader_title',      lang)|e }}",
+        reader_body:           "{{ t('tour_reader_body',       lang)|e }}",
+        settings_title:        "{{ t('tour_settings_title',    lang)|e }}",
+        settings_body:         "{{ t('tour_settings_body',     lang)|e }}",
+        lang_title:            "{{ t('tour_lang_title',        lang)|e }}",
+        lang_body:             "{{ t('tour_lang_body',         lang)|e }}",
+        end_title:             "{{ t('tour_end_title',         lang)|e }}",
+        end_body:              "{{ t('tour_end_body',          lang)|e }}"
+    };
+    window.TOUR_IS_RTL = {{ 'true' if lang in ('he', 'ar') else 'false' }};
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.js.iife.js"></script>
+    <script src="{{ url_for('static', filename='js/tour.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

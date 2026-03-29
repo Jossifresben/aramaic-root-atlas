@@ -10,13 +10,16 @@
 
     <!-- Controls -->
     <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.5rem;padding:1rem;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);">
-        <div>
+        <div style="position:relative;">
             <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.2rem;">{{ t('pp_book_label', lang) }}</label>
-            <select id="pp-book" style="padding:.4rem .7rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);min-width:140px;">
-                {% for b_name, b_ch in books %}
-                <option value="{{ b_name }}" {% if b_name == initial_book %}selected{% endif %}>{{ bn(b_name, lang) }}</option>
-                {% endfor %}
-            </select>
+            <input type="text" id="pp-book-input"
+                   value="{{ bn(initial_book, lang) if initial_book else '' }}"
+                   autocomplete="off" spellcheck="false"
+                   placeholder="Book…"
+                   style="padding:.4rem .7rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);min-width:160px;font-size:.9rem;">
+            <input type="hidden" id="pp-book" value="{{ initial_book }}">
+            <div id="pp-book-ac"
+                 style="display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,.15);max-height:240px;overflow-y:auto;"></div>
         </div>
         <div>
             <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.2rem;">{{ t('pp_chapter_from', lang) }}</label>
@@ -134,6 +137,74 @@
     var LANG = {{ lang|tojson }};
     var _profileData = null;
 
+    // --- Book autocomplete data ---
+    var BOOK_DATA = [
+        {% for b_name, b_ch in books %}
+        {name: {{ b_name|tojson }}, display: {{ bn(b_name, lang)|tojson }}, max_ch: {{ b_ch }}}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    (function initBookAC() {
+        var inp  = document.getElementById('pp-book-input');
+        var hid  = document.getElementById('pp-book');
+        var drop = document.getElementById('pp-book-ac');
+
+        function showDropdown(filtered) {
+            drop.innerHTML = '';
+            if (!filtered.length) { drop.style.display = 'none'; return; }
+            filtered.forEach(function(b) {
+                var item = document.createElement('div');
+                item.style.cssText = 'padding:.4rem .7rem;cursor:pointer;font-size:.9rem;white-space:nowrap;';
+                item.textContent = b.display;
+                item.addEventListener('mousedown', function(e) { e.preventDefault(); selectBook(b); });
+                item.addEventListener('mouseover', function() { item.style.background = 'var(--border)'; });
+                item.addEventListener('mouseout',  function() { item.style.background = ''; });
+                drop.appendChild(item);
+            });
+            drop.style.display = 'block';
+        }
+
+        function selectBook(b) {
+            inp.value = b.display;
+            hid.value = b.name;
+            drop.style.display = 'none';
+            // Update ch_end max hint
+            document.getElementById('pp-ch-start').max = b.max_ch;
+            document.getElementById('pp-ch-end').max   = b.max_ch;
+        }
+
+        inp.addEventListener('input', function() {
+            hid.value = '';  // clear hidden until a match is selected
+            var q = inp.value.trim().toLowerCase();
+            if (!q) { drop.style.display = 'none'; return; }
+            var filtered = BOOK_DATA.filter(function(b) {
+                return b.display.toLowerCase().indexOf(q) !== -1 ||
+                       b.name.toLowerCase().indexOf(q) !== -1;
+            });
+            showDropdown(filtered);
+        });
+
+        inp.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { drop.style.display = 'none'; runProfile(); }
+            if (e.key === 'Escape') { drop.style.display = 'none'; }
+            if (e.key === 'ArrowDown') {
+                var first = drop.querySelector('div');
+                if (first) { e.preventDefault(); first.focus(); }
+            }
+        });
+
+        inp.addEventListener('blur', function() {
+            // If the typed text matches exactly one book display name, auto-select it
+            setTimeout(function() {
+                if (drop.style.display === 'none') return;
+                var q = inp.value.trim().toLowerCase();
+                var exact = BOOK_DATA.find(function(b) { return b.display.toLowerCase() === q; });
+                if (exact) selectBook(exact);
+                else drop.style.display = 'none';
+            }, 150);
+        });
+    })();
+
     var RARITY_COLORS = {
         hapax:       '#9c27b0',
         rare:        '#1976d2',
@@ -152,7 +223,15 @@
     }
 
     window.runProfile = function() {
-        var book     = document.getElementById('pp-book').value;
+        // Accept either the hidden exact-name or fall back to matching the typed display name
+        var book = document.getElementById('pp-book').value.trim();
+        if (!book) {
+            var typed = document.getElementById('pp-book-input').value.trim().toLowerCase();
+            var match = BOOK_DATA.find(function(b) {
+                return b.display.toLowerCase() === typed || b.name.toLowerCase() === typed;
+            });
+            if (match) book = match.name;
+        }
         var chStart  = document.getElementById('pp-ch-start').value;
         var chEnd    = document.getElementById('pp-ch-end').value;
         if (!book || !chStart) return;
@@ -230,8 +309,14 @@
     function renderStemChart(stemDist) {
         var el = document.getElementById('pp-stem-chart');
         el.innerHTML = '';
-        var entries = Object.entries(stemDist).sort(function(a, b) { return b[1] - a[1]; }).slice(0, 8);
-        var maxVal  = entries.length ? entries[0][1] : 1;
+        var entries = Object.entries(stemDist)
+            .filter(function(e) { return e[0] !== 'unknown'; })
+            .sort(function(a, b) { return b[1] - a[1]; }).slice(0, 8);
+        if (!entries.length) {
+            el.innerHTML = '<div style="font-size:.8rem;color:var(--muted);font-style:italic;padding:.4rem 0;">Verb stem detection is available for Syriac script only.</div>';
+            return;
+        }
+        var maxVal = entries[0][1];
         entries.forEach(function(entry) {
             var key = entry[0], count = entry[1];
             var pct = Math.round(count / maxVal * 100);
@@ -270,16 +355,39 @@
         el.appendChild(label);
     }
 
+    var CORPUS_LABELS = {
+        peshitta_nt:      'NT',
+        peshitta_ot:      'OT',
+        biblical_aramaic: 'BA',
+        targum_onkelos:   'Targ'
+    };
+    var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos'];
+
     function renderTopRoots(roots) {
         var tbody  = document.getElementById('pp-roots-tbody');
         tbody.innerHTML = '';
         var maxCount = roots.length ? roots[0].passage_count : 1;
         roots.forEach(function(r) {
             var pct = Math.round(r.passage_count / maxCount * 100);
+
+            // Build corpus pills html
+            var pillsHtml = '';
+            var att = r.corpus_attestation || {};
+            CORPUS_ORDER.forEach(function(cid) {
+                if (att[cid] > 0) {
+                    pillsHtml += '<span class="corpus-badge corpus-' + cid + '" style="font-size:.6rem;padding:1px 5px;margin:1px 2px 0 0;display:inline-block;">'
+                               + escHtml(CORPUS_LABELS[cid]) + '</span>';
+                }
+            });
+
             var tr  = document.createElement('tr');
             tr.style.borderBottom = '1px solid var(--border)';
+            var vizUrl = '/visualize/' + encodeURIComponent(r.root_key) + '?lang=' + LANG;
             tr.innerHTML =
-                '<td style="padding:.3rem .4rem;font-family:var(--syriac-font);font-size:1rem;" dir="rtl">' + escHtml(r.root) + '</td>' +
+                '<td style="padding:.3rem .4rem;">' +
+                  '<a href="' + vizUrl + '" style="font-family:var(--syriac-font);font-size:1.4rem;line-height:1.2;color:var(--fg);text-decoration:none;" dir="rtl" title="' + escHtml(r.root_key) + '">' + escHtml(r.root) + '</a>' +
+                  (pillsHtml ? '<div style="margin-top:3px;">' + pillsHtml + '</div>' : '') +
+                '</td>' +
                 '<td style="padding:.3rem .4rem;color:var(--muted);font-size:.8rem;font-style:italic;">' + escHtml(r.gloss) + '</td>' +
                 '<td style="padding:.3rem .4rem;text-align:right;">' +
                   '<div style="display:flex;align-items:center;gap:.3rem;justify-content:flex-end;">' +
