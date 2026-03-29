@@ -150,6 +150,93 @@
     .about-credit a {
         color: var(--accent, #b8860b);
     }
+    /* Watch Video button */
+    .watch-video-wrap {
+        text-align: center;
+        margin: 1.5rem 0 2.5rem;
+    }
+    .watch-video-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: .55rem;
+        padding: .65rem 1.5rem;
+        background: var(--accent, #b8860b);
+        color: #fff;
+        border: none;
+        border-radius: 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity .15s;
+    }
+    .watch-video-btn:hover { opacity: .85; }
+    .watch-video-btn .material-symbols-outlined { font-size: 1.3rem; }
+    /* Video modal */
+    #video-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.88);
+        z-index: 9000;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+    #video-modal.active { display: flex; }
+    .video-modal-inner {
+        position: relative;
+        width: 100%;
+        max-width: 100vw;
+        background: #000;
+        display: flex;
+        flex-direction: column;
+    }
+    .video-modal-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: .4rem .75rem;
+        background: rgba(0,0,0,.7);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        gap: .5rem;
+    }
+    .video-modal-title {
+        color: #ddd;
+        font-size: .85rem;
+        font-weight: 500;
+        flex: 1;
+    }
+    .video-modal-close, .video-modal-fs {
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        padding: .25rem;
+        display: flex;
+        align-items: center;
+        border-radius: 4px;
+        transition: background .15s;
+    }
+    .video-modal-close:hover, .video-modal-fs:hover { background: rgba(255,255,255,.15); }
+    .video-modal-close .material-symbols-outlined,
+    .video-modal-fs .material-symbols-outlined { font-size: 1.4rem; }
+    #about-video {
+        width: 100%;
+        display: block;
+        max-height: 95vh;
+        outline: none;
+    }
+    @media (min-width: 640px) {
+        .video-modal-inner {
+            max-width: min(95vw, 1200px);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -207,6 +294,14 @@
                 <span class="stat-num">4</span>
                 <span class="stat-label">{% if lang == 'es' %}corpus{% elif lang == 'he' %}קורפוסים{% elif lang == 'ar' %}مدوّنات{% else %}corpora{% endif %}</span>
             </div>
+        </div>
+
+        {# Watch Video button #}
+        <div class="watch-video-wrap">
+            <button class="watch-video-btn" onclick="openVideoModal()">
+                <span class="material-symbols-outlined">play_circle</span>
+                {% if lang == 'es' %}Ver video{% elif lang == 'he' %}צפה בסרטון{% elif lang == 'ar' %}مشاهدة الفيديو{% else %}Watch Video{% endif %}
+            </button>
         </div>
 
         {# ── 2. CORPORA ── #}
@@ -714,4 +809,68 @@
 
     </div>
 </div>
+
+<!-- Video Modal -->
+<div id="video-modal" role="dialog" aria-modal="true" aria-label="Watch Video"
+     onclick="if(event.target===this)closeVideoModal()">
+    <div class="video-modal-inner" id="video-modal-inner">
+        <div class="video-modal-bar">
+            <span class="video-modal-title">Aramaic Root Atlas</span>
+            <button class="video-modal-fs" onclick="toggleVideoFullscreen()" title="Fullscreen">
+                <span class="material-symbols-outlined" id="video-fs-icon">fullscreen</span>
+            </button>
+            <button class="video-modal-close" onclick="closeVideoModal()" title="Close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <video id="about-video" controls preload="none"
+               src="{{ url_for('static', filename='video/AramaicRootAtlas.mp4') }}"
+               playsinline>
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    var modal = document.getElementById('video-modal');
+    var video = document.getElementById('about-video');
+    var fsIcon = document.getElementById('video-fs-icon');
+    var inner = document.getElementById('video-modal-inner');
+
+    window.openVideoModal = function() {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        video.play().catch(function(){});
+    };
+
+    window.closeVideoModal = function() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        video.pause();
+    };
+
+    window.toggleVideoFullscreen = function() {
+        var el = inner;
+        if (!document.fullscreenElement) {
+            (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen).call(el);
+        } else {
+            (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen).call(document);
+        }
+    };
+
+    document.addEventListener('fullscreenchange', function() {
+        fsIcon.textContent = document.fullscreenElement ? 'fullscreen_exit' : 'fullscreen';
+    });
+    document.addEventListener('webkitfullscreenchange', function() {
+        fsIcon.textContent = document.webkitFullscreenElement ? 'fullscreen_exit' : 'fullscreen';
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) closeVideoModal();
+    });
+})();
+</script>
 {% endblock %}
