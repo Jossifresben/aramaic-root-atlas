@@ -1,6 +1,6 @@
 # Aramaic Root Atlas
 
-**[Live App](https://aramaic-root-atlas.onrender.com)**
+**[Live App](https://aramaic-root-atlas.onrender.com)** &nbsp; [![DOI](https://zenodo.org/badge/1190998648.svg)](https://doi.org/10.5281/zenodo.19358625)
 
 The Aramaic Root Atlas is an open-access tool for exploring triliteral roots across the major corpora of Aramaic literature. It spans approximately 1,500 years of literary history — from the Biblical Aramaic passages of Daniel and Ezra (~6th–2nd c. BCE) through Targum Onkelos (~1st–3rd c. CE) to the Peshitta Old and New Testaments (~2nd–5th c. CE) — indexing 5,039 roots across 36,627 verses and 498,922 words.
 
@@ -192,7 +192,9 @@ See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details.
 
 ## Citation
 
-If you use the Aramaic Root Atlas in academic work, please cite it using the metadata in [CITATION.cff](CITATION.cff).
+[![DOI](https://zenodo.org/badge/1190998648.svg)](https://doi.org/10.5281/zenodo.19358625)
+
+If you use the Aramaic Root Atlas in academic work, please cite it using the metadata in [CITATION.cff](CITATION.cff) or via the Zenodo record: https://doi.org/10.5281/zenodo.19358625
 
 ## Support
 
