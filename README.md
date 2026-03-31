@@ -194,7 +194,11 @@ See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details.
 
 [![DOI](https://zenodo.org/badge/1190998648.svg)](https://doi.org/10.5281/zenodo.19358625)
 
-If you use the Aramaic Root Atlas in academic work, please cite it using the metadata in [CITATION.cff](CITATION.cff) or via the Zenodo record: https://doi.org/10.5281/zenodo.19358625
+If you use this software, please cite it as:
+
+> Fresco Benaim, Jose. (2026). *Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer* (v2.3). Zenodo. https://doi.org/10.5281/zenodo.19358625
+
+Or use the metadata in [CITATION.cff](CITATION.cff).
 
 ## Support
 
