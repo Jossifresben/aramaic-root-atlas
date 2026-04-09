@@ -246,10 +246,10 @@ body {
 
 .settings-dropdown {
     display: none;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: 6px;
+    position: fixed;
+    top: 56px;
+    right: 4px;
+    margin-top: 0;
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -257,6 +257,8 @@ body {
     padding: 0.5rem 0.75rem;
     min-width: 200px;
     z-index: 300;
+    max-height: calc(100dvh - 64px);
+    overflow-y: auto;
 }
 .settings-dropdown.open {
     display: block;
