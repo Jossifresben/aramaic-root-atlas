@@ -338,11 +338,20 @@ def api_chapter(book, chapter):
                     translation = _corpus.get_verse_translation(ref, trans)
                     if not translation and trans != 'en':
                         translation = _corpus.get_verse_translation(ref, 'en')
-                    # Transliterate based on script
-                    from aramaic_core.characters import detect_script, transliterate_hebrew
-                    script = detect_script(text)
-                    if script == 'hebrew':
+                    # Transliterate based on user's chosen script setting
+                    from aramaic_core.characters import (detect_script,
+                        transliterate_hebrew, transliterate_syriac_to_hebrew,
+                        transliterate_syriac_to_arabic)
+                    user_script = _get_script()
+                    text_script = detect_script(text)
+                    if text_script == 'hebrew':
                         translit = ' '.join(transliterate_hebrew(w) for w in text.split())
+                    elif user_script == 'syriac':
+                        translit = text
+                    elif user_script == 'hebrew':
+                        translit = ' '.join(transliterate_syriac_to_hebrew(w) for w in text.split())
+                    elif user_script == 'arabic':
+                        translit = ' '.join(transliterate_syriac_to_arabic(w) for w in text.split())
                     else:
                         translit = ' '.join(transliterate_syriac(w) for w in text.split())
                     result.append({
@@ -434,14 +443,26 @@ def read(book, chapter):
         if not translation and trans != 'en':
             translation = _corpus.get_verse_translation(ref, 'en')
         words = syriac.split() if syriac else []
-        # Always produce Latin transliteration for the translit line
-        from aramaic_core.characters import detect_script as _ds
-        from aramaic_core.characters import transliterate_hebrew
+        from aramaic_core.characters import (detect_script as _ds,
+            transliterate_hebrew, transliterate_syriac_to_hebrew,
+            transliterate_syriac_to_arabic, transliterate_syriac_academic)
         text_script = _ds(syriac) if syriac else 'syriac'
         if text_script == 'hebrew':
-            translit = ' '.join(transliterate_hebrew(w) for w in words)
+            # Biblical Aramaic in Hebrew square script
+            if script == 'syriac':
+                translit = syriac  # already in the requested script
+            else:
+                translit = ' '.join(transliterate_hebrew(w) for w in words)
         else:
-            translit = ' '.join(transliterate_syriac(w) for w in words)
+            # Syriac script — honour the user's chosen transliteration
+            if script == 'syriac':
+                translit = syriac
+            elif script == 'hebrew':
+                translit = ' '.join(transliterate_syriac_to_hebrew(w) for w in words)
+            elif script == 'arabic':
+                translit = ' '.join(transliterate_syriac_to_arabic(w) for w in words)
+            else:
+                translit = ' '.join(transliterate_syriac(w) for w in words)
         # Build word-level root data for popover
         word_roots = []
         for w in words:

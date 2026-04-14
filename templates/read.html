@@ -46,7 +46,7 @@
                 {%- endfor -%}
             </div>
             {% if v.transliteration %}
-            <div class="verse-translit">{{ v.transliteration }}</div>
+            <div class="verse-translit{% if script in ('hebrew', 'arabic') %} verse-translit--rtl{% endif %}">{{ v.transliteration }}</div>
             {% endif %}
             {% if v.translation %}
             <div class="verse-translation" {% if trans in ('he', 'ar') %}dir="rtl"{% endif %}>{{ v.translation }}</div>
