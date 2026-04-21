@@ -533,7 +533,17 @@
     "pp_col_root": "Raíz",
     "pp_col_gloss": "Glosa",
     "pp_col_freq": "En el Pasaje",
-    "pp_col_rarity": "Total en Corpus"
+    "pp_col_rarity": "Total en Corpus",
+    "il_title": "Lectura Interlineal",
+    "il_subtitle": "Alineación palabra por palabra en todos los corpus",
+    "il_from": "Desde",
+    "il_to": "Hasta",
+    "il_analyze": "Analizar",
+    "il_translation_toggle": "Mostrar traducción",
+    "il_export_tei": "Exportar TEI XML",
+    "il_export_txt": "Exportar texto plano",
+    "il_export_csv": "Exportar CSV",
+    "il_truncated_warning": "Pasaje truncado en 500 versículos. Acota el rango para exportación completa."
   },
   "en": {
     "app_title": "Peshitta Constellations",
@@ -1069,7 +1079,17 @@
     "pp_col_root": "Root",
     "pp_col_gloss": "Gloss",
     "pp_col_freq": "In Passage",
-    "pp_col_rarity": "Corpus Total"
+    "pp_col_rarity": "Corpus Total",
+    "il_title": "Interlinear Reader",
+    "il_subtitle": "Word-by-word alignment across all corpora",
+    "il_from": "From",
+    "il_to": "To",
+    "il_analyze": "Analyze",
+    "il_translation_toggle": "Show translation",
+    "il_export_tei": "Export TEI XML",
+    "il_export_txt": "Export Plain Text",
+    "il_export_csv": "Export CSV",
+    "il_truncated_warning": "Passage truncated at 500 verses. Narrow your range for full export."
   },
   "he": {
     "app_title": "קונסטלציות הפשיטתא",
@@ -1605,7 +1625,17 @@
     "pp_col_root": "שורש",
     "pp_col_gloss": "מובן",
     "pp_col_freq": "בקטע",
-    "pp_col_rarity": "סה״כ בקורפוס"
+    "pp_col_rarity": "סה״כ בקורפוס",
+    "il_title": "קריאה אינטרלינארית",
+    "il_subtitle": "יישור מילה-במילה בכל הקורפוסים",
+    "il_from": "מ",
+    "il_to": "עד",
+    "il_analyze": "נתח",
+    "il_translation_toggle": "הצג תרגום",
+    "il_export_tei": "ייצא TEI XML",
+    "il_export_txt": "ייצא טקסט רגיל",
+    "il_export_csv": "ייצא CSV",
+    "il_truncated_warning": "הקטע קוצר ל-500 פסוקים. צמצם את הטווח לייצוא מלא."
   },
   "ar": {
     "app_title": "أبراج الپشيطتا",
@@ -2141,6 +2171,16 @@
     "pp_col_root": "جذر",
     "pp_col_gloss": "معنى",
     "pp_col_freq": "في المقطع",
-    "pp_col_rarity": "إجمالي الكوربوس"
+    "pp_col_rarity": "إجمالي الكوربوس",
+    "il_title": "القراءة المتوازية",
+    "il_subtitle": "محاذاة كلمة بكلمة عبر جميع المدونات",
+    "il_from": "من",
+    "il_to": "إلى",
+    "il_analyze": "تحليل",
+    "il_translation_toggle": "عرض الترجمة",
+    "il_export_tei": "تصدير TEI XML",
+    "il_export_txt": "تصدير نص عادي",
+    "il_export_csv": "تصدير CSV",
+    "il_truncated_warning": "تم اقتطاع المقطع عند 500 آية. قلّص النطاق للتصدير الكامل."
   }
 }
