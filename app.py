@@ -553,6 +553,124 @@ def api_verse():
     return jsonify(result)
 
 
+@app.route('/api/interlinear')
+def api_interlinear():
+    """Word-by-word interlinear data for a passage range.
+
+    Query params:
+        book       — book name (required)
+        ch_start   — start chapter int (required)
+        v_start    — start verse int (default 1)
+        ch_end     — end chapter int (default ch_start)
+        v_end      — end verse int (default 9999 = last verse)
+        corpus     — corpus filter (optional)
+        script     — latin|syriac|hebrew|arabic (default latin)
+        lang       — en|es|he|ar (default en, controls gloss language)
+        trans      — translation track (default = lang)
+    """
+    _init()
+    book = request.args.get('book', '').strip()
+    if not book:
+        return jsonify({'error': 'Missing book parameter'}), 400
+
+    ch_start = int(request.args.get('ch_start', 1))
+    v_start_param = int(request.args.get('v_start', 1))
+    ch_end = int(request.args.get('ch_end', ch_start))
+    v_end_param = int(request.args.get('v_end', 9999))
+    corpus_filter = request.args.get('corpus', '') or None
+    script = request.args.get('script', 'latin')
+    lang = request.args.get('lang', 'en')
+    trans = request.args.get('trans', lang)
+
+    from aramaic_core.characters import detect_script as _ds, transliterate_hebrew
+
+    verses_out = []
+    truncated = False
+    total = 0
+
+    for chapter in range(ch_start, ch_end + 1):
+        rows = _corpus.get_chapter_verses(book, chapter, corpus_filter)
+        for v_num, ref, syriac in rows:
+            # Apply verse-range filter at chapter boundaries
+            if chapter == ch_start and v_num < v_start_param:
+                continue
+            if chapter == ch_end and v_num > v_end_param:
+                continue
+            if total >= 500:
+                truncated = True
+                break
+            total += 1
+
+            words = syriac.split() if syriac else []
+            word_data = []
+            for w in words:
+                # Per-word transliteration honoring the script param
+                text_script = _ds(w)
+                if text_script == 'hebrew':
+                    t = transliterate_hebrew(w)
+                elif script == 'syriac':
+                    t = w
+                elif script == 'hebrew':
+                    t = transliterate_syriac_to_hebrew(w)
+                elif script == 'arabic':
+                    t = transliterate_syriac_to_arabic(w)
+                else:
+                    t = transliterate_syriac(w)
+
+                # Root, stem, gloss
+                result = _extractor.lookup_word_root_with_confidence(w)
+                root_translit = ''
+                root_key = ''
+                gloss = ''
+                stem = None
+                confidence = 0.0
+
+                if result:
+                    root_syr, conf = result
+                    confidence = round(conf, 2)
+                    root_translit = _translit_to_dash(root_syr)
+                    root_key = root_translit.lower()
+                    stem = _extractor.lookup_word_stem(w)
+                    # Multilingual gloss: prefer cognate entry, fall back to extractor
+                    cog = _cognate_lookup.lookup(root_syr) if _cognate_lookup else None
+                    if cog:
+                        gloss = _pick_gloss(cog, lang)
+                    else:
+                        gloss = _extractor.get_root_gloss(root_syr) or ''
+
+                word_data.append({
+                    'syriac': w,
+                    'translit': t,
+                    'root': root_translit,
+                    'root_key': root_key,
+                    'gloss': gloss,
+                    'stem': stem,
+                    'confidence': confidence,
+                })
+
+            translation = _corpus.get_verse_translation(ref, trans) or ''
+            if not translation and trans != 'en':
+                translation = _corpus.get_verse_translation(ref, 'en') or ''
+
+            verses_out.append({
+                'ref': ref,
+                'chapter': chapter,
+                'verse': v_num,
+                'words': word_data,
+                'translation': translation,
+            })
+
+        if truncated:
+            break
+
+    return jsonify({
+        'book': book,
+        'corpus': corpus_filter or '',
+        'verses': verses_out,
+        'truncated': truncated,
+    })
+
+
 def _translit_to_dash(syriac_root: str) -> str:
     """Convert a Syriac root to dash-separated uppercase Latin: ܫܠܡ -> SH-L-M"""
     from aramaic_core.characters import SYRIAC_TO_LATIN
