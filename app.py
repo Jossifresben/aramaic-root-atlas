@@ -14,6 +14,7 @@ from aramaic_core.characters import (
     parse_root_input, transliterate_syriac, semitic_root_variants,
     transliterate_syriac_academic, transliterate_syriac_to_hebrew,
     transliterate_syriac_to_arabic, normalize_root_to_latin,
+    detect_script, transliterate_hebrew,
 )
 
 app = Flask(__name__)
@@ -573,16 +574,18 @@ def api_interlinear():
     if not book:
         return jsonify({'error': 'Missing book parameter'}), 400
 
-    ch_start = int(request.args.get('ch_start', 1))
-    v_start_param = int(request.args.get('v_start', 1))
-    ch_end = int(request.args.get('ch_end', ch_start))
-    v_end_param = int(request.args.get('v_end', 9999))
+    try:
+        ch_start = int(request.args.get('ch_start', 1))
+        v_start_param = int(request.args.get('v_start', 1))
+        ch_end = int(request.args.get('ch_end', ch_start))
+        v_end_param = int(request.args.get('v_end', 9999))
+    except ValueError:
+        return jsonify({'error': 'Chapter and verse parameters must be integers'}), 400
+
     corpus_filter = request.args.get('corpus', '') or None
     script = request.args.get('script', 'latin')
     lang = request.args.get('lang', 'en')
     trans = request.args.get('trans', lang)
-
-    from aramaic_core.characters import detect_script as _ds, transliterate_hebrew
 
     verses_out = []
     truncated = False
@@ -605,17 +608,21 @@ def api_interlinear():
             word_data = []
             for w in words:
                 # Per-word transliteration honoring the script param
-                text_script = _ds(w)
+                text_script = detect_script(w)
                 if text_script == 'hebrew':
-                    t = transliterate_hebrew(w)
-                elif script == 'syriac':
-                    t = w
-                elif script == 'hebrew':
-                    t = transliterate_syriac_to_hebrew(w)
-                elif script == 'arabic':
-                    t = transliterate_syriac_to_arabic(w)
+                    if script == 'syriac':
+                        t = w  # show square-script word unchanged
+                    else:
+                        t = transliterate_hebrew(w)
                 else:
-                    t = transliterate_syriac(w)
+                    if script == 'syriac':
+                        t = w
+                    elif script == 'hebrew':
+                        t = transliterate_syriac_to_hebrew(w)
+                    elif script == 'arabic':
+                        t = transliterate_syriac_to_arabic(w)
+                    else:
+                        t = transliterate_syriac(w)
 
                 # Root, stem, gloss
                 result = _extractor.lookup_word_root_with_confidence(w)
