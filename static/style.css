@@ -3109,3 +3109,192 @@ body {
         opacity: 1;
     }
 }
+
+/* ── Interlinear Reader ─────────────────────────────────────── */
+.interlinear-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+}
+.interlinear-controls label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+.interlinear-controls input,
+.interlinear-controls select {
+    font-size: 0.9rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    color: var(--text);
+}
+.interlinear-controls input[type="text"] {
+    width: 90px;
+}
+.il-range-sep {
+    font-size: 1.1rem;
+    color: var(--muted);
+    padding-bottom: 0.2rem;
+    align-self: flex-end;
+}
+.il-analyze-btn {
+    padding: 0.45rem 1.1rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-end;
+}
+.il-analyze-btn:hover { opacity: 0.88; }
+.il-export-bar {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+.il-export-btn {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    color: var(--text);
+    cursor: pointer;
+}
+.il-export-btn:hover { background: var(--accent-light); }
+.il-translation-toggle {
+    font-size: 0.8rem;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-left: auto;
+}
+.il-truncated-warn {
+    background: #fef9c3;
+    color: #713f12;
+    border: 1px solid #fde68a;
+    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+.dark-mode .il-truncated-warn {
+    background: #422006;
+    color: #fef3c7;
+    border-color: #78350f;
+}
+.il-nav {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.il-nav a {
+    font-size: 0.9rem;
+    color: var(--accent);
+    text-decoration: none;
+}
+.il-nav a:hover { text-decoration: underline; }
+.interlinear-body { margin-top: 0.5rem; }
+.interlinear-verse {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+.interlinear-ref {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.6rem;
+}
+.interlinear-words {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.6rem;
+    margin-bottom: 0.6rem;
+}
+.il-word {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.3rem 0.45rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    min-width: 56px;
+    text-align: center;
+    transition: background 0.12s;
+}
+.il-word:hover {
+    background: var(--accent-light);
+    border-color: var(--border);
+}
+.il-syriac {
+    font-family: var(--syriac-font);
+    font-size: 1.4rem;
+    line-height: 1.6;
+    direction: rtl;
+}
+.il-translit {
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: var(--muted);
+    margin-top: 0.05rem;
+}
+.il-translit.il-rtl-script {
+    font-family: 'Noto Sans Hebrew', 'Noto Sans Arabic', serif;
+    font-size: 0.9rem;
+    direction: rtl;
+}
+.il-gloss {
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--text-secondary, #888);
+    margin-top: 0.05rem;
+}
+.il-root {
+    font-size: 0.68rem;
+    font-family: monospace;
+    text-decoration: none;
+    margin-top: 0.05rem;
+    font-weight: 600;
+}
+.il-root-high { color: var(--accent); }
+.il-root-med  { color: var(--text-secondary, #888); }
+.il-root-low  { color: var(--muted); }
+.il-root-none { color: var(--muted); font-style: italic; font-weight: 400; }
+.il-root:hover { text-decoration: underline; }
+.il-stem { margin-top: 0.15rem; }
+.interlinear-translation {
+    font-size: 0.88rem;
+    color: var(--text-secondary, #888);
+    padding-left: 0.6rem;
+    border-left: 2px solid var(--border);
+    margin-top: 0.25rem;
+    line-height: 1.5;
+}
+.interlinear-translation[dir="rtl"] {
+    border-left: none;
+    border-right: 2px solid var(--border);
+    padding-left: 0;
+    padding-right: 0.6rem;
+    text-align: right;
+}
+.interlinear-translation.il-trans-hidden { display: none; }
+@media (max-width: 600px) {
+    .il-syriac { font-size: 1.2rem; }
+    .il-word { min-width: 46px; padding: 0.2rem 0.3rem; }
+}
