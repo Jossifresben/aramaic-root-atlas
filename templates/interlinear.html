@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+{% block title %}{{ t('il_title', lang) }} — Aramaic Root Atlas{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:1100px;margin:2rem auto;padding:0 1rem;">
+
+  <h1 class="page-title">{{ t('il_title', lang) }}</h1>
+  <p class="page-subtitle" style="color:var(--muted);margin-bottom:1.5rem;">{{ t('il_subtitle', lang) }}</p>
+
+  <!-- Controls -->
+  <div class="interlinear-controls" id="il-controls">
+
+    <label>{{ t('nav_corpus', lang) if t else 'Corpus' }}
+      <select id="il-corpus">
+        <option value="">{{ t('all_corpora', lang) if t else 'All Corpora' }}</option>
+        <option value="biblical_aramaic">{{ t('corpus_ba', lang) if t else 'Biblical Aramaic' }}</option>
+        <option value="targum_onkelos">{{ t('corpus_to', lang) if t else 'Targum Onkelos' }}</option>
+        <option value="peshitta_nt">{{ t('corpus_nt', lang) if t else 'Peshitta NT' }}</option>
+        <option value="peshitta_ot">{{ t('corpus_ot', lang) if t else 'Peshitta OT' }}</option>
+      </select>
+    </label>
+
+    <label>{{ t('browse_book', lang) if t else 'Book' }}
+      <select id="il-book">
+        <option value="">— select —</option>
+        {% for bname, bch in books %}
+        <option value="{{ bname }}"{% if bname == initial_book %} selected{% endif %}>{{ bn(bname, lang) }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>{{ t('il_from', lang) }}
+      <input type="text" id="il-ch-start" placeholder="ch:v" value="{{ initial_ch_start }}{% if initial_v_start %}:{{ initial_v_start }}{% endif %}" style="width:80px;">
+    </label>
+
+    <span class="il-range-sep">—</span>
+
+    <label>{{ t('il_to', lang) }}
+      <input type="text" id="il-ch-end" placeholder="ch:v" value="{{ initial_ch_end }}{% if initial_v_end %}:{{ initial_v_end }}{% endif %}" style="width:80px;">
+    </label>
+
+    <label>{{ t('settings_script', lang) if t else 'Script' }}
+      <select id="il-script">
+        <option value="latin"{% if script == 'latin' %} selected{% endif %}>Latin</option>
+        <option value="syriac"{% if script == 'syriac' %} selected{% endif %}>Syriac</option>
+        <option value="hebrew"{% if script == 'hebrew' %} selected{% endif %}>Hebrew</option>
+        <option value="arabic"{% if script == 'arabic' %} selected{% endif %}>Arabic</option>
+      </select>
+    </label>
+
+    <label>{{ t('settings_font', lang) if t else 'Font' }}
+      <select id="il-font">
+        <option value="estrangela">Estrangela</option>
+        <option value="eastern">Eastern</option>
+        <option value="western">Western</option>
+      </select>
+    </label>
+
+    <button class="il-analyze-btn" onclick="loadInterlinear()">{{ t('il_analyze', lang) }}</button>
+
+  </div>
+
+  <!-- Nav + Export bar (shown after load) -->
+  <div id="il-nav" class="il-nav" style="display:none;"></div>
+
+  <div id="il-action-bar" style="display:none;margin-bottom:1rem;">
+    <div class="il-export-bar">
+      <button class="il-export-btn" onclick="exportTEI()">{{ t('il_export_tei', lang) }}</button>
+      <button class="il-export-btn" onclick="exportTXT()">{{ t('il_export_txt', lang) }}</button>
+      <button class="il-export-btn" onclick="exportCSV()">{{ t('il_export_csv', lang) }}</button>
+      <label class="il-translation-toggle">
+        <input type="checkbox" id="il-show-trans" checked onchange="toggleTranslation()">
+        {{ t('il_translation_toggle', lang) }}
+      </label>
+    </div>
+  </div>
+
+  <div id="il-truncated" class="il-truncated-warn" style="display:none;">
+    {{ t('il_truncated_warning', lang) }}
+  </div>
+
+  <div id="il-body" class="interlinear-body"></div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var LANG = '{{ lang }}';
+var TRANS = '{{ trans }}';
+var _ilData = null;
+
+function parseChVerse(s) {
+    s = s.trim();
+    var parts = s.split(':');
+    return { ch: parseInt(parts[0]) || 1, v: parseInt(parts[1]) || 1 };
+}
+
+function loadInterlinear() {
+    var book    = document.getElementById('il-book').value;
+    var corpus  = document.getElementById('il-corpus').value;
+    var script  = document.getElementById('il-script').value;
+    var fromStr = document.getElementById('il-ch-start').value.trim();
+    var toStr   = document.getElementById('il-ch-end').value.trim();
+
+    if (!book) { alert('Please select a book.'); return; }
+    if (!fromStr) { alert('Please enter a start chapter (e.g. 5:1).'); return; }
+
+    var from = parseChVerse(fromStr);
+    var to   = toStr ? parseChVerse(toStr) : { ch: from.ch, v: 9999 };
+
+    var fontMap = { estrangela: "'Noto Sans Syriac', serif",
+                    eastern:    "'Noto Sans Syriac Eastern', serif",
+                    western:    "'Noto Sans Syriac Western', serif" };
+    var font = document.getElementById('il-font').value;
+    document.documentElement.style.setProperty('--syriac-font', fontMap[font] || fontMap.estrangela);
+
+    var url = '/api/interlinear?book=' + encodeURIComponent(book)
+            + '&ch_start=' + from.ch + '&v_start=' + from.v
+            + '&ch_end='   + to.ch   + '&v_end='   + to.v
+            + '&corpus=' + encodeURIComponent(corpus)
+            + '&script=' + encodeURIComponent(script)
+            + '&lang='   + encodeURIComponent(LANG)
+            + '&trans='  + encodeURIComponent(TRANS);
+
+    document.getElementById('il-body').innerHTML =
+        '<p style="color:var(--muted);padding:1rem;">Loading\u2026</p>';
+    document.getElementById('il-action-bar').style.display = 'none';
+    document.getElementById('il-nav').style.display = 'none';
+    document.getElementById('il-truncated').style.display = 'none';
+
+    fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            _ilData = data;
+            renderInterlinear(data, book, from.ch, to.ch, script);
+        })
+        .catch(function(e) {
+            document.getElementById('il-body').innerHTML =
+                '<p style="color:red;">Error loading data: ' + e.message + '</p>';
+        });
+}
+
+function confClass(c) {
+    if (c >= 0.8) return 'il-root-high';
+    if (c >= 0.5) return 'il-root-med';
+    if (c > 0)    return 'il-root-low';
+    return 'il-root-none';
+}
+
+function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderInterlinear(data, book, chStart, chEnd, script) {
+    var showTrans = document.getElementById('il-show-trans').checked;
+    var rtlScript = (script === 'hebrew' || script === 'arabic');
+    var html = '';
+
+    data.verses.forEach(function(v) {
+        html += '<div class="interlinear-verse" id="v' + v.chapter + '-' + v.verse + '">';
+        html += '<div class="interlinear-ref">' + escHtml(v.ref) + '</div>';
+        html += '<div class="interlinear-words">';
+
+        v.words.forEach(function(w) {
+            html += '<div class="il-word">';
+            html += '<span class="il-syriac">' + escHtml(w.syriac) + '</span>';
+            html += '<span class="il-translit' + (rtlScript ? ' il-rtl-script' : '') + '">'
+                  + escHtml(w.translit) + '</span>';
+            html += '<span class="il-gloss">' + escHtml(w.gloss || '\u2014') + '</span>';
+            if (w.root) {
+                html += '<a class="il-root ' + confClass(w.confidence) + '" '
+                      + 'href="/visualize/' + encodeURIComponent(w.root_key) + '?lang=' + LANG + '" '
+                      + 'target="_blank" rel="noopener">' + escHtml(w.root) + '</a>';
+            } else {
+                html += '<span class="il-root il-root-none">\u2014</span>';
+            }
+            if (w.stem) {
+                html += '<span class="il-stem"><span class="stem-badge stem-'
+                      + escHtml(w.stem.toLowerCase()) + '" style="font-size:.6rem;">'
+                      + escHtml(w.stem) + '</span></span>';
+            } else {
+                html += '<span class="il-stem"></span>';
+            }
+            html += '</div>';
+        });
+
+        html += '</div>';
+
+        var transDir = (TRANS === 'he' || TRANS === 'ar') ? ' dir="rtl"' : '';
+        html += '<div class="interlinear-translation' + (showTrans ? '' : ' il-trans-hidden') + '"'
+              + transDir + '>' + escHtml(v.translation || '') + '</div>';
+
+        html += '</div>';
+    });
+
+    document.getElementById('il-body').innerHTML = html ||
+        '<p style="color:var(--muted);">No verses found for this range.</p>';
+
+    if (data.truncated) {
+        document.getElementById('il-truncated').style.display = 'block';
+    }
+
+    var navHtml = '';
+    if (chStart > 1) {
+        navHtml += '<a href="#" onclick="jumpChapter(' + (chStart - 1) + ');return false;">\u2190 Ch ' + (chStart - 1) + '</a>';
+    }
+    navHtml += '<a href="#" onclick="jumpChapter(' + (chEnd + 1) + ');return false;">Ch ' + (chEnd + 1) + ' \u2192</a>';
+    document.getElementById('il-nav').innerHTML = navHtml;
+    document.getElementById('il-nav').style.display = 'flex';
+    document.getElementById('il-action-bar').style.display = 'block';
+}
+
+function jumpChapter(ch) {
+    document.getElementById('il-ch-start').value = ch + ':1';
+    document.getElementById('il-ch-end').value   = ch + ':9999';
+    loadInterlinear();
+}
+
+function toggleTranslation() {
+    var show = document.getElementById('il-show-trans').checked;
+    document.querySelectorAll('.interlinear-translation').forEach(function(el) {
+        el.classList.toggle('il-trans-hidden', !show);
+    });
+}
+
+function downloadBlob(content, filename, mime) {
+    var blob = new Blob([content], { type: mime });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+function exportFilename(ext) {
+    if (!_ilData) return 'aramaic-atlas-interlinear.' + ext;
+    var book = (_ilData.book || 'passage').replace(/\s+/g, '-').toLowerCase();
+    return 'aramaic-atlas-interlinear-' + book + '.' + ext;
+}
+
+function exportTEI() {
+    if (!_ilData || !_ilData.verses.length) return;
+    var lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<TEI xmlns="http://www.tei-c.org/ns/1.0">',
+        '  <teiHeader><fileDesc><titleStmt>',
+        '    <title>Aramaic Root Atlas \u2014 Interlinear: ' + escHtml(_ilData.book) + '</title>',
+        '  </titleStmt></fileDesc></teiHeader>',
+        '  <text><body>',
+        '    <div type="book" n="' + escHtml(_ilData.book) + '">'
+    ];
+    _ilData.verses.forEach(function(v) {
+        var abId = _ilData.book.replace(/\s+/g, '.') + '.' + v.chapter + '.' + v.verse;
+        lines.push('      <ab n="' + escHtml(v.ref) + '" xml:id="' + escHtml(abId) + '">');
+        v.words.forEach(function(w, i) {
+            var cert = w.confidence >= 0.8 ? 'high' : w.confidence >= 0.5 ? 'medium' : 'low';
+            var pos  = w.stem ? 'v' : 'n';
+            var attrs = ' xml:id="' + escHtml(abId) + '.' + (i+1) + '"'
+                      + (w.root_key ? ' lemma="' + escHtml(w.root_key) + '"' : '')
+                      + ' pos="' + pos + '"'
+                      + (w.stem ? ' ana="' + escHtml(w.stem) + '"' : '')
+                      + (w.root ? ' cert="' + cert + '"' : '');
+            lines.push('        <w' + attrs + '>' + escHtml(w.syriac) + '</w>');
+        });
+        lines.push('      </ab>');
+    });
+    lines.push('    </div>', '  </body></text>', '</TEI>');
+    downloadBlob(lines.join('\n'), exportFilename('xml'), 'application/xml');
+}
+
+function exportTXT() {
+    if (!_ilData || !_ilData.verses.length) return;
+    var lines = [];
+    _ilData.verses.forEach(function(v) {
+        lines.push('# ' + v.ref);
+        v.words.forEach(function(w) {
+            lines.push([w.syriac, w.translit, w.gloss, w.root, w.stem || ''].join('\t'));
+        });
+        if (v.translation) lines.push('= ' + v.translation);
+        lines.push('');
+    });
+    downloadBlob(lines.join('\n'), exportFilename('txt'), 'text/plain;charset=utf-8');
+}
+
+function exportCSV() {
+    if (!_ilData || !_ilData.verses.length) return;
+    var rows = [['book','chapter','verse','position','syriac','translit','root','gloss','stem','confidence']];
+    _ilData.verses.forEach(function(v) {
+        v.words.forEach(function(w, i) {
+            rows.push([
+                _ilData.book, v.chapter, v.verse, i+1,
+                w.syriac, w.translit, w.root, w.gloss, w.stem || '', w.confidence
+            ].map(function(c) { return '"' + String(c||'').replace(/"/g,'""') + '"'; }));
+        });
+    });
+    downloadBlob(rows.map(function(r){return r.join(',');}).join('\n'),
+                 exportFilename('csv'), 'text/csv;charset=utf-8');
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+    if (!_ilData) return;
+    var chStart = parseInt(document.getElementById('il-ch-start').value) || 1;
+    var chEnd   = parseInt(document.getElementById('il-ch-end').value)   || chStart;
+    if (e.key === 'ArrowLeft')  jumpChapter(chEnd + 1);
+    if (e.key === 'ArrowRight') { if (chStart > 1) jumpChapter(chStart - 1); }
+});
+
+{% if initial_book and initial_ch_start %}
+window.addEventListener('DOMContentLoaded', function() { loadInterlinear(); });
+{% endif %}
+</script>
+{% endblock %}

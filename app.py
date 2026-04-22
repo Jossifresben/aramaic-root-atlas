@@ -2582,6 +2582,7 @@ def interlinear_page():
         trans=_get_trans(),
         script=_get_script(),
         t=lambda k, l=None: _t(k, lang),
+        bn=_bn,
         books=books,
         initial_book=request.args.get('book', ''),
         initial_ch_start=request.args.get('ch_start', ''),
