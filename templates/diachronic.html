@@ -119,6 +119,7 @@
 (function() {
     var LANG = {{ lang|tojson }};
     var TRANS = {{ trans|tojson }};
+    var SCRIPT = {{ script|tojson }};
     var currentShifts = [];
     var CORPUS_COLORS = {
         'biblical_aramaic': '#7c3aed',
@@ -156,7 +157,7 @@
         document.getElementById('diac-root-results').style.display = 'none';
         document.getElementById('diac-root-empty').style.display = 'none';
 
-        fetch('/api/diachronic/root?root=' + encodeURIComponent(root) + '&lang=' + LANG + '&trans=' + TRANS)
+        fetch('/api/diachronic/root?root=' + encodeURIComponent(root) + '&lang=' + LANG + '&trans=' + TRANS + '&script=' + SCRIPT)
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 document.getElementById('diac-root-loading').style.display = 'none';
@@ -220,7 +221,7 @@
         document.getElementById('shifts-results').style.display = 'none';
         document.getElementById('shifts-empty').style.display = 'none';
 
-        fetch('/api/diachronic/shifts?direction=' + dir + '&min_occurrences=' + minOcc + '&limit=100&lang=' + LANG + '&trans=' + TRANS)
+        fetch('/api/diachronic/shifts?direction=' + dir + '&min_occurrences=' + minOcc + '&limit=100&lang=' + LANG + '&trans=' + TRANS + '&script=' + SCRIPT)
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 document.getElementById('shifts-loading').style.display = 'none';

@@ -73,6 +73,7 @@
 <script>
 var currentLang = '{{ lang }}';
 var currentTrans = '{{ trans }}';
+var currentScript = '{{ script }}';
 var _collData = null;
 
 // Autocomplete (same pattern as concordance/home)
@@ -98,7 +99,7 @@ function loadCollocations() {
 
     var url = '/api/collocations?root=' + encodeURIComponent(root) +
               '&scope=' + scope + '&corpus=' + corpus +
-              '&min_count=' + minCount + '&limit=100&lang=' + currentLang;
+              '&min_count=' + minCount + '&limit=100&lang=' + currentLang + '&script=' + currentScript;
 
     fetch(url)
         .then(function(r) { return r.json(); })

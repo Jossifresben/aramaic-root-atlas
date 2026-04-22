@@ -135,6 +135,7 @@
 <script>
 (function() {
     var LANG = {{ lang|tojson }};
+    var SCRIPT = {{ script|tojson }};
     var _profileData = null;
 
     // --- Book autocomplete data ---
@@ -243,7 +244,8 @@
         var url = '/api/passage-profile?book=' + encodeURIComponent(book)
                 + '&ch_start=' + chStart
                 + '&ch_end='   + (chEnd || chStart)
-                + '&lang='     + LANG;
+                + '&lang='     + LANG
+                + '&script='   + SCRIPT;
 
         fetch(url)
             .then(function(r) { return r.json(); })

@@ -95,6 +95,7 @@
 <script>
 (function() {
     var LANG = {{ lang|tojson }};
+    var SCRIPT = {{ script|tojson }};
     var currentData = null;
     var currentRoot = '';
 
@@ -121,7 +122,7 @@
         var sort = document.getElementById('conc-sort').value;
         var ctx = ctxSlider.value;
         var url = '/api/concordance?root=' + encodeURIComponent(root) + '&sort=' + sort +
-                  '&context_words=' + ctx + '&lang=' + LANG;
+                  '&context_words=' + ctx + '&lang=' + LANG + '&script=' + SCRIPT;
         if (corpus) url += '&corpus=' + corpus;
 
         document.getElementById('conc-loading').style.display = 'block';

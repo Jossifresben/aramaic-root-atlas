@@ -688,6 +688,20 @@ def _translit_to_dash(syriac_root: str) -> str:
     return '-'.join(parts) if parts else ''
 
 
+def _root_translit(root_syr: str, script: str) -> str:
+    """Transliterate a Syriac root string into the requested script."""
+    if not root_syr:
+        return ''
+    if script == 'syriac':
+        return root_syr
+    if script == 'hebrew':
+        return ''.join(transliterate_syriac_to_hebrew(c) for c in root_syr)
+    if script == 'arabic':
+        return ''.join(transliterate_syriac_to_arabic(c) for c in root_syr)
+    # latin (default)
+    return _translit_to_dash(root_syr)
+
+
 @app.route('/api/word-parse')
 def api_word_parse():
     """Full morphological breakdown for a single Syriac/Aramaic word.
@@ -1763,6 +1777,7 @@ def api_hapax():
     corpus_filter = request.args.get('corpus', '').strip() or None
     scope = request.args.get('scope', 'root')  # 'root' or 'form'
     sort = request.args.get('sort', 'alpha')   # 'alpha', 'confidence', 'corpus'
+    script = request.args.get('script', 'latin')
     try:
         limit = int(request.args.get('limit', 500))
     except ValueError:
@@ -1792,7 +1807,7 @@ def api_hapax():
                         corpus_att[cid] = corpus_att.get(cid, 0) + 1
                     results.append({
                         'root': root_syr,
-                        'root_translit': _translit_to_dash(root_syr),
+                        'root_translit': _root_translit(root_syr, script),
                         'gloss': gloss,
                         'form': m.form,
                         'form_translit': m.transliteration,
@@ -1826,7 +1841,7 @@ def api_hapax():
                 best_form = root_entry.matches[0] if root_entry.matches else None
                 results.append({
                     'root': root_syr,
-                    'root_translit': _translit_to_dash(root_syr),
+                    'root_translit': _root_translit(root_syr, script),
                     'gloss': gloss,
                     'form': best_form.form if best_form else '',
                     'form_translit': best_form.transliteration if best_form else '',
@@ -1885,6 +1900,7 @@ def api_concordance():
     corpus_filter = request.args.get('corpus', '').strip() or None
     sort = request.args.get('sort', 'book')       # 'book', 'frequency', 'form'
     group_by = request.args.get('group_by', 'none')  # 'form' or 'none'
+    script = request.args.get('script', 'latin')
     try:
         context_words = int(request.args.get('context_words', 5))
     except ValueError:
@@ -1955,7 +1971,7 @@ def api_concordance():
 
     return jsonify({
         'root': root_syriac,
-        'root_translit': _translit_to_dash(root_syriac),
+        'root_translit': _root_translit(root_syriac, script),
         'total': len(lines),
         'group_by': group_by,
         'form_summary': form_summary,
@@ -2070,6 +2086,7 @@ def api_diachronic_root():
         return jsonify({'error': 'Invalid root'}), 400
 
     trans = request.args.get('trans', 'en')
+    script = request.args.get('script', 'latin')
     root_entry = _extractor.lookup_root(root_syriac)
     gloss = _extractor.get_root_gloss(root_syriac)
     cognate = _cognate_lookup.lookup(root_syriac)
@@ -2115,7 +2132,7 @@ def api_diachronic_root():
 
     return jsonify({
         'root': root_syriac,
-        'root_translit': _translit_to_dash(root_syriac),
+        'root_translit': _root_translit(root_syriac, script),
         'gloss': gloss,
         'corpora': data,
     })
@@ -2131,6 +2148,7 @@ def api_diachronic_shifts():
         return jsonify({'error': 'limit must be an integer'}), 400
     direction = request.args.get('direction', 'all')  # 'emerging', 'declining', 'all'
     trans = request.args.get('trans', 'en')
+    script = request.args.get('script', 'latin')
     try:
         min_occurrences = int(request.args.get('min_occurrences', 3))
     except ValueError:
@@ -2177,7 +2195,7 @@ def api_diachronic_shifts():
 
         results.append({
             'root': root_syr,
-            'root_translit': _translit_to_dash(root_syr),
+            'root_translit': _root_translit(root_syr, script),
             'gloss': gloss,
             'freqs': freqs,
             'magnitude': round(magnitude, 2),
@@ -2201,6 +2219,7 @@ def api_diachronic_unique():
     _init()
     corpus_filter = request.args.get('corpus', '').strip() or None
     trans = request.args.get('trans', 'en')
+    script = request.args.get('script', 'latin')
 
     results = []
     for root_entry in _extractor.get_all_roots():
@@ -2221,7 +2240,7 @@ def api_diachronic_unique():
                 gloss = (cognate.gloss_es if trans == 'es' else cognate.gloss_en) or cognate.gloss_en
             results.append({
                 'root': root_syr,
-                'root_translit': _translit_to_dash(root_syr),
+                'root_translit': _root_translit(root_syr, script),
                 'gloss': gloss,
                 'corpus': only_corpus,
                 'count': root_entry.total_occurrences,
@@ -2310,7 +2329,8 @@ def api_collocations():
         return jsonify({'root': root_input, 'collocates': []})
 
     lang_code = request.args.get('lang', 'en')
-    target_translit = _translit_to_dash(root_syriac)
+    script = request.args.get('script', 'latin')
+    target_translit = _root_translit(root_syriac, script)
     target_gloss = _extractor.get_root_gloss(root_syriac)
     cognate = _cognate_lookup.lookup(root_syriac)
     if cognate:
@@ -2350,7 +2370,7 @@ def api_collocations():
                 break
         results.append({
             'root': other_syr,
-            'root_translit': _translit_to_dash(other_syr),
+            'root_translit': _root_translit(other_syr, script),
             'gloss': gloss or '',
             'cooccurrences': cooccur,
             'pmi': round(pmi, 3),
@@ -2408,6 +2428,7 @@ def api_passage_profile():
 
     corpus_filter = request.args.get('corpus', '').strip() or None
     lang_code = request.args.get('lang', 'en')
+    script = request.args.get('script', 'latin')
 
     # --- Collect all verses in the requested range ---
     verse_texts: list[tuple[str, str]] = []  # [(ref, syriac_text)]
@@ -2496,7 +2517,7 @@ def api_passage_profile():
     top_roots_raw = sorted(passage_root_counts.items(), key=lambda x: x[1], reverse=True)[:15]
     top_roots = []
     for root_syr, count in top_roots_raw:
-        root_translit = _translit_to_dash(root_syr)
+        root_translit = _root_translit(root_syr, script)
         cognate = _cognate_lookup.lookup(root_syr)
         gloss = _pick_gloss(cognate, lang_code) if cognate else _extractor.get_root_gloss(root_syr) or ''
         corpus_att = {
@@ -2628,6 +2649,7 @@ def api_semantic_fields_detail(field: str):
     if not _semantic_fields:
         return jsonify({'field': field, 'roots': [], 'no_data': True})
     lang_code = request.args.get('lang', 'en')
+    script = request.args.get('script', 'latin')
     results = []
     for key, fields in _semantic_fields.items():
         if field not in fields:
@@ -2667,6 +2689,7 @@ def api_semantic_fields_detail(field: str):
             results.append({
                 'key': key,
                 'root': root_syr or '',
+                'root_translit': _root_translit(root_syr, script) if root_syr else key.upper(),
                 'gloss': gloss,
                 'total_occurrences': total,
                 'corpus_counts': corpus_counts,

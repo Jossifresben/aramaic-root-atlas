@@ -166,8 +166,12 @@ function renderInterlinear(data, book, chStart, chEnd, script) {
         v.words.forEach(function(w) {
             html += '<div class="il-word">';
             html += '<span class="il-syriac">' + escHtml(w.syriac) + '</span>';
-            html += '<span class="il-translit' + (rtlScript ? ' il-rtl-script' : '') + '">'
-                  + escHtml(w.translit) + '</span>';
+            if (script !== 'syriac') {
+                html += '<span class="il-translit' + (rtlScript ? ' il-rtl-script' : '') + '">'
+                      + escHtml(w.translit) + '</span>';
+            } else {
+                html += '<span class="il-translit" style="display:none"></span>';
+            }
             html += '<span class="il-gloss">' + escHtml(w.gloss || '\u2014') + '</span>';
             if (w.root) {
                 html += '<a class="il-root ' + confClass(w.confidence) + '" '

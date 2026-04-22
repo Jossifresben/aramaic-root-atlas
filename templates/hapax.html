@@ -83,6 +83,7 @@
 <script>
 (function() {
     var LANG = {{ lang|tojson }};
+    var SCRIPT = {{ script|tojson }};
     var currentData = [];
 
     var slider = document.getElementById('freq-slider');
@@ -119,7 +120,7 @@
         var corpus = corpusFilter.value;
         var scope = scopeFilter.value;
         var sort = sortFilter.value;
-        var url = '/api/hapax?max_freq=' + maxFreq + '&scope=' + scope + '&sort=' + sort + '&lang=' + LANG;
+        var url = '/api/hapax?max_freq=' + maxFreq + '&scope=' + scope + '&sort=' + sort + '&lang=' + LANG + '&script=' + SCRIPT;
         if (corpus) url += '&corpus=' + corpus;
 
         document.getElementById('hapax-loading').style.display = 'block';
