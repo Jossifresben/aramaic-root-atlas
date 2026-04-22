@@ -10,17 +10,17 @@
   <!-- Controls -->
   <div class="interlinear-controls" id="il-controls">
 
-    <label>{{ t('nav_corpus', lang) if t else 'Corpus' }}
+    <label>Corpus
       <select id="il-corpus">
         <option value="">{{ t('all_corpora', lang) if t else 'All Corpora' }}</option>
-        <option value="biblical_aramaic">{{ t('corpus_ba', lang) if t else 'Biblical Aramaic' }}</option>
-        <option value="targum_onkelos">{{ t('corpus_to', lang) if t else 'Targum Onkelos' }}</option>
-        <option value="peshitta_nt">{{ t('corpus_nt', lang) if t else 'Peshitta NT' }}</option>
-        <option value="peshitta_ot">{{ t('corpus_ot', lang) if t else 'Peshitta OT' }}</option>
+        <option value="biblical_aramaic">Biblical Aramaic</option>
+        <option value="targum_onkelos">Targum Onkelos</option>
+        <option value="peshitta_nt">Peshitta NT</option>
+        <option value="peshitta_ot">Peshitta OT</option>
       </select>
     </label>
 
-    <label>{{ t('browse_book', lang) if t else 'Book' }}
+    <label>{{ t('read_book', lang) if t else 'Book' }}
       <select id="il-book">
         <option value="">— select —</option>
         {% for bname, bch in books %}
@@ -48,7 +48,7 @@
       </select>
     </label>
 
-    <label>{{ t('settings_font', lang) if t else 'Font' }}
+    <label>{{ t('settings_syriac_font', lang) if t else 'Font' }}
       <select id="il-font">
         <option value="estrangela">Estrangela</option>
         <option value="eastern">Eastern</option>
