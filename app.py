@@ -2571,6 +2571,26 @@ def collocations_page():
                            initial_root=initial_root)
 
 
+@app.route('/interlinear')
+def interlinear_page():
+    _init()
+    lang = _get_lang()
+    books = _corpus.get_books()
+    return render_template(
+        'interlinear.html',
+        lang=lang,
+        trans=_get_trans(),
+        script=_get_script(),
+        t=lambda k, l=None: _t(k, lang),
+        books=books,
+        initial_book=request.args.get('book', ''),
+        initial_ch_start=request.args.get('ch_start', ''),
+        initial_v_start=request.args.get('v_start', ''),
+        initial_ch_end=request.args.get('ch_end', ''),
+        initial_v_end=request.args.get('v_end', ''),
+    )
+
+
 @app.route('/annotations')
 def annotations_page():
     _init()
