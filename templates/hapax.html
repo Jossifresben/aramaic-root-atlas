@@ -48,6 +48,9 @@
         <div style="display:flex;gap:.5rem;">
             <button class="btn-secondary" onclick="exportHapax('csv')">{{ t('hapax_export_csv', lang) }}</button>
             <button class="btn-secondary" onclick="exportHapax('json')">{{ t('hapax_export_json', lang) }}</button>
+                <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
+                    <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
+                </button>
         </div>
     </div>
 
@@ -192,5 +195,19 @@
 
     loadHapax();
 })();
+
+function getCiteContext() {
+    var freqEl = document.getElementById('freq-slider');
+    var maxFreq = freqEl ? parseInt(freqEl.value) || 1 : 1;
+    var corpusSel = document.getElementById('corpus-filter');
+    var corpusLabel = (corpusSel && corpusSel.value)
+        ? corpusSel.options[corpusSel.selectedIndex].text : '';
+    return {
+        tool: 'hapax',
+        maxFreq: maxFreq,
+        corpus: corpusLabel,
+        url: window.location.href
+    };
+}
 </script>
 {% endblock %}

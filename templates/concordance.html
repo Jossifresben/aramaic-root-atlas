@@ -65,6 +65,9 @@
             <button class="btn-secondary" onclick="exportConc('json')">Export JSON</button>
             <button class="btn-secondary" onclick="exportConc('text')">Export Text</button>
             <button class="btn-secondary" id="conc-tei-btn" style="display:none;" onclick="exportConc('tei')">{{ t('concordance_export_tei', lang) }}</button>
+            <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
+                <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
+            </button>
         </div>
     </div>
 
@@ -264,6 +267,21 @@
         var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
         var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
         a.download = 'concordance-' + (currentData.root_translit||'root').toLowerCase() + '.csv'; a.click();
+    };
+
+    window.getCiteContext = function() {
+        var corpusSel = document.getElementById('conc-corpus');
+        var corpusLabel = (corpusSel && corpusSel.value)
+            ? corpusSel.options[corpusSel.selectedIndex].text : '';
+        var root = (currentData && currentData.root_translit) || '';
+        var rootSyr = (currentData && currentData.root) || '';
+        return {
+            tool: 'concordance',
+            root: root,
+            rootSyriac: rootSyr,
+            corpus: corpusLabel,
+            url: window.location.href
+        };
     };
 
     // Auto-load if root passed in URL

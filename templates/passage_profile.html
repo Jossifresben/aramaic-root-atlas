@@ -118,6 +118,9 @@
 
         <!-- Export buttons -->
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+            <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
+                <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
+            </button>
             <button onclick="exportJSON()"
                     style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);cursor:pointer;font-size:.85rem;">
                 Export JSON
@@ -453,5 +456,17 @@
     document.addEventListener('DOMContentLoaded', function() { runProfile(); });
     {% endif %}
 })();
+
+window.getCiteContext = function() {
+    var book = document.getElementById('pp-book') ? document.getElementById('pp-book').value : '';
+    var chStart = document.getElementById('pp-ch-start') ? document.getElementById('pp-ch-start').value : '';
+    var chEnd = document.getElementById('pp-ch-end') ? document.getElementById('pp-ch-end').value : '';
+    var passage = book ? (book + ' ' + chStart + (chEnd && chEnd !== chStart ? '–' + chEnd : '')) : '';
+    return {
+        tool: 'passage_profile',
+        passage: passage,
+        url: window.location.href
+    };
+};
 </script>
 {% endblock %}

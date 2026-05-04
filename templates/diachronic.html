@@ -44,6 +44,9 @@
             <div style="margin-bottom:1rem;">
                 <span id="diac-root-title" style="font-size:1.1rem;font-weight:600;"></span>
                 <span id="diac-root-gloss" style="color:var(--muted);font-style:italic;margin-left:.5rem;font-size:.9rem;"></span>
+                <button class="cite-btn" style="margin-left:.5rem;" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
+                    <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
+                </button>
             </div>
 
             <!-- Bar chart -->
@@ -305,5 +308,18 @@
         loadRootView();
     }
 })();
+
+function getCiteContext() {
+    var rootInput = document.getElementById('diac-root-input');
+    var root = rootInput ? rootInput.value.trim().toUpperCase() : '';
+    var titleEl = document.getElementById('diac-root-title');
+    var rootSyr = titleEl ? titleEl.textContent.trim() : '';
+    return {
+        tool: 'diachronic',
+        root: root,
+        rootSyriac: rootSyr,
+        url: window.location.href
+    };
+}
 </script>
 {% endblock %}
