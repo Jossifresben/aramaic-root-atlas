@@ -2,11 +2,11 @@
 
 **[Live App](https://aramaic-root-atlas.onrender.com)** &nbsp; [![DOI](https://zenodo.org/badge/1190998648.svg)](https://doi.org/10.5281/zenodo.19358625)
 
-The Aramaic Root Atlas is an open-access tool for exploring triliteral roots across the major corpora of Aramaic literature. It spans approximately 1,500 years of literary history — from the Biblical Aramaic passages of Daniel and Ezra (~6th–2nd c. BCE) through Targum Onkelos (~1st–3rd c. CE) to the Peshitta Old and New Testaments (~2nd–5th c. CE) — indexing 5,039 roots across 36,627 verses and 498,922 words.
+The Aramaic Root Atlas is an open-access tool for exploring triliteral roots across the major corpora of Aramaic literature. It spans approximately 1,500 years of literary history — from the Biblical Aramaic passages of Daniel and Ezra (~6th–2nd c. BCE) through Targum Onkelos (~1st–3rd c. CE) to the Peshitta Old and New Testaments (~2nd–5th c. CE) and the Hymns of Ephrem the Syrian (~4th c. CE) — indexing 5,039 roots across 38,062 verses and 528,399 words.
 
 The tool is designed for scholars, students, and linguists who want to study Aramaic vocabulary across time and tradition: tracing how a root is used in different dialects and genres, finding rare or unique attestations, comparing parallel passages, or analyzing verb stem distributions. Every word form in the corpus is linked to its extracted root, gloss, confidence score, and verb stem, accessible directly from the verse reader.
 
-**36,627 verses** · **498,922 words** · **5,039 roots** · **1,127+ cognate families** · **4 corpora**
+**38,062 verses** · **528,399 words** · **5,039 roots** · **1,127+ cognate families** · **5 corpora**
 
 ---
 
@@ -16,7 +16,7 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 - **Verb Stem (Binyan) Analysis** -- classifies every word form into Peal/Ethpeel/Pael/Ethpaal/Aphel/Shafel/Ettaphal; stem badge in word popover; stem distribution chart + paradigm table in root card; `/api/paradigm` endpoint
 - **Hapax Legomena Finder** -- `/hapax` page surfaces roots and forms with 1–5 occurrences across any corpus; frequency slider, corpus filter, scope toggle, CSV/JSON export
 - **KWIC Concordance with Export** -- `/concordance` page shows all attestations in traditional left-context | keyword | right-context layout; group by form or stem; export as CSV, JSON, plain text, or TEI XML
-- **Diachronic Root Analysis** -- `/diachronic` page compares root usage across four corpora in chronological order (Biblical Aramaic → Targum Onkelos → Peshitta NT → Peshitta OT) as normalized frequency; Shifts View ranks roots by frequency change magnitude with color-coded corpus dots
+- **Diachronic Root Analysis** -- `/diachronic` page compares root usage across five corpora in chronological order (Biblical Aramaic → Targum Onkelos → Peshitta NT → Peshitta OT → Ephrem Nisibis) as normalized frequency; Shifts View ranks roots by frequency change magnitude with color-coded corpus dots
 - **Collocations** -- `/collocations` page computes Pointwise Mutual Information (PMI) between roots co-occurring in the same verse or chapter; filter by corpus and minimum co-occurrence count to surface statistically significant lexical associations; CSV/JSON export
 - **Semantic Fields** -- `/semantic-fields` page organizes all roots into 15 semantic domains (legal/covenant, cultic, kinship, war, knowledge, etc.) via AI classification; each domain lists roots sorted by frequency with corpus badges and links to the visualizer
 - **Researcher Annotations** -- `/annotations` page for inline notes on verses and roots, stored in localStorage; tag-based filtering, export as JSON/CSV/Markdown; inline note icons in the verse reader and root card
@@ -112,7 +112,8 @@ The app starts on **http://localhost:5001**.
 | Peshitta OT | 23,072 | 309,889 | Syriac | ETCBC / Leiden Peshitta Institute | CC-BY-NC |
 | Biblical Aramaic | 269 | 4,880 | Hebrew square | Sefaria (Westminster Leningrad Codex) | CC-BY-SA |
 | Targum Onkelos | 5,846 | 82,684 | Syriac | Sefaria | CC-BY-SA |
-| **Total** | **36,627** | **498,922** | | | |
+| Ephrem Nisibis | 1,435 | 29,477 | Syriac | Digital Syriac Corpus (srophe) | CC-BY |
+| **Total** | **38,062** | **528,399** | | | |
 
 Cross-script root normalization ensures that Syriac and Hebrew square script resolve to the same root key.
 
@@ -167,12 +168,13 @@ aramaic-root-atlas/
     extractor.py         #   RootExtractor: triliteral root extraction + scoring
     cognates.py          #   CognateLookup: Hebrew & Arabic cognate lookup
     glosser.py           #   WordGlosser: compositional word-level glossing
+    sedra_lookup.py      #   SEDRA lexicon cache lookup for enhanced root confidence
   app.py                 # Flask application (port 5001)
   templates/             # Jinja2 templates (read, browse, visualize, hapax, concordance, diachronic, parse, passage_profile, …)
   static/style.css       # CSS with corpus-coded color variables and stem-badge palette
   static/autocomplete.js # Shared root autocomplete widget
   data/
-    corpora/             # CSV corpus files (peshitta_nt, peshitta_ot, biblical_aramaic, targum_onkelos)
+    corpora/             # CSV corpus files (peshitta_nt, peshitta_ot, biblical_aramaic, targum_onkelos, ephrem_nisibis)
     roots/               # cognates.json, known_roots.json, stopwords.json
     translations/        # translations_{en,es,he,ar}.json
   scripts/               # Data pipeline scripts (fetch, generate)
@@ -185,6 +187,8 @@ aramaic-root-atlas/
 - **Peshitta OT** -- ETCBC/peshitta, Leiden Peshitta Institute (CC-BY-NC)
 - **Biblical Aramaic** -- Westminster Leningrad Codex via Sefaria API (CC-BY-SA)
 - **Targum Onkelos** -- Sefaria API (CC-BY-SA)
+- **Ephrem Nisibis** -- Digital Syriac Corpus (srophe/syriac-corpus, CC-BY), TEI XML
+- **SEDRA Lexicon** -- Beth Mardutho Syriac Institute, via public API (https://sedra.bethmardutho.org)
 - **Translations** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek) via [bible.helloao.org](https://bible.helloao.org)
 - **Cognates** -- 1,127+ entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates, generated and curated with the Claude API; semantic field classifications for all roots via Claude Haiku
 
