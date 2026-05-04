@@ -24,6 +24,7 @@ _corpus: AramaicCorpus | None = None
 _extractor: RootExtractor | None = None
 _cognate_lookup: CognateLookup | None = None
 _glosser: WordGlosser | None = None
+_sedra = None
 _i18n: dict = {}
 _cognates_raw: dict = {}
 _initialized = False
@@ -88,6 +89,11 @@ def _init():
         # Build root index
         _extractor = RootExtractor(_corpus, ROOTS_DIR)
         _extractor.build_index()
+
+        from aramaic_core.sedra_lookup import SedraLookup
+        global _sedra
+        _sedra = SedraLookup()
+        _sedra.load_cache()
 
         # Load cognates
         _cognate_lookup = CognateLookup(ROOTS_DIR)
@@ -628,32 +634,27 @@ def api_interlinear():
                     else:
                         t = transliterate_syriac(w)
 
-                # Root, stem, gloss
-                result = _extractor.lookup_word_root_with_confidence(w)
-                root_translit = ''
-                root_key = ''
-                gloss = ''
-                stem = None
-                confidence = 0.0
+                # Root, stem, gloss (with SEDRA fallback for low-confidence tokens)
+                resolved = _resolve_word(w, script)
+                root_syr = resolved['root_syr']
+                root_key = resolved['root_key']
+                confidence = resolved['confidence']
+                gloss = resolved['gloss']
+                stem = resolved['stem'] or None
+                root_translit = root_key            # uppercase dash-separated (SH-L-M)
+                root_key_lower = root_key.lower()   # lowercase key (sh-l-m)
 
-                if result:
-                    root_syr, conf = result
-                    confidence = round(conf, 2)
-                    root_translit = _translit_to_dash(root_syr)
-                    root_key = root_translit.lower()
-                    stem = _extractor.lookup_word_stem(w)
-                    # Multilingual gloss: prefer cognate entry, fall back to extractor
-                    cog = _cognate_lookup.lookup(root_syr) if _cognate_lookup else None
+                # Multilingual gloss: prefer cognate entry (supports ES/HE/AR), fall back to resolved gloss
+                if root_syr and lang != 'en' and _cognate_lookup:
+                    cog = _cognate_lookup.lookup(root_syr)
                     if cog:
                         gloss = _pick_gloss(cog, lang)
-                    else:
-                        gloss = _extractor.get_root_gloss(root_syr) or ''
 
                 word_data.append({
                     'syriac': w,
                     'translit': t,
                     'root': root_translit,
-                    'root_key': root_key,
+                    'root_key': root_key_lower,
                     'gloss': gloss,
                     'stem': stem,
                     'confidence': confidence,
@@ -704,6 +705,57 @@ def _root_translit(root_syr: str, script: str) -> str:
         return ''.join(transliterate_syriac_to_arabic(c) for c in root_syr)
     # latin (default)
     return _translit_to_dash(root_syr)
+
+
+def _resolve_word(word: str, script: str) -> dict:
+    """Return root/confidence/gloss for a word, with SEDRA fallback for low-confidence.
+
+    Returns dict with keys: root_syr, root_translit, root_key, confidence, gloss, stem, sedra_used.
+    """
+    result = _extractor.lookup_word_root_with_confidence(word)
+    sedra_used = False
+
+    if result is not None:
+        root_syr, conf = result
+    else:
+        root_syr, conf = None, 0.0
+
+    # SEDRA fallback for low-confidence or unresolved tokens
+    if (root_syr is None or conf < 0.5) and _sedra is not None:
+        try:
+            sedra_data = _sedra.lookup(word)
+        except KeyError:
+            sedra_data = None
+        if sedra_data and sedra_data.get('stem'):
+            sedra_root = sedra_data['stem']
+            if root_syr is None:
+                root_syr = sedra_root
+                conf = 0.65
+            elif sedra_root == root_syr:
+                conf = 0.70
+            else:
+                root_syr = sedra_root
+                conf = 0.65
+            sedra_used = True
+
+    stem = _extractor.lookup_word_stem(word) or ''
+    gloss = ''
+    if root_syr:
+        gloss = _extractor.get_root_gloss(root_syr) or ''
+        if not gloss:
+            cognate = _cognate_lookup.lookup(root_syr)
+            if cognate:
+                gloss = cognate.gloss_en or ''
+
+    return {
+        'root_syr': root_syr,
+        'root_translit': _root_translit(root_syr, script) if root_syr else '',
+        'root_key': _translit_to_dash(root_syr) if root_syr else '',
+        'confidence': round(conf, 2),
+        'gloss': gloss,
+        'stem': stem,
+        'sedra_used': sedra_used,
+    }
 
 
 @app.route('/api/word-parse')
