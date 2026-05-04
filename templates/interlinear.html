@@ -24,9 +24,6 @@
     <label>{{ t('read_book', lang) if t else 'Book' }}
       <select id="il-book">
         <option value="">— select —</option>
-        {% for bname, bch in books %}
-        <option value="{{ bname }}"{% if bname == initial_book %} selected{% endif %}>{{ bn(bname, lang) }}</option>
-        {% endfor %}
       </select>
     </label>
 
@@ -303,6 +300,44 @@ function exportCSV() {
     downloadBlob(rows.map(function(r){return r.join(',');}).join('\n'),
                  exportFilename('csv'), 'text/csv;charset=utf-8');
 }
+
+var _initialBook = '{{ initial_book|e }}';
+
+function refreshBookList(preserveBook) {
+    var corpus = document.getElementById('il-corpus').value;
+    var url = '/api/books' + (corpus ? '?corpus=' + encodeURIComponent(corpus) : '');
+    fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var sel = document.getElementById('il-book');
+            var prevBook = preserveBook || '';
+            sel.innerHTML = '<option value="">— select —</option>';
+            (data.books || []).forEach(function(b) {
+                var opt = document.createElement('option');
+                opt.value = b.name;
+                opt.textContent = b.name;
+                if (b.name === prevBook) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            if (!preserveBook) {
+                // Corpus changed by user — reset passage fields
+                document.getElementById('il-ch-start').value = '';
+                document.getElementById('il-ch-end').value = '';
+                _ilData = null;
+                document.getElementById('il-body').innerHTML = '';
+                document.getElementById('il-action-bar').style.display = 'none';
+                document.getElementById('il-nav').style.display = 'none';
+            }
+        });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('il-corpus').addEventListener('change', function() {
+        refreshBookList(null);
+    });
+    // On initial load, populate books for the current corpus and restore any URL-linked book
+    refreshBookList(_initialBook);
+});
 
 document.addEventListener('keydown', function(e) {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
