@@ -70,5 +70,60 @@ def main():
         print(f"  {form!r:30s}  {cnt}")
 
 
+def main_with_sedra(csv_path: str) -> None:
+    """Re-measure confidence after applying SEDRA fallback (mirrors _resolve_word in app.py)."""
+    from aramaic_core.sedra_lookup import SedraLookup
+
+    corpus_id = os.path.splitext(os.path.basename(csv_path))[0]
+    corpus = AramaicCorpus()
+    corpus.add_corpus(corpus_id, corpus_id, csv_path)
+    corpus.load()
+    extractor = RootExtractor(corpus, ROOTS_DIR)
+    extractor.build_index()
+
+    sedra = SedraLookup()
+    sedra.load_cache()
+
+    high = med = low = none_ = sedra_resolved = 0
+
+    with open(csv_path, encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            for word in (row.get('syriac') or '').split():
+                result = extractor.lookup_word_root_with_confidence(word)
+                root_syr = result[0] if result else None
+                conf     = result[1] if result else 0.0
+
+                if root_syr is None or conf < 0.5:
+                    try:
+                        sd = sedra.lookup(word)
+                    except KeyError:
+                        sd = None
+                    if sd and sd.get('stem'):
+                        conf = 0.65
+                        sedra_resolved += 1
+
+                if conf >= 0.8:
+                    high += 1
+                elif conf >= 0.5:
+                    med += 1
+                elif conf > 0.0:
+                    low += 1
+                else:
+                    none_ += 1
+
+    total = high + med + low + none_
+    print(f"\nCorpus: {corpus_id} (with SEDRA fallback)")
+    print(f"Total tokens: {total}")
+    print(f"  High (>=0.8):  {high:>6}  ({100*high/total:.1f}%)")
+    print(f"  Medium (>=0.5):{med:>6}  ({100*med/total:.1f}%)")
+    print(f"  Low (<0.5):   {low:>6}  ({100*low/total:.1f}%)")
+    print(f"  No root:      {none_:>6}  ({100*none_/total:.1f}%)")
+    print(f"  SEDRA resolved: {sedra_resolved} tokens lifted from low/none")
+
+
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) > 2 and sys.argv[-1] == '--sedra':
+        main_with_sedra(sys.argv[1])
+    else:
+        main()
