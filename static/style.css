@@ -1583,6 +1583,101 @@ body {
 .share-copy-btn:hover { opacity: 0.85; }
 .share-copy-btn .material-symbols-outlined { font-size: 20px; }
 
+/* ── Cite Modal ─────────────────────────────────────────── */
+.cite-modal-content {
+    width: min(600px, 92vw);
+    padding: 1.5rem 1.75rem 1.25rem;
+}
+.cite-modal-title {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+}
+.cite-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1rem;
+}
+.cite-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    padding: .45rem .9rem;
+    font-size: .85rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+}
+.cite-tab.active {
+    color: var(--fg);
+    border-bottom-color: var(--accent);
+    font-weight: 700;
+}
+.cite-tab:hover:not(.active) { color: var(--fg); }
+.cite-panel { display: none; }
+.cite-panel.active { display: block; }
+.cite-code {
+    background: var(--bg-alt, var(--bg));
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .85rem 1rem;
+    font-size: .78rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0 0 .85rem;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    line-height: 1.55;
+    color: var(--fg);
+}
+.cite-footer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.cite-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: .4rem .9rem;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.cite-copy-btn:hover { opacity: .88; }
+.cite-doi-link {
+    font-size: .82rem;
+    color: var(--accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+}
+.cite-doi-link:hover { text-decoration: underline; }
+.cite-orcid {
+    margin-top: .6rem;
+    font-size: .75rem;
+    color: var(--muted);
+}
+.cite-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: .3rem .7rem;
+    font-size: .82rem;
+    color: var(--fg);
+    cursor: pointer;
+}
+.cite-btn:hover { background: var(--bg-alt, var(--border)); }
+
 /* Footer */
 .footer {
     text-align: center;
