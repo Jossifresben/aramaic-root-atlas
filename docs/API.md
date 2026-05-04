@@ -82,7 +82,7 @@ Several parameters are shared across multiple endpoints:
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `lang` | string | `en` | UI language. One of: `en`, `es`, `he`, `ar`. Affects glosses and book names. |
-| `corpus` | string | _(all)_ | Filter by corpus ID. One of: `peshitta_nt`, `peshitta_ot`, `biblical_aramaic`, `targum_onkelos`. Omit to search all. |
+| `corpus` | string | _(all)_ | Filter by corpus ID. One of: `peshitta_nt`, `peshitta_ot`, `biblical_aramaic`, `targum_onkelos`, `ephrem_nisibis`. Omit to search all. |
 | `trans` | string | value of `lang` | Translation track for verse text. One of: `en`, `es`, `he`, `ar`. |
 | `script` | string | `latin` | Transliteration script. One of: `latin`, `syriac`, `hebrew`, `arabic`. |
 
@@ -124,10 +124,16 @@ Return aggregate corpus statistics.
       "label": "Targum Onkelos",
       "verses": 5846,
       "words": 82684
+    },
+    {
+      "id": "ephrem_nisibis",
+      "label": "Ephrem — Nisibis",
+      "verses": 1435,
+      "words": 29477
     }
   ],
-  "total_verses": 36627,
-  "total_words": 498922,
+  "total_verses": 38062,
+  "total_words": 528399,
   "total_unique": 72566,
   "root_count": 5039
 }
@@ -695,6 +701,68 @@ Return full root family data for the visualizer: word forms, cognates, sister ro
 
 ---
 
+### GET /api/interlinear
+
+Return word-level interlinear data for a passage: Syriac text, transliteration, gloss, root, confidence score, and verb stem for every word in a verse range. Powers the Interlinear Reader page.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `book` | string | yes | -- | Book name in English (e.g., `Matthew`, `Daniel`). |
+| `ch_start` | int | yes | -- | Start chapter (1-based). |
+| `v_start` | int | no | `1` | Start verse (1-based). |
+| `ch_end` | int | no | value of `ch_start` | End chapter. |
+| `v_end` | int | no | `9999` | End verse (9999 = end of chapter). |
+| `corpus` | string | no | _(all)_ | Filter to a single corpus ID. |
+| `script` | string | no | `latin` | Transliteration script: `latin`, `syriac`, `hebrew`, `arabic`. |
+| `lang` | string | no | `en` | UI language for glosses. |
+| `trans` | string | no | value of `lang` | Translation track for verse-level translation. |
+
+**Response (200):**
+
+```json
+{
+  "book": "Matthew",
+  "truncated": false,
+  "verses": [
+    {
+      "chapter": 5,
+      "verse": 3,
+      "ref": "Matthew 5:3",
+      "translation": "Blessed are the poor in spirit...",
+      "words": [
+        {
+          "syriac": "ܛܘܒܝܗܘܢ",
+          "translit": "twbyhwn",
+          "gloss": "blessed, happy",
+          "root": "ܛܘܒ",
+          "root_key": "T-W-B",
+          "confidence": 0.92,
+          "stem": "Peal"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Notes:**
+- Capped at 200 verses per request; `truncated: true` when the limit is hit.
+- `root_key` is the dash-separated Latin transliteration used as the identifier for `/visualize/<root_key>`.
+- `confidence` is the root-extraction confidence (0.0–1.0). For Syriac text, SEDRA lexicon data is used to boost confidence when the extractor score is below 0.5.
+- `stem` is the detected Aramaic verb stem (Peal, Ethpeel, Pael, Ethpaal, Aphel, Shafel, Ettaphal) or empty string for non-verbs.
+- `gloss` and `root` are `null` for function words where no root could be extracted.
+
+**Error Responses:**
+
+| Status | Body | Cause |
+|--------|------|-------|
+| 400 | `{"error": "Missing book or ch_start"}` | Required parameters missing. |
+| 404 | `{"error": "No verses found"}` | No verses in the requested range. |
+
+---
+
 ### GET /api/parallel
 
 Return parallel texts for a verse reference across all corpora that contain it.
@@ -756,7 +824,7 @@ Return root frequency data across all corpora for heat map display.
 
 ```json
 {
-  "corpora": ["peshitta_nt", "peshitta_ot", "biblical_aramaic", "targum_onkelos"],
+  "corpora": ["peshitta_nt", "peshitta_ot", "biblical_aramaic", "targum_onkelos", "ephrem_nisibis"],
   "roots": [
     {
       "root": "\u0710\u0721\u072a",
@@ -873,6 +941,7 @@ These routes return rendered HTML pages, not JSON. They accept the common `lang`
 | `GET /hapax` | Hapax legomena finder with frequency slider, corpus filter, and CSV/JSON export. |
 | `GET /concordance` | KWIC concordance page with left/keyword/right context layout, group by form or stem, and CSV/JSON/TEI export. |
 | `GET /diachronic` | Diachronic analysis page with Root View (normalized frequency bars) and Frequency Shifts view. |
+| `GET /interlinear` | Interlinear Reader: word-for-word analysis of any passage with Syriac, transliteration, gloss, root, and stem for each word. Accepts `book`, `ch_start`, `v_start`, `ch_end`, `v_end`, `corpus`, `script`. |
 | `GET /collocations` | PMI-scored collocations page. Accepts `root` param to pre-fill and auto-analyze on load. |
 | `GET /semantic-fields` | Semantic field browser: 15 domain cards, click to see roots sorted by frequency. |
 | `GET /annotations` | Researcher annotations page: manage, filter, and export inline notes on verses and roots. |
