@@ -79,6 +79,10 @@ def _init():
         if os.path.exists(to_path):
             _corpus.add_corpus('targum_onkelos', 'Targum Onkelos', to_path)
 
+        en_path = os.path.join(CORPORA_DIR, 'ephrem_nisibis.csv')
+        if os.path.exists(en_path):
+            _corpus.add_corpus('ephrem_nisibis', 'Ephrem — Nisibis', en_path)
+
         _corpus.load()
 
         # Build root index
@@ -2061,6 +2065,7 @@ CORPUS_CHRONOLOGY = [
     ('targum_onkelos',   'Targum Onkelos',   '~1st–3rd c. CE'),
     ('peshitta_nt',      'Peshitta NT',      '~2nd–5th c. CE'),
     ('peshitta_ot',      'Peshitta OT',      '~2nd–5th c. CE'),
+    ('ephrem_nisibis',   'Ephrem — Nisibis', '~350–363 CE'),
 ]
 
 
