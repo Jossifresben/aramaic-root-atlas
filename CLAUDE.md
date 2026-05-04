@@ -12,29 +12,33 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
   - `extractor.py` — `RootExtractor`: triliteral root extraction + scoring engine
   - `cognates.py` — `CognateLookup`: Hebrew, Arabic & Greek cognate lookup
   - `glosser.py` — `WordGlosser`: compositional word-level glossing (EN/ES)
+  - `sedra_lookup.py` — `SedraLookup`: SEDRA lexicon cache for boosting root confidence
 - **app.py** — Flask app (port 5001)
 - **templates/** — Jinja2 templates (base, index, browse, read, about, hapax, concordance, diachronic)
 - **static/style.css** — CSS with corpus-coded color variables and stem-badge palette
 - **static/autocomplete.js** — Shared root autocomplete widget (`initRootAutocomplete`)
 - **data/** — Organized subdirectories:
-  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv, targum_onkelos.csv)
-  - `roots/` — cognates.json, known_roots.json, stopwords.json, word_glosses_override.json
+  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv, targum_onkelos.csv, ephrem_nisibis.csv)
+  - `roots/` — cognates.json, known_roots.json, stopwords.json, word_glosses_override.json, sedra_cache.json
   - `translations/` — translations_{en,es,he,ar}.json
 - **scripts/** — Data pipeline scripts
   - `fetch_ot_translations.py` — Fetch OT translations from bible.helloao.org (EN/ES/HE)
   - `generate_new_cognates.py` — Generate cognates for uncovered roots via Claude API
   - `fetch_biblical_aramaic.py` — Fetch BA corpus from Sefaria API
+  - `fetch_ephrem_nisibis.py` — Fetch Ephrem Nisibis corpus from Digital Syriac Corpus (TEI XML)
+  - `populate_sedra_cache.py` — Populate sedra_cache.json from Beth Mardutho SEDRA API
 - **docs/PRD.md** — Full product requirements document with 4-phase roadmap
 
 ## Current State (All Phases Complete)
-- **4 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v)
-- **Total**: 36,627 verses, 498,922 words, 72,566 unique forms
+- **5 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v), Ephrem Nisibis (1,435v)
+- **Total**: 38,062 verses, 528,399 words, 72,566 unique forms
 - **5,039 roots** indexed across all corpora
 - **1,127 cognate entries** with Hebrew/Arabic cognates, semantic bridges
 - **2,192 Greek NT cognates** linking Aramaic roots to Greek equivalents in the visualizer
 - Greek NT translation track (SBLGNT) — 7,939 verses from bible.helloao.org (grc_sbl)
+- SEDRA lexicon cache (12,534 entries) boosts root confidence for Syriac tokens
 - Quadrilingual UI (EN/ES/HE/AR) with 5 translation tracks
-- Corpus filtering on all API endpoints (?corpus=peshitta_nt|peshitta_ot|biblical_aramaic|targum_onkelos)
+- Corpus filtering on all API endpoints (?corpus=peshitta_nt|peshitta_ot|biblical_aramaic|targum_onkelos|ephrem_nisibis)
 - Root family visualizer (D3.js force graph + root card)
 - Parallel viewer (Peshitta OT ↔ Targum Onkelos / Biblical Aramaic)
 - Root frequency heat map with filter and CSV/JSON export
