@@ -1051,6 +1051,30 @@ Each phase must pass before proceeding to the next:
 
 ---
 
+## 17.5 Backlog — Future Enhancements
+
+Small, well-scoped improvements to ship after Phase 4 as opportunity allows.
+
+### B1: Multi-format Citation Modal
+
+**Current state:** Export buttons (TEI XML, CSV, TXT) are scattered as individual buttons at the bottom of each analysis page (concordance, interlinear, hapax, diachronic, constellation).
+
+**Proposed:** Replace or supplement with a unified **"Cite / Export"** modal with tabs:
+- **BibTeX** — citable `@misc` entry with key, author, title, year, version, DOI, URL (current page), ORCID note
+- **Chicago** — footnote + bibliography format
+- **MLA** — MLA 9 format
+- **APA** — APA 7 format
+- **SBL** — Society of Biblical Literature handbook format (preferred by the target scholarly community)
+- **Export** tab — existing TEI XML / CSV / TXT download buttons, moved here
+
+Each format has a **Copy** button. Modal shows DOI and ORCID at the bottom. Citation title auto-generated from the current query (e.g. "Aramaic Root Atlas — Concordance for root SH-L-M, Peshitta NT").
+
+**Scope:** One shared modal component (JS + CSS), one `buildCitation(context)` function, wired into all analysis pages. The citation key and title are computed client-side from the current page state. No backend changes required.
+
+**Priority:** Medium — improves academic credibility and reduces friction for scholars copying citations.
+
+---
+
 ## 18. Open Questions
 
 | # | Question | Impact | Decision needed by |
