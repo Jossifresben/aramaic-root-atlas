@@ -904,6 +904,31 @@ git commit -m "chore: final smoke-test pass — Ephrem Nisibis corpus live with 
 
 ---
 
+## Task 9: User validates and tests at localhost:5001
+
+This task is owned by the user. No subagent is dispatched.
+
+- [ ] **Step 1: Start the server (if not already running)**
+
+```bash
+cd "/Users/jfresco16/Google Drive/Claude/aramaic-root-atlas"
+python3 app.py
+```
+
+- [ ] **Step 2: Validate in the browser**
+
+Open http://localhost:5001 and check:
+- Browse → corpus tabs include "Ephrem — Nisibis"
+- Read a Nisibis passage (e.g. `/read/Nisibis/1`) — word popovers show roots and glosses
+- Interlinear → select Ephrem — Nisibis, range 1:1–1:5 → roots and SEDRA-boosted glosses appear
+- Diachronic → root ܫܠܡ → bar for Ephrem — Nisibis is present
+
+- [ ] **Step 3: Confirm to proceed with deployment**
+
+Tell Claude "looks good, deploy" (or report any issues to fix first).
+
+---
+
 ## Self-Review
 
 **Spec coverage check:**
