@@ -997,11 +997,25 @@ h3.subhead{
 }
 .settings-dropdown.open,.lang-dropdown.open{display:block}
 .settings-option,.lang-option{
-  display:block;padding:9px 16px;font-family:var(--sans);font-size:13px;
+  display:flex;align-items:center;gap:8px;
+  padding:9px 16px;font-family:var(--sans);font-size:13px;
   color:var(--ink-2);cursor:pointer;background:none;border:0;width:100%;text-align:left;
 }
+.settings-option::before,.lang-option::before{
+  content:"";display:inline-block;width:14px;height:14px;flex-shrink:0;
+  border-radius:3px;border:1.5px solid var(--rule);
+  transition:background .1s,border-color .1s;
+}
 .settings-option:hover,.lang-option:hover{background:var(--bg-2);color:var(--ink)}
-.settings-option.active,.lang-option.active{color:var(--accent);font-weight:500}
+.settings-option.active,.lang-option.active{
+  color:var(--ink);font-weight:500;
+  background:rgba(107,58,31,.07);
+}
+.settings-option.active::before,.lang-option.active::before{
+  background:var(--accent);border-color:var(--accent);
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath d='M1 4l3 3 5-6' fill='none' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:center;
+}
 .settings-label{
   padding:8px 16px 4px;font-family:var(--sans);font-size:10.5px;
   font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);
