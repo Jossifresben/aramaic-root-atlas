@@ -170,6 +170,24 @@
       }
     });
 
+    // / key — navigate to Trace Root (or focus root input if already there)
+    document.addEventListener('keydown', function(e){
+      if(e.key !== '/') return;
+      // Don't intercept if focus is inside any input/textarea/select/contenteditable
+      var tag = document.activeElement && document.activeElement.tagName;
+      if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if(document.activeElement && document.activeElement.isContentEditable) return;
+      e.preventDefault();
+      // If already on the home page, focus the root input directly
+      var rootInp = document.getElementById('rootInput');
+      if(rootInp){
+        rootInp.focus(); rootInp.select();
+      } else {
+        var lang = document.documentElement.lang || 'en';
+        window.location.href = '/?lang=' + lang;
+      }
+    });
+
     if(!qInp || !qList) return;
 
     // Live suggestions from /api/suggest
