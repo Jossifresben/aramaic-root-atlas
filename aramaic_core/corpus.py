@@ -173,6 +173,27 @@ class AramaicCorpus:
         """Return number of unique surface forms."""
         return len(self.get_unique_words(corpus_id))
 
+    def get_chapters(self, book: str, corpus_id: str | None = None) -> list[int]:
+        """Return sorted list of chapter numbers that actually have verses for book+corpus."""
+        self.load()
+        chapters: set[int] = set()
+        for ref in self._verse_order:
+            if corpus_id and corpus_id not in self._verse_corpora.get(ref, []):
+                continue
+            last_space = ref.rfind(' ')
+            if last_space == -1:
+                continue
+            b = ref[:last_space]
+            if b != book:
+                continue
+            chv = ref[last_space + 1:]
+            try:
+                ch = int(chv.split(':')[0])
+                chapters.add(ch)
+            except ValueError:
+                continue
+        return sorted(chapters)
+
     def get_books(self, corpus_id: str | None = None) -> list[tuple[str, int]]:
         """Return ordered list of (book_name, max_chapter) tuples."""
         self.load()

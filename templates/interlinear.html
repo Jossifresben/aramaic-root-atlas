@@ -43,16 +43,18 @@
 
     <div class="s-field narrow">
       <label class="s-label">{{ t('il_from', lang) }}</label>
-      <input class="s-input" type="text" id="il-ch-start" placeholder="ch:v"
-             value="{{ initial_ch_start }}{% if initial_v_start %}:{{ initial_v_start }}{% endif %}">
+      <select class="s-select" id="il-ch-start">
+        <option value="">Ch</option>
+      </select>
     </div>
 
     <span class="il-range-sep">—</span>
 
     <div class="s-field narrow">
       <label class="s-label">{{ t('il_to', lang) }}</label>
-      <input class="s-input" type="text" id="il-ch-end" placeholder="ch:v"
-             value="{{ initial_ch_end }}{% if initial_v_end %}:{{ initial_v_end }}{% endif %}">
+      <select class="s-select" id="il-ch-end">
+        <option value="">Ch</option>
+      </select>
     </div>
 
     <div class="s-field">
@@ -108,28 +110,19 @@ var LANG = {{ lang|tojson }};
 var TRANS = {{ trans|tojson }};
 var _ilData = null;
 
-function parseChVerse(s) {
-    s = s.trim();
-    var parts = s.split(':');
-    return { ch: parseInt(parts[0]) || 1, v: parseInt(parts[1]) || 1 };
-}
-
 function loadInterlinear() {
-    var book    = document.getElementById('il-book').value;
-    var corpus  = document.getElementById('il-corpus').value;
-    var script  = document.getElementById('il-script').value;
-    var fromStr = document.getElementById('il-ch-start').value.trim();
-    var toStr   = document.getElementById('il-ch-end').value.trim();
+    var book   = document.getElementById('il-book').value;
+    var corpus = document.getElementById('il-corpus').value;
+    var script = document.getElementById('il-script').value;
+    var chFrom = parseInt(document.getElementById('il-ch-start').value) || 0;
+    var chTo   = parseInt(document.getElementById('il-ch-end').value)   || chFrom;
 
-    if (!book) { alert('Please select a book.'); return; }
-    if (!fromStr) { alert('Please enter a start chapter (e.g. 5:1).'); return; }
-
-    var from = parseChVerse(fromStr);
-    var to   = toStr ? parseChVerse(toStr) : { ch: from.ch, v: 9999 };
+    if (!book)   { alert('Please select a book.');    return; }
+    if (!chFrom) { alert('Please select a chapter.'); return; }
 
     var url = '/api/interlinear?book=' + encodeURIComponent(book)
-            + '&ch_start=' + from.ch + '&v_start=' + from.v
-            + '&ch_end='   + to.ch   + '&v_end='   + to.v
+            + '&ch_start=' + chFrom + '&v_start=1'
+            + '&ch_end='   + chTo   + '&v_end=9999'
             + '&corpus=' + encodeURIComponent(corpus)
             + '&script=' + encodeURIComponent(script)
             + '&lang='   + encodeURIComponent(LANG)
@@ -145,7 +138,7 @@ function loadInterlinear() {
         .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function(data) {
             _ilData = data;
-            renderInterlinear(data, book, from.ch, to.ch, script);
+            renderInterlinear(data, book, chFrom, chTo, script);
         })
         .catch(function(e) {
             document.getElementById('il-body').innerHTML =
@@ -224,9 +217,23 @@ function renderInterlinear(data, book, chStart, chEnd, script) {
 }
 
 function jumpChapter(ch) {
-    document.getElementById('il-ch-start').value = ch + ':1';
-    document.getElementById('il-ch-end').value   = ch + ':9999';
-    loadInterlinear();
+    var startSel = document.getElementById('il-ch-start');
+    var endSel   = document.getElementById('il-ch-end');
+    // Select the chapter if it exists in the dropdown, otherwise refresh then load
+    var found = false;
+    for (var i = 0; i < startSel.options.length; i++) {
+        if (parseInt(startSel.options[i].value) === ch) { found = true; break; }
+    }
+    if (found) {
+        startSel.value = ch;
+        endSel.value   = ch;
+        loadInterlinear();
+    } else {
+        // Chapter might be in a different range — refresh chapter list then navigate
+        var book   = document.getElementById('il-book').value;
+        var corpus = document.getElementById('il-corpus').value;
+        refreshChapterSelects(book, corpus, ch, ch, function() { loadInterlinear(); });
+    }
 }
 
 function toggleTranslation() {
@@ -310,32 +317,73 @@ function exportCSV() {
                  exportFilename('csv'), 'text/csv;charset=utf-8');
 }
 
-var _initialBook = '{{ initial_book|e }}';
+var _initialBook   = '{{ initial_book|e }}';
+var _initialChFrom = {{ initial_ch_start|default(0)|int }};
+var _initialChTo   = {{ initial_ch_end|default(0)|int }};
 
-function refreshBookList(preserveBook) {
+// Populate FROM/TO chapter selects with actual chapters from the API.
+// preFrom / preTo: chapter numbers to pre-select; callback: called after DOM update.
+function refreshChapterSelects(book, corpus, preFrom, preTo, callback) {
+    var startSel = document.getElementById('il-ch-start');
+    var endSel   = document.getElementById('il-ch-end');
+    if (!book) {
+        startSel.innerHTML = '<option value="">Ch</option>';
+        endSel.innerHTML   = '<option value="">Ch</option>';
+        if (callback) callback();
+        return;
+    }
+    var url = '/api/chapters?book=' + encodeURIComponent(book)
+            + (corpus ? '&corpus=' + encodeURIComponent(corpus) : '');
+    fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var chs = data.chapters || [];
+            var buildOpts = function(sel, preVal) {
+                sel.innerHTML = '<option value="">Ch</option>';
+                chs.forEach(function(ch) {
+                    var opt = document.createElement('option');
+                    opt.value = ch;
+                    opt.textContent = 'Ch ' + ch;
+                    if (ch === preVal) opt.selected = true;
+                    sel.appendChild(opt);
+                });
+                // Default to first chapter if nothing pre-selected
+                if (!preVal && chs.length) sel.value = chs[0];
+            };
+            buildOpts(startSel, preFrom || chs[0]);
+            buildOpts(endSel,   preTo   || chs[0]);
+            if (callback) callback();
+        });
+}
+
+function refreshBookList(preserveBook, preserveChFrom, preserveChTo) {
     var corpus = document.getElementById('il-corpus').value;
     var url = '/api/books' + (corpus ? '?corpus=' + encodeURIComponent(corpus) : '');
     fetch(url)
-        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(r) { return r.json(); })
         .then(function(data) {
             var sel = document.getElementById('il-book');
-            var prevBook = preserveBook || '';
             sel.innerHTML = '<option value="">— select —</option>';
             (data.books || []).forEach(function(b) {
                 var opt = document.createElement('option');
                 opt.value = b.name;
                 opt.textContent = b.name;
-                if (b.name === prevBook) opt.selected = true;
+                if (b.name === preserveBook) opt.selected = true;
                 sel.appendChild(opt);
             });
-            if (!preserveBook) {
-                // Corpus changed by user — reset passage fields
-                document.getElementById('il-ch-start').value = '';
-                document.getElementById('il-ch-end').value = '';
-                _ilData = null;
-                document.getElementById('il-body').innerHTML = '';
-                document.getElementById('il-action-bar').style.display = 'none';
-                document.getElementById('il-nav').style.display = 'none';
+            // Populate chapters for the selected book
+            var chosenBook = preserveBook || '';
+            if (chosenBook) {
+                refreshChapterSelects(chosenBook, corpus, preserveChFrom, preserveChTo);
+            } else {
+                document.getElementById('il-ch-start').innerHTML = '<option value="">Ch</option>';
+                document.getElementById('il-ch-end').innerHTML   = '<option value="">Ch</option>';
+                if (!preserveBook) {
+                    _ilData = null;
+                    document.getElementById('il-body').innerHTML = '';
+                    document.getElementById('il-action-bar').style.display = 'none';
+                    document.getElementById('il-nav').style.display = 'none';
+                }
             }
         });
 }
@@ -344,8 +392,17 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('il-corpus').addEventListener('change', function() {
         refreshBookList(null);
     });
-    // On initial load, populate books for the current corpus and restore any URL-linked book
-    refreshBookList(_initialBook);
+    document.getElementById('il-book').addEventListener('change', function() {
+        var book   = this.value;
+        var corpus = document.getElementById('il-corpus').value;
+        refreshChapterSelects(book, corpus, 0, 0);
+        _ilData = null;
+        document.getElementById('il-body').innerHTML = '';
+        document.getElementById('il-action-bar').style.display = 'none';
+        document.getElementById('il-nav').style.display = 'none';
+    });
+    // On initial load restore URL-linked book + chapters
+    refreshBookList(_initialBook, _initialChFrom, _initialChTo);
 });
 
 function getCiteContext() {

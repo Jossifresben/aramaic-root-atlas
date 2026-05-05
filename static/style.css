@@ -897,13 +897,45 @@ h3.subhead{
 .modal-verse-syr{font-family:var(--syr);font-size:24px;direction:rtl;text-align:right;color:var(--ink);line-height:1.55;margin-bottom:6px}
 .modal-verse-trans{font-family:var(--serif);font-size:15px;color:var(--ink-2);font-style:italic;font-weight:300}
 
-/* — Word popover (reader) — */
-.word-pop{
-  position:absolute;z-index:200;
-  background:var(--surface);border:1px solid var(--rule);border-radius:6px;
-  padding:14px 16px;min-width:220px;max-width:320px;
-  box-shadow:var(--shadow-2);font-family:var(--sans);font-size:13px;
+/* — Word popover (reader, click on any word with root) — */
+.word-popover,.word-pop{
+  position:absolute;z-index:300;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:14px 16px;min-width:240px;max-width:340px;
+  box-shadow:0 6px 24px rgba(0,0,0,.13);
+  font-family:var(--sans);font-size:13px;
 }
+/* header row: Syriac root + translit + conf dot */
+.wp-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+}
+.wp-root{
+  font-family:var(--syr);font-size:1.6rem;color:var(--ink);direction:rtl;line-height:1.2;
+}
+.wp-translit{
+  font-family:var(--mono);font-size:.82rem;font-weight:600;color:var(--accent);
+  letter-spacing:.04em;flex:1;
+}
+.wp-gloss{
+  font-family:var(--serif);font-size:.92rem;font-style:italic;color:var(--ink-2);
+  margin-bottom:8px;line-height:1.4;
+}
+.wp-meta{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.wp-loading{
+  font-size:.78rem;color:var(--ink-3);font-style:italic;margin:6px 0;
+}
+.wp-morphemes{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;direction:rtl;justify-content:flex-start;
+}
+.wp-cognates-row{
+  font-family:var(--syr);font-size:.95rem;direction:rtl;text-align:right;
+  color:var(--ink-3);margin-bottom:8px;line-height:1.5;
+}
+.wp-actions{
+  display:flex;gap:12px;align-items:center;
+  padding-top:8px;border-top:1px solid var(--rule-soft);margin-top:4px;
+}
+/* Old selector aliases kept for compat */
 .word-pop-root{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent);letter-spacing:.04em;margin-bottom:6px}
 .word-pop-gloss{font-family:var(--serif);font-style:italic;color:var(--ink-2);margin-bottom:6px}
 .word-pop-conf{font-size:11px;color:var(--ink-3);display:flex;align-items:center;gap:6px}
@@ -1472,12 +1504,47 @@ h3.subhead{
 /* ── Reader root highlighting ──────────────────────────────── */
 .word-token.has-root{cursor:pointer;}
 .word-token.has-root.root-visible{
-  background:rgba(107,58,31,.13);
-  border-radius:3px;
-  outline:1px solid rgba(107,58,31,.25);
-  padding:1px 2px;
-  margin:0 1px;
+  border-bottom:2px dotted var(--accent);
+  padding-bottom:1px;
 }
+
+/* ── Reader: verse research note form ──────────────────────── */
+.verse-note-block{
+  margin-top:12px;margin-bottom:8px;
+  padding:12px 14px;
+  background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  max-width:680px;
+}
+.verse-note-ta{
+  width:100%;box-sizing:border-box;
+  border:1px solid var(--rule);border-radius:4px;
+  background:var(--bg);color:var(--ink);
+  font-family:var(--sans);font-size:.88rem;line-height:1.5;
+  padding:8px 10px;resize:vertical;min-height:72px;
+  outline:none;transition:border-color .15s;
+}
+.verse-note-ta:focus{border-color:var(--accent);}
+.verse-note-footer{
+  display:flex;align-items:center;gap:8px;margin-top:8px;
+}
+.verse-note-count{
+  font-family:var(--mono);font-size:.72rem;color:var(--ink-4);
+  flex:1;
+}
+.verse-note-save{
+  font-family:var(--sans);font-size:.82rem;font-weight:500;
+  padding:5px 14px;border-radius:4px;
+  background:var(--ink);color:var(--bg);border:1px solid var(--ink);
+  cursor:pointer;transition:background .12s;
+}
+.verse-note-save:hover{background:var(--accent);border-color:var(--accent);}
+.verse-note-cancel{
+  font-family:var(--sans);font-size:.82rem;
+  padding:5px 12px;border-radius:4px;
+  background:transparent;color:var(--ink-2);border:1px solid var(--rule);
+  cursor:pointer;transition:border-color .12s;
+}
+.verse-note-cancel:hover{border-color:var(--ink-3);color:var(--ink);}
 
 /* ── Bookmarks page ────────────────────────────────────────── */
 .storage-warning{

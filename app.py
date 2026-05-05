@@ -324,6 +324,17 @@ def api_books():
     })
 
 
+@app.route('/api/chapters')
+def api_chapters():
+    """Return sorted list of chapter numbers that have verses for a given book+corpus."""
+    book          = request.args.get('book', '').strip()
+    corpus_filter = request.args.get('corpus', None) or None
+    if not book:
+        return jsonify({'chapters': [], 'book': book, 'corpus': corpus_filter})
+    chapters = _corpus.get_chapters(book, corpus_filter)
+    return jsonify({'chapters': chapters, 'book': book, 'corpus': corpus_filter})
+
+
 @app.route('/api/chapter/<path:book>/<int:chapter>')
 def api_chapter(book, chapter):
     """Return all verses in a chapter.
