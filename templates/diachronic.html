@@ -3,7 +3,7 @@
 {% block title %}Diachronic — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b id="diac-crumb">Diachronic</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b id="diac-crumb">{{ t('nav_diachronic', lang) if t else 'Diachronic' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -14,19 +14,19 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <h1 class="ph-title"><em>Diachronic</em> analysis</h1>
-    <p class="ph-sub">Trace a root's distribution across periods and corpora. Frequencies normalised per 1,000 words.</p>
+    <h1 class="ph-title"><em>{{ t('nav_diachronic', lang) if t else 'Diachronic' }}</em> {{ t('diachronic_title', lang) if t else 'analysis' }}</h1>
+    <p class="ph-sub">{{ t('diac_subtitle', lang) if t else 'Trace a root\'s distribution across periods and corpora. Frequencies normalised per 1,000 words.' }}</p>
   </div>
   <div class="ph-actions">
-    <button class="btn secondary" onclick="openCiteModal(getCiteContext())">Cite</button>
-    <button class="btn secondary" onclick="exportDiachronicCSV()">Export CSV</button>
+    <button class="btn secondary" onclick="openCiteModal(getCiteContext())">{{ t('read_cite', lang) if t else 'Cite' }}</button>
+    <button class="btn secondary" onclick="exportDiachronicCSV()">{{ t('diachronic_export', lang) if t else 'Export CSV' }}</button>
   </div>
 </div>
 
 <!-- Sub-view tabs -->
 <div class="subnav" style="margin:0 0 24px" data-tabs="diac">
-  <button class="tab active" data-tab="root" onclick="switchTab('diac','root')"><span class="ec">A</span>Root view</button>
-  <button class="tab" data-tab="shifts" onclick="switchTab('diac','shifts')"><span class="ec">B</span>Frequency shifts</button>
+  <button class="tab active" data-tab="root" onclick="switchTab('diac','root')"><span class="ec">A</span>{{ t('diac_tab_root', lang) if t else 'Root view' }}</button>
+  <button class="tab" data-tab="shifts" onclick="switchTab('diac','shifts')"><span class="ec">B</span>{{ t('diac_tab_shifts', lang) if t else 'Frequency shifts' }}</button>
 </div>
 
 <div data-panes="diac">
@@ -36,25 +36,25 @@
   <!-- Root input -->
   <div style="display:flex;gap:14px;align-items:end;padding:8px 0 28px">
     <div class="s-field" style="max-width:280px;flex:1">
-      <label class="s-label">Triliteral root</label>
+      <label class="s-label">{{ t('diac_triliteral_root', lang) if t else 'Triliteral root' }}</label>
       <div class="autocomplete-wrap">
         <input class="s-input" id="diac-root-input" value="{{ initial_root|default('') }}" placeholder="e.g. SH-L-M" autocomplete="off">
         <div id="diac-ac-list" class="autocomplete-list"></div>
       </div>
     </div>
     <div class="s-field">
-      <label class="s-label">Normalisation</label>
+      <label class="s-label">{{ t('diac_normalisation', lang) if t else 'Normalisation' }}</label>
       <select class="s-select" id="diac-norm">
-        <option value="per_1k">Per 1,000 words</option>
-        <option value="raw">Raw count</option>
+        <option value="per_1k">{{ t('diac_per_1k', lang) if t else 'Per 1,000 words' }}</option>
+        <option value="raw">{{ t('diac_raw', lang) if t else 'Raw count' }}</option>
       </select>
     </div>
-    <button class="btn" onclick="loadRootView()">Analyse</button>
+    <button class="btn" onclick="loadRootView()">{{ t('diac_analyse', lang) if t else 'Analyse' }}</button>
   </div>
 
   <!-- Loading/empty states -->
-  <div id="diac-root-loading" style="display:none;text-align:center;padding:48px 0;color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</div>
-  <div id="diac-root-empty" style="text-align:center;padding:3rem;color:var(--ink-3);font-family:var(--serif);font-style:italic">Enter a root to view its usage across time.</div>
+  <div id="diac-root-loading" style="display:none;text-align:center;padding:48px 0;color:var(--ink-3);font-family:var(--serif);font-style:italic">{{ t('loading', lang) if t else 'Loading…' }}</div>
+  <div id="diac-root-empty" style="text-align:center;padding:3rem;color:var(--ink-3);font-family:var(--serif);font-style:italic">{{ t('diachronic_enter_root', lang) if t else 'Enter a root to view its usage across time.' }}</div>
 
   <!-- Results (hidden until loaded) -->
   <div id="diac-root-results" style="display:none">
@@ -72,22 +72,22 @@
     <p class="gloss" id="diac-gloss"></p>
 
     <!-- Distribution chart (populated by JS with .dia-row elements) -->
-    <h2 class="section" style="margin-top:36px">Distribution by corpus</h2>
+    <h2 class="section" style="margin-top:36px">{{ t('diac_dist_by_corpus', lang) if t else 'Distribution by corpus' }}</h2>
     <div id="diac-dist-bars"></div>
 
     <!-- Detail table -->
-    <h2 class="section" style="margin-top:48px">Attestations &amp; representative forms</h2>
+    <h2 class="section" style="margin-top:48px">{{ t('diac_attestations_forms', lang) if t else 'Attestations &amp; representative forms' }}</h2>
     <table class="dtable" id="diac-detail-table">
       <thead><tr>
-        <th>Corpus</th><th>Period</th>
-        <th class="num">Occurrences</th><th class="num">Per 1k words</th>
-        <th>Representative forms</th>
+        <th>{{ t('diac_col_corpus', lang) if t else 'Corpus' }}</th><th>{{ t('diac_col_period', lang) if t else 'Period' }}</th>
+        <th class="num">{{ t('diac_col_occurrences', lang) if t else 'Occurrences' }}</th><th class="num">{{ t('diac_col_per_1k', lang) if t else 'Per 1k words' }}</th>
+        <th>{{ t('diac_col_forms', lang) if t else 'Representative forms' }}</th>
       </tr></thead>
       <tbody id="diac-detail-tbody"></tbody>
     </table>
 
     <!-- Timeline histogram -->
-    <h2 class="section" style="margin-top:48px">Frequency over time</h2>
+    <h2 class="section" style="margin-top:48px">{{ t('diac_freq_over_time', lang) if t else 'Frequency over time' }}</h2>
     <div class="timeline" id="diac-timeline"></div>
   </div>
 </div>
@@ -97,21 +97,21 @@
   <!-- Shifts controls -->
   <div style="display:flex;gap:14px;align-items:end;padding:8px 0 28px">
     <div class="s-field">
-      <label class="s-label">Direction</label>
+      <label class="s-label">{{ t('diac_direction_label', lang) if t else 'Direction' }}</label>
       <select class="s-select" id="shifts-direction">
-        <option value="all">All</option>
-        <option value="emerging">Emerging</option>
-        <option value="declining">Declining</option>
+        <option value="all">{{ t('diachronic_direction_all', lang) if t else 'All' }}</option>
+        <option value="emerging">{{ t('diachronic_emerging', lang) if t else 'Emerging' }}</option>
+        <option value="declining">{{ t('diachronic_declining', lang) if t else 'Declining' }}</option>
       </select>
     </div>
     <div class="s-field">
-      <label class="s-label">Min occurrences</label>
+      <label class="s-label">{{ t('diac_min_occ_label', lang) if t else 'Min occurrences' }}</label>
       <input class="s-input" type="number" id="shifts-min-occ" value="3" min="1" max="100" style="width:80px">
     </div>
-    <button class="btn" onclick="loadShifts()">Load shifts</button>
+    <button class="btn" onclick="loadShifts()">{{ t('diac_load_shifts', lang) if t else 'Load shifts' }}</button>
   </div>
-  <div id="diac-shifts-loading" style="display:none;text-align:center;padding:48px 0;color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</div>
-  <div id="diac-shifts-empty" style="text-align:center;padding:3rem;color:var(--ink-3);font-family:var(--serif);font-style:italic">Click "Load shifts" to see frequency changes across corpora.</div>
+  <div id="diac-shifts-loading" style="display:none;text-align:center;padding:48px 0;color:var(--ink-3);font-family:var(--serif);font-style:italic">{{ t('loading', lang) if t else 'Loading…' }}</div>
+  <div id="diac-shifts-empty" style="text-align:center;padding:3rem;color:var(--ink-3);font-family:var(--serif);font-style:italic">{{ t('diachronic_no_shifts', lang) if t else 'Click "Load shifts" to see frequency changes across corpora.' }}</div>
   <div id="diac-shifts-results"></div>
 </div>
 

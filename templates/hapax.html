@@ -3,7 +3,7 @@
 {% block title %}{{ t('hapax_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b>Hapax legomena</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('nav_hapax', lang) if t else 'Hapax legomena' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -20,7 +20,7 @@
   <div class="ph-actions">
     <button class="btn secondary" onclick="exportHapax('csv')">{{ t('hapax_export_csv', lang) }}</button>
     <button class="btn secondary" onclick="exportHapax('json')">{{ t('hapax_export_json', lang) }}</button>
-    <button class="btn secondary" onclick="openCiteModal(getCiteContext())">Cite</button>
+    <button class="btn secondary" onclick="openCiteModal(getCiteContext())">{{ t('read_cite', lang) if t else 'Cite' }}</button>
   </div>
 </div>
 
@@ -34,28 +34,28 @@
     </div>
   </div>
   <div class="s-field">
-    <label class="s-label">Corpus</label>
+    <label class="s-label">{{ t('hapax_corpus_label', lang) if t else 'Corpus' }}</label>
     <select class="s-select" id="corpus-filter">
       <option value="">{{ t('hapax_all_corpora', lang) }}</option>
-      <option value="biblical_aramaic">Biblical Aramaic</option>
-      <option value="targum_onkelos">Targum Onkelos</option>
-      <option value="peshitta_nt">Peshitta NT</option>
-      <option value="peshitta_ot">Peshitta OT</option>
-      <option value="ephrem_nisibis">Ephrem — Nisibis</option>
+      <option value="biblical_aramaic">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</option>
+      <option value="targum_onkelos">{{ t('corpus_targum_onkelos', lang) if t else 'Targum Onkelos' }}</option>
+      <option value="peshitta_nt">{{ t('corpus_peshitta_nt', lang) if t else 'Peshitta NT' }}</option>
+      <option value="peshitta_ot">{{ t('corpus_peshitta_ot', lang) if t else 'Peshitta OT' }}</option>
+      <option value="ephrem_nisibis">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</option>
     </select>
   </div>
   <div class="s-field">
-    <label class="s-label">Scope</label>
+    <label class="s-label">{{ t('hapax_scope_label', lang) if t else 'Scope' }}</label>
     <select class="s-select" id="scope-filter">
       <option value="root">{{ t('hapax_scope_root', lang) }}</option>
       <option value="form">{{ t('hapax_scope_form', lang) }}</option>
     </select>
   </div>
   <div class="s-field">
-    <label class="s-label">Sort</label>
+    <label class="s-label">{{ t('hapax_sort_label', lang) if t else 'Sort' }}</label>
     <select class="s-select" id="sort-filter">
-      <option value="alpha">A–Z</option>
-      <option value="confidence">Confidence</option>
+      <option value="alpha">{{ t('hapax_sort_alpha', lang) if t else 'A–Z' }}</option>
+      <option value="confidence">{{ t('hapax_sort_confidence', lang) if t else 'Confidence' }}</option>
     </select>
   </div>
 </div>
@@ -73,14 +73,14 @@
   <table class="dtable" id="hapax-table" style="display:none;">
     <thead>
       <tr>
-        <th>Root</th>
-        <th>Translit</th>
-        <th>Gloss</th>
-        <th>Form</th>
-        <th style="text-align:center;">Count</th>
-        <th>Reference</th>
-        <th>Corpus</th>
-        <th style="text-align:center;">Confidence</th>
+        <th>{{ t('hapax_col_root', lang) if t else 'Root' }}</th>
+        <th>{{ t('hapax_col_translit', lang) if t else 'Translit' }}</th>
+        <th>{{ t('hapax_col_gloss', lang) if t else 'Gloss' }}</th>
+        <th>{{ t('hapax_col_form', lang) if t else 'Form' }}</th>
+        <th style="text-align:center;">{{ t('hapax_col_count', lang) if t else 'Count' }}</th>
+        <th>{{ t('hapax_col_ref', lang) if t else 'Reference' }}</th>
+        <th>{{ t('hapax_col_corpus', lang) if t else 'Corpus' }}</th>
+        <th style="text-align:center;">{{ t('hapax_col_confidence', lang) if t else 'Confidence' }}</th>
       </tr>
     </thead>
     <tbody id="hapax-tbody"></tbody>

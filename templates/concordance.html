@@ -3,7 +3,7 @@
 {% block title %}Concordance — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b id="crumb-root">Concordance</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b id="crumb-root">{{ t('nav_concordance', lang) if t else 'Concordance' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-root-input" placeholder="Root — K-TH-B"><span class="kbd">⌘K</span>
@@ -13,45 +13,45 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <h1 class="ph-title">KWIC <em>concordance</em></h1>
-    <p class="ph-sub">Keyword-in-context across all five corpora. Enter a triliteral root below.</p>
+    <h1 class="ph-title">KWIC <em>{{ t('nav_concordance', lang) if t else 'concordance' }}</em></h1>
+    <p class="ph-sub">{{ t('conc_subtitle', lang) if t else 'Keyword-in-context across all five corpora. Enter a triliteral root below.' }}</p>
   </div>
   <div class="ph-actions">
-    <button class="btn secondary" onclick="openCiteModal(getCiteContext())" title="Cite">Cite</button>
-    <button class="btn secondary" onclick="exportConc('csv')">Export CSV</button>
-    <button class="btn secondary" onclick="exportConc('json')">Export JSON</button>
-    <button class="btn secondary" onclick="exportConc('text')">Export Text</button>
-    <button class="btn secondary" id="conc-tei-btn" style="display:none" onclick="exportConc('tei')">Export TEI</button>
+    <button class="btn secondary" onclick="openCiteModal(getCiteContext())" title="Cite">{{ t('read_cite', lang) if t else 'Cite' }}</button>
+    <button class="btn secondary" onclick="exportConc('csv')">{{ t('concordance_export_csv', lang) if t else 'Export CSV' }}</button>
+    <button class="btn secondary" onclick="exportConc('json')">{{ t('conc_export_json', lang) if t else 'Export JSON' }}</button>
+    <button class="btn secondary" onclick="exportConc('text')">{{ t('conc_export_text', lang) if t else 'Export Text' }}</button>
+    <button class="btn secondary" id="conc-tei-btn" style="display:none" onclick="exportConc('tei')">{{ t('concordance_export_tei', lang) if t else 'Export TEI' }}</button>
   </div>
 </div>
 
 <!-- Root input row -->
 <div style="display:flex;gap:14px;align-items:end;padding:8px 0 28px;flex-wrap:wrap">
   <div class="s-field" style="max-width:280px;flex:1">
-    <label class="s-label">Triliteral root</label>
+    <label class="s-label">{{ t('conc_triliteral_root', lang) if t else 'Triliteral root' }}</label>
     <div class="autocomplete-wrap">
       <input class="s-input" id="conc-root-input" value="{{ initial_root }}" placeholder="K-TH-B,  SH-L-M,  Q-D-SH" autocomplete="off">
       <div id="conc-ac-list" class="autocomplete-list"></div>
     </div>
   </div>
   <div class="s-field">
-    <label class="s-label">Sort</label>
+    <label class="s-label">{{ t('conc_sort_label', lang) if t else 'Sort' }}</label>
     <select class="s-select" id="conc-sort">
-      <option value="book">Book order</option>
-      <option value="frequency">By frequency</option>
-      <option value="form">By form</option>
+      <option value="book">{{ t('conc_sort_book', lang) if t else 'Book order' }}</option>
+      <option value="frequency">{{ t('conc_sort_freq', lang) if t else 'By frequency' }}</option>
+      <option value="form">{{ t('conc_sort_form', lang) if t else 'By form' }}</option>
     </select>
   </div>
   <div class="s-field">
-    <label class="s-label">Group by</label>
+    <label class="s-label">{{ t('conc_group_label', lang) if t else 'Group by' }}</label>
     <select class="s-select" id="conc-group">
-      <option value="none">None</option>
-      <option value="form">By form</option>
-      <option value="stem">By stem</option>
+      <option value="none">{{ t('conc_group_none', lang) if t else 'None' }}</option>
+      <option value="form">{{ t('conc_group_form', lang) if t else 'By form' }}</option>
+      <option value="stem">{{ t('conc_group_stem', lang) if t else 'By stem' }}</option>
     </select>
   </div>
   <div class="s-field">
-    <label class="s-label">Context: <span id="conc-ctx-val">5</span> words</label>
+    <label class="s-label">{{ t('conc_context_label', lang) if t else 'Context:' }} <span id="conc-ctx-val">5</span> {{ t('conc_context_words', lang) if t else 'words' }}</label>
     <input type="range" id="conc-ctx" min="2" max="12" value="5" style="width:100px">
   </div>
   <button class="btn" onclick="loadConcordance()">Search
@@ -76,25 +76,25 @@
 
     <!-- Stat strip -->
     <div class="entry-stats" id="entry-stats" style="display:none">
-      <div class="estat"><div class="estat-num" id="stat-total">—</div><div class="estat-label">Attestations</div></div>
-      <div class="estat"><div class="estat-num" id="stat-forms">—</div><div class="estat-label">Distinct forms</div></div>
-      <div class="estat"><div class="estat-num" id="stat-corpora">—</div><div class="estat-label">Corpora</div></div>
-      <div class="estat"><div class="estat-num" id="stat-rate">—</div><div class="estat-label">Per 1k words</div></div>
+      <div class="estat"><div class="estat-num" id="stat-total">—</div><div class="estat-label">{{ t('conc_attestations', lang) if t else 'Attestations' }}</div></div>
+      <div class="estat"><div class="estat-num" id="stat-forms">—</div><div class="estat-label">{{ t('conc_distinct_forms', lang) if t else 'Distinct forms' }}</div></div>
+      <div class="estat"><div class="estat-num" id="stat-corpora">—</div><div class="estat-label">{{ t('conc_corpora', lang) if t else 'Corpora' }}</div></div>
+      <div class="estat"><div class="estat-num" id="stat-rate">—</div><div class="estat-label">{{ t('conc_per_1k', lang) if t else 'Per 1k words' }}</div></div>
     </div>
 
     <!-- Corpus chips -->
     <div class="filter-row" id="conc-filters" style="display:none;margin-bottom:8px">
-      <span class="fl">Corpora</span>
-      <button class="chip on" data-c="pnt" onclick="toggleChip(this);reloadConc()">Peshitta NT</button>
-      <button class="chip on" data-c="pot" onclick="toggleChip(this);reloadConc()">Peshitta OT</button>
-      <button class="chip on" data-c="bib" onclick="toggleChip(this);reloadConc()">Biblical Aramaic</button>
-      <button class="chip on" data-c="tar" onclick="toggleChip(this);reloadConc()">Targum Onkelos</button>
-      <button class="chip on" data-c="eph" onclick="toggleChip(this);reloadConc()">Ephrem Nisibis</button>
+      <span class="fl">{{ t('conc_corpora', lang) if t else 'Corpora' }}</span>
+      <button class="chip on" data-c="pnt" onclick="toggleChip(this);reloadConc()">{{ t('corpus_peshitta_nt', lang) if t else 'Peshitta NT' }}</button>
+      <button class="chip on" data-c="pot" onclick="toggleChip(this);reloadConc()">{{ t('corpus_peshitta_ot', lang) if t else 'Peshitta OT' }}</button>
+      <button class="chip on" data-c="bib" onclick="toggleChip(this);reloadConc()">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</button>
+      <button class="chip on" data-c="tar" onclick="toggleChip(this);reloadConc()">{{ t('corpus_targum_onkelos', lang) if t else 'Targum Onkelos' }}</button>
+      <button class="chip on" data-c="eph" onclick="toggleChip(this);reloadConc()">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</button>
     </div>
 
     <!-- Loading / empty states -->
-    <div id="conc-loading" style="display:none;text-align:center;padding:48px 0;color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</div>
-    <div id="conc-empty" style="font-family:var(--serif);font-style:italic;color:var(--ink-3);padding:48px 0;text-align:center">Enter a root above to begin</div>
+    <div id="conc-loading" style="display:none;text-align:center;padding:48px 0;color:var(--ink-3);font-family:var(--serif);font-style:italic">{{ t('loading', lang) if t else 'Loading…' }}</div>
+    <div id="conc-empty" style="font-family:var(--serif);font-style:italic;color:var(--ink-3);padding:48px 0;text-align:center">{{ t('conc_enter_root', lang) if t else 'Enter a root above to begin' }}</div>
 
     <!-- Hidden #conc-summary for JS compatibility -->
     <div id="conc-summary" style="display:none"></div>
@@ -103,11 +103,11 @@
     <table class="kwic-table" id="kwic-table" style="display:none">
       <thead>
         <tr>
-          <th class="left" style="text-align:left;font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">Left context</th>
-          <th style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;text-align:center;">Keyword</th>
-          <th class="right" style="text-align:right;font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">Right context</th>
-          <th class="ref" style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">Ref</th>
-          <th style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">Corpus / Stem</th>
+          <th class="left" style="text-align:left;font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">{{ t('conc_col_left', lang) if t else 'Left context' }}</th>
+          <th style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;text-align:center;">{{ t('conc_col_keyword', lang) if t else 'Keyword' }}</th>
+          <th class="right" style="text-align:right;font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">{{ t('conc_col_right', lang) if t else 'Right context' }}</th>
+          <th class="ref" style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">{{ t('conc_col_ref', lang) if t else 'Ref' }}</th>
+          <th style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">{{ t('conc_col_corpus_stem', lang) if t else 'Corpus / Stem' }}</th>
         </tr>
       </thead>
       <tbody id="kwic-tbody"></tbody>
