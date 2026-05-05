@@ -1510,10 +1510,10 @@ h3.subhead{
 
 /* ── Reader: verse research note form ──────────────────────── */
 .verse-note-block{
-  margin-top:12px;margin-bottom:8px;
+  grid-column: 1 / -1;          /* span all 3 columns of .verse grid */
+  margin-top:4px;margin-bottom:4px;
   padding:12px 14px;
   background:var(--surface);border:1px solid var(--rule);border-radius:6px;
-  max-width:680px;
 }
 .verse-note-ta{
   width:100%;box-sizing:border-box;
