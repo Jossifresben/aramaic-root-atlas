@@ -2235,9 +2235,16 @@ def api_diachronic_root():
             'stem_distribution': corpus_stems.get(cid, {}),
         })
 
+    root_entry2 = _extractor.lookup_root(root_syriac)
+    root_hebrew = ''
+    if root_entry2 and hasattr(root_entry2, 'root_hebrew'):
+        root_hebrew = root_entry2.root_hebrew or ''
+
     return jsonify({
         'root': root_syriac,
+        'root_syriac': root_syriac,
         'root_translit': _root_translit(root_syriac, script),
+        'root_hebrew': root_hebrew,
         'gloss': gloss,
         'corpora': data,
     })
@@ -2686,7 +2693,7 @@ def passage_profile_page():
                            initial_book=initial_book,
                            initial_ch_start=initial_ch_start,
                            initial_ch_end=initial_ch_end,
-                           page_id='passage_profile')
+                           page_id='passage-profile')
 
 
 @app.route('/collocations')
@@ -2811,8 +2818,8 @@ def semantic_fields_page():
     lang = _get_lang()
     has_data = bool(_semantic_fields)
     return render_template('semantic_fields.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang),
-                           has_data=has_data, page_id='semantic_fields')
+                           has_data=has_data, page_id='semantic-fields')
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5002)
