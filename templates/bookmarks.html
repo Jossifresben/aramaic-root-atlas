@@ -4,7 +4,7 @@
 {% block title %}{{ t('bookmarks_title', lang) if t else 'Bookmarks' }} — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b>Bookmarks</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -46,9 +46,9 @@
         </div>
 
         <div class="bm-tag-filter" id="tag-filter-bar" style="display:none">
-            <span class="bm-tag-label">Filter by tag:</span>
+            <span class="bm-tag-label">{{ t('bm_filter_by_tag', lang) if t else 'Filter by tag:' }}</span>
             <span id="tag-chips"></span>
-            <button class="bm-tag-clear" onclick="clearTagFilter()">Show all</button>
+            <button class="bm-tag-clear" onclick="clearTagFilter()">{{ t('bm_show_all', lang) if t else 'Show all' }}</button>
         </div>
 
         <div class="bookmarks-panel" id="bm-verses-panel">
@@ -70,6 +70,12 @@
 <script>
 var currentLang = '{{ lang }}';
 var bookNames = {{ book_names_json|safe }};
+var _BM_I18N = {
+    notePlaceholder: '{{ t("bm_note_placeholder", lang) if t else "Add a note… (saves on blur)" }}',
+    tagsPlaceholder: '{{ t("bm_tags_placeholder", lang) if t else "Tags, comma-separated (saves on blur)" }}',
+    citeBtn:         '{{ t("bm_cite_btn", lang) if t else "Cite" }}',
+    savedCheck:      '{{ t("bookmarks_saved", lang) if t else "Saved ✓" }}'
+};
 
 // Storage warning
 function dismissStorageWarning() {
@@ -113,10 +119,10 @@ function renderBookmarks() {
         if (v.syriac) vh += '<div class="bm-syriac syriac" dir="rtl">' + escHtml(v.syriac) + '</div>';
         if (v.translation) vh += '<div class="bm-translation">' + escHtml(v.translation) + '</div>';
         var vTags = (v.tags || []).map(escHtml).join(', ');
-        vh += '<div class="bm-note-input"><input type="text" placeholder="Add a note… (saves on blur)" value="' + escHtml(v.note || '') + '" onchange="updateNote(\'verses\',' + i + ',this.value,this)"><span class="bm-save-feedback">Saved ✓</span></div>';
-        vh += '<div class="bm-tags-input"><input type="text" placeholder="Tags, comma-separated (saves on blur)" value="' + escHtml(vTags) + '" onchange="updateTags(\'verses\',' + i + ',this.value,this)"><span class="bm-save-feedback">Saved ✓</span></div>';
+        vh += '<div class="bm-note-input"><input type="text" placeholder="' + _BM_I18N.notePlaceholder + '" value="' + escHtml(v.note || '') + '" onchange="updateNote(\'verses\',' + i + ',this.value,this)"><span class="bm-save-feedback">' + _BM_I18N.savedCheck + '</span></div>';
+        vh += '<div class="bm-tags-input"><input type="text" placeholder="' + _BM_I18N.tagsPlaceholder + '" value="' + escHtml(vTags) + '" onchange="updateTags(\'verses\',' + i + ',this.value,this)"><span class="bm-save-feedback">' + _BM_I18N.savedCheck + '</span></div>';
         vh += '<div class="bm-card-actions">';
-        vh += '<button class="btn secondary" onclick="copyCitation(\'verse\',' + i + ')" title="Copy citation">Cite</button>';
+        vh += '<button class="btn secondary" onclick="copyCitation(\'verse\',' + i + ')" title="Copy citation">' + _BM_I18N.citeBtn + '</button>';
         vh += '</div>';
         if (v.tags && v.tags.length) { vh += '<div class="bm-tag-chips">'; v.tags.forEach(function(t) { vh += '<span class="bm-chip" onclick="filterByTag(\'' + escHtml(t) + '\')">' + escHtml(t) + '</span>'; }); vh += '</div>'; }
         vh += '</div>';
@@ -137,10 +143,10 @@ function renderBookmarks() {
         rh += '<button class="bm-remove" onclick="removeBookmark(\'roots\',' + i + ')" title="Remove">&times;</button>';
         rh += '</div>';
         var rTags = (r.tags || []).map(escHtml).join(', ');
-        rh += '<div class="bm-note-input"><input type="text" placeholder="Add a note… (saves on blur)" value="' + escHtml(r.note || '') + '" onchange="updateNote(\'roots\',' + i + ',this.value,this)"><span class="bm-save-feedback">Saved ✓</span></div>';
-        rh += '<div class="bm-tags-input"><input type="text" placeholder="Tags, comma-separated (saves on blur)" value="' + escHtml(rTags) + '" onchange="updateTags(\'roots\',' + i + ',this.value,this)"><span class="bm-save-feedback">Saved ✓</span></div>';
+        rh += '<div class="bm-note-input"><input type="text" placeholder="' + _BM_I18N.notePlaceholder + '" value="' + escHtml(r.note || '') + '" onchange="updateNote(\'roots\',' + i + ',this.value,this)"><span class="bm-save-feedback">' + _BM_I18N.savedCheck + '</span></div>';
+        rh += '<div class="bm-tags-input"><input type="text" placeholder="' + _BM_I18N.tagsPlaceholder + '" value="' + escHtml(rTags) + '" onchange="updateTags(\'roots\',' + i + ',this.value,this)"><span class="bm-save-feedback">' + _BM_I18N.savedCheck + '</span></div>';
         rh += '<div class="bm-card-actions">';
-        rh += '<button class="btn secondary" onclick="copyCitation(\'root\',' + i + ')" title="Copy citation">Cite</button>';
+        rh += '<button class="btn secondary" onclick="copyCitation(\'root\',' + i + ')" title="Copy citation">' + _BM_I18N.citeBtn + '</button>';
         rh += '</div>';
         if (r.tags && r.tags.length) { rh += '<div class="bm-tag-chips">'; r.tags.forEach(function(t) { rh += '<span class="bm-chip" onclick="filterByTag(\'' + escHtml(t) + '\')">' + escHtml(t) + '</span>'; }); rh += '</div>'; }
         rh += '</div>';

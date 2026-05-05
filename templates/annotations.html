@@ -4,7 +4,7 @@
 {% block title %}{{ t('ann_page_title', lang) if t else 'Research Notes' }} — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b>Research Notes</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('ann_page_title', lang) if t else 'Research Notes' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -31,7 +31,7 @@
         <button class="bm-action-btn" onclick="exportAnnMarkdown()">Markdown</button>
         <div id="tag-filter-chips" style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-left:0.5rem"></div>
         <button id="tag-clear-btn" class="bm-tag-clear" onclick="clearAnnTagFilter()" style="display:none">
-            {{ t('ann_filter_tag', lang) if t else 'Show all' }}
+            {{ t('ann_show_all', lang) if t else 'Show all' }}
         </button>
     </div>
 

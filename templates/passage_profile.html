@@ -3,7 +3,7 @@
 {% block title %}{{ t('pp_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('pp_title', lang) if t else 'Passage Profile' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -56,7 +56,7 @@
         <p style="color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</p>
     </div>
     <div id="pp-empty" style="text-align:center;padding:3rem;color:var(--ink-3);font-style:italic;font-family:var(--serif);">
-        Select a book and chapter range above, then click Analyze.
+        {{ t('pp_empty_state', lang) if t else 'Select a book and chapter range above, then click Analyze.' }}
     </div>
 
     <!-- Results -->
@@ -132,14 +132,14 @@
 
         <!-- Export buttons -->
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-            <button class="btn secondary" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">Cite</button>
+            <button class="btn secondary" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">{{ t('read_cite', lang) if t else 'Cite' }}</button>
             <button onclick="exportJSON()"
                     style="padding:.4rem .9rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);cursor:pointer;font-size:.85rem;">
-                Export JSON
+                {{ t('pp_export_json', lang) if t else 'Export JSON' }}
             </button>
             <button onclick="exportCSV()"
                     style="padding:.4rem .9rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);cursor:pointer;font-size:.85rem;">
-                Export CSV
+                {{ t('pp_export_csv', lang) if t else 'Export CSV' }}
             </button>
         </div>
     </div>
