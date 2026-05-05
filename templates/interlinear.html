@@ -89,10 +89,6 @@
       <button class="btn secondary" onclick="exportTXT()">{{ t('il_export_txt', lang) }}</button>
       <button class="btn secondary" onclick="exportCSV()">{{ t('il_export_csv', lang) }}</button>
       <button class="btn secondary" onclick="openCiteModal(getCiteContext())">Cite</button>
-      <label class="il-translation-toggle">
-        <input type="checkbox" id="il-show-trans" checked onchange="toggleTranslation()">
-        {{ t('il_translation_toggle', lang) }}
-      </label>
     </div>
   </div>
 
@@ -159,7 +155,7 @@ function escHtml(s) {
 }
 
 function renderInterlinear(data, book, chStart, chEnd, script) {
-    var showTrans = document.getElementById('il-show-trans').checked;
+    var showTrans = true;
     var rtlScript = (script === 'hebrew' || script === 'arabic');
     var html = '';
 
@@ -236,12 +232,6 @@ function jumpChapter(ch) {
     }
 }
 
-function toggleTranslation() {
-    var show = document.getElementById('il-show-trans').checked;
-    document.querySelectorAll('.il-trans').forEach(function(el) {
-        el.classList.toggle('il-trans-hidden', !show);
-    });
-}
 
 function downloadBlob(content, filename, mime) {
     var blob = new Blob([content], { type: mime });
