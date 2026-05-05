@@ -368,6 +368,9 @@ h3.subhead{
 .btn.secondary:hover{background:var(--bg-2);border-color:var(--ink-3);color:var(--ink)}
 .btn.ghost{background:transparent;border:0;color:var(--ink-3)}
 .btn.ghost:hover{color:var(--ink);background:var(--bg-2)}
+/* Inline word/root action link (e.g. "Visualize", "Parse") */
+.wp-link{color:var(--accent);font-size:.78rem;font-weight:500;text-decoration:none;border-bottom:1px solid transparent}
+.wp-link:hover{border-bottom-color:var(--accent)}
 
 .s-foot{
   display:flex;justify-content:space-between;align-items:center;

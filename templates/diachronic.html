@@ -98,7 +98,7 @@
     <div class="s-field">
       <label class="s-label">Direction</label>
       <select class="s-select" id="shifts-direction">
-        <option value="">All</option>
+        <option value="all">All</option>
         <option value="emerging">Emerging</option>
         <option value="declining">Declining</option>
       </select>
@@ -151,7 +151,7 @@
         document.getElementById('diac-root-empty').style.display = 'none';
 
         fetch('/api/diachronic/root?root=' + encodeURIComponent(root) + '&lang=' + LANG + '&trans=' + TRANS + '&script=' + SCRIPT)
-            .then(function(r) { return r.json(); })
+            .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
             .then(function(data) {
                 document.getElementById('diac-root-loading').style.display = 'none';
                 if (data.error) {
@@ -294,8 +294,9 @@
         document.getElementById('diac-shifts-results').innerHTML = '';
         document.getElementById('diac-shifts-empty').style.display = 'none';
 
-        fetch('/api/diachronic/shifts?direction=' + encodeURIComponent(dir) + '&min_occurrences=' + minOcc + '&limit=100&lang=' + LANG + '&trans=' + TRANS + '&script=' + SCRIPT)
-            .then(function(r) { return r.json(); })
+        var safeMinOcc = parseInt(minOcc, 10) || 3;
+        fetch('/api/diachronic/shifts?direction=' + encodeURIComponent(dir) + '&min_occurrences=' + safeMinOcc + '&limit=100&lang=' + LANG + '&trans=' + TRANS + '&script=' + SCRIPT)
+            .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
             .then(function(data) {
                 document.getElementById('diac-shifts-loading').style.display = 'none';
                 currentShifts = data.results || [];
@@ -360,7 +361,7 @@
                         '</td>' +
                         '<td style="font-style:italic;font-size:.82rem;">' + escHtml(row.gloss||'') + '</td>' +
                         '<td style="text-align:center;">' + sparkSvg + '</td>' +
-                        '<td class="num" style="font-weight:600;">' + row.magnitude + '×</td>' +
+                        '<td class="num" style="font-weight:600;">' + escHtml(String(row.magnitude)) + '×</td>' +
                         '<td style="text-align:center;">' + dirBadge + '</td>';
                     tbody.appendChild(tr);
                 });
@@ -406,7 +407,7 @@
 
     function exportShiftsCSV() {
         if (!currentShifts.length) return;
-        var rows = [['Root','Gloss','BA freq','Targum freq','NT freq','OT freq','Magnitude','Direction']];
+        var rows = [['Root','Gloss','BA freq','Targum freq','NT freq','OT freq','Ephrem freq','Magnitude','Direction']];
         currentShifts.forEach(function(r) {
             rows.push([r.root_translit, r.gloss||''].concat(r.freqs||[]).concat([r.magnitude, r.direction]));
         });
@@ -419,7 +420,7 @@
     }
 
     // Auto-load if root passed from server
-    if ('{{ initial_root }}') {
+    if (document.getElementById('diac-root-input').value.trim()) {
         loadRootView();
     }
 })();
