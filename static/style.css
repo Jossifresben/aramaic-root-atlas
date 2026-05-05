@@ -508,6 +508,15 @@ h3.subhead{
   .content{padding:32px 22px 60px}
   h1.display{font-size:38px}
   .topbar .quick-search{display:none}
+  /* topbar: tighten padding and prevent crumb from overflowing */
+  .topbar{padding:10px 14px;gap:8px}
+  .topbar .crumb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  /* KWIC concordance table: relax fixed widths */
+  .kwic-table .left,.kwic-table .right{width:auto;font-size:14px}
+  .kwic-table .ref{width:80px;font-size:10px}
+  /* diachronic bar chart: collapse 4-col grid to 2-col, hide rate column */
+  .dia-row{grid-template-columns:1fr 60px;gap:8px}
+  .dia-row .dia-rate{display:none}
 }
 
 /* ═══════════════════════════════════════════════════════════════
