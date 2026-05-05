@@ -114,7 +114,7 @@ var _domainLabels = {
 };
 
 function loadDomains() {
-    fetch('/api/semantic-fields')
+    return fetch('/api/semantic-fields')
         .then(function(r) { return r.json(); })
         .then(function(data) {
             var grid = document.getElementById('sf-domain-grid');
@@ -180,7 +180,15 @@ function showDomainGrid() {
     document.getElementById('sf-domain-grid').style.display = 'grid';
 }
 
-loadDomains();
+loadDomains().then(function() {
+    var domainParam = new URLSearchParams(window.location.search).get('domain');
+    if (domainParam) {
+        var label = _domainLabels[domainParam] || domainParam.split('/').map(function(w) {
+            return w.charAt(0).toUpperCase() + w.slice(1);
+        }).join(' / ');
+        loadField(domainParam, label);
+    }
+});
 </script>
 {% endif %}
 {% endblock %}
