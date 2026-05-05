@@ -488,7 +488,7 @@ h3.subhead{
   position:relative;
 }
 .corpus-cell::before{
-  content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:var(--cb);
+  content:"";position:absolute;left:0;top:0;width:100%;height:5px;background:var(--cb);
 }
 .corpus-cell.pnt{--cb:var(--c-pnt)}
 .corpus-cell.pot{--cb:var(--c-pot)}
