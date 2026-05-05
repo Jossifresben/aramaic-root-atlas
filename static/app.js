@@ -153,7 +153,9 @@
       if(qList){ qList.innerHTML=''; qList.hidden=true; }
     }
     function navigate(q){
-      var isRoot = /^[a-zA-Z'-]{2,}(-[a-zA-Z'-]+)*$/.test(q) || /[܀-ݏ]/.test(q);
+      // Root: contains a dash (SH-L-M style) or is Syriac/Hebrew Unicode
+      // Plain words like "shalom" or "peace" go to text search
+      var isRoot = /[-]/.test(q) || /[܀-ݏ֐-׿]/.test(q);
       var lang = document.documentElement.lang || 'en';
       if(isRoot){
         window.location.href = '/?q='+encodeURIComponent(q.toUpperCase())+'&lang='+lang+'&tab=root';
@@ -196,7 +198,7 @@
       clearTimeout(qTimer);
       if(!v){ closeList(); return; }
       qTimer = setTimeout(function(){
-        fetch('/api/suggest?prefix='+encodeURIComponent(v))
+        fetch('/api/suggest?prefix='+encodeURIComponent(v.toUpperCase()))
           .then(function(r){ return r.json(); })
           .then(function(data){
             if(!data.length){ closeList(); return; }

@@ -4,13 +4,14 @@
 
 {% block topbar %}
 <div class="crumb">
-  <a href="/?lang={{ lang }}">Search</a><span class="sep">›</span>
+  <a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span>
   <a href="/browse?lang={{ lang }}">Browse</a><span class="sep">›</span>
   <b>{{ bn(book, lang) if bn else book }} {{ chapter }}</b>
 </div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
-  <input placeholder="Quick lookup"><span class="kbd">⌘K</span>
+  <input id="quick-search-input" placeholder="Quick lookup — root or text" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
 </div>
 {% endblock %}
 
