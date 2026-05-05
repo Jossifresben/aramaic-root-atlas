@@ -28,16 +28,16 @@
   --gold-soft:    #f3e8c8;
 
   /* — Corpus identity. Each corpus owns a hue end-to-end. — */
-  --c-pnt:        #4a6b54;          /* Peshitta NT — olive/teal */
-  --c-pnt-soft:   #dde4dc;
-  --c-pot:        #3a5c7a;          /* Peshitta OT — steel blue */
-  --c-pot-soft:   #d8e0e8;
-  --c-bib:        #1f3a6e;          /* Biblical Aramaic — deep blue */
-  --c-bib-soft:   #d2dae8;
-  --c-tar:        #a07028;          /* Targum Onkelos — amber */
-  --c-tar-soft:   #ece1c8;
-  --c-eph:        #94432a;          /* Ephrem — terracotta */
-  --c-eph-soft:   #ecd8cf;
+  --c-pnt:        #0e7c5e;          /* Peshitta NT — emerald */
+  --c-pnt-soft:   #cce8df;
+  --c-pot:        #1d62a8;          /* Peshitta OT — royal blue */
+  --c-pot-soft:   #ccd8ee;
+  --c-bib:        #6435a0;          /* Biblical Aramaic — grape purple */
+  --c-bib-soft:   #dccce8;
+  --c-tar:        #c0780a;          /* Targum Onkelos — saffron amber */
+  --c-tar-soft:   #eee0c4;
+  --c-eph:        #b83232;          /* Ephrem — crimson */
+  --c-eph-soft:   #eecece;
 
   /* — Type. — */
   --serif: 'Spectral', 'Iowan Old Style', 'Source Serif Pro', Georgia, serif;
@@ -77,16 +77,16 @@
   --gold-mark:    #d4ac5b;
   --gold-soft:    #2e2618;
 
-  --c-pnt:        #8aa890;
-  --c-pnt-soft:   #2a342c;
-  --c-pot:        #7d9bba;
-  --c-pot-soft:   #1f2a36;
-  --c-bib:        #6f8cc4;
-  --c-bib-soft:   #1c2538;
-  --c-tar:        #d6a85e;
-  --c-tar-soft:   #2e251a;
-  --c-eph:        #cc7e60;
-  --c-eph-soft:   #2f1f1a;
+  --c-pnt:        #50b890;          /* Peshitta NT — emerald (dark) */
+  --c-pnt-soft:   #183028;
+  --c-pot:        #5090d8;          /* Peshitta OT — royal blue (dark) */
+  --c-pot-soft:   #162036;
+  --c-bib:        #9060d0;          /* Biblical Aramaic — grape (dark) */
+  --c-bib-soft:   #201230;
+  --c-tar:        #d09040;          /* Targum Onkelos — amber (dark) */
+  --c-tar-soft:   #2c1c08;
+  --c-eph:        #d05858;          /* Ephrem — crimson (dark) */
+  --c-eph-soft:   #2c1010;
 
   --shadow-1: 0 1px 0 rgba(0,0,0,.3);
   --shadow-2: 0 1px 2px rgba(0,0,0,.4), 0 4px 12px rgba(0,0,0,.25);
