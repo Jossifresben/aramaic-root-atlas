@@ -240,7 +240,7 @@
         // Viz link
         if (data.root_key) {
             document.getElementById('parse-viz-link').href =
-                '/visualize/' + encodeURIComponent(data.root_key) + '?lang=' + LANG;
+                '/visualize/' + encodeURIComponent(data.root_key) + '?lang=' + LANG + '&tab=ficha';
             document.getElementById('parse-viz-link').style.display = '';
         } else {
             document.getElementById('parse-viz-link').style.display = 'none';

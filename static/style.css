@@ -48,6 +48,12 @@
 
   --shadow-1: 0 1px 0 rgba(0,0,0,.04);
   --shadow-2: 0 1px 2px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+
+  /* — Aliases used by some templates — */
+  --line:         #d9d2c2;          /* alias of --rule */
+  --card-bg:      #fefcf7;          /* alias of --surface */
+  --accent-light: #f0e3d2;          /* alias of --accent-soft */
+  --radius:       6px;
 }
 
 [data-theme="dark"]{
@@ -84,6 +90,11 @@
 
   --shadow-1: 0 1px 0 rgba(0,0,0,.3);
   --shadow-2: 0 1px 2px rgba(0,0,0,.4), 0 4px 12px rgba(0,0,0,.25);
+
+  /* — Aliases (dark) — */
+  --line:         #34302a;
+  --card-bg:      #211f1a;
+  --accent-light: #2e2418;
 }
 
 /* — Reset — */
@@ -674,6 +685,9 @@ h3.subhead{
 .verse .v-syr{font-family:var(--syr);font-size:30px;line-height:1.55;direction:rtl;text-align:right;color:var(--ink);letter-spacing:.01em}
 .verse .v-syr .root{cursor:pointer;border-bottom:1.5px dotted var(--accent);padding:0 1px}
 .verse .v-syr .root:hover{background:var(--gold-soft);border-bottom-style:solid}
+.verse .v-heb{font-family:var(--heb);font-size:28px;line-height:1.7;direction:rtl;text-align:right;color:var(--ink);letter-spacing:.01em}
+.verse .v-heb .root{cursor:pointer;border-bottom:1.5px dotted var(--accent);padding:0 1px}
+.verse .v-heb .root:hover{background:var(--gold-soft);border-bottom-style:solid}
 .verse .v-tr{font-family:var(--mono);font-size:17px;color:var(--ink-3);letter-spacing:.04em;margin-top:10px;line-height:1.7}
 .verse .v-en{font-family:var(--serif);font-size:19px;color:var(--ink-2);line-height:1.6;margin-top:8px;font-style:italic;font-weight:300}
 
@@ -999,6 +1013,54 @@ h3.subhead{
 .root-freq-table td{padding:8px 10px 8px 0;border-bottom:1px solid var(--rule-soft);vertical-align:middle;color:var(--ink-2)}
 .root-freq-table td:first-child{font-family:var(--mono);color:var(--accent);font-size:13px}
 .root-freq-table .root-syr{font-family:var(--syr);font-size:18px;color:var(--ink)}
+
+/* — Chapter root summary table (read.html / toggleChapterRoots) — */
+.ch-roots-table{
+  width:100%;border-collapse:collapse;
+  font-family:var(--sans);font-size:13px;
+  margin-top:6px;
+}
+.ch-roots-table thead th{
+  text-align:left;color:var(--ink-3);
+  padding:6px 10px 6px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+}
+.ch-roots-table tbody td{
+  padding:8px 10px 8px 0;
+  border-bottom:1px solid var(--rule-soft);
+  vertical-align:middle;color:var(--ink-2);
+}
+.ch-roots-table tbody tr:hover{background:var(--surface-2)}
+.ch-roots-table td.syriac{
+  font-family:var(--syr);font-size:20px;color:var(--ink);
+  text-align:right;direction:rtl;width:80px;
+}
+.ch-roots-table td:nth-child(2){font-family:var(--mono);color:var(--accent);font-size:13px}
+.ch-roots-table strong{font-weight:600;color:var(--ink)}
+.ch-roots-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:14px;padding-top:10px;
+  border-top:1px solid var(--rule-soft);
+  gap:10px;flex-wrap:wrap;
+}
+.ch-roots-summary{
+  margin:0;font-family:var(--serif);font-style:italic;
+  color:var(--ink-3);font-size:13px;
+}
+.ch-roots-csv-btn,
+.ch-roots-json-btn{
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 12px;border-radius:var(--radius);
+  background:var(--surface);color:var(--ink-2);
+  border:1px solid var(--rule);cursor:pointer;
+}
+.ch-roots-csv-btn:hover,
+.ch-roots-json-btn:hover{
+  background:var(--surface-2);color:var(--ink);
+  border-color:var(--accent);
+}
 
 /* — Settings and language dropdowns — */
 .settings-wrapper,.lang-wrapper{position:relative}
@@ -1375,6 +1437,9 @@ h3.subhead{
 .conf-high{background:#2a7a2a;}
 .conf-med{background:#b58000;}
 .conf-low{background:#a0522d;}
+[data-theme="dark"] .conf-high { background: #4caf50; }
+[data-theme="dark"] .conf-med  { background: #ffc107; }
+[data-theme="dark"] .conf-low  { background: #d4845a; }
 
 /* ── Visualize page (visualize.html) ───────────────────── */
 /* Page header override — remove .container wrapper */
@@ -1545,6 +1610,7 @@ h3.subhead{
 .ficha-meaning{display:block;font-family:var(--serif);font-size:.8rem;color:var(--ink-3);font-style:italic;}
 /* Cite highlight */
 .cite-highlight{background:#ffe082;border-radius:2px;padding:0 2px;}
+[data-theme="dark"] .cite-highlight { background: var(--gold-soft); }
 /* Diachronic bars in ficha */
 .diachronic-bars{display:flex;flex-direction:column;gap:4px;}
 /* Fullscreen */

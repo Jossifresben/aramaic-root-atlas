@@ -29,7 +29,7 @@
         <option value="targum_onkelos">Targum Onkelos</option>
         <option value="peshitta_nt">Peshitta NT</option>
         <option value="peshitta_ot">Peshitta OT</option>
-        <option value="ephrem_nisibis">Ephrem Nisibis</option>
+        <option value="ephrem_nisibis">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</option>
       </select>
     </div>
 
@@ -431,8 +431,8 @@ document.addEventListener('keydown', function(e) {
     if (!_ilData) return;
     var chStart = parseInt(document.getElementById('il-ch-start').value) || 1;
     var chEnd   = parseInt(document.getElementById('il-ch-end').value)   || chStart;
-    if (e.key === 'ArrowLeft')  jumpChapter(chEnd + 1);
-    if (e.key === 'ArrowRight') { if (chStart > 1) jumpChapter(chStart - 1); }
+    if (e.key === 'ArrowRight') jumpChapter(chEnd + 1);
+    if (e.key === 'ArrowLeft')  { if (chStart > 1) jumpChapter(chStart - 1); }
 });
 
 {% if initial_book and initial_ch_start %}

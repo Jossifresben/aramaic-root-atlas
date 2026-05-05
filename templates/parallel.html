@@ -160,7 +160,7 @@
 {% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Search</a><span class="sep">›</span><b>Parallel viewer</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a><span class="sep">›</span><b>{{ t('parallel_viewer', lang) if t else 'Parallel Viewer' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
@@ -187,23 +187,21 @@
     <div class="s-field narrow">
         <label class="s-label">{{ t('chapter', lang) }}</label>
         <select class="s-select" id="par-chapter">
-            {% for i in range(1, 151) %}
-            <option value="{{ i }}"{% if i == chapter|int %} selected{% endif %}>{{ i }}</option>
-            {% endfor %}
+            {# Populated dynamically on load from data-chapters of the selected book #}
         </select>
     </div>
 </div>
 
 <div class="parallel-nav" id="parallel-nav-top" style="display:none">
-    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t('prev', lang) != 'prev' else 'Previous' }}</a>
-    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t('next', lang) != 'next' else 'Next' }} &#9654;</a>
+    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t else 'Previous' }}</a>
+    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t else 'Next' }} &#9654;</a>
 </div>
 
 <div id="parallel-results"></div>
 
 <div class="parallel-nav" id="parallel-nav-bottom" style="display:none">
-    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t('prev', lang) != 'prev' else 'Previous' }}</a>
-    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t('next', lang) != 'next' else 'Next' }} &#9654;</a>
+    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t else 'Previous' }}</a>
+    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t else 'Next' }} &#9654;</a>
 </div>
 {% endblock %}
 
@@ -253,18 +251,28 @@ function navChapter(delta) {
     loadParallel();
 }
 
+function escHtml(s){return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 async function loadParallel() {
     var book = document.getElementById('par-book').value;
     var chapter = document.getElementById('par-chapter').value;
     var el = document.getElementById('parallel-results');
-    el.innerHTML = '<p>Loading...</p>';
+    el.innerHTML = '<p>{{ t("loading", lang) if t else "Loading…" }}</p>';
 
     // Get chapter verses for all corpora
-    var res = await fetch('/api/chapter/' + encodeURIComponent(book) + '/' + chapter + '?trans=' + TRANS + '&parallel=true');
-    var data = await res.json();
+    var data;
+    try {
+        var res = await fetch('/api/chapter/' + encodeURIComponent(book) + '/' + chapter + '?trans=' + TRANS + '&parallel=true');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        data = await res.json();
+    } catch (e) {
+        el.innerHTML = '<p style="color:var(--ink-3);font-style:italic">'
+            + '{{ t("error_loading", lang) if t else "Error loading" }}: ' + escHtml(e.message) + '</p>';
+        return;
+    }
 
     if (!data.verses || !data.verses.length) {
-        el.innerHTML = '<p>No verses found for this chapter.</p>';
+        el.innerHTML = '<p>{{ t("text_search_no_results", lang) if t else "No verses found." }}</p>';
         return;
     }
 
@@ -282,7 +290,8 @@ async function loadParallel() {
         'peshitta_nt': 'Peshitta NT',
         'peshitta_ot': 'Peshitta OT',
         'biblical_aramaic': 'Biblical Aramaic',
-        'targum_onkelos': 'Targum Onkelos'
+        'targum_onkelos': 'Targum Onkelos',
+        'ephrem_nisibis': 'Ephrem Nisibis'
     };
 
     // Only show parallel view if multiple corpora
@@ -328,7 +337,7 @@ async function loadParallel() {
             for (var c of corpora) {
                 var v = verseMap[vn][c];
                 html += '<div class="parallel-cell translit-cell">';
-                if (v && v.translit) html += '<div class="translit-text">' + v.translit.split(' ').reverse().join(' ') + '</div>';
+                if (v && v.translit) html += '<div class="translit-text">' + escHtml(v.translit.split(' ').reverse().join(' ')) + '</div>';
                 html += '</div>';
             }
             html += '</div>';

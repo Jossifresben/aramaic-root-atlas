@@ -42,11 +42,13 @@
 </div>
 
 {% set hl_form = request.args.get('hl', '') %}
+{% set is_hebrew_script = corpus_abbr in ('bib', 'tar') %}
+{% set script_class = 'v-heb' if is_hebrew_script else 'v-syr' %}
 {% for v in verses %}
 <div class="verse" id="v{{ v.verse }}" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}">
   <div class="v-num">{{ v.verse }}</div>
   <div>
-    <div class="v-syr layer-syr" dir="rtl">
+    <div class="{{ script_class }} layer-syr" dir="rtl">
       {%- for w in v.syriac.split() -%}
         {%- set idx = loop.index0 -%}
         {%- set wr = v.word_roots[idx] if v.word_roots and idx < v.word_roots|length else None -%}
@@ -125,7 +127,7 @@
                 this.classList.remove('bookmarked');
             } else {
                 var row = this.closest('.verse');
-                var syriac = row ? (row.querySelector('.v-syr') || {}).textContent || '' : '';
+                var syriac = row ? (row.querySelector('.v-syr, .v-heb') || {}).textContent || '' : '';
                 var translation = row ? (row.querySelector('.v-en') || {}).textContent || '' : '';
                 bm.verses.push({
                     ref: ref, book: book, chapter: chapter, verse: verse,
@@ -195,7 +197,7 @@ function toggleChapterRoots() {
                         html += '<td>' + r.translit + '</td>';
                         html += '<td>' + (r.gloss || '') + '</td>';
                         html += '<td><strong>' + r.count + '</strong> <span class="wp-conf ' + tier + '" title="Avg confidence: ' + r.confidence + '"></span></td>';
-                        html += '<td><a href="/visualize/' + encodeURIComponent(vizKey) + '?lang={{ lang }}" class="wp-link">Visualize</a></td>';
+                        html += '<td><a href="/visualize/' + encodeURIComponent(vizKey) + '?lang={{ lang }}&tab=ficha" class="wp-link">Visualize</a></td>';
                         html += '</tr>';
                     }
                     html += '</tbody></table>';
@@ -275,7 +277,7 @@ function toggleChapterRoots() {
         if (gloss) html += '<div class="wp-gloss">' + escHtml(gloss) + '</div>';
         if (stem) html += '<div class="wp-meta"><span class="stem-badge stem-' + stem.toLowerCase() + '">' + escHtml(stem) + '</span></div>';
         html += '<div class="wp-loading">Loading morphemes…</div>';
-        var vizUrl = '/visualize/' + encodeURIComponent(translit) + '?lang=' + LANG;
+        var vizUrl = '/visualize/' + encodeURIComponent(translit) + '?lang=' + LANG + '&tab=ficha';
         html += '<div class="wp-actions"><a href="' + vizUrl + '" class="wp-link">{{ t("visualize", lang) if t else "Visualize" }}</a></div>';
         return html;
     }
@@ -314,7 +316,7 @@ function toggleChapterRoots() {
         if (data.cognates && data.cognates.hebrew) cogParts.push(data.cognates.hebrew);
         if (data.cognates && data.cognates.arabic) cogParts.push(data.cognates.arabic);
         if (cogParts.length) html += '<div class="wp-cognates-row">' + escHtml(cogParts.join(' · ')) + '</div>';
-        var vizUrl = '/visualize/' + encodeURIComponent(data.root_key || '') + '?lang=' + LANG;
+        var vizUrl = '/visualize/' + encodeURIComponent(data.root_key || '') + '?lang=' + LANG + '&tab=ficha';
         var parseUrl = '/parse?word=' + encodeURIComponent(data.word) + '&lang=' + LANG;
         html += '<div class="wp-actions">';
         if (data.root_key) html += '<a href="' + vizUrl + '" class="wp-link">{{ t("visualize", lang) if t else "Visualize" }}</a>';

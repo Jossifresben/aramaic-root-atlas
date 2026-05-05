@@ -16,6 +16,11 @@
             if (themeIcon) themeIcon.textContent = theme === 'dark' ? 'bedtime' : 'sunny';
         }
 
+        // Migrate legacy theme key
+        if (!localStorage.getItem('ara.theme') && localStorage.getItem('theme')) {
+            localStorage.setItem('ara.theme', localStorage.getItem('theme'));
+        }
+
         var savedTheme = localStorage.getItem('ara.theme');
         if (savedTheme) applyTheme(savedTheme);
 
