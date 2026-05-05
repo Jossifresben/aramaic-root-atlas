@@ -277,7 +277,7 @@ function translateRef(ref) {
     });
 })();
 
-async function doRootSearch() {
+async function doRootSearch(noScroll) {
     const q = document.getElementById('rootInput').value.trim();
     const corpus = document.getElementById('corpusFilter').value;
     if (!q) return;
@@ -420,7 +420,7 @@ async function doRootSearch() {
     _bmRootKey = rootBmKey;
     _bmRootSyriac = rootBmSyriac;
     _bmRootGloss = rootBmGloss;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!noScroll) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // --- Result tab switching (within root card) ---
@@ -903,12 +903,13 @@ document.getElementById('prox-search-btn').addEventListener('click', async funct
         switchSearchTab('text');
         var textInp = document.getElementById('textInput');
         if (textInp) textInp.value = q;
+        window.__pageLoadSearch = true;   // suppress scroll inside handler
         document.getElementById('text-search-btn').click();
     } else {
         document.getElementById('rootInput').value = q;
         var corpus = urlParams.get('corpus');
         if (corpus) document.getElementById('corpusFilter').value = corpus;
-        doRootSearch();
+        doRootSearch(true);   // noScroll — page loaded at top already
     }
 })();
 
@@ -918,12 +919,15 @@ document.getElementById('text-search-btn').addEventListener('click', async funct
     var corpus = document.getElementById('textCorpusFilter').value;
     if (!q) return;
 
+    var skipScroll = window.__pageLoadSearch;
+    window.__pageLoadSearch = false;
+
     var params = new URLSearchParams({q: q, lang: '{{ lang }}'});
     if (corpus) params.set('corpus', corpus);
 
     var el = document.getElementById('results');
     el.innerHTML = '<p style="text-align:center">Searching...</p>';
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!skipScroll) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     var res = await fetch('/api/search?' + params);
     var data = await res.json();
