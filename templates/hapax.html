@@ -1,85 +1,92 @@
 {% extends "base.html" %}
+{% set page_id = 'hapax' %}
 {% block title %}{{ t('hapax_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a><span class="sep">›</span><b>Hapax legomena</b></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="container" style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem;">
-    <div style="margin-bottom:1.5rem;">
-        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('hapax_title', lang) }}</h1>
-        <p style="color:var(--muted);margin:0;">{{ t('hapax_subtitle', lang) }}</p>
-    </div>
+<div class="page-head">
+  <div>
+    <h1 class="ph-title"><em>Hapax</em> legomena</h1>
+    <p class="ph-sub">{{ t('hapax_subtitle', lang) }}</p>
+  </div>
+  <div class="ph-actions">
+    <button class="btn secondary" onclick="exportHapax('csv')">{{ t('hapax_export_csv', lang) }}</button>
+    <button class="btn secondary" onclick="exportHapax('json')">{{ t('hapax_export_json', lang) }}</button>
+    <button class="btn secondary" onclick="openCiteModal(getCiteContext())">Cite</button>
+  </div>
+</div>
 
-    <!-- Controls -->
-    <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem;padding:.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);">
-        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
-            {{ t('hapax_threshold', lang) }}:
-            <input type="range" id="freq-slider" min="1" max="10" value="1" style="width:100px;">
-            <span id="freq-val" style="font-weight:700;color:var(--accent);min-width:1.2rem;">1</span>
-        </label>
-        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
-            Corpus:
-            <select id="corpus-filter" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);font-size:.88rem;">
-                <option value="">{{ t('hapax_all_corpora', lang) }}</option>
-                <option value="biblical_aramaic">Biblical Aramaic</option>
-                <option value="targum_onkelos">Targum Onkelos</option>
-                <option value="peshitta_nt">Peshitta NT</option>
-                <option value="peshitta_ot">Peshitta OT</option>
-                <option value="ephrem_nisibis">Ephrem — Nisibis</option>
-            </select>
-        </label>
-        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
-            Scope:
-            <select id="scope-filter" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);font-size:.88rem;">
-                <option value="root">{{ t('hapax_scope_root', lang) }}</option>
-                <option value="form">{{ t('hapax_scope_form', lang) }}</option>
-            </select>
-        </label>
-        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
-            Sort:
-            <select id="sort-filter" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);font-size:.88rem;">
-                <option value="alpha">A–Z</option>
-                <option value="confidence">Confidence</option>
-            </select>
-        </label>
+<!-- Controls -->
+<div style="display:flex;gap:14px;align-items:end;flex-wrap:wrap;padding:8px 0 28px">
+  <div class="s-field">
+    <label class="s-label">{{ t('hapax_threshold', lang) }}</label>
+    <div style="display:flex;align-items:center;gap:8px">
+      <input type="range" class="s-input" id="freq-slider" min="1" max="10" value="1" style="width:100px;padding:0">
+      <span id="freq-val" style="font-weight:700;color:var(--accent);min-width:1.5rem;font-family:var(--mono)">1</span>
     </div>
+  </div>
+  <div class="s-field">
+    <label class="s-label">Corpus</label>
+    <select class="s-select" id="corpus-filter">
+      <option value="">{{ t('hapax_all_corpora', lang) }}</option>
+      <option value="biblical_aramaic">Biblical Aramaic</option>
+      <option value="targum_onkelos">Targum Onkelos</option>
+      <option value="peshitta_nt">Peshitta NT</option>
+      <option value="peshitta_ot">Peshitta OT</option>
+      <option value="ephrem_nisibis">Ephrem — Nisibis</option>
+    </select>
+  </div>
+  <div class="s-field">
+    <label class="s-label">Scope</label>
+    <select class="s-select" id="scope-filter">
+      <option value="root">{{ t('hapax_scope_root', lang) }}</option>
+      <option value="form">{{ t('hapax_scope_form', lang) }}</option>
+    </select>
+  </div>
+  <div class="s-field">
+    <label class="s-label">Sort</label>
+    <select class="s-select" id="sort-filter">
+      <option value="alpha">A–Z</option>
+      <option value="confidence">Confidence</option>
+    </select>
+  </div>
+</div>
 
-    <!-- Summary + Export -->
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;">
-        <div id="hapax-summary" style="font-size:.9rem;color:var(--muted);"></div>
-        <div style="display:flex;gap:.5rem;">
-            <button class="btn-secondary" onclick="exportHapax('csv')">{{ t('hapax_export_csv', lang) }}</button>
-            <button class="btn-secondary" onclick="exportHapax('json')">{{ t('hapax_export_json', lang) }}</button>
-                <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
-                    <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
-                </button>
-        </div>
-    </div>
+<!-- Summary bar -->
+<div id="hapax-summary" style="font-size:.9rem;color:var(--ink-3);margin-bottom:.8rem;"></div>
 
-    <!-- Loading -->
-    <div id="hapax-loading" style="text-align:center;padding:3rem;color:var(--muted);display:none;">
-        <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
-    </div>
+<!-- Loading -->
+<div id="hapax-loading" style="text-align:center;padding:3rem;display:none;">
+  <p style="color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</p>
+</div>
 
-    <!-- Results table -->
-    <div style="overflow-x:auto;">
-        <table class="hapax-table" id="hapax-table" style="display:none;">
-            <thead>
-                <tr>
-                    <th style="width:12%;">Root</th>
-                    <th style="width:10%;">Translit</th>
-                    <th style="width:18%;">Gloss</th>
-                    <th style="width:14%;">Form</th>
-                    <th style="width:8%;text-align:center;">Count</th>
-                    <th style="width:14%;">Reference</th>
-                    <th style="width:14%;">Corpus</th>
-                    <th style="width:10%;text-align:center;">Confidence</th>
-                </tr>
-            </thead>
-            <tbody id="hapax-tbody"></tbody>
-        </table>
-        <div id="hapax-empty" style="display:none;text-align:center;padding:3rem;color:var(--muted);">
-            {{ t('hapax_no_results', lang) }}
-        </div>
-    </div>
+<!-- Results table -->
+<div style="overflow-x:auto;">
+  <table class="dtable" id="hapax-table" style="display:none;">
+    <thead>
+      <tr>
+        <th>Root</th>
+        <th>Translit</th>
+        <th>Gloss</th>
+        <th>Form</th>
+        <th style="text-align:center;">Count</th>
+        <th>Reference</th>
+        <th>Corpus</th>
+        <th style="text-align:center;">Confidence</th>
+      </tr>
+    </thead>
+    <tbody id="hapax-tbody"></tbody>
+  </table>
+  <div id="hapax-empty" style="display:none;text-align:center;padding:3rem;color:var(--ink-3);font-family:var(--serif);font-style:italic">
+    {{ t('hapax_no_results', lang) }}
+  </div>
 </div>
 {% endblock %}
 
@@ -133,7 +140,7 @@
         document.getElementById('hapax-empty').style.display = 'none';
         document.getElementById('hapax-summary').textContent = '';
 
-        fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+        fetch(url).then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(data) {
             currentData = data.results || [];
             document.getElementById('hapax-loading').style.display = 'none';
             document.getElementById('hapax-summary').textContent =
@@ -159,8 +166,8 @@
                 tr.innerHTML =
                     '<td class="hx-root"><a href="' + vizUrl + '" style="text-decoration:none;color:inherit;">' + escHtml(row.root) + '</a></td>' +
                     '<td style="font-size:.82rem;"><a href="' + vizUrl + '" style="color:var(--accent);text-decoration:none;">' + escHtml(row.root_translit) + '</a></td>' +
-                    '<td style="font-style:italic;color:var(--muted);font-size:.82rem;">' + escHtml(row.gloss || '') + '</td>' +
-                    '<td dir="rtl" style="font-family:var(--syriac-font);">' + escHtml(row.form || '') + '</td>' +
+                    '<td style="font-style:italic;color:var(--ink-3);font-size:.82rem;">' + escHtml(row.gloss || '') + '</td>' +
+                    '<td dir="rtl" style="font-family:var(--syr);">' + escHtml(row.form || '') + '</td>' +
                     '<td style="text-align:center;font-weight:600;">' + row.count + '</td>' +
                     '<td style="font-size:.78rem;"><a href="' + readUrl + '" style="color:var(--accent);">' + escHtml(ref) + '</a></td>' +
                     '<td>' + corpBadges + '</td>' +
@@ -185,7 +192,7 @@
                 rows.push([r.root, r.root_translit, r.gloss||'', r.form||'', r.count,
                     (r.references||[])[0]||'', Object.keys(r.corpus_attestation||{}).join(';'), r.confidence]);
             });
-            var csv = '\uFEFF' + rows.map(function(r) {
+            var csv = '﻿' + rows.map(function(r) {
                 return r.map(function(c) { return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
             }).join('\n');
             var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});

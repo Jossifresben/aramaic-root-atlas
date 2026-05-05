@@ -1864,7 +1864,7 @@ def hapax_page():
     """Hapax legomena finder page."""
     lang = _get_lang()
     return render_template('hapax.html', lang=lang, script=_get_script(),
-                           trans=_get_trans(), t=_t_proxy, bn=_bn)
+                           trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='hapax')
 
 
 @app.route('/api/hapax')
