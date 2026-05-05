@@ -291,11 +291,13 @@ async function doRootSearch() {
 
     // Cross-corpus attestation badges
     const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
     const corpusKeys = Object.keys(att);
     if (corpusKeys.length > 0) {
         html += `<div class="corpus-attestation">`;
         for (const cid of corpusKeys) {
-            html += `<span class="corpus-badge corpus-${cid}">${corpusLabels[cid] || cid}: ${att[cid]}×</span>`;
+            var abbr = CORPUS_ABBR[cid] || cid.split('_').map(function(w){return w[0]}).join('');
+            html += `<span class="cbadge ${abbr}">${corpusLabels[cid] || cid}: ${att[cid]}×</span>`;
         }
         html += `</div>`;
     }
@@ -787,6 +789,7 @@ document.getElementById('proximitySearchForm').addEventListener('submit', async 
     var html = '<div class="proximity-results">';
     html += '<h3>' + data.count + ' co-occurrences: <span class="prox-hl1">' + (data.root1 || r1) + '</span> + <span class="prox-hl2">' + (data.root2 || r2) + '</span> (' + scope + ')</h3>';
     var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
     data.results.forEach(function(r) {
         var ref = r.ref || r.reference || '';
         var refParts = ref.match(/^(.+?)\s+(\d+):(\d+)/);
@@ -794,7 +797,7 @@ document.getElementById('proximitySearchForm').addEventListener('submit', async 
         html += '<div class="text-result-card">';
         html += '<div class="text-result-header">';
         html += '<a href="' + readerLink + '" class="text-result-ref">' + ref + '</a>';
-        if (r.corpus_id) html += '<span class="corpus-badge corpus-' + r.corpus_id + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>';
+        if (r.corpus_id) { var abbr = CORPUS_ABBR[r.corpus_id] || r.corpus_id.split('_').map(function(w){return w[0]}).join(''); html += '<span class="cbadge ' + abbr + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>'; }
         html += '</div>';
         if (r.syriac) html += '<div class="text-result-syriac" dir="rtl">' + r.syriac + '</div>';
         if (r.translit || r.transliteration) html += '<div class="text-result-translit">' + (r.translit || r.transliteration) + '</div>';
@@ -918,6 +921,7 @@ document.getElementById('textSearchForm').addEventListener('submit', async funct
     html += '<h3 class="text-search-header">' + data.count + ' results for "' + q.replace(/</g, '&lt;') + '"</h3>';
 
     var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
 
     for (var i = 0; i < data.results.length; i++) {
         var r = data.results[i];
@@ -927,7 +931,8 @@ document.getElementById('textSearchForm').addEventListener('submit', async funct
         html += '<div class="text-result-card">';
         html += '<div class="text-result-header">';
         html += '<a href="' + readerLink + '" class="text-result-ref">' + r.reference + '</a>';
-        html += '<span class="corpus-badge corpus-' + r.corpus_id + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>';
+        var abbr = CORPUS_ABBR[r.corpus_id] || r.corpus_id.split('_').map(function(w){return w[0]}).join('');
+        html += '<span class="cbadge ' + abbr + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>';
         html += '</div>';
         if (r.syriac) html += '<div class="text-result-syriac" dir="rtl">' + r.syriac + '</div>';
         if (r.transliteration) html += '<div class="text-result-translit">' + r.transliteration + '</div>';
