@@ -744,9 +744,16 @@ h3.subhead{
 .il-verse{
   margin-bottom:32px;padding:20px 0 24px;border-bottom:1px solid var(--rule);
 }
-.il-ref{
-  font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--ink-3);margin-bottom:12px;
+.il-ref{margin-bottom:16px;}
+.il-ref-book{
+  display:block;
+  font-family:var(--serif);font-size:1.25rem;font-weight:600;
+  color:var(--ink);letter-spacing:-.01em;
+}
+.il-ref-verse{
+  display:block;
+  font-family:var(--mono);font-size:.78rem;font-weight:500;
+  color:var(--ink-3);letter-spacing:.06em;margin-top:3px;
 }
 .il-grid{
   display:flex;flex-direction:row-reverse;flex-wrap:wrap;gap:18px 28px;

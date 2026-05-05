@@ -161,7 +161,15 @@ function renderInterlinear(data, book, chStart, chEnd, script) {
 
     data.verses.forEach(function(v) {
         html += '<div class="il-verse" id="v' + v.chapter + '-' + v.verse + '">';
-        html += '<div class="il-ref">' + escHtml(v.ref) + '</div>';
+        var refMatch = v.ref.match(/^(.*?)\s+(\d+:\d+)$/);
+        if (refMatch) {
+            html += '<div class="il-ref">'
+                  + '<span class="il-ref-book">' + escHtml(refMatch[1]) + '</span>'
+                  + '<span class="il-ref-verse">' + escHtml(refMatch[2]) + '</span>'
+                  + '</div>';
+        } else {
+            html += '<div class="il-ref"><span class="il-ref-book">' + escHtml(v.ref) + '</span></div>';
+        }
         html += '<div class="il-grid">';
 
         v.words.forEach(function(w) {
