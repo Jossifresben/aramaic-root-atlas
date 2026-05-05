@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% set page_id = 'passage_profile' %}
+{% set page_id = 'passage-profile' %}
 {% block title %}{{ t('pp_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
@@ -11,47 +11,47 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:1000px;margin:0 auto;padding:1.5rem 1rem;">
-    <div style="margin-bottom:1.2rem;">
-        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('pp_title', lang) }}</h1>
-        <p style="color:var(--ink-3);margin:0;">{{ t('pp_subtitle', lang) }}</p>
+    <div class="page-head">
+        <div>
+            <h1 class="ph-title">{{ t('pp_title', lang) }}</h1>
+            <p class="ph-sub">{{ t('pp_subtitle', lang) }}</p>
+        </div>
     </div>
 
     <!-- Controls -->
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.5rem;padding:1rem;background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius);">
-        <div style="position:relative;">
-            <label style="font-size:.75rem;color:var(--ink-3);display:block;margin-bottom:.2rem;">{{ t('pp_book_label', lang) }}</label>
-            <input type="text" id="pp-book-input"
-                   value="{{ bn(initial_book, lang) if initial_book else '' }}"
-                   autocomplete="off" spellcheck="false"
-                   placeholder="Book…"
-                   style="padding:.4rem .7rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);min-width:160px;font-size:.9rem;">
-            <input type="hidden" id="pp-book" value="{{ initial_book }}">
-            <div id="pp-book-ac"
-                 style="display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,.15);max-height:240px;overflow-y:auto;"></div>
+    <div class="interlinear-controls" style="margin-bottom:20px;">
+        <div class="s-field wide">
+            <label class="s-label">{{ t('pp_book_label', lang) }}</label>
+            <select class="s-select" id="pp-book" onchange="onBookChange()">
+                <option value="">— select book —</option>
+                {% for b_name, b_ch in books %}
+                <option value="{{ b_name }}" data-maxch="{{ b_ch }}"
+                    {% if b_name == initial_book %}selected{% endif %}>
+                    {{ bn(b_name, lang) }}
+                </option>
+                {% endfor %}
+            </select>
         </div>
-        <div>
-            <label style="font-size:.75rem;color:var(--ink-3);display:block;margin-bottom:.2rem;">{{ t('pp_chapter_from', lang) }}</label>
-            <input type="number" id="pp-ch-start" min="1" value="{{ initial_ch_start or 1 }}"
-                   style="width:70px;padding:.4rem .6rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);">
+        <div class="s-field narrow">
+            <label class="s-label">{{ t('pp_chapter_from', lang) }}</label>
+            <input class="s-input" type="number" id="pp-ch-start" min="1" value="{{ initial_ch_start or 1 }}">
         </div>
-        <div>
-            <label style="font-size:.75rem;color:var(--ink-3);display:block;margin-bottom:.2rem;">{{ t('pp_chapter_to', lang) }}</label>
-            <input type="number" id="pp-ch-end" min="1" value="{{ initial_ch_end or 1 }}"
-                   style="width:70px;padding:.4rem .6rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);">
+        <span class="il-range-sep">—</span>
+        <div class="s-field narrow">
+            <label class="s-label">{{ t('pp_chapter_to', lang) }}</label>
+            <input class="s-input" type="number" id="pp-ch-end" min="1" value="{{ initial_ch_end or 1 }}">
         </div>
-        <button onclick="runProfile()"
-                style="padding:.45rem 1.3rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;align-self:flex-end;">
-            {{ t('pp_analyze', lang) }}
-        </button>
+        <button class="btn" onclick="runProfile()">{{ t('pp_analyze', lang) }}</button>
     </div>
+
+<div style="max-width:1000px;">
 
     <!-- Loading / empty -->
     <div id="pp-loading" style="display:none;text-align:center;padding:2rem;">
         <p style="color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</p>
     </div>
-    <div id="pp-empty" style="text-align:center;padding:3rem;color:var(--ink-3);font-style:italic;">
-        {{ t('pp_subtitle', lang) }}
+    <div id="pp-empty" style="text-align:center;padding:3rem;color:var(--ink-3);font-style:italic;font-family:var(--serif);">
+        Select a book and chapter range above, then click Analyze.
     </div>
 
     <!-- Results -->
@@ -148,73 +148,16 @@
     var SCRIPT = {{ script|tojson }};
     var _profileData = null;
 
-    // --- Book autocomplete data ---
-    var BOOK_DATA = [
-        {% for b_name, b_ch in books %}
-        {name: {{ b_name|tojson }}, display: {{ bn(b_name, lang)|tojson }}, max_ch: {{ b_ch }}}{% if not loop.last %},{% endif %}
-        {% endfor %}
-    ];
-
-    (function initBookAC() {
-        var inp  = document.getElementById('pp-book-input');
-        var hid  = document.getElementById('pp-book');
-        var drop = document.getElementById('pp-book-ac');
-
-        function showDropdown(filtered) {
-            drop.innerHTML = '';
-            if (!filtered.length) { drop.style.display = 'none'; return; }
-            filtered.forEach(function(b) {
-                var item = document.createElement('div');
-                item.style.cssText = 'padding:.4rem .7rem;cursor:pointer;font-size:.9rem;white-space:nowrap;';
-                item.textContent = b.display;
-                item.addEventListener('mousedown', function(e) { e.preventDefault(); selectBook(b); });
-                item.addEventListener('mouseover', function() { item.style.background = 'var(--line)'; });
-                item.addEventListener('mouseout',  function() { item.style.background = ''; });
-                drop.appendChild(item);
-            });
-            drop.style.display = 'block';
+    // Update chapter max when book changes
+    window.onBookChange = function() {
+        var sel = document.getElementById('pp-book');
+        var opt = sel.options[sel.selectedIndex];
+        if (opt && opt.dataset.maxch) {
+            var max = parseInt(opt.dataset.maxch, 10);
+            document.getElementById('pp-ch-start').max = max;
+            document.getElementById('pp-ch-end').max   = max;
         }
-
-        function selectBook(b) {
-            inp.value = b.display;
-            hid.value = b.name;
-            drop.style.display = 'none';
-            // Update ch_end max hint
-            document.getElementById('pp-ch-start').max = b.max_ch;
-            document.getElementById('pp-ch-end').max   = b.max_ch;
-        }
-
-        inp.addEventListener('input', function() {
-            hid.value = '';  // clear hidden until a match is selected
-            var q = inp.value.trim().toLowerCase();
-            if (!q) { drop.style.display = 'none'; return; }
-            var filtered = BOOK_DATA.filter(function(b) {
-                return b.display.toLowerCase().indexOf(q) !== -1 ||
-                       b.name.toLowerCase().indexOf(q) !== -1;
-            });
-            showDropdown(filtered);
-        });
-
-        inp.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') { drop.style.display = 'none'; runProfile(); }
-            if (e.key === 'Escape') { drop.style.display = 'none'; }
-            if (e.key === 'ArrowDown') {
-                var first = drop.querySelector('div');
-                if (first) { e.preventDefault(); first.focus(); }
-            }
-        });
-
-        inp.addEventListener('blur', function() {
-            // If the typed text matches exactly one book display name, auto-select it
-            setTimeout(function() {
-                if (drop.style.display === 'none') return;
-                var q = inp.value.trim().toLowerCase();
-                var exact = BOOK_DATA.find(function(b) { return b.display.toLowerCase() === q; });
-                if (exact) selectBook(exact);
-                else drop.style.display = 'none';
-            }, 150);
-        });
-    })();
+    };
 
     var RARITY_COLORS = {
         hapax:       '#9c27b0',
@@ -234,16 +177,8 @@
     }
 
     window.runProfile = function() {
-        // Accept either the hidden exact-name or fall back to matching the typed display name
-        var book = document.getElementById('pp-book').value.trim();
-        if (!book) {
-            var typed = document.getElementById('pp-book-input').value.trim().toLowerCase();
-            var match = BOOK_DATA.find(function(b) {
-                return b.display.toLowerCase() === typed || b.name.toLowerCase() === typed;
-            });
-            if (match) book = match.name;
-        }
-        var chStart  = document.getElementById('pp-ch-start').value;
+        var book    = document.getElementById('pp-book').value.trim();
+        var chStart = document.getElementById('pp-ch-start').value;
         var chEnd    = document.getElementById('pp-ch-end').value;
         if (!book || !chStart) return;
 

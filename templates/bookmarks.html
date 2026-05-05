@@ -12,15 +12,17 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="storage-warning" id="storage-warning" style="display:none">
-            {{ t('storage_warning', lang) if t else 'Notes and bookmarks are stored in your browser\'s local storage. Clearing your browser cache will permanently delete them. Export regularly to keep a backup.' }}
-            <button class="storage-warning-dismiss" onclick="dismissStorageWarning()">{{ t('storage_warning_dismiss', lang) if t else 'Got it' }}</button>
+    <div id="storage-warning" class="storage-warning" style="display:none">
+        {{ t('storage_warning', lang) if t else 'Notes and bookmarks are stored in your browser\'s local storage. Clearing your browser cache will permanently delete them. Export regularly to keep a backup.' }}
+        <button class="storage-warning-dismiss" onclick="dismissStorageWarning()">{{ t('storage_warning_dismiss', lang) if t else 'Got it' }}</button>
+    </div>
+
+    <div class="page-head">
+        <div>
+            <h1 class="ph-title">{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}</h1>
+            <p class="ph-sub">{{ t('bookmarks_subtitle', lang) if t else 'Your saved verses and roots. Notes attach to each bookmark and are stored locally.' }}</p>
         </div>
-        <header>
-            <h1>{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}</h1>
-            <p class="subtitle">{{ t('bookmarks_subtitle', lang) if t else 'Your saved verses and roots. Stored locally in your browser.' }}</p>
-        </header>
+    </div>
 
         <div class="bookmarks-toolbar">
             <div class="bookmarks-tabs">
@@ -61,7 +63,6 @@
             </div>
             <div id="roots-list"></div>
         </div>
-    </div>
 {% endblock %}
 
 {% block scripts %}
@@ -111,8 +112,8 @@ function renderBookmarks() {
         if (v.syriac) vh += '<div class="bm-syriac syriac" dir="rtl">' + escHtml(v.syriac) + '</div>';
         if (v.translation) vh += '<div class="bm-translation">' + escHtml(v.translation) + '</div>';
         var vTags = (v.tags || []).map(escHtml).join(', ');
-        vh += '<div class="bm-note-input"><input type="text" placeholder="Add a note..." value="' + escHtml(v.note || '') + '" onchange="updateNote(\'verses\',' + i + ',this.value)"></div>';
-        vh += '<div class="bm-tags-input"><input type="text" placeholder="Tags (comma-separated)" value="' + escHtml(vTags) + '" onchange="updateTags(\'verses\',' + i + ',this.value)"></div>';
+        vh += '<div class="bm-note-input"><input type="text" placeholder="Add a note… (saves on blur)" value="' + escHtml(v.note || '') + '" onchange="updateNote(\'verses\',' + i + ',this.value,this)"><span class="bm-save-feedback">Saved ✓</span></div>';
+        vh += '<div class="bm-tags-input"><input type="text" placeholder="Tags, comma-separated (saves on blur)" value="' + escHtml(vTags) + '" onchange="updateTags(\'verses\',' + i + ',this.value,this)"><span class="bm-save-feedback">Saved ✓</span></div>';
         vh += '<div class="bm-card-actions">';
         vh += '<button class="btn secondary" onclick="copyCitation(\'verse\',' + i + ')" title="Copy citation">Cite</button>';
         vh += '</div>';
@@ -135,8 +136,8 @@ function renderBookmarks() {
         rh += '<button class="bm-remove" onclick="removeBookmark(\'roots\',' + i + ')" title="Remove">&times;</button>';
         rh += '</div>';
         var rTags = (r.tags || []).map(escHtml).join(', ');
-        rh += '<div class="bm-note-input"><input type="text" placeholder="Add a note..." value="' + escHtml(r.note || '') + '" onchange="updateNote(\'roots\',' + i + ',this.value)"></div>';
-        rh += '<div class="bm-tags-input"><input type="text" placeholder="Tags (comma-separated)" value="' + escHtml(rTags) + '" onchange="updateTags(\'roots\',' + i + ',this.value)"></div>';
+        rh += '<div class="bm-note-input"><input type="text" placeholder="Add a note… (saves on blur)" value="' + escHtml(r.note || '') + '" onchange="updateNote(\'roots\',' + i + ',this.value,this)"><span class="bm-save-feedback">Saved ✓</span></div>';
+        rh += '<div class="bm-tags-input"><input type="text" placeholder="Tags, comma-separated (saves on blur)" value="' + escHtml(rTags) + '" onchange="updateTags(\'roots\',' + i + ',this.value,this)"><span class="bm-save-feedback">Saved ✓</span></div>';
         rh += '<div class="bm-card-actions">';
         rh += '<button class="btn secondary" onclick="copyCitation(\'root\',' + i + ')" title="Copy citation">Cite</button>';
         rh += '</div>';
@@ -153,10 +154,18 @@ function removeBookmark(type, idx) {
     renderBookmarks();
 }
 
-function updateNote(type, idx, note) {
+function showSaved(el) {
+    var fb = el.parentElement.querySelector('.bm-save-feedback');
+    if (!fb) return;
+    fb.classList.add('show');
+    setTimeout(function() { fb.classList.remove('show'); }, 1500);
+}
+
+function updateNote(type, idx, note, el) {
     var bm = getBookmarks();
     bm[type][idx].note = note;
     saveBookmarks(bm);
+    if (el) showSaved(el);
 }
 
 function switchBmTab(tab, btn) {
@@ -185,11 +194,12 @@ function clearAllBookmarks() {
 // --- Tags ---
 var _activeTag = '';
 
-function updateTags(type, idx, val) {
+function updateTags(type, idx, val, el) {
     var bm = getBookmarks();
     bm[type][idx].tags = val.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
     saveBookmarks(bm);
     updateTagBar();
+    if (el) showSaved(el);
 }
 
 function filterByTag(tag) {
