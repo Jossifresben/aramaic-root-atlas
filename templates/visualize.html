@@ -13,7 +13,7 @@
 
 {% block content %}
     <div class="page-head">
-        <h1 class="ph-title">{{ t('viz_title') }}</h1>
+        <h1 class="ph-title">Root <em>Visualizer</em></h1>
     </div>
 
         <div id="viz-loading" class="viz-loading">
@@ -285,7 +285,8 @@
             attEl.innerHTML = '';
             if (data.corpus_attestation) {
                 var labels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT',
-                              'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+                              'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos',
+                              'ephrem_nisibis': 'Ephrem Nisibis'};
                 for (var cid in data.corpus_attestation) {
                     var badge = document.createElement('span');
                     badge.className = 'cbadge ' + (CORPUS_ABBR[cid] || cid);

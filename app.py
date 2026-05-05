@@ -692,12 +692,15 @@ def api_interlinear():
                     else:
                         t = transliterate_syriac(w)
 
+                # Check word-level overrides first (e.g. ܒܪܫܝܬ → "in the beginning")
+                _word_ov = (_glosser._overrides.get(w) or {}) if _glosser else {}
+
                 # Root, stem, gloss (with SEDRA fallback for low-confidence tokens)
                 resolved = _resolve_word(w, script)
                 root_syr = resolved['root_syr']
                 root_key = resolved['root_key']
                 confidence = resolved['confidence']
-                gloss = resolved['gloss']
+                gloss = _word_ov.get(lang) or _word_ov.get('en') or resolved['gloss']
                 stem = resolved['stem'] or None
                 root_translit = root_key            # uppercase dash-separated (SH-L-M)
                 root_key_lower = root_key.lower()   # lowercase key (sh-l-m)

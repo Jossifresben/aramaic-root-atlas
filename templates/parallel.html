@@ -158,7 +158,7 @@
 {% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Search</a></div>
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a><span class="sep">›</span><b>Parallel viewer</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
@@ -166,8 +166,12 @@
 {% endblock %}
 
 {% block content %}
-<h1 style="margin-bottom: 4px;">{{ t('parallel_viewer', lang) }}</h1>
-<p class="parallel-info">{{ t('parallel_desc', lang) }}</p>
+<div class="page-head">
+  <div>
+    <h1 class="ph-title"><em>Parallel</em> viewer</h1>
+    <p class="ph-sub">{{ t('parallel_desc', lang) }}</p>
+  </div>
+</div>
 
 <div class="parallel-controls">
     <label>{{ t('book', lang) }}:</label>

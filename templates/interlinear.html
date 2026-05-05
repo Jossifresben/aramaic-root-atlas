@@ -3,7 +3,6 @@
 {% block title %}{{ t('il_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Search</a></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
@@ -155,23 +154,43 @@ function escHtml(s) {
 }
 
 function renderInterlinear(data, book, chStart, chEnd, script) {
-    var showTrans = true;
-    var rtlScript = (script === 'hebrew' || script === 'arabic');
     var html = '';
+    var isFirstVerse = true;
+
+    // Build inline nav links for the first verse header
+    var navInline = '<div class="il-ref-nav">';
+    if (chStart > 1) {
+        navInline += '<a href="#" onclick="jumpChapter(' + (chStart - 1) + ');return false;">← Ch ' + (chStart - 1) + '</a>';
+    }
+    navInline += '<a href="#" onclick="jumpChapter(' + (chEnd + 1) + ');return false;">Ch ' + (chEnd + 1) + ' →</a>';
+    navInline += '</div>';
 
     data.verses.forEach(function(v) {
         html += '<div class="il-verse" id="v' + v.chapter + '-' + v.verse + '">';
-        var refMatch = v.ref.match(/^(.*?)\s+(\d+:\d+)$/);
-        if (refMatch) {
-            html += '<div class="il-ref">'
-                  + '<span class="il-ref-book">' + escHtml(refMatch[1]) + '</span>'
-                  + '<span class="il-ref-verse">' + escHtml(refMatch[2]) + '</span>'
-                  + '</div>';
-        } else {
-            html += '<div class="il-ref"><span class="il-ref-book">' + escHtml(v.ref) + '</span></div>';
-        }
-        html += '<div class="il-grid">';
 
+        // Reference: Book · Chapter:Verse — nav appears only on the first verse
+        var refMatch = v.ref.match(/^(.*?)\s+(\d+:\d+)$/);
+        var bookPart  = refMatch ? refMatch[1] : v.ref;
+        var versePart = refMatch ? refMatch[2] : '';
+        html += '<div class="il-ref">'
+              + '<span class="il-ref-label">' + escHtml(bookPart)
+              + (versePart
+                  ? '<span class="il-ref-sep">·</span><span class="il-ref-chapter-verse">'
+                    + escHtml(versePart) + '</span>'
+                  : '')
+              + '</span>'
+              + (isFirstVerse ? navInline : '')
+              + '</div>';
+        isFirstVerse = false;
+
+        // Translation BEFORE the word grid
+        var transDir = (TRANS === 'he' || TRANS === 'ar') ? ' dir="rtl"' : '';
+        if (v.translation) {
+            html += '<div class="il-trans"' + transDir + '>' + escHtml(v.translation) + '</div>';
+        }
+
+        // Word grid (direction:rtl in CSS makes words flow right-to-left)
+        html += '<div class="il-grid">';
         v.words.forEach(function(w) {
             html += '<div class="il-tok">';
             html += '<span class="syr">' + escHtml(w.syriac) + '</span>';
@@ -193,12 +212,7 @@ function renderInterlinear(data, book, chStart, chEnd, script) {
             }
             html += '</div>';
         });
-
         html += '</div>';
-
-        var transDir = (TRANS === 'he' || TRANS === 'ar') ? ' dir="rtl"' : '';
-        html += '<div class="il-trans' + (showTrans ? '' : ' il-trans-hidden') + '"'
-              + transDir + '>' + escHtml(v.translation || '') + '</div>';
 
         html += '</div>';
     });
@@ -210,13 +224,8 @@ function renderInterlinear(data, book, chStart, chEnd, script) {
         document.getElementById('il-truncated').style.display = 'block';
     }
 
-    var navHtml = '';
-    if (chStart > 1) {
-        navHtml += '<a href="#" onclick="jumpChapter(' + (chStart - 1) + ');return false;">← Ch ' + (chStart - 1) + '</a>';
-    }
-    navHtml += '<a href="#" onclick="jumpChapter(' + (chEnd + 1) + ');return false;">Ch ' + (chEnd + 1) + ' →</a>';
-    document.getElementById('il-nav').innerHTML = navHtml;
-    document.getElementById('il-nav').style.display = 'flex';
+    // Hide the old standalone nav (nav is now inline in the verse header)
+    document.getElementById('il-nav').style.display = 'none';
     document.getElementById('il-action-bar').style.display = 'block';
 }
 

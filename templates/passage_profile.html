@@ -34,12 +34,16 @@
         </div>
         <div class="s-field narrow">
             <label class="s-label">{{ t('pp_chapter_from', lang) }}</label>
-            <input class="s-input" type="number" id="pp-ch-start" min="1" value="{{ initial_ch_start or 1 }}">
+            <select class="s-select" id="pp-ch-start">
+                <option value="">Ch</option>
+            </select>
         </div>
         <span class="il-range-sep">—</span>
         <div class="s-field narrow">
             <label class="s-label">{{ t('pp_chapter_to', lang) }}</label>
-            <input class="s-input" type="number" id="pp-ch-end" min="1" value="{{ initial_ch_end or 1 }}">
+            <select class="s-select" id="pp-ch-end">
+                <option value="">Ch</option>
+            </select>
         </div>
         <button class="btn" onclick="runProfile()">{{ t('pp_analyze', lang) }}</button>
     </div>
@@ -148,15 +152,34 @@
     var SCRIPT = {{ script|tojson }};
     var _profileData = null;
 
-    // Update chapter max when book changes
-    window.onBookChange = function() {
-        var sel = document.getElementById('pp-book');
-        var opt = sel.options[sel.selectedIndex];
-        if (opt && opt.dataset.maxch) {
-            var max = parseInt(opt.dataset.maxch, 10);
-            document.getElementById('pp-ch-start').max = max;
-            document.getElementById('pp-ch-end').max   = max;
+    // Populate chapter selects from /api/chapters when book changes
+    function refreshPPChapterSelects(book, preFrom, preTo, callback) {
+        var startSel = document.getElementById('pp-ch-start');
+        var endSel   = document.getElementById('pp-ch-end');
+        if (!book) {
+            startSel.innerHTML = '<option value="">Ch</option>';
+            endSel.innerHTML   = '<option value="">Ch</option>';
+            if (callback) callback();
+            return;
         }
+        fetch('/api/chapters?book=' + encodeURIComponent(book))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var chapters = data.chapters || [];
+                var opts = '<option value="">Ch</option>';
+                chapters.forEach(function(ch) { opts += '<option value="' + ch + '">' + ch + '</option>'; });
+                startSel.innerHTML = opts;
+                endSel.innerHTML   = opts;
+                if (preFrom) startSel.value = preFrom;
+                if (preTo)   endSel.value   = preTo;
+                if (callback) callback();
+            })
+            .catch(function() { if (callback) callback(); });
+    }
+
+    window.onBookChange = function() {
+        var book = document.getElementById('pp-book').value;
+        refreshPPChapterSelects(book, 1, 1);
     };
 
     var RARITY_COLORS = {
@@ -179,8 +202,9 @@
     window.runProfile = function() {
         var book    = document.getElementById('pp-book').value.trim();
         var chStart = document.getElementById('pp-ch-start').value;
-        var chEnd    = document.getElementById('pp-ch-end').value;
-        if (!book || !chStart) return;
+        var chEnd   = document.getElementById('pp-ch-end').value || chStart;
+        if (!book) { alert('Please select a book.'); return; }
+        if (!chStart) { alert('Please select a chapter.'); return; }
 
         document.getElementById('pp-empty').style.display   = 'none';
         document.getElementById('pp-results').style.display = 'none';
@@ -396,9 +420,17 @@
         a.click();
     };
 
-    {% if initial_book and initial_ch_start %}
-    document.addEventListener('DOMContentLoaded', function() { runProfile(); });
-    {% endif %}
+    // On load: if a book is already selected, populate chapters then optionally run
+    document.addEventListener('DOMContentLoaded', function() {
+        var book = document.getElementById('pp-book').value;
+        if (book) {
+            refreshPPChapterSelects(book,
+                {{ initial_ch_start|default(1)|int }},
+                {{ initial_ch_end|default(1)|int }},
+                {% if initial_book and initial_ch_start %}function() { runProfile(); }{% else %}null{% endif %}
+            );
+        }
+    });
 })();
 
 window.getCiteContext = function() {
