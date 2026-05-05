@@ -32,8 +32,6 @@
         ic:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>' },
       { id:'browse',      href:'/browse',          label:'Browse corpora',
         ic:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
-      { id:'reader',      href:'/read/Matthew/1',  label:'Reader',
-        ic:'<path d="M3 5h7a3 3 0 013 3v12M21 5h-7a3 3 0 00-3 3v12"/>' },
       { id:'interlinear', href:'/interlinear',     label:'Interlinear Reader',
         ic:'<path d="M3 6h18M3 11h18M3 16h12"/>' },
       { id:'parallel',    href:'/parallel',        label:'Parallel viewer',
