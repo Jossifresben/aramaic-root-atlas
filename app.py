@@ -2174,7 +2174,7 @@ def diachronic_page():
     root = request.args.get('root', '')
     return render_template('diachronic.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn,
-                           initial_root=root)
+                           initial_root=root, page_id='diachronic')
 
 
 @app.route('/api/diachronic/root')
