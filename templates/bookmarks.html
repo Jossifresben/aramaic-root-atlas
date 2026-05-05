@@ -324,10 +324,6 @@ function copyCitation(type, idx) {
     }
     if (item.note) cite += ' — Note: ' + item.note;
     navigator.clipboard.writeText(cite).then(function() {
-        var btns = document.querySelectorAll('.bm-cite-btn');
-        // Flash feedback on the specific button
-        var allCards = document.querySelectorAll('.bm-card');
-        // Simple feedback
         alert('Citation copied!');
     });
 }
