@@ -192,6 +192,7 @@ def index():
                 'words': info.word_count,
             })
     book_names = _i18n.get(lang, {}).get('book_names', {})
+    total_verses = sum(c['verses'] for c in corpora_info)
     return render_template('index.html',
                            lang=lang, script=_get_script(), trans=_get_trans(),
                            t=_t_proxy, bn=_bn,
@@ -199,7 +200,9 @@ def index():
                            corpora=corpora_info,
                            root_count=_extractor.get_root_count(),
                            total_words=_corpus.total_words(),
-                           total_unique=_corpus.total_unique())
+                           total_unique=_corpus.total_unique(),
+                           total_verses=total_verses,
+                           page_id='search')
 
 
 @app.route('/api/stats')
