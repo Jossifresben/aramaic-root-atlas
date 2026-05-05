@@ -2708,6 +2708,7 @@ def interlinear_page():
         t=lambda k, l=None: _t(k, lang),
         bn=_bn,
         books=books,
+        page_id='interlinear',
         initial_book=request.args.get('book', ''),
         initial_ch_start=request.args.get('ch_start', ''),
         initial_v_start=request.args.get('v_start', ''),

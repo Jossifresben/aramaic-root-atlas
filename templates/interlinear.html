@@ -1,17 +1,30 @@
 {% extends "base.html" %}
+{% set page_id = 'interlinear' %}
 {% block title %}{{ t('il_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
-{% block content %}
-<div class="container" style="max-width:1100px;margin:2rem auto;padding:0 1rem;">
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
+</div>
+{% endblock %}
 
-  <h1 class="page-title">{{ t('il_title', lang) }}</h1>
-  <p class="page-subtitle" style="color:var(--muted);margin-bottom:1.5rem;">{{ t('il_subtitle', lang) }}</p>
+{% block content %}
+
+  <div class="page-head">
+    <div>
+      <h1 class="ph-title"><em>Interlinear</em> viewer</h1>
+      <p class="ph-sub">{{ t('il_subtitle', lang) }}</p>
+    </div>
+  </div>
 
   <!-- Controls -->
   <div class="interlinear-controls" id="il-controls">
 
-    <label>Corpus
-      <select id="il-corpus">
+    <div class="s-field">
+      <label class="s-label">Corpus</label>
+      <select class="s-select" id="il-corpus">
         <option value="">{{ t('all_corpora', lang) if t else 'All Corpora' }}</option>
         <option value="biblical_aramaic">Biblical Aramaic</option>
         <option value="targum_onkelos">Targum Onkelos</option>
@@ -19,42 +32,47 @@
         <option value="peshitta_ot">Peshitta OT</option>
         <option value="ephrem_nisibis">Ephrem — Nisibis</option>
       </select>
-    </label>
+    </div>
 
-    <label>{{ t('read_book', lang) if t else 'Book' }}
-      <select id="il-book">
+    <div class="s-field">
+      <label class="s-label">{{ t('read_book', lang) if t else 'Book' }}</label>
+      <select class="s-select" id="il-book">
         <option value="">— select —</option>
       </select>
-    </label>
+    </div>
 
-    <label>{{ t('il_from', lang) }}
-      <input type="text" id="il-ch-start" placeholder="ch:v" value="{{ initial_ch_start }}{% if initial_v_start %}:{{ initial_v_start }}{% endif %}" style="width:80px;">
-    </label>
+    <div class="s-field">
+      <label class="s-label">{{ t('il_from', lang) }}</label>
+      <input class="s-input" type="text" id="il-ch-start" placeholder="ch:v" value="{{ initial_ch_start }}{% if initial_v_start %}:{{ initial_v_start }}{% endif %}" style="width:80px;">
+    </div>
 
     <span class="il-range-sep">—</span>
 
-    <label>{{ t('il_to', lang) }}
-      <input type="text" id="il-ch-end" placeholder="ch:v" value="{{ initial_ch_end }}{% if initial_v_end %}:{{ initial_v_end }}{% endif %}" style="width:80px;">
-    </label>
+    <div class="s-field">
+      <label class="s-label">{{ t('il_to', lang) }}</label>
+      <input class="s-input" type="text" id="il-ch-end" placeholder="ch:v" value="{{ initial_ch_end }}{% if initial_v_end %}:{{ initial_v_end }}{% endif %}" style="width:80px;">
+    </div>
 
-    <label>{{ t('settings_script', lang) if t else 'Script' }}
-      <select id="il-script">
+    <div class="s-field">
+      <label class="s-label">{{ t('settings_script', lang) if t else 'Script' }}</label>
+      <select class="s-select" id="il-script">
         <option value="latin"{% if script == 'latin' %} selected{% endif %}>Latin</option>
         <option value="syriac"{% if script == 'syriac' %} selected{% endif %}>Syriac</option>
         <option value="hebrew"{% if script == 'hebrew' %} selected{% endif %}>Hebrew</option>
         <option value="arabic"{% if script == 'arabic' %} selected{% endif %}>Arabic</option>
       </select>
-    </label>
+    </div>
 
-    <label>{{ t('settings_syriac_font', lang) if t else 'Font' }}
-      <select id="il-font">
+    <div class="s-field">
+      <label class="s-label">{{ t('settings_syriac_font', lang) if t else 'Font' }}</label>
+      <select class="s-select" id="il-font">
         <option value="estrangela">Estrangela</option>
         <option value="eastern">Eastern</option>
         <option value="western">Western</option>
       </select>
-    </label>
+    </div>
 
-    <button class="il-analyze-btn" onclick="loadInterlinear()">{{ t('il_analyze', lang) }}</button>
+    <button class="btn" onclick="loadInterlinear()">{{ t('il_analyze', lang) }}</button>
 
   </div>
 
@@ -63,12 +81,10 @@
 
   <div id="il-action-bar" style="display:none;margin-bottom:1rem;">
     <div class="il-export-bar">
-      <button class="il-export-btn" onclick="exportTEI()">{{ t('il_export_tei', lang) }}</button>
-      <button class="il-export-btn" onclick="exportTXT()">{{ t('il_export_txt', lang) }}</button>
-      <button class="il-export-btn" onclick="exportCSV()">{{ t('il_export_csv', lang) }}</button>
-      <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
-          <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
-      </button>
+      <button class="btn secondary" onclick="exportTEI()">{{ t('il_export_tei', lang) }}</button>
+      <button class="btn secondary" onclick="exportTXT()">{{ t('il_export_txt', lang) }}</button>
+      <button class="btn secondary" onclick="exportCSV()">{{ t('il_export_csv', lang) }}</button>
+      <button class="btn secondary" onclick="openCiteModal(getCiteContext())">Cite</button>
       <label class="il-translation-toggle">
         <input type="checkbox" id="il-show-trans" checked onchange="toggleTranslation()">
         {{ t('il_translation_toggle', lang) }}
@@ -82,13 +98,12 @@
 
   <div id="il-body" class="interlinear-body"></div>
 
-</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-var LANG = '{{ lang }}';
-var TRANS = '{{ trans }}';
+var LANG = {{ lang|tojson }};
+var TRANS = {{ trans|tojson }};
 var _ilData = null;
 
 function parseChVerse(s) {
@@ -110,12 +125,6 @@ function loadInterlinear() {
     var from = parseChVerse(fromStr);
     var to   = toStr ? parseChVerse(toStr) : { ch: from.ch, v: 9999 };
 
-    var fontMap = { estrangela: "'Noto Sans Syriac', serif",
-                    eastern:    "'Noto Sans Syriac Eastern', serif",
-                    western:    "'Noto Sans Syriac Western', serif" };
-    var font = document.getElementById('il-font').value;
-    document.documentElement.style.setProperty('--syriac-font', fontMap[font] || fontMap.estrangela);
-
     var url = '/api/interlinear?book=' + encodeURIComponent(book)
             + '&ch_start=' + from.ch + '&v_start=' + from.v
             + '&ch_end='   + to.ch   + '&v_end='   + to.v
@@ -125,13 +134,13 @@ function loadInterlinear() {
             + '&trans='  + encodeURIComponent(TRANS);
 
     document.getElementById('il-body').innerHTML =
-        '<p style="color:var(--muted);padding:1rem;">Loading\u2026</p>';
+        '<p style="color:var(--ink-3);padding:1rem;">Loading…</p>';
     document.getElementById('il-action-bar').style.display = 'none';
     document.getElementById('il-nav').style.display = 'none';
     document.getElementById('il-truncated').style.display = 'none';
 
     fetch(url)
-        .then(function(r) { return r.json(); })
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function(data) {
             _ilData = data;
             renderInterlinear(data, book, from.ch, to.ch, script);
@@ -143,10 +152,10 @@ function loadInterlinear() {
 }
 
 function confClass(c) {
-    if (c >= 0.8) return 'il-root-high';
-    if (c >= 0.5) return 'il-root-med';
-    if (c > 0)    return 'il-root-low';
-    return 'il-root-none';
+    if (c >= 0.8) return 'high';
+    if (c >= 0.5) return 'med';
+    if (c > 0)    return 'low';
+    return 'none';
 }
 
 function escHtml(s) {
@@ -160,33 +169,28 @@ function renderInterlinear(data, book, chStart, chEnd, script) {
     var html = '';
 
     data.verses.forEach(function(v) {
-        html += '<div class="interlinear-verse" id="v' + v.chapter + '-' + v.verse + '">';
-        html += '<div class="interlinear-ref">' + escHtml(v.ref) + '</div>';
-        html += '<div class="interlinear-words">';
+        html += '<div class="il-verse" id="v' + v.chapter + '-' + v.verse + '">';
+        html += '<div class="il-ref">' + escHtml(v.ref) + '</div>';
+        html += '<div class="il-grid">';
 
         v.words.forEach(function(w) {
-            html += '<div class="il-word">';
-            html += '<span class="il-syriac">' + escHtml(w.syriac) + '</span>';
+            html += '<div class="il-tok">';
+            html += '<span class="syr">' + escHtml(w.syriac) + '</span>';
             if (script !== 'syriac') {
-                html += '<span class="il-translit' + (rtlScript ? ' il-rtl-script' : '') + '">'
-                      + escHtml(w.translit) + '</span>';
+                html += '<span class="tr">' + escHtml(w.translit) + '</span>';
             } else {
-                html += '<span class="il-translit" style="display:none"></span>';
+                html += '<span class="tr" style="display:none"></span>';
             }
-            html += '<span class="il-gloss">' + escHtml(w.gloss || '\u2014') + '</span>';
+            html += '<span class="gl">' + escHtml(w.gloss || '—') + '</span>';
             if (w.root) {
-                html += '<a class="il-root ' + confClass(w.confidence) + '" '
+                html += '<a class="root ' + confClass(w.confidence) + '" '
                       + 'href="/visualize/' + encodeURIComponent(w.root_key) + '?lang=' + LANG + '" '
                       + 'target="_blank" rel="noopener">' + escHtml(w.root) + '</a>';
             } else {
-                html += '<span class="il-root il-root-none">\u2014</span>';
+                html += '<span class="root none">—</span>';
             }
             if (w.stem) {
-                html += '<span class="il-stem"><span class="stem-badge stem-'
-                      + escHtml(w.stem.toLowerCase()) + '" style="font-size:.6rem;">'
-                      + escHtml(w.stem) + '</span></span>';
-            } else {
-                html += '<span class="il-stem"></span>';
+                html += '<span class="stem">' + escHtml(w.stem) + '</span>';
             }
             html += '</div>';
         });
@@ -194,14 +198,14 @@ function renderInterlinear(data, book, chStart, chEnd, script) {
         html += '</div>';
 
         var transDir = (TRANS === 'he' || TRANS === 'ar') ? ' dir="rtl"' : '';
-        html += '<div class="interlinear-translation' + (showTrans ? '' : ' il-trans-hidden') + '"'
+        html += '<div class="il-trans' + (showTrans ? '' : ' il-trans-hidden') + '"'
               + transDir + '>' + escHtml(v.translation || '') + '</div>';
 
         html += '</div>';
     });
 
     document.getElementById('il-body').innerHTML = html ||
-        '<p style="color:var(--muted);">No verses found for this range.</p>';
+        '<p style="color:var(--ink-3);">No verses found for this range.</p>';
 
     if (data.truncated) {
         document.getElementById('il-truncated').style.display = 'block';
@@ -209,9 +213,9 @@ function renderInterlinear(data, book, chStart, chEnd, script) {
 
     var navHtml = '';
     if (chStart > 1) {
-        navHtml += '<a href="#" onclick="jumpChapter(' + (chStart - 1) + ');return false;">\u2190 Ch ' + (chStart - 1) + '</a>';
+        navHtml += '<a href="#" onclick="jumpChapter(' + (chStart - 1) + ');return false;">← Ch ' + (chStart - 1) + '</a>';
     }
-    navHtml += '<a href="#" onclick="jumpChapter(' + (chEnd + 1) + ');return false;">Ch ' + (chEnd + 1) + ' \u2192</a>';
+    navHtml += '<a href="#" onclick="jumpChapter(' + (chEnd + 1) + ');return false;">Ch ' + (chEnd + 1) + ' →</a>';
     document.getElementById('il-nav').innerHTML = navHtml;
     document.getElementById('il-nav').style.display = 'flex';
     document.getElementById('il-action-bar').style.display = 'block';
@@ -225,7 +229,7 @@ function jumpChapter(ch) {
 
 function toggleTranslation() {
     var show = document.getElementById('il-show-trans').checked;
-    document.querySelectorAll('.interlinear-translation').forEach(function(el) {
+    document.querySelectorAll('.il-trans').forEach(function(el) {
         el.classList.toggle('il-trans-hidden', !show);
     });
 }
@@ -251,7 +255,7 @@ function exportTEI() {
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<TEI xmlns="http://www.tei-c.org/ns/1.0">',
         '  <teiHeader><fileDesc><titleStmt>',
-        '    <title>Aramaic Root Atlas \u2014 Interlinear: ' + escHtml(_ilData.book) + '</title>',
+        '    <title>Aramaic Root Atlas — Interlinear: ' + escHtml(_ilData.book) + '</title>',
         '  </titleStmt></fileDesc></teiHeader>',
         '  <text><body>',
         '    <div type="book" n="' + escHtml(_ilData.book) + '">'
@@ -310,7 +314,7 @@ function refreshBookList(preserveBook) {
     var corpus = document.getElementById('il-corpus').value;
     var url = '/api/books' + (corpus ? '?corpus=' + encodeURIComponent(corpus) : '');
     fetch(url)
-        .then(function(r) { return r.json(); })
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function(data) {
             var sel = document.getElementById('il-book');
             var prevBook = preserveBook || '';
