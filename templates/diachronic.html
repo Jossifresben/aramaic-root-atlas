@@ -131,6 +131,7 @@
         'peshitta_ot':      '#6b5a1a',
         'ephrem_nisibis':   '#7c3a1a',
     };
+    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
 
     function escHtml(s) {
         return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -184,7 +185,7 @@
                     var row = document.createElement('div');
                     row.className = 'diac-row';
                     row.innerHTML =
-                        '<span class="diac-label corpus-badge corpus-' + c.corpus_id + '" style="font-size:.72rem;">' + escHtml(c.label) + '</span>' +
+                        '<span class="diac-label cbadge ' + (CORPUS_ABBR[c.corpus_id] || c.corpus_id) + '" style="font-size:.72rem;">' + escHtml(c.label) + '</span>' +
                         '<div class="diac-bar-wrap">' +
                         '<div class="diac-bar-fill" style="width:' + pct + '%;background:' + (CORPUS_COLORS[c.corpus_id]||'var(--accent)') + ';"></div>' +
                         '</div>' +
@@ -203,7 +204,7 @@
                         return '<span dir="rtl" style="font-family:var(--syriac-font);margin-right:.3rem;">' + escHtml(f) + '</span>';
                     }).join('');
                     tr.innerHTML =
-                        '<td style="padding:.4rem .6rem;"><span class="corpus-badge corpus-' + c.corpus_id + '" style="font-size:.72rem;">' + escHtml(c.label) + '</span></td>' +
+                        '<td style="padding:.4rem .6rem;"><span class="cbadge ' + (CORPUS_ABBR[c.corpus_id] || c.corpus_id) + '" style="font-size:.72rem;">' + escHtml(c.label) + '</span></td>' +
                         '<td style="padding:.4rem .6rem;color:var(--muted);font-size:.8rem;">' + escHtml(c.period) + '</td>' +
                         '<td style="padding:.4rem .6rem;text-align:right;font-weight:' + (c.raw_count ? '600' : '400') + ';">' + (c.raw_count || '—') + '</td>' +
                         '<td style="padding:.4rem .6rem;text-align:right;color:var(--muted);">' + (c.normalized > 0 ? c.normalized.toFixed(3) : '—') + '</td>' +

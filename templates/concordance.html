@@ -113,8 +113,9 @@
         return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
+    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
     function corpusLabel(cid) {
-        var m = {'peshitta_nt':'NT','peshitta_ot':'OT','biblical_aramaic':'BA','targum_onkelos':'Tg'};
+        var m = {'peshitta_nt':'NT','peshitta_ot':'OT','biblical_aramaic':'BA','targum_onkelos':'Tg','ephrem_nisibis':'Eph'};
         return m[cid] || cid;
     }
 
@@ -213,7 +214,7 @@
             '<td class="kwic-right">' + escHtml((line.right_context||[]).join(' ')) + '</td>' +
             '<td class="kwic-ref" rowspan="2"><a href="' + readUrl + '" style="color:var(--accent);font-size:.75rem;">' + escHtml(ref) + '</a></td>' +
             '<td class="kwic-meta" rowspan="2">' +
-                '<span class="corpus-badge corpus-' + (line.corpus_id||'') + '" style="font-size:.65rem;padding:1px 5px;">' + corpusLabel(line.corpus_id||'') + '</span>' +
+                '<span class="cbadge ' + (CORPUS_ABBR[line.corpus_id||''] || line.corpus_id||'') + '" style="font-size:.65rem;padding:1px 5px;">' + corpusLabel(line.corpus_id||'') + '</span>' +
                 (line.stem ? ' <span class="stem-badge stem-' + line.stem.toLowerCase() + '" style="font-size:.65rem;">' + escHtml(line.stem) + '</span>' : '') +
             '</td>';
 

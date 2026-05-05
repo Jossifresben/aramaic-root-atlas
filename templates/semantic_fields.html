@@ -65,8 +65,10 @@ var currentScript = '{{ script }}';
 
 var _corpusLabels = {
     peshitta_nt: 'NT', peshitta_ot: 'OT',
-    biblical_aramaic: 'BA', targum_onkelos: 'TO'
+    biblical_aramaic: 'BA', targum_onkelos: 'TO',
+    ephrem_nisibis: 'Eph'
 };
+var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
 
 var _domainIcons = {
     'creation/cosmos': 'public',
@@ -155,7 +157,7 @@ function loadField(field, label) {
                 rows += '<td>';
                 Object.entries(r.corpus_counts || {}).forEach(function(e) {
                     var lbl = _corpusLabels[e[0]] || e[0];
-                    rows += '<span class="corpus-badge corpus-' + e[0] + '" style="white-space:nowrap;display:inline-block;margin-bottom:2px">' + lbl + ' ' + e[1] + '</span>';
+                    rows += '<span class="cbadge ' + (CORPUS_ABBR[e[0]] || e[0]) + '" style="white-space:nowrap;display:inline-block;margin-bottom:2px">' + lbl + ' ' + e[1] + '</span>';
                 });
                 rows += '</td>';
                 rows += '<td style="text-align:right;white-space:nowrap"><strong>' + r.total_occurrences + '</strong></td>';

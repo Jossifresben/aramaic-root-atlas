@@ -364,9 +364,11 @@
         peshitta_nt:      'NT',
         peshitta_ot:      'OT',
         biblical_aramaic: 'BA',
-        targum_onkelos:   'Targ'
+        targum_onkelos:   'Targ',
+        ephrem_nisibis:   'Eph'
     };
-    var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos'];
+    var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos', 'ephrem_nisibis'];
+    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
 
     function renderTopRoots(roots) {
         var tbody  = document.getElementById('pp-roots-tbody');
@@ -380,7 +382,7 @@
             var att = r.corpus_attestation || {};
             CORPUS_ORDER.forEach(function(cid) {
                 if (att[cid] > 0) {
-                    pillsHtml += '<span class="corpus-badge corpus-' + cid + '" style="font-size:.6rem;padding:1px 5px;margin:1px 2px 0 0;display:inline-block;">'
+                    pillsHtml += '<span class="cbadge ' + (CORPUS_ABBR[cid] || cid) + '" style="font-size:.6rem;padding:1px 5px;margin:1px 2px 0 0;display:inline-block;">'
                                + escHtml(CORPUS_LABELS[cid]) + '</span>';
                 }
             });

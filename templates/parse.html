@@ -232,10 +232,12 @@
             cogEl.innerHTML = '<span style="color:var(--muted);font-size:.85rem;">—</span>';
         }
 
-        // Corpus attestations — reuse .corpus-badge classes
-        var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos'];
+        // Corpus attestations — use .cbadge classes
+        var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos', 'ephrem_nisibis'];
         var CORPUS_LABELS = {peshitta_nt: 'Pesh. NT', peshitta_ot: 'Pesh. OT',
-                             biblical_aramaic: 'Bibl. Aram.', targum_onkelos: 'Targ. Onk.'};
+                             biblical_aramaic: 'Bibl. Aram.', targum_onkelos: 'Targ. Onk.',
+                             ephrem_nisibis: 'Ephrem Nis.'};
+        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
         var corpEl = document.getElementById('parse-corpus');
         corpEl.innerHTML = '';
         var hasCorpus = false;
@@ -244,7 +246,7 @@
             if (!n) return;
             hasCorpus = true;
             var badge = document.createElement('span');
-            badge.className = 'corpus-badge corpus-' + cid;
+            badge.className = 'cbadge ' + (CORPUS_ABBR[cid] || cid);
             badge.style.cssText = 'font-size:.68rem;padding:2px 7px;';
             badge.textContent = (CORPUS_LABELS[cid] || cid) + '\u00a0' + n + '\u00d7';
             corpEl.appendChild(badge);

@@ -179,6 +179,7 @@
         var LANG = {{ lang|tojson }};
         var SCRIPT = {{ script|tojson }};
         var TRANS = {{ trans|tojson }};
+        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
 
         // Colors
         var COLOR_CENTER = '#8B4513';
@@ -303,7 +304,7 @@
                               'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
                 for (var cid in data.corpus_attestation) {
                     var badge = document.createElement('span');
-                    badge.className = 'corpus-badge corpus-' + cid;
+                    badge.className = 'cbadge ' + (CORPUS_ABBR[cid] || cid);
                     badge.textContent = (labels[cid] || cid) + ': ' + data.corpus_attestation[cid] + '\u00d7';
                     attEl.appendChild(badge);
                 }
@@ -496,7 +497,7 @@
                         var pct = maxNorm > 0 ? Math.round(c.normalized / maxNorm * 100) : 0;
                         var row = document.createElement('div');
                         row.style.cssText = 'display:flex;align-items:center;gap:.4rem;margin:.2rem 0;font-size:.78rem;';
-                        row.innerHTML = '<span class="corpus-badge corpus-' + c.corpus_id + '" style="width:7rem;font-size:.7rem;">' + escHtml(c.label) + '</span>' +
+                        row.innerHTML = '<span class="cbadge ' + (CORPUS_ABBR[c.corpus_id] || c.corpus_id) + '" style="width:7rem;font-size:.7rem;">' + escHtml(c.label) + '</span>' +
                             '<div style="flex:1;background:var(--border);border-radius:3px;height:8px;overflow:hidden;">' +
                             '<div style="width:' + pct + '%;height:100%;background:var(--accent);opacity:.75;"></div></div>' +
                             '<span style="width:2.5rem;text-align:right;color:var(--muted);">' + (c.raw_count || '—') + '</span>';

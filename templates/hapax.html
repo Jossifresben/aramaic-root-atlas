@@ -104,8 +104,9 @@
         el.addEventListener('change', loadHapax);
     });
 
+    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
     function corpusLabel(cid) {
-        var map = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos'};
+        var map = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos','ephrem_nisibis':'Ephrem Nisibis'};
         return map[cid] || cid;
     }
 
@@ -149,7 +150,7 @@
                 var ref = (row.references || [])[0] || '';
                 var corpAtt = row.corpus_attestation || {};
                 var corpBadges = Object.keys(corpAtt).map(function(cid) {
-                    return '<span class="corpus-badge corpus-' + cid + '" style="font-size:.68rem;padding:1px 6px;">' + corpusLabel(cid) + '</span>';
+                    return '<span class="cbadge ' + (CORPUS_ABBR[cid] || cid) + '" style="font-size:.68rem;padding:1px 6px;">' + corpusLabel(cid) + '</span>';
                 }).join(' ');
                 var tier = confTier(row.confidence || 0.5);
                 var readUrl = '/read/' + encodeURIComponent((ref.split(' ')[0]||'')) + '/' + encodeURIComponent((ref.split(' ')[1]||'').split(':')[0]||'1') + '?lang=' + LANG;
