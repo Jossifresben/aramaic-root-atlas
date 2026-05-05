@@ -139,7 +139,7 @@ function renderAnnotations() {
         var rh = '';
         rootEntries.forEach(function(entry) {
             var key = entry[0], note = entry[1];
-            var vizUrl = '/visualize/' + encodeURIComponent(key) + '?lang=' + currentLang;
+            var vizUrl = '/visualize/' + encodeURIComponent(key) + '?lang=' + currentLang + '&tab=ficha';
             rh += '<div class="bm-card">';
             rh += '<div class="bm-card-header"><a class="bm-ref" href="' + escHtml(vizUrl) + '">' + escHtml(key.toUpperCase()) + '</a>';
             rh += '<span class="bm-date" style="font-size:0.78rem;color:var(--ink-3);margin-left:0.5rem">' + escHtml(note.updated || note.created || '') + '</span></div>';

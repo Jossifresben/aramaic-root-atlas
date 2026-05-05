@@ -243,7 +243,7 @@
                     var abbr = CORPUS_ABBR[c.corpus_id] || c.corpus_id;
                     var tr = document.createElement('tr');
                     var formsBadges = (c.forms||[]).slice(0,5).map(function(f) {
-                        return '<span dir="rtl" style="font-family:var(--syr);margin-right:.3rem;">' + escHtml(f) + '</span>';
+                        return '<span dir="rtl" style="font-family:var(--syr);font-size:1.3rem;line-height:1.4;margin-right:.4rem;">' + escHtml(f) + '</span>';
                     }).join('');
                     tr.innerHTML =
                         '<td><span class="cbadge ' + abbr + '" style="font-size:.72rem;">' + escHtml(c.label) + '</span></td>' +
@@ -347,7 +347,7 @@
                     });
                     sparkSvg += '</svg>';
 
-                    var vizUrl = '/visualize/' + encodeURIComponent(row.root_translit) + '?lang=' + LANG;
+                    var vizUrl = '/visualize/' + encodeURIComponent(row.root_translit) + '?lang=' + LANG + '&tab=ficha';
                     var dirBadge = row.direction === 'emerging'
                         ? '<span style="background:#d1fae5;color:#065f46;padding:1px 7px;border-radius:10px;font-size:.72rem;font-weight:600;">↑ Emerging</span>'
                         : '<span style="background:#fee2e2;color:#991b1b;padding:1px 7px;border-radius:10px;font-size:.72rem;font-weight:600;">↓ Declining</span>';

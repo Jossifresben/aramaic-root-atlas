@@ -355,7 +355,7 @@
 
             var tr  = document.createElement('tr');
             tr.style.borderBottom = '1px solid var(--line)';
-            var vizUrl = '/visualize/' + encodeURIComponent(r.root_key) + '?lang=' + LANG;
+            var vizUrl = '/visualize/' + encodeURIComponent(r.root_key) + '?lang=' + LANG + '&tab=ficha';
             tr.innerHTML =
                 '<td style="padding:.3rem .4rem;">' +
                   '<a href="' + vizUrl + '" style="font-family:var(--syr);font-size:1.4rem;line-height:1.2;color:var(--ink);text-decoration:none;" dir="rtl" title="' + escHtml(r.root_key) + '">' + escHtml(r.root) + '</a>' +

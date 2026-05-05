@@ -161,13 +161,13 @@
                 }).join(' ');
                 var tier = confTier(row.confidence || 0.5);
                 var readUrl = '/read/' + encodeURIComponent((ref.split(' ')[0]||'')) + '/' + encodeURIComponent((ref.split(' ')[1]||'').split(':')[0]||'1') + '?lang=' + LANG;
-                var vizUrl = '/visualize/' + encodeURIComponent(row.root_translit) + '?lang=' + LANG;
+                var vizUrl = '/visualize/' + encodeURIComponent(row.root_translit) + '?lang=' + LANG + '&tab=ficha';
                 var tr = document.createElement('tr');
                 tr.innerHTML =
                     '<td class="hx-root"><a href="' + vizUrl + '" style="text-decoration:none;color:inherit;">' + escHtml(row.root) + '</a></td>' +
                     '<td style="font-size:.82rem;"><a href="' + vizUrl + '" style="color:var(--accent);text-decoration:none;">' + escHtml(row.root_translit) + '</a></td>' +
                     '<td style="font-style:italic;color:var(--ink-3);font-size:.82rem;">' + escHtml(row.gloss || '') + '</td>' +
-                    '<td dir="rtl" style="font-family:var(--syr);">' + escHtml(row.form || '') + '</td>' +
+                    '<td dir="rtl" style="font-family:var(--syr);font-size:20px;line-height:1.3;">' + escHtml(row.form || '') + '</td>' +
                     '<td style="text-align:center;font-weight:600;">' + row.count + '</td>' +
                     '<td style="font-size:.78rem;"><a href="' + readUrl + '" style="color:var(--accent);">' + escHtml(ref) + '</a></td>' +
                     '<td>' + corpBadges + '</td>' +

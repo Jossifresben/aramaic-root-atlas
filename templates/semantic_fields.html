@@ -153,7 +153,7 @@ function loadField(field, label) {
             var rows = '';
             (data.roots || []).forEach(function(r) {
                 rows += '<tr>';
-                var vizUrl = '/visualize/' + encodeURIComponent(r.key) + '?lang=' + currentLang;
+                var vizUrl = '/visualize/' + encodeURIComponent(r.key) + '?lang=' + currentLang + '&tab=ficha';
                 rows += '<td>';
                 rows += '<a href="' + vizUrl + '" class="wp-link">';
                 if (r.root) rows += '<span class="syriac" dir="rtl" style="font-size:1.2rem;margin-right:0.4rem">' + r.root + '</span>';
