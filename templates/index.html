@@ -382,7 +382,7 @@ async function doRootSearch(noScroll) {
         const overflow = m.references.length > 20 ? m.references.length - 20 : 0;
         let refHtml = refs20.map(r =>
             `<span class="ref-link" data-ref="${r}" data-form="${m.form}" data-root="${data.root}" data-root-translit="${data.root_transliteration}" onclick="toggleContext(this)">${translateRef(r)}</span>`
-        ).join(' ');
+        ).join('<span class="ref-sep">·</span>');
         if (overflow) refHtml += ` <span class="ref-more">... +${overflow}</span>`;
 
         html += `<tr>
