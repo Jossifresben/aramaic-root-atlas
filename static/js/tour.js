@@ -43,7 +43,7 @@
         // Step 4: Quick search bar (always present)
         addStep(steps, '.quick-search', {
             title: t('search_title') || 'Quick Search',
-            description: t('search_body') || 'Type any root or text here. Press ⌘K from anywhere to focus.',
+            description: t('search_body') || 'Type a triliteral root (e.g. SH-L-M) to search across all five Aramaic corpora. Press ⌘K from anywhere to focus.',
             side: 'bottom', align: 'start'
         });
 
