@@ -173,19 +173,23 @@
   </div>
 </div>
 
-<div class="parallel-controls">
-    <label>{{ t('book', lang) }}:</label>
-    <select id="par-book">
-        {% for b_name, b_ch in books %}
-        <option value="{{ b_name }}" data-chapters="{{ b_ch }}"{% if b_name == book %} selected{% endif %}>{{ bn(b_name, lang) }}</option>
-        {% endfor %}
-    </select>
-    <label>{{ t('chapter', lang) }}:</label>
-    <select id="par-chapter">
-        {% for i in range(1, 151) %}
-        <option value="{{ i }}"{% if i == chapter|int %} selected{% endif %}>{{ i }}</option>
-        {% endfor %}
-    </select>
+<div class="interlinear-controls">
+    <div class="s-field wide">
+        <label class="s-label">{{ t('book', lang) }}</label>
+        <select class="s-select" id="par-book">
+            {% for b_name, b_ch in books %}
+            <option value="{{ b_name }}" data-chapters="{{ b_ch }}"{% if b_name == book %} selected{% endif %}>{{ bn(b_name, lang) }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="s-field narrow">
+        <label class="s-label">{{ t('chapter', lang) }}</label>
+        <select class="s-select" id="par-chapter">
+            {% for i in range(1, 151) %}
+            <option value="{{ i }}"{% if i == chapter|int %} selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+        </select>
+    </div>
 </div>
 
 <div class="parallel-nav" id="parallel-nav-top" style="display:none">
