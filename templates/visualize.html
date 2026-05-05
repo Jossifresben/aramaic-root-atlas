@@ -4,7 +4,7 @@
 {% block title %}Aramaic Root Atlas — {{ root_key }}{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a> › <a href="/browse?lang={{ lang }}">Browse</a></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a> › <a href="/browse?lang={{ lang }}">{{ t('nav_browse_title', lang) if t else 'Browse' }}</a></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -14,7 +14,7 @@
 
 {% block content %}
     <div class="page-head">
-        <h1 class="ph-title">Root <em>Visualizer</em></h1>
+        <h1 class="ph-title">{{ t('viz_root_family', lang) if t else 'Root' }} <em>{{ t('viz_title', lang) if t else 'Visualizer' }}</em></h1>
     </div>
 
         <div id="viz-loading" class="viz-loading">
@@ -136,7 +136,7 @@
                                         <th>{{ t('viz_col_syriac') }}</th>
                                         <th>{{ t('viz_col_hebrew') }}</th>
                                         <th>{{ t('viz_col_arabic') }}</th>
-                                        <th>Ελληνικά (Greek)</th>
+                                        <th>{{ t('viz_greek_col', lang) if t else 'Greek (Ελληνικά)' }}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="ficha-table-body"></tbody>

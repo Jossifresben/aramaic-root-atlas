@@ -103,7 +103,7 @@
 {% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b>Frequency Map</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('heatmap_crumb', lang) if t else 'Frequency Map' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -116,14 +116,14 @@
 <p class="heatmap-info">{{ t('heatmap_desc', lang) }}</p>
 
 <div class="heatmap-controls">
-    <label>{{ t('show', lang) }}:</label>
+    <label>{{ t('heatmap_show', lang) if t else 'Show' }}:</label>
     <select id="hm-limit" onchange="loadHeatmap()">
         <option value="100" selected>100</option>
         <option value="200">200</option>
         <option value="500">500</option>
-        <option value="0">All</option>
+        <option value="0">{{ t('all', lang) if t else 'All' }}</option>
     </select>
-    <label>roots</label>
+    <label>{{ t('heatmap_roots', lang) if t else 'roots' }}</label>
     <input type="text" id="hm-filter" placeholder="Filter roots (e.g. SH-L-M, peace, ܫܠܡ)" oninput="filterHeatmap()" style="min-width:260px">
     <div class="heatmap-export">
         <button onclick="exportHeatmapCSV()">CSV</button>
@@ -137,6 +137,18 @@
 {% block scripts %}
 <script>
 var _hmData = null;
+var _HM_I18N = {
+    colRoot:     '{{ t("heatmap_col_root", lang) if t else "Root" }}',
+    colTranslit: '{{ t("heatmap_col_translit", lang) if t else "Translit" }}',
+    colGloss:    '{{ t("heatmap_col_gloss", lang) if t else "Gloss" }}',
+    colTotal:    '{{ t("heatmap_col_total", lang) if t else "Total" }}',
+    showMore:    '{{ t("heatmap_show_more", lang) if t else "Show more" }}',
+    showingAll:  '{{ t("heatmap_showing_all", lang) if t else "Showing all" }}',
+    showing:     '{{ t("heatmap_showing", lang) if t else "Showing" }}',
+    of:          '{{ t("heatmap_of", lang) if t else "of" }}',
+    remaining:   '{{ t("heatmap_remaining", lang) if t else "remaining" }}',
+    heatmapRoots:'{{ t("heatmap_roots", lang) if t else "roots" }}'
+};
 var _hmAllRoots = [];
 var _hmCorpora = [];
 var _hmMaxCounts = {};
@@ -171,10 +183,10 @@ async function loadHeatmap(sortCol) {
     }
 
     var html = '<table class="heatmap-table"><thead><tr>';
-    html += '<th onclick="loadHeatmap(\'root\')">Root <span class="sort-arrow">' + (_hmSort === 'root' ? '▼' : '') + '</span></th>';
-    html += '<th>Translit</th>';
-    html += '<th>Gloss</th>';
-    html += '<th onclick="loadHeatmap(\'total\')">Total <span class="sort-arrow">' + (_hmSort === 'total' ? '▼' : '') + '</span></th>';
+    html += '<th onclick="loadHeatmap(\'root\')">' + _HM_I18N.colRoot + ' <span class="sort-arrow">' + (_hmSort === 'root' ? '▼' : '') + '</span></th>';
+    html += '<th>' + _HM_I18N.colTranslit + '</th>';
+    html += '<th>' + _HM_I18N.colGloss + '</th>';
+    html += '<th onclick="loadHeatmap(\'total\')">' + _HM_I18N.colTotal + ' <span class="sort-arrow">' + (_hmSort === 'total' ? '▼' : '') + '</span></th>';
     for (var c of _hmCorpora) {
         html += '<th onclick="loadHeatmap(\'' + c + '\')">' + (CORPUS_LABELS[c] || c) + ' <span class="sort-arrow">' + (_hmSort === c ? '▼' : '') + '</span></th>';
     }
@@ -214,11 +226,11 @@ function showMoreRows() {
     if (_hmDisplayed < source.length) {
         var remaining = source.length - _hmDisplayed;
         moreEl.innerHTML = '<div class="show-more-wrap">' +
-            '<button class="show-more-btn" onclick="showMoreRows()">Show more</button>' +
-            '<div class="show-more-info">Showing ' + _hmDisplayed + ' of ' + source.length + ' roots (' + remaining + ' remaining)</div>' +
+            '<button class="show-more-btn" onclick="showMoreRows()">' + _HM_I18N.showMore + '</button>' +
+            '<div class="show-more-info">' + _HM_I18N.showing + ' ' + _hmDisplayed + ' ' + _HM_I18N.of + ' ' + source.length + ' ' + _HM_I18N.heatmapRoots + ' (' + remaining + ' ' + _HM_I18N.remaining + ')</div>' +
             '</div>';
     } else {
-        moreEl.innerHTML = '<p class="heatmap-info" style="text-align:center">Showing all ' + source.length + ' roots</p>';
+        moreEl.innerHTML = '<p class="heatmap-info" style="text-align:center">' + _HM_I18N.showingAll + ' ' + source.length + ' ' + _HM_I18N.heatmapRoots + '</p>';
     }
 }
 
