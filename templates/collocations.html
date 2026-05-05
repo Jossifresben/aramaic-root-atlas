@@ -4,7 +4,7 @@
 {% block title %}{{ t('coll_title', lang) if t else 'Collocations' }} — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b>Collocations</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('coll_title', lang) if t else 'Collocations' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -31,11 +31,11 @@
 
         <select id="coll-corpus" class="coll-select">
             <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
-            <option value="biblical_aramaic">Biblical Aramaic</option>
-            <option value="targum_onkelos">Targum Onkelos</option>
-            <option value="peshitta_nt">Peshitta NT</option>
-            <option value="peshitta_ot">Peshitta OT</option>
-            <option value="ephrem_nisibis">Ephrem — Nisibis</option>
+            <option value="biblical_aramaic">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</option>
+            <option value="targum_onkelos">{{ t('corpus_targum_onkelos', lang) if t else 'Targum Onkelos' }}</option>
+            <option value="peshitta_nt">{{ t('corpus_peshitta_nt', lang) if t else 'Peshitta NT' }}</option>
+            <option value="peshitta_ot">{{ t('corpus_peshitta_ot', lang) if t else 'Peshitta OT' }}</option>
+            <option value="ephrem_nisibis">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</option>
         </select>
 
         <select id="coll-scope" class="coll-select">

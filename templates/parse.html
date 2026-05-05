@@ -3,7 +3,7 @@
 {% block title %}{{ t('parse_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b>Word Parser</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('parse_title', lang) if t else 'Word Parser' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -81,7 +81,7 @@
                     {{ t('parse_cognates', lang) }}
                 </div>
                 <div id="parse-cognates" style="margin-bottom:.9rem;line-height:1.7;"></div>
-                <div style="font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;font-family:var(--sans);font-weight:500;">Corpora</div>
+                <div style="font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;font-family:var(--sans);font-weight:500;">{{ t('parse_corpora_label', lang) if t else 'Corpora' }}</div>
                 <div id="parse-corpus" style="display:flex;flex-wrap:wrap;gap:.35rem;"></div>
             </div>
         </div>
