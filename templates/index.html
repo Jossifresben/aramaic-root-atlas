@@ -185,6 +185,16 @@
 
 {% block scripts %}
 <script>
+// --- Scroll helper: accounts for sticky topbar ---
+function scrollToEl(el) {
+    var topbar = document.querySelector('.topbar');
+    var offset = topbar ? topbar.offsetHeight + 8 : 8;
+    var container = document.querySelector('.main') || document.documentElement;
+    var elTop = el.getBoundingClientRect().top;
+    var containerTop = container.getBoundingClientRect().top;
+    container.scrollBy({ top: elTop - containerTop - offset, behavior: 'smooth' });
+}
+
 // --- Book name translations ---
 var BOOK_NAMES = {{ book_names_json|safe if book_names_json else '{}' }};
 function translateBook(name) { return BOOK_NAMES[name] || name; }
@@ -420,7 +430,7 @@ async function doRootSearch(noScroll) {
     _bmRootKey = rootBmKey;
     _bmRootSyriac = rootBmSyriac;
     _bmRootGloss = rootBmGloss;
-    if (!noScroll) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!noScroll) scrollToEl(el);
 }
 
 // --- Result tab switching (within root card) ---
@@ -434,7 +444,7 @@ function switchResultTab(btn) {
         panel.style.display = '';
         var banner = document.querySelector('.root-header-banner');
         if (banner) {
-            banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            scrollToEl(banner);
         }
     }
 }
@@ -693,7 +703,7 @@ document.getElementById('cognate-search-btn').addEventListener('click', async fu
     if (!word) return;
     var el = document.getElementById('results');
     el.innerHTML = '<p style="text-align:center">Searching...</p>';
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToEl(el);
     var res = await fetch('/api/cognate-lookup?word=' + encodeURIComponent(word));
     var data = await res.json();
     if (!data.results || !data.results.length) {
@@ -736,7 +746,7 @@ document.getElementById('meaning-search-btn').addEventListener('click', async fu
     if (!q) return;
     var el = document.getElementById('results');
     el.innerHTML = '<p style="text-align:center">Searching...</p>';
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToEl(el);
     var res = await fetch('/api/reverse-search?q=' + encodeURIComponent(q) + '&lang={{ lang }}');
     var data = await res.json();
     if (!data.results || !data.results.length) {
@@ -782,7 +792,7 @@ document.getElementById('prox-search-btn').addEventListener('click', async funct
     if (!r1 || !r2) return;
     var el = document.getElementById('results');
     el.innerHTML = '<p style="text-align:center">Searching...</p>';
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToEl(el);
     var proxCorpus = document.getElementById('proxCorpusFilter').value;
     var params = new URLSearchParams({root1: r1, root2: r2, scope: scope, lang: '{{ lang }}'});
     if (proxCorpus) params.set('corpus', proxCorpus);
@@ -927,7 +937,7 @@ document.getElementById('text-search-btn').addEventListener('click', async funct
 
     var el = document.getElementById('results');
     el.innerHTML = '<p style="text-align:center">Searching...</p>';
-    if (!skipScroll) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!skipScroll) scrollToEl(el);
 
     var res = await fetch('/api/search?' + params);
     var data = await res.json();
