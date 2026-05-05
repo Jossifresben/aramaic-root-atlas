@@ -28,7 +28,7 @@
   // ── Sidebar nav data — Flask URL routing ────────────────
   var NAV = {
     explore: [
-      { id:'search',      href:'/',               label:'Search',         kbd:'/',
+      { id:'search',      href:'/',               label:'Trace Root',     kbd:'/',
         ic:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>' },
       { id:'browse',      href:'/browse',          label:'Browse corpora',
         ic:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
@@ -142,30 +142,79 @@
   });
 
   function wireQuickSearch(){
-    // ⌘K / Ctrl+K focuses the topbar quick-search
+    var qInp  = document.getElementById('quick-search-input');
+    var qList = document.getElementById('quick-search-list');
+    var qTimer = null;
+
+    function escHtml(s){
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function closeList(){
+      if(qList){ qList.innerHTML=''; qList.hidden=true; }
+    }
+    function navigate(q){
+      var isRoot = /^[a-zA-Z'-]{2,}(-[a-zA-Z'-]+)*$/.test(q) || /[܀-ݏ]/.test(q);
+      var lang = document.documentElement.lang || 'en';
+      if(isRoot){
+        window.location.href = '/?q='+encodeURIComponent(q.toUpperCase())+'&lang='+lang+'&tab=root';
+      } else {
+        window.location.href = '/?q='+encodeURIComponent(q)+'&lang='+lang+'&tab=text';
+      }
+    }
+
+    // ⌘K / Ctrl+K — focus the quick-search from anywhere
     document.addEventListener('keydown', function(e){
       if((e.metaKey || e.ctrlKey) && e.key === 'k'){
         e.preventDefault();
-        var inp = document.getElementById('quick-search-input');
-        if(inp){ inp.focus(); inp.select(); }
+        if(qInp){ qInp.focus(); qInp.select(); }
       }
     });
 
-    // Enter in the quick-search navigates to the search page
-    document.addEventListener('keydown', function(e){
+    if(!qInp || !qList) return;
+
+    // Live suggestions from /api/suggest
+    qInp.addEventListener('input', function(){
+      var v = this.value.trim();
+      clearTimeout(qTimer);
+      if(!v){ closeList(); return; }
+      qTimer = setTimeout(function(){
+        fetch('/api/suggest?prefix='+encodeURIComponent(v))
+          .then(function(r){ return r.json(); })
+          .then(function(data){
+            if(!data.length){ closeList(); return; }
+            qList.innerHTML = data.map(function(d){
+              return '<div class="qs-item" data-root="'+escHtml(d.translit)+'">'
+                +'<span class="qs-syr">'+escHtml(d.root)+'</span>'
+                +'<span class="qs-tr">'+escHtml(d.translit)+'</span>'
+                +'<span class="qs-ct">'+escHtml(String(d.count))+'</span>'
+                +'</div>';
+            }).join('');
+            qList.hidden = false;
+            qList.querySelectorAll('.qs-item').forEach(function(it){
+              it.addEventListener('click', function(){
+                var r = this.dataset.root;
+                closeList(); qInp.value = '';
+                window.location.href = '/visualize/'+encodeURIComponent(r)+'?tab=ficha';
+              });
+            });
+          })
+          .catch(function(){ closeList(); });
+      }, 150);
+    });
+
+    // Keyboard: Escape closes, Enter navigates
+    qInp.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){ closeList(); qInp.blur(); return; }
       if(e.key !== 'Enter') return;
-      var inp = document.getElementById('quick-search-input');
-      if(document.activeElement !== inp) return;
-      var q = inp.value.trim();
+      var q = qInp.value.trim();
       if(!q) return;
-      // Detect likely root (all caps + hyphens) vs text search
-      var isRoot = /^[A-Z'-]{2,}(-[A-Z'-]+)*$/.test(q) || /[܀-ݏ]/.test(q);
-      var lang = document.documentElement.lang || 'en';
-      if(isRoot){
-        window.location.href = '/?q=' + encodeURIComponent(q) + '&lang=' + lang + '&tab=root';
-      } else {
-        window.location.href = '/?q=' + encodeURIComponent(q) + '&lang=' + lang + '&tab=text';
-      }
+      closeList();
+      navigate(q);
+    });
+
+    // Click outside closes
+    document.addEventListener('click', function(e){
+      if(!qInp.contains(e.target) && !qList.contains(e.target)) closeList();
     });
   }
 })();
