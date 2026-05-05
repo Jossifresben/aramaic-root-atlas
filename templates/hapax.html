@@ -157,7 +157,7 @@
                 var ref = (row.references || [])[0] || '';
                 var corpAtt = row.corpus_attestation || {};
                 var corpBadges = Object.keys(corpAtt).map(function(cid) {
-                    return '<span class="cbadge ' + (CORPUS_ABBR[cid] || cid) + '" style="font-size:.68rem;padding:1px 6px;">' + corpusLabel(cid) + '</span>';
+                    return '<span class="cbadge ' + escHtml(CORPUS_ABBR[cid] || cid) + '" style="font-size:.68rem;padding:1px 6px;">' + escHtml(corpusLabel(cid)) + '</span>';
                 }).join(' ');
                 var tier = confTier(row.confidence || 0.5);
                 var readUrl = '/read/' + encodeURIComponent((ref.split(' ')[0]||'')) + '/' + encodeURIComponent((ref.split(' ')[1]||'').split(':')[0]||'1') + '?lang=' + LANG;
@@ -176,7 +176,9 @@
             });
         }).catch(function() {
             document.getElementById('hapax-loading').style.display = 'none';
-            document.getElementById('hapax-empty').style.display = 'block';
+            var emptyEl = document.getElementById('hapax-empty');
+            emptyEl.style.display = 'block';
+            emptyEl.textContent = 'Error loading results. Please try again.';
         });
     }
 
@@ -185,7 +187,7 @@
         if (fmt === 'json') {
             var blob = new Blob([JSON.stringify(currentData, null, 2)], {type:'application/json'});
             var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = 'hapax-legomena.json'; a.click();
+            a.download = 'hapax-legomena.json'; a.click(); URL.revokeObjectURL(a.href);
         } else {
             var rows = [['Root','Transliteration','Gloss','Form','Count','Reference','Corpora','Confidence']];
             currentData.forEach(function(r) {
@@ -197,7 +199,7 @@
             }).join('\n');
             var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
             var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = 'hapax-legomena.csv'; a.click();
+            a.download = 'hapax-legomena.csv'; a.click(); URL.revokeObjectURL(a.href);
         }
     };
 
