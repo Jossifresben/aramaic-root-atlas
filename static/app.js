@@ -72,8 +72,15 @@
     var side = document.querySelector('.side');
     if(!side) return;
     var active = side.dataset.page || 'search';
+    // Preserve current UI language across all nav links
+    var lang = document.documentElement.lang || 'en';
+    var langSuffix = lang !== 'en' ? '?lang=' + lang : '';
+    function withLang(href){
+      if(!langSuffix) return href;
+      return href + (href.indexOf('?') >= 0 ? '&lang=' + lang : '?lang=' + lang);
+    }
     function link(it){
-      return '<a href="'+it.href+'" class="side-link'+(it.id===active?' active':'')+'">'
+      return '<a href="'+withLang(it.href)+'" class="side-link'+(it.id===active?' active':'')+'">'
         +'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">'+it.ic+'</svg>'
         +it.label
         +(it.kbd?'<span class="kbd">'+it.kbd+'</span>':'')
@@ -81,7 +88,7 @@
     }
     var SI = window.SIDE_I18N || {};
     side.innerHTML = ''
-      +'<a href="/" class="brand">'
+      +'<a href="'+withLang('/')+'" class="brand">'
         +'<div class="brand-mark">ܐ</div>'
         +'<div class="brand-text"><div class="brand-name">Root Atlas</div>'
         +'<div class="brand-sub">Aramaic Corpora</div></div>'
