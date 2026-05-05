@@ -1,6 +1,15 @@
 {% extends "base.html" %}
+{% set page_id = 'about' %}
 
 {% block title %}{{ t('about_title', lang) if t else 'About' }} — Aramaic Root Atlas{% endblock %}
+
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
+</div>
+{% endblock %}
 
 {% block head %}
 <style>
@@ -48,7 +57,7 @@
     }
     .about-stat {
         background: var(--card-bg, #fff);
-        border: 1px solid var(--border, #ddd);
+        border: 1px solid var(--line, #ddd);
         border-radius: 8px;
         padding: 0.75rem 1.25rem;
         text-align: center;
@@ -62,7 +71,7 @@
     }
     .about-stat .stat-label {
         font-size: 0.85rem;
-        color: var(--muted, #888);
+        color: var(--ink-3, #888);
     }
     .about-table-wrap {
         overflow-x: auto;
@@ -76,7 +85,7 @@
     .about-table th,
     .about-table td {
         padding: 0.5rem 0.75rem;
-        border: 1px solid var(--border, #ddd);
+        border: 1px solid var(--line, #ddd);
         text-align: left;
     }
     [dir="rtl"] .about-table th,
@@ -99,7 +108,7 @@
     }
     .feature-card {
         background: var(--card-bg, #fff);
-        border: 1px solid var(--border, #ddd);
+        border: 1px solid var(--line, #ddd);
         border-radius: 8px;
         padding: 1rem 1.25rem;
     }
@@ -131,7 +140,7 @@
     }
     .use-case-list li {
         padding: 0.6rem 0;
-        border-bottom: 1px solid var(--border, #ddd);
+        border-bottom: 1px solid var(--line, #ddd);
         line-height: 1.6;
     }
     .use-case-list li:last-child {
@@ -143,9 +152,9 @@
     .about-credit {
         margin-top: 2.5rem;
         padding-top: 1.5rem;
-        border-top: 1px solid var(--border, #ddd);
+        border-top: 1px solid var(--line, #ddd);
         font-size: 0.95rem;
-        color: var(--muted, #888);
+        color: var(--ink-3, #888);
     }
     .about-credit a {
         color: var(--accent, #b8860b);
@@ -170,7 +179,7 @@
         transition: opacity .15s;
     }
     .watch-video-btn:hover { opacity: .85; }
-    .watch-video-btn .material-symbols-outlined { font-size: 1.3rem; }
+    .watch-video-btn svg { font-size: 1.3rem; }
     /* Video modal */
     #video-modal {
         display: none;
@@ -222,8 +231,7 @@
         transition: background .15s;
     }
     .video-modal-close:hover, .video-modal-fs:hover { background: rgba(255,255,255,.15); }
-    .video-modal-close .material-symbols-outlined,
-    .video-modal-fs .material-symbols-outlined { font-size: 1.4rem; }
+    .video-modal-close, .video-modal-fs { font-size: 1.4rem; }
     #about-video {
         width: 100%;
         display: block;
@@ -299,8 +307,7 @@
         {# Watch Video button #}
         <div class="watch-video-wrap">
             <button class="watch-video-btn" onclick="openVideoModal()">
-                <span class="material-symbols-outlined">play_circle</span>
-                {% if lang == 'es' %}Ver video{% elif lang == 'he' %}צפה בסרטון{% elif lang == 'ar' %}مشاهدة الفيديو{% else %}Watch Video{% endif %}
+                ▶ {% if lang == 'es' %}Ver video{% elif lang == 'he' %}צפה בסרטון{% elif lang == 'ar' %}مشاهدة الفيديو{% else %}Watch Video{% endif %}
             </button>
         </div>
 
@@ -842,11 +849,9 @@
         <div class="video-modal-bar">
             <span class="video-modal-title">Aramaic Root Atlas</span>
             <button class="video-modal-fs" onclick="toggleVideoFullscreen()" title="Fullscreen">
-                <span class="material-symbols-outlined" id="video-fs-icon">fullscreen</span>
+                <svg id="video-fs-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
             </button>
-            <button class="video-modal-close" onclick="closeVideoModal()" title="Close">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+            <button class="video-modal-close" onclick="closeVideoModal()" title="Close">&times;</button>
         </div>
         <video id="about-video" controls preload="none"
                src="{{ url_for('static', filename='video/AramaicRootAtlas.mp4') }}"

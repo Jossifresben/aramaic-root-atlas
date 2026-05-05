@@ -566,13 +566,14 @@ def bookmarks():
     book_names = _i18n.get(lang, {}).get('book_names', {})
     return render_template('bookmarks.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn,
-                           book_names_json=json.dumps(book_names, ensure_ascii=False))
+                           book_names_json=json.dumps(book_names, ensure_ascii=False),
+                           page_id='bookmarks')
 
 
 @app.route('/about')
 def about():
     lang = _get_lang()
-    return render_template('about.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn)
+    return render_template('about.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='about')
 
 
 @app.route('/api/verse')
@@ -931,7 +932,7 @@ def parse_page():
     initial_word = request.args.get('word', '')
     return render_template('parse.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn,
-                           initial_word=initial_word)
+                           initial_word=initial_word, page_id='parse')
 
 
 @app.route('/api/suggest')
@@ -1450,7 +1451,7 @@ def parallel():
 
     return render_template('parallel.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn, books=parallel_books,
-                           book=book, chapter=chapter)
+                           book=book, chapter=chapter, page_id='parallel')
 
 
 @app.route('/constellation')
@@ -1464,7 +1465,8 @@ def constellation():
     books = _corpus.get_books()
     return render_template('constellation.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn, books=books,
-                           book=book, chapter=chapter, v_start=v_start, v_end=v_end)
+                           book=book, chapter=chapter, v_start=v_start, v_end=v_end,
+                           page_id='constellation')
 
 
 @app.route('/api/chapter-roots')
@@ -1580,7 +1582,7 @@ def heatmap():
     """Root frequency heat map page."""
     lang = _get_lang()
     return render_template('heatmap.html', lang=lang, script=_get_script(),
-                           trans=_get_trans(), t=_t_proxy, bn=_bn)
+                           trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='heatmap')
 
 
 @app.route('/visualize/<root_key>')
@@ -1594,7 +1596,7 @@ def visualize(root_key):
         display_key = "'" + display_key[1:]
     return render_template('visualize.html', lang=lang, script=script,
                            trans=trans, t=_t_proxy, bn=_bn,
-                           root_key=display_key)
+                           root_key=display_key, page_id='visualize')
 
 
 @app.route('/api/root-family')
@@ -2683,7 +2685,8 @@ def passage_profile_page():
                            books=books,
                            initial_book=initial_book,
                            initial_ch_start=initial_ch_start,
-                           initial_ch_end=initial_ch_end)
+                           initial_ch_end=initial_ch_end,
+                           page_id='passage_profile')
 
 
 @app.route('/collocations')
@@ -2692,7 +2695,7 @@ def collocations_page():
     lang = _get_lang()
     initial_root = request.args.get('root', '')
     return render_template('collocations.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang),
-                           initial_root=initial_root)
+                           initial_root=initial_root, page_id='collocations')
 
 
 @app.route('/interlinear')
@@ -2721,7 +2724,7 @@ def interlinear_page():
 def annotations_page():
     _init()
     lang = _get_lang()
-    return render_template('annotations.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang))
+    return render_template('annotations.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang), page_id='annotations')
 
 
 _SEMANTIC_DOMAINS = [
@@ -2808,7 +2811,7 @@ def semantic_fields_page():
     lang = _get_lang()
     has_data = bool(_semantic_fields)
     return render_template('semantic_fields.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang),
-                           has_data=has_data)
+                           has_data=has_data, page_id='semantic_fields')
 
 
 if __name__ == '__main__':

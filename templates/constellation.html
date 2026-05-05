@@ -1,8 +1,15 @@
 {% extends "base.html" %}
+{% set page_id = 'constellation' %}
 
 {% block title %}{{ t.app_title }} — {{ t.constellation_title }}{% endblock %}
 
-
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
+</div>
+{% endblock %}
 
 {% block head %}
     <style>
@@ -241,7 +248,7 @@
                         <div style="margin-left:auto; display:flex; align-items:center; gap:4px;">
                             <div class="constellation-help-wrap" style="position:relative;">
                                 <button class="viz-fullscreen-btn" style="margin-left:0; cursor:help;" tabindex="-1">
-                                    <span class="material-symbols-outlined">help</span>
+                                    ?
                                 </button>
                                 <div class="constellation-help-tooltip">
                                     {% if lang == 'es' %}
@@ -300,7 +307,7 @@
                                 </div>
                             </div>
                             <button id="constellation-fullscreen" class="viz-fullscreen-btn" title="{{ t.fullscreen }}">
-                                <span class="material-symbols-outlined" id="fullscreen-icon">fullscreen</span>
+                                <svg id="fullscreen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
                             </button>
                         </div>
                     </div>

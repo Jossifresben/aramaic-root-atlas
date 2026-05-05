@@ -1,6 +1,15 @@
 {% extends "base.html" %}
+{% set page_id = 'visualize' %}
 
 {% block title %}Aramaic Root Atlas — {{ root_key }}{% endblock %}
+
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a> › <a href="/browse?lang={{ lang }}">Browse</a></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
+</div>
+{% endblock %}
 
 {% block content %}
     <div class="container">
@@ -15,12 +24,8 @@
         <div id="viz-container" class="viz-container" style="display:none;">
             <!-- Graph / Card tabs -->
             <div class="viz-view-tabs">
-                <button class="viz-view-tab active" id="tab-graph" onclick="switchVizTab('graph')">
-                    <span class="material-symbols-outlined">hub</span> {{ t('viz_graph_tab') }}
-                </button>
-                <button class="viz-view-tab" id="tab-ficha" onclick="switchVizTab('ficha')">
-                    <span class="material-symbols-outlined">badge</span> {{ t('viz_card_tab') }}
-                </button>
+                <button class="viz-view-tab active" id="tab-graph" onclick="switchVizTab('graph')">{{ t('viz_graph_tab') }}</button>
+                <button class="viz-view-tab" id="tab-ficha" onclick="switchVizTab('ficha')">{{ t('viz_card_tab') }}</button>
             </div>
 
             <!-- Graph view -->
@@ -41,7 +46,7 @@
                         {{ t('viz_click_bridge') }}
                     </span>
                     <button id="viz-fullscreen" class="viz-fullscreen-btn" title="Fullscreen">
-                        <span class="material-symbols-outlined" id="fullscreen-icon">fullscreen</span>
+                        <svg id="fullscreen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
                     </button>
                 </div>
                 <div id="viz-svg-wrap" class="viz-svg-wrap"></div>
@@ -63,8 +68,7 @@
                         <!-- Research note -->
                         <div class="ficha-note-area" id="ficha-note-area" style="margin-top:0.8rem">
                             <button class="ficha-note-toggle" id="ficha-note-toggle" onclick="toggleRootAnnotation()">
-                                <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">edit_note</span>
-                                <span id="ficha-note-toggle-label">{{ t('ann_add_note', lang) if t else 'Add note' }}</span>
+                                    <span id="ficha-note-toggle-label">{{ t('ann_add_note', lang) if t else 'Add note' }}</span>
                             </button>
                             <div class="ficha-note-block" id="ficha-note-block" style="display:none;margin-top:0.5rem">
                                 <textarea id="ficha-note-ta" class="verse-note-ta" maxlength="500" placeholder="{{ t('ann_placeholder', lang) if t else 'Add a research note...' }}" style="width:100%"></textarea>
@@ -79,10 +83,7 @@
 
                     <!-- Paradigmatic citation -->
                     <div class="ficha-section ficha-citation-section">
-                        <h3 class="ficha-section-title">
-                            <span class="material-symbols-outlined">menu_book</span>
-                            {{ t('viz_key_verse') }}
-                        </h3>
+                        <h3 class="ficha-section-title">{{ t('viz_key_verse') }}</h3>
                         <div class="ficha-citation-original" id="ficha-syriac"></div>
                         <div class="ficha-citation-translit" id="ficha-translit"></div>
                         <blockquote class="ficha-citation" id="ficha-verse"></blockquote>
@@ -97,28 +98,19 @@
 
                     <!-- Stem Distribution -->
                     <div class="ficha-section ficha-stems-section" id="ficha-stems-section" style="display:none;">
-                        <h3 class="ficha-section-title">
-                            <span class="material-symbols-outlined">bar_chart</span>
-                            {{ t('stem_distribution') }}
-                        </h3>
+                        <h3 class="ficha-section-title">{{ t('stem_distribution') }}</h3>
                         <div id="ficha-stem-bars"></div>
                     </div>
 
                     <!-- Paradigm Table -->
                     <div class="ficha-section ficha-paradigm-section" id="ficha-paradigm-section" style="display:none;">
-                        <h3 class="ficha-section-title">
-                            <span class="material-symbols-outlined">grid_on</span>
-                            {{ t('paradigm_table') }}
-                        </h3>
+                        <h3 class="ficha-section-title">{{ t('paradigm_table') }}</h3>
                         <div id="ficha-paradigm"></div>
                     </div>
 
                     <!-- Diachronic Usage -->
                     <div class="ficha-section ficha-diachronic-section" id="ficha-diachronic-section" style="display:none;">
-                        <h3 class="ficha-section-title">
-                            <span class="material-symbols-outlined">timeline</span>
-                            {{ t('diachronic_title') }}
-                        </h3>
+                        <h3 class="ficha-section-title">{{ t('diachronic_title') }}</h3>
                         <div id="ficha-diachronic-bars" class="diachronic-bars"></div>
                         <a id="ficha-diachronic-link" href="#" class="ficha-read-link" style="font-size:.8rem;margin-top:.5rem;display:inline-block;">
                             {{ t('diachronic_root_view') }} &rarr;
@@ -127,10 +119,7 @@
 
                     <!-- Sister roots -->
                     <div class="ficha-section ficha-sisters-section">
-                        <h3 class="ficha-section-title">
-                            <span class="material-symbols-outlined">share</span>
-                            {{ t('viz_sisters') }}
-                        </h3>
+                        <h3 class="ficha-section-title">{{ t('viz_sisters') }}</h3>
                         <div class="ficha-sisters" id="ficha-sisters"></div>
                         <p class="ficha-sisters-empty" id="ficha-sisters-empty" style="display:none;">
                             {{ t('viz_no_sisters') }}
@@ -139,10 +128,7 @@
 
                     <!-- All derivatives table -->
                     <div class="ficha-section ficha-derivatives-section">
-                        <h3 class="ficha-section-title">
-                            <span class="material-symbols-outlined">table_chart</span>
-                            {{ t('viz_all_derivatives') }}
-                        </h3>
+                        <h3 class="ficha-section-title">{{ t('viz_all_derivatives') }}</h3>
                         <div class="ficha-table-wrap">
                             <table class="ficha-table" id="ficha-table">
                                 <thead>
@@ -160,8 +146,7 @@
 
                     <!-- Concordance link -->
                     <div class="ficha-section" style="padding:.75rem 1rem;">
-                        <a id="ficha-concordance-link" href="#" class="btn-secondary" style="font-size:.85rem;">
-                            <span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">format_list_bulleted</span>
+                        <a id="ficha-concordance-link" href="#" class="btn secondary" style="font-size:.85rem;">
                             {{ t('concordance_view') }}
                         </a>
                     </div>
@@ -434,9 +419,9 @@
                     var row = document.createElement('div');
                     row.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin:.25rem 0;font-size:.85rem;';
                     row.innerHTML = '<span class="stem-badge stem-' + stem.toLowerCase() + '" style="width:6rem;text-align:center;">' + escHtml(stem) + '</span>' +
-                        '<div style="flex:1;background:var(--border);border-radius:3px;height:10px;overflow:hidden;">' +
+                        '<div style="flex:1;background:var(--line);border-radius:3px;height:10px;overflow:hidden;">' +
                         '<div style="width:' + pct + '%;height:100%;background:var(--accent);opacity:.7;"></div></div>' +
-                        '<span style="width:3rem;text-align:right;color:var(--muted);">' + stemDist[stem] + '\u00d7</span>';
+                        '<span style="width:3rem;text-align:right;color:var(--ink-3);">' + stemDist[stem] + '\u00d7</span>';
                     stemBars.appendChild(row);
                 });
             } else {
@@ -459,7 +444,7 @@
                         group.style.cssText = 'margin-bottom:.5rem;';
                         group.innerHTML = '<summary style="cursor:pointer;font-weight:600;padding:.3rem 0;">' +
                             '<span class="stem-badge stem-' + stem.toLowerCase() + '">' + escHtml(stem) + '</span>' +
-                            ' <span style="color:var(--muted);font-size:.8rem;">(' + stems[stem].length + ' forms)</span></summary>';
+                            ' <span style="color:var(--ink-3);font-size:.8rem;">(' + stems[stem].length + ' forms)</span></summary>';
                         var tbl = document.createElement('table');
                         tbl.className = 'ficha-table';
                         tbl.style.marginTop = '.25rem';
@@ -470,7 +455,7 @@
                             tr.innerHTML = '<td dir="rtl">' + escHtml(f.form) + '</td>' +
                                 '<td>' + escHtml(f.transliteration) + '</td>' +
                                 '<td>' + f.count + '</td>' +
-                                '<td style="font-size:.78rem;color:var(--muted);">' + escHtml((f.references||[])[0]||'') + '</td>';
+                                '<td style="font-size:.78rem;color:var(--ink-3);">' + escHtml((f.references||[])[0]||'') + '</td>';
                             tb.appendChild(tr);
                         });
                         tbl.appendChild(tb);
@@ -498,9 +483,9 @@
                         var row = document.createElement('div');
                         row.style.cssText = 'display:flex;align-items:center;gap:.4rem;margin:.2rem 0;font-size:.78rem;';
                         row.innerHTML = '<span class="cbadge ' + (CORPUS_ABBR[c.corpus_id] || c.corpus_id) + '" style="width:7rem;font-size:.7rem;">' + escHtml(c.label) + '</span>' +
-                            '<div style="flex:1;background:var(--border);border-radius:3px;height:8px;overflow:hidden;">' +
+                            '<div style="flex:1;background:var(--line);border-radius:3px;height:8px;overflow:hidden;">' +
                             '<div style="width:' + pct + '%;height:100%;background:var(--accent);opacity:.75;"></div></div>' +
-                            '<span style="width:2.5rem;text-align:right;color:var(--muted);">' + (c.raw_count || '—') + '</span>';
+                            '<span style="width:2.5rem;text-align:right;color:var(--ink-3);">' + (c.raw_count || '—') + '</span>';
                         diacBars.appendChild(row);
                     });
                 }).catch(function() { diacSec.style.display = 'none'; });

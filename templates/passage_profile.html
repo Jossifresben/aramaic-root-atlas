@@ -1,35 +1,44 @@
 {% extends "base.html" %}
+{% set page_id = 'passage_profile' %}
 {% block title %}{{ t('pp_title', lang) }} — Aramaic Root Atlas{% endblock %}
+
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width:1000px;margin:0 auto;padding:1.5rem 1rem;">
     <div style="margin-bottom:1.2rem;">
         <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('pp_title', lang) }}</h1>
-        <p style="color:var(--muted);margin:0;">{{ t('pp_subtitle', lang) }}</p>
+        <p style="color:var(--ink-3);margin:0;">{{ t('pp_subtitle', lang) }}</p>
     </div>
 
     <!-- Controls -->
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.5rem;padding:1rem;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);">
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.5rem;padding:1rem;background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius);">
         <div style="position:relative;">
-            <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.2rem;">{{ t('pp_book_label', lang) }}</label>
+            <label style="font-size:.75rem;color:var(--ink-3);display:block;margin-bottom:.2rem;">{{ t('pp_book_label', lang) }}</label>
             <input type="text" id="pp-book-input"
                    value="{{ bn(initial_book, lang) if initial_book else '' }}"
                    autocomplete="off" spellcheck="false"
                    placeholder="Book…"
-                   style="padding:.4rem .7rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);min-width:160px;font-size:.9rem;">
+                   style="padding:.4rem .7rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);min-width:160px;font-size:.9rem;">
             <input type="hidden" id="pp-book" value="{{ initial_book }}">
             <div id="pp-book-ac"
-                 style="display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,.15);max-height:240px;overflow-y:auto;"></div>
+                 style="display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,.15);max-height:240px;overflow-y:auto;"></div>
         </div>
         <div>
-            <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.2rem;">{{ t('pp_chapter_from', lang) }}</label>
+            <label style="font-size:.75rem;color:var(--ink-3);display:block;margin-bottom:.2rem;">{{ t('pp_chapter_from', lang) }}</label>
             <input type="number" id="pp-ch-start" min="1" value="{{ initial_ch_start or 1 }}"
-                   style="width:70px;padding:.4rem .6rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
+                   style="width:70px;padding:.4rem .6rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);">
         </div>
         <div>
-            <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.2rem;">{{ t('pp_chapter_to', lang) }}</label>
+            <label style="font-size:.75rem;color:var(--ink-3);display:block;margin-bottom:.2rem;">{{ t('pp_chapter_to', lang) }}</label>
             <input type="number" id="pp-ch-end" min="1" value="{{ initial_ch_end or 1 }}"
-                   style="width:70px;padding:.4rem .6rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
+                   style="width:70px;padding:.4rem .6rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);">
         </div>
         <button onclick="runProfile()"
                 style="padding:.45rem 1.3rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;align-self:flex-end;">
@@ -38,10 +47,10 @@
     </div>
 
     <!-- Loading / empty -->
-    <div id="pp-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">
-        <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
+    <div id="pp-loading" style="display:none;text-align:center;padding:2rem;">
+        <p style="color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</p>
     </div>
-    <div id="pp-empty" style="text-align:center;padding:3rem;color:var(--muted);font-style:italic;">
+    <div id="pp-empty" style="text-align:center;padding:3rem;color:var(--ink-3);font-style:italic;">
         {{ t('pp_subtitle', lang) }}
     </div>
 
@@ -57,60 +66,60 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.7rem;margin-bottom:1.2rem;">
             <div class="stat-card" style="padding:.9rem;text-align:center;">
                 <div id="pp-stat-unique" style="font-size:1.8rem;font-weight:700;color:var(--accent);"></div>
-                <div style="font-size:.75rem;color:var(--muted);">{{ t('pp_unique_roots', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);">{{ t('pp_unique_roots', lang) }}</div>
             </div>
             <div class="stat-card" style="padding:.9rem;text-align:center;">
                 <div id="pp-stat-density" style="font-size:1.8rem;font-weight:700;color:var(--accent);"></div>
-                <div style="font-size:.75rem;color:var(--muted);">{{ t('pp_lexical_density', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);">{{ t('pp_lexical_density', lang) }}</div>
             </div>
             <div class="stat-card" style="padding:.9rem;text-align:center;">
                 <div id="pp-stat-hapax" style="font-size:1.8rem;font-weight:700;color:var(--accent);"></div>
-                <div style="font-size:.75rem;color:var(--muted);">{{ t('pp_passage_hapaxes', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);">{{ t('pp_passage_hapaxes', lang) }}</div>
             </div>
             <div class="stat-card" style="padding:.9rem;text-align:center;">
                 <div id="pp-stat-corpus-hapax" style="font-size:1.8rem;font-weight:700;color:var(--accent);"></div>
-                <div style="font-size:.75rem;color:var(--muted);">{{ t('pp_corpus_hapaxes', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);">{{ t('pp_corpus_hapaxes', lang) }}</div>
             </div>
         </div>
 
         <!-- Charts row -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;">
             <div class="stat-card" style="padding:1rem;">
-                <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_rarity_dist', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_rarity_dist', lang) }}</div>
                 <div id="pp-rarity-chart"></div>
             </div>
             <div class="stat-card" style="padding:1rem;">
-                <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_stem_dist', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_stem_dist', lang) }}</div>
                 <div id="pp-stem-chart"></div>
             </div>
         </div>
 
         <!-- Verse density -->
         <div class="stat-card" style="padding:1rem;margin-bottom:1.2rem;">
-            <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_verse_density', lang) }}</div>
+            <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_verse_density', lang) }}</div>
             <div id="pp-density-chart" style="overflow-x:auto;"></div>
         </div>
 
         <!-- Bottom two-column: top roots + semantic domains -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;">
             <div class="stat-card" style="padding:1rem;">
-                <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_top_roots', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_top_roots', lang) }}</div>
                 <table style="width:100%;border-collapse:collapse;font-size:.85rem;">
                     <thead>
-                        <tr style="border-bottom:1px solid var(--border);">
-                            <th style="text-align:left;padding:.3rem .4rem;color:var(--muted);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_root', lang) }}</th>
-                            <th style="text-align:left;padding:.3rem .4rem;color:var(--muted);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_gloss', lang) }}</th>
-                            <th style="text-align:right;padding:.3rem .4rem;color:var(--muted);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_freq', lang) }}</th>
-                            <th style="text-align:right;padding:.3rem .4rem;color:var(--muted);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_rarity', lang) }}</th>
+                        <tr style="border-bottom:1px solid var(--line);">
+                            <th style="text-align:left;padding:.3rem .4rem;color:var(--ink-3);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_root', lang) }}</th>
+                            <th style="text-align:left;padding:.3rem .4rem;color:var(--ink-3);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_gloss', lang) }}</th>
+                            <th style="text-align:right;padding:.3rem .4rem;color:var(--ink-3);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_freq', lang) }}</th>
+                            <th style="text-align:right;padding:.3rem .4rem;color:var(--ink-3);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_rarity', lang) }}</th>
                         </tr>
                     </thead>
                     <tbody id="pp-roots-tbody"></tbody>
                 </table>
             </div>
             <div class="stat-card" style="padding:1rem;">
-                <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_semantic_domains', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_semantic_domains', lang) }}</div>
                 <div id="pp-domains-chart"></div>
-                <div id="pp-no-domains" style="display:none;font-size:.8rem;color:var(--muted);font-style:italic;">
+                <div id="pp-no-domains" style="display:none;font-size:.8rem;color:var(--ink-3);font-style:italic;">
                     Semantic field data not loaded.
                 </div>
             </div>
@@ -118,15 +127,13 @@
 
         <!-- Export buttons -->
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-            <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
-                <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
-            </button>
+            <button class="btn secondary" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">Cite</button>
             <button onclick="exportJSON()"
-                    style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);cursor:pointer;font-size:.85rem;">
+                    style="padding:.4rem .9rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);cursor:pointer;font-size:.85rem;">
                 Export JSON
             </button>
             <button onclick="exportCSV()"
-                    style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);cursor:pointer;font-size:.85rem;">
+                    style="padding:.4rem .9rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);cursor:pointer;font-size:.85rem;">
                 Export CSV
             </button>
         </div>
@@ -161,7 +168,7 @@
                 item.style.cssText = 'padding:.4rem .7rem;cursor:pointer;font-size:.9rem;white-space:nowrap;';
                 item.textContent = b.display;
                 item.addEventListener('mousedown', function(e) { e.preventDefault(); selectBook(b); });
-                item.addEventListener('mouseover', function() { item.style.background = 'var(--border)'; });
+                item.addEventListener('mouseover', function() { item.style.background = 'var(--line)'; });
                 item.addEventListener('mouseout',  function() { item.style.background = ''; });
                 drop.appendChild(item);
             });
@@ -302,8 +309,8 @@
             var row   = document.createElement('div');
             row.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem;';
             row.innerHTML =
-                '<div style="width:100px;font-size:.72rem;color:var(--muted);flex-shrink:0;">' + escHtml(RARITY_LABELS[key]) + '</div>' +
-                '<div style="flex:1;background:var(--border);border-radius:3px;height:12px;overflow:hidden;">' +
+                '<div style="width:100px;font-size:.72rem;color:var(--ink-3);flex-shrink:0;">' + escHtml(RARITY_LABELS[key]) + '</div>' +
+                '<div style="flex:1;background:var(--line);border-radius:3px;height:12px;overflow:hidden;">' +
                   '<div style="width:' + pct + '%;height:100%;background:' + RARITY_COLORS[key] + ';border-radius:3px;"></div>' +
                 '</div>' +
                 '<div style="width:32px;text-align:right;font-size:.75rem;">' + count + '</div>';
@@ -318,7 +325,7 @@
             .filter(function(e) { return e[0] !== 'unknown'; })
             .sort(function(a, b) { return b[1] - a[1]; }).slice(0, 8);
         if (!entries.length) {
-            el.innerHTML = '<div style="font-size:.8rem;color:var(--muted);font-style:italic;padding:.4rem 0;">Verb stem detection is available for Syriac script only.</div>';
+            el.innerHTML = '<div style="font-size:.8rem;color:var(--ink-3);font-style:italic;padding:.4rem 0;">Verb stem detection is available for Syriac script only.</div>';
             return;
         }
         var maxVal = entries[0][1];
@@ -331,7 +338,7 @@
                 '<div style="width:80px;font-size:.72rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;">' +
                   '<span class="stem-badge stem-' + escHtml(key) + '" style="font-size:.65rem;">' + escHtml(key) + '</span>' +
                 '</div>' +
-                '<div style="flex:1;background:var(--border);border-radius:3px;height:10px;overflow:hidden;">' +
+                '<div style="flex:1;background:var(--line);border-radius:3px;height:10px;overflow:hidden;">' +
                   '<div style="width:' + pct + '%;height:100%;background:var(--accent);border-radius:3px;opacity:.7;"></div>' +
                 '</div>' +
                 '<div style="width:32px;text-align:right;font-size:.75rem;">' + count + '</div>';
@@ -355,7 +362,7 @@
         });
         el.appendChild(wrap);
         var label = document.createElement('div');
-        label.style.cssText = 'font-size:.7rem;color:var(--muted);margin-top:.3rem;';
+        label.style.cssText = 'font-size:.7rem;color:var(--ink-3);margin-top:.3rem;';
         label.textContent = verseDensity.length + ' verses';
         el.appendChild(label);
     }
@@ -388,23 +395,23 @@
             });
 
             var tr  = document.createElement('tr');
-            tr.style.borderBottom = '1px solid var(--border)';
+            tr.style.borderBottom = '1px solid var(--line)';
             var vizUrl = '/visualize/' + encodeURIComponent(r.root_key) + '?lang=' + LANG;
             tr.innerHTML =
                 '<td style="padding:.3rem .4rem;">' +
-                  '<a href="' + vizUrl + '" style="font-family:var(--syriac-font);font-size:1.4rem;line-height:1.2;color:var(--fg);text-decoration:none;" dir="rtl" title="' + escHtml(r.root_key) + '">' + escHtml(r.root) + '</a>' +
+                  '<a href="' + vizUrl + '" style="font-family:var(--syr);font-size:1.4rem;line-height:1.2;color:var(--ink);text-decoration:none;" dir="rtl" title="' + escHtml(r.root_key) + '">' + escHtml(r.root) + '</a>' +
                   (pillsHtml ? '<div style="margin-top:3px;">' + pillsHtml + '</div>' : '') +
                 '</td>' +
-                '<td style="padding:.3rem .4rem;color:var(--muted);font-size:.8rem;font-style:italic;">' + escHtml(r.gloss) + '</td>' +
+                '<td style="padding:.3rem .4rem;color:var(--ink-3);font-size:.8rem;font-style:italic;">' + escHtml(r.gloss) + '</td>' +
                 '<td style="padding:.3rem .4rem;text-align:right;">' +
                   '<div style="display:flex;align-items:center;gap:.3rem;justify-content:flex-end;">' +
-                    '<div style="width:40px;background:var(--border);border-radius:2px;height:8px;">' +
+                    '<div style="width:40px;background:var(--line);border-radius:2px;height:8px;">' +
                       '<div style="width:' + pct + '%;height:100%;background:var(--accent);border-radius:2px;"></div>' +
                     '</div>' +
                     '<span style="font-size:.8rem;min-width:20px;text-align:right;">' + r.passage_count + '</span>' +
                   '</div>' +
                 '</td>' +
-                '<td style="padding:.3rem .4rem;text-align:right;font-size:.75rem;color:var(--muted);">' + r.corpus_total + '</td>';
+                '<td style="padding:.3rem .4rem;text-align:right;font-size:.75rem;color:var(--ink-3);">' + r.corpus_total + '</td>';
             tbody.appendChild(tr);
         });
     }
@@ -420,8 +427,8 @@
             var row    = document.createElement('div');
             row.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;';
             row.innerHTML =
-                '<div style="width:100px;font-size:.72rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;">' + escHtml(domain) + '</div>' +
-                '<div style="flex:1;background:var(--border);border-radius:3px;height:10px;overflow:hidden;">' +
+                '<div style="width:100px;font-size:.72rem;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;">' + escHtml(domain) + '</div>' +
+                '<div style="flex:1;background:var(--line);border-radius:3px;height:10px;overflow:hidden;">' +
                   '<div style="width:' + pct + '%;height:100%;background:#059669;border-radius:3px;"></div>' +
                 '</div>' +
                 '<div style="width:28px;text-align:right;font-size:.72rem;">' + count + '</div>';

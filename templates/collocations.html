@@ -1,6 +1,15 @@
 {% extends "base.html" %}
+{% set page_id = 'collocations' %}
 
 {% block title %}{{ t('coll_title', lang) if t else 'Collocations' }} — Aramaic Root Atlas{% endblock %}
+
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="Root — SH-L-M"><span class="kbd">⌘K</span>
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="container coll-page">
@@ -45,7 +54,6 @@
         </select>
 
         <button class="coll-analyze-btn" onclick="loadCollocations()">
-            <span class="material-symbols-outlined">scatter_plot</span>
             {{ t('coll_analyze', lang) if t else 'Analyze' }}
         </button>
     </div>
@@ -54,12 +62,8 @@
     <div class="coll-meta-bar">
         <span id="coll-summary" class="coll-summary"></span>
         <div id="coll-export-bar" class="coll-export" style="display:none">
-            <button class="bm-action-btn" onclick="exportCollCSV()">
-                <span class="material-symbols-outlined">table_chart</span> CSV
-            </button>
-            <button class="bm-action-btn" onclick="exportCollJSON()">
-                <span class="material-symbols-outlined">download</span> JSON
-            </button>
+            <button class="bm-action-btn" onclick="exportCollCSV()">CSV</button>
+            <button class="bm-action-btn" onclick="exportCollJSON()">JSON</button>
         </div>
     </div>
 
@@ -94,7 +98,7 @@ function loadCollocations() {
     var sort     = document.getElementById('coll-sort').value;
 
     document.getElementById('coll-results').innerHTML =
-        '<div class="coll-loading"><span class="material-symbols-outlined coll-spin">autorenew</span> {{ t("coll_loading", lang) if t else "Analyzing…" }}</div>';
+        '<div class="coll-loading"><p style="color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</p></div>';
     document.getElementById('coll-summary').textContent = '';
     document.getElementById('coll-export-bar').style.display = 'none';
 
