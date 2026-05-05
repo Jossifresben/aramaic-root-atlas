@@ -202,7 +202,7 @@ function renderInterlinear(data, book, chStart, chEnd, script) {
             html += '<span class="gl">' + escHtml(w.gloss || '—') + '</span>';
             if (w.root) {
                 html += '<a class="root ' + confClass(w.confidence) + '" '
-                      + 'href="/visualize/' + encodeURIComponent(w.root_key) + '?lang=' + LANG + '" '
+                      + 'href="/visualize/' + encodeURIComponent(w.root_key) + '?lang=' + LANG + '&tab=ficha" '
                       + 'target="_blank" rel="noopener">' + escHtml(w.root) + '</a>';
             } else {
                 html += '<span class="root none">—</span>';
