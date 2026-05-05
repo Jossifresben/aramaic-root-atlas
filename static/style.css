@@ -941,6 +941,16 @@ h3.subhead{
 }
 .nav-btn:hover{background:var(--bg-2);color:var(--ink);text-decoration:none}
 
+/* — Root bookmark button (index.html search results) — */
+.bm-root-btn{background:transparent;border:0;cursor:pointer;padding:4px;border-radius:4px;color:var(--ink-3);line-height:0}
+.bm-root-btn:hover{color:var(--accent);background:var(--surface)}
+.bm-root-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;transition:fill .15s,stroke .15s}
+.bm-root-btn.bookmarked{color:var(--accent)}
+.bm-root-btn.bookmarked svg{fill:var(--accent)}
+/* — Export download button — */
+.export-btn{display:inline-flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--line);border-radius:4px;padding:4px 10px;font-size:.8rem;font-family:var(--sans);color:var(--ink-2);cursor:pointer}
+.export-btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.export-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.7;flex-shrink:0}
 /* — Bookmark notification toast — */
 .bookmark-toast{
   position:fixed;bottom:24px;right:24px;z-index:500;

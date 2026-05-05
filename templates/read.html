@@ -173,7 +173,7 @@ function toggleChapterRoots() {
     if (panel.style.display === 'none') {
         panel.style.display = 'block';
         if (!_chRootsLoaded) {
-            document.getElementById('chapter-root-content').innerHTML = '<p style="text-align:center;color:var(--muted)">Loading...</p>';
+            document.getElementById('chapter-root-content').innerHTML = '<p style="text-align:center;color:var(--ink-4);font-family:var(--serif);font-style:italic">Loading…</p>';
             fetch('/api/chapter-roots?book={{ book }}&chapter={{ chapter }}')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {

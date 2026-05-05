@@ -329,10 +329,10 @@ async function doRootSearch() {
     const rootBmSyriac = data.root;
     const rootBmGloss = gloss;
     const rootBmExists = getBookmarks().roots.some(r => r.key === rootBmKey);
-    html += `<div class="root-bm-wrap"><button class="bm-root-btn${rootBmExists ? ' bookmarked' : ''}" id="bm-root-toggle" title="Bookmark" onclick="toggleRootBookmark()"><span class="material-symbols-outlined">${rootBmExists ? 'bookmark' : 'bookmark_border'}</span></button></div>`;
+    html += `<div class="root-bm-wrap"><button class="bm-root-btn${rootBmExists ? ' bookmarked' : ''}" id="bm-root-toggle" title="Bookmark" onclick="toggleRootBookmark()"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button></div>`;
 
     html += `<div class="root-header-nav">
-            <a href="/visualize/${vizKey}?lang=${lang}" class="root-tab viz-btn" style="text-decoration:none"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">hub</span> Visualize</a>
+            <a href="/visualize/${vizKey}?lang=${lang}" class="root-tab viz-btn" style="text-decoration:none">Visualize</a>
             <button class="root-tab active" data-tab="peshitta" onclick="switchResultTab(this)">Occurrences (${data.total_occurrences})</button>
             <button class="root-tab" data-tab="hebrew" onclick="switchResultTab(this)">Hebrew Cognates</button>
             <button class="root-tab" data-tab="arabic" onclick="switchResultTab(this)">Arabic Cognates</button>
@@ -343,7 +343,7 @@ async function doRootSearch() {
     html += `<div id="panel-peshitta" class="result-panel">
         <div class="panel-header">
             <span>Occurrences</span>
-            <button class="export-btn" onclick="exportCSV()"><span class="material-symbols-outlined">download</span> CSV</button>
+            <button class="export-btn" onclick="exportCSV()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>CSV</button>
         </div>
         <div class="panel-body">`;
 
@@ -672,7 +672,7 @@ function toggleRootBookmark() {
     var btn = document.getElementById('bm-root-toggle');
     if (idx >= 0) {
         bm.roots.splice(idx, 1);
-        if (btn) { btn.querySelector('.material-symbols-outlined').textContent = 'bookmark_border'; btn.classList.remove('bookmarked'); }
+        if (btn) { btn.classList.remove('bookmarked'); }
     } else {
         bm.roots.push({
             key: _bmRootKey,
@@ -681,7 +681,7 @@ function toggleRootBookmark() {
             date: new Date().toISOString().slice(0, 10),
             note: ''
         });
-        if (btn) { btn.querySelector('.material-symbols-outlined').textContent = 'bookmark'; btn.classList.add('bookmarked'); }
+        if (btn) { btn.classList.add('bookmarked'); }
     }
     saveBookmarks(bm);
 }
