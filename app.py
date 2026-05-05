@@ -440,9 +440,45 @@ def api_search():
 def browse():
     lang = _get_lang()
     corpus_filter = request.args.get('corpus', None)
-    books = _corpus.get_books(corpus_filter)
-    return render_template('browse.html', lang=lang, script=_get_script(), trans=_get_trans(),
-                           t=_t_proxy, bn=_bn, books=books, corpus_filter=corpus_filter)
+
+    CORPUS_ABBR = {
+        'peshitta_nt': 'pnt',
+        'peshitta_ot': 'pot',
+        'biblical_aramaic': 'bib',
+        'targum_onkelos': 'tar',
+        'ephrem_nisibis': 'eph',
+    }
+
+    # Build corpus_groups — one entry per corpus (or just the filtered one)
+    corpus_ids_to_show = [corpus_filter] if corpus_filter else _corpus.get_corpus_ids()
+
+    corpus_groups = []
+    for cid in corpus_ids_to_show:
+        info = _corpus.get_corpus_info(cid)
+        if not info:
+            continue
+        books_for_corpus = _corpus.get_books(cid)
+        group_books = []
+        for book_name, max_ch in books_for_corpus:
+            group_books.append({
+                'name': book_name,
+                'corpus_id': cid,
+                'abbr': CORPUS_ABBR.get(cid, cid),
+                'chapter_count': max_ch,
+                'chapters': [{'num': ch, 'heat_level': None} for ch in range(1, max_ch + 1)],
+            })
+        corpus_groups.append({
+            'label': info.label,
+            'abbr': CORPUS_ABBR.get(cid, cid),
+            'books': group_books,
+        })
+
+    return render_template('browse.html',
+                           lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t_proxy, bn=_bn,
+                           corpus_groups=corpus_groups,
+                           corpus_filter=corpus_filter,
+                           page_id='browse')
 
 
 @app.route('/read/<path:book>/<int:chapter>')
