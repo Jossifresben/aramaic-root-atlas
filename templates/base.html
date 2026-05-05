@@ -172,6 +172,8 @@ window.TOUR_IS_RTL = {{ 'true' if lang in ('he', 'ar') else 'false' }};
 <script src="{{ url_for('static', filename='js/global.js') }}"></script>
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 <script src="{{ url_for('static', filename='cite-modal.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.js.iife.js"></script>
+<script src="{{ url_for('static', filename='js/tour.js') }}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>
