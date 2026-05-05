@@ -548,9 +548,16 @@ def read(book, chapter):
         if b_name == book:
             max_ch = b_ch
             break
+    CORPUS_ABBR = {'peshitta_nt':'pnt','peshitta_ot':'pot','biblical_aramaic':'bib','targum_onkelos':'tar','ephrem_nisibis':'eph'}
+    CORPUS_LABELS = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos','ephrem_nisibis':'Ephrem Nisibis'}
+    cid = verse_data[0]['corpus_id'] if verse_data else ''
     return render_template('read.html', lang=lang, script=_get_script(), trans=trans,
                            t=_t_proxy, bn=_bn, book=book, chapter=chapter,
-                           verses=verse_data, books=books, max_ch=max_ch)
+                           verses=verse_data, books=books, max_ch=max_ch,
+                           corpus_abbr=CORPUS_ABBR.get(cid, cid),
+                           corpus_label=CORPUS_LABELS.get(cid, cid),
+                           verse_count=len(verse_data),
+                           page_id='reader')
 
 
 @app.route('/bookmarks')
