@@ -164,8 +164,8 @@
   {% set c_info = corpora | selectattr('id', 'equalto', cm.corpus_key) | first | default(none) %}
   <div class="corpus-cell {{ cm.id }}">
     <div class="nm">{{ cm.name }}</div>
-    <div class="verses">{{ c_info.verses if c_info else '-' }}<small>verses</small></div>
-    <div class="words">{{ c_info.words if c_info else '-' }} words</div>
+    <div class="verses">{{ "{:,}".format(c_info.verses | int) if c_info else '-' }}<small>verses</small></div>
+    <div class="words">{{ "{:,}".format(c_info.words | int) if c_info else '-' }} words</div>
     <div class="period">{{ cm.period }}</div>
   </div>
   {% endfor %}

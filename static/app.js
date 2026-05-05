@@ -84,15 +84,15 @@
         +'<div class="brand-text"><div class="brand-name">Root Atlas</div>'
         +'<div class="brand-sub">Aramaic Corpora</div></div>'
       +'</a>'
-      +'<div class="side-group">'
+      +'<div class="side-group" id="side-explore">'
         +'<div class="side-label">Explore</div>'
         +NAV.explore.map(link).join('')
       +'</div>'
-      +'<div class="side-group">'
+      +'<div class="side-group" id="side-analyze">'
         +'<div class="side-label">Analyze</div>'
         +NAV.analyze.map(link).join('')
       +'</div>'
-      +'<div class="side-group">'
+      +'<div class="side-group" id="side-workspace">'
         +'<div class="side-label">Workspace</div>'
         +NAV.workspace.map(link).join('')
       +'</div>'
