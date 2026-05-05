@@ -896,7 +896,14 @@ document.getElementById('prox-search-btn').addEventListener('click', async funct
 (function() {
     var urlParams = new URLSearchParams(window.location.search);
     var q = urlParams.get('q');
-    if (q) {
+    var tab = urlParams.get('tab') || 'root';
+    if (!q) return;
+    if (tab === 'text') {
+        switchSearchTab('text');
+        var textInp = document.getElementById('textInput');
+        if (textInp) textInp.value = q;
+        document.getElementById('text-search-btn').click();
+    } else {
         document.getElementById('rootInput').value = q;
         var corpus = urlParams.get('corpus');
         if (corpus) document.getElementById('corpusFilter').value = corpus;

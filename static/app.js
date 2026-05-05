@@ -140,5 +140,34 @@
   document.addEventListener('DOMContentLoaded', function(){
     renderSidebar();
     syncThemeToggle();
+    wireQuickSearch();
   });
+
+  function wireQuickSearch(){
+    // ⌘K / Ctrl+K focuses the topbar quick-search
+    document.addEventListener('keydown', function(e){
+      if((e.metaKey || e.ctrlKey) && e.key === 'k'){
+        e.preventDefault();
+        var inp = document.getElementById('quick-search-input');
+        if(inp){ inp.focus(); inp.select(); }
+      }
+    });
+
+    // Enter in the quick-search navigates to the search page
+    document.addEventListener('keydown', function(e){
+      if(e.key !== 'Enter') return;
+      var inp = document.getElementById('quick-search-input');
+      if(document.activeElement !== inp) return;
+      var q = inp.value.trim();
+      if(!q) return;
+      // Detect likely root (all caps + hyphens) vs text search
+      var isRoot = /^[A-Z'-]{2,}(-[A-Z'-]+)*$/.test(q) || /[܀-ݏ]/.test(q);
+      var lang = document.documentElement.lang || 'en';
+      if(isRoot){
+        window.location.href = '/?q=' + encodeURIComponent(q) + '&lang=' + lang + '&tab=root';
+      } else {
+        window.location.href = '/?q=' + encodeURIComponent(q) + '&lang=' + lang + '&tab=text';
+      }
+    });
+  }
 })();
