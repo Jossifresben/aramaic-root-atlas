@@ -159,11 +159,6 @@
   {'id':'tar','name':'Targum Onkelos','corpus_key':'targum_onkelos','period':'~ 1st–3rd c. CE · Jewish Aramaic'},
   {'id':'eph','name':'Ephrem — Nisibis','corpus_key':'ephrem_nisibis','period':'~ 350–363 CE · Patristic Syriac'},
 ] %}
-{# Build a lookup dict from corpus id to corpus info object #}
-{% set corpus_by_id = {} %}
-{% for c in corpora %}
-  {% if corpus_by_id.update({c.id: c}) %}{% endif %}
-{% endfor %}
 <div class="corpora-grid">
   {% for cm in corpus_meta %}
   {% set c_info = corpora | selectattr('id', 'equalto', cm.corpus_key) | first | default(none) %}
@@ -200,6 +195,9 @@ function translateRef(ref) {
 }
 
 // --- Autocomplete for root input ---
+// Note: inline implementation rather than initRootAutocomplete() from autocomplete.js
+// because the onSelect callback must trigger doRootSearch() and render results — too
+// tightly coupled to this page's state to be cleanly passed as a callback parameter.
 (function() {
     var rootInput = document.getElementById('rootInput');
     var acList = document.getElementById('autocomplete-list');
@@ -313,7 +311,7 @@ async function doRootSearch() {
     if (gloss) html += `<div class="root-meaning">${gloss}</div>`;
 
     // Cross-corpus attestation badges
-    const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+    const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'ephrem_nisibis': 'Ephrem Nisibis'};
     var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
     const corpusKeys = Object.keys(att);
     if (corpusKeys.length > 0) {
@@ -799,7 +797,7 @@ document.getElementById('prox-search-btn').addEventListener('click', async funct
     }
     var html = '<div class="proximity-results">';
     html += '<h3>' + data.count + ' co-occurrences: <span class="prox-hl1">' + (data.root1 || r1) + '</span> + <span class="prox-hl2">' + (data.root2 || r2) + '</span> (' + scope + ')</h3>';
-    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'ephrem_nisibis': 'Ephrem Nisibis'};
     var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
     data.results.forEach(function(r) {
         var ref = r.ref || r.reference || '';
@@ -930,7 +928,7 @@ document.getElementById('text-search-btn').addEventListener('click', async funct
     var html = '<div class="text-search-results">';
     html += '<h3 class="text-search-header">' + data.count + ' results for "' + q.replace(/</g, '&lt;') + '"</h3>';
 
-    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'ephrem_nisibis': 'Ephrem Nisibis'};
     var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
 
     for (var i = 0; i < data.results.length; i++) {
