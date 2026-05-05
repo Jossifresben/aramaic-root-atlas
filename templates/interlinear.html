@@ -30,31 +30,33 @@
         <option value="targum_onkelos">Targum Onkelos</option>
         <option value="peshitta_nt">Peshitta NT</option>
         <option value="peshitta_ot">Peshitta OT</option>
-        <option value="ephrem_nisibis">Ephrem — Nisibis</option>
+        <option value="ephrem_nisibis">Ephrem Nisibis</option>
       </select>
     </div>
 
-    <div class="s-field">
+    <div class="s-field wide">
       <label class="s-label">{{ t('read_book', lang) if t else 'Book' }}</label>
       <select class="s-select" id="il-book">
         <option value="">— select —</option>
       </select>
     </div>
 
-    <div class="s-field">
+    <div class="s-field narrow">
       <label class="s-label">{{ t('il_from', lang) }}</label>
-      <input class="s-input" type="text" id="il-ch-start" placeholder="ch:v" value="{{ initial_ch_start }}{% if initial_v_start %}:{{ initial_v_start }}{% endif %}" style="width:80px;">
+      <input class="s-input" type="text" id="il-ch-start" placeholder="ch:v"
+             value="{{ initial_ch_start }}{% if initial_v_start %}:{{ initial_v_start }}{% endif %}">
     </div>
 
     <span class="il-range-sep">—</span>
 
-    <div class="s-field">
+    <div class="s-field narrow">
       <label class="s-label">{{ t('il_to', lang) }}</label>
-      <input class="s-input" type="text" id="il-ch-end" placeholder="ch:v" value="{{ initial_ch_end }}{% if initial_v_end %}:{{ initial_v_end }}{% endif %}" style="width:80px;">
+      <input class="s-input" type="text" id="il-ch-end" placeholder="ch:v"
+             value="{{ initial_ch_end }}{% if initial_v_end %}:{{ initial_v_end }}{% endif %}">
     </div>
 
     <div class="s-field">
-      <label class="s-label">{{ t('settings_script', lang) if t else 'Script' }}</label>
+      <label class="s-label">{{ t('settings_script', lang) if t else 'Transliteration' }}</label>
       <select class="s-select" id="il-script">
         <option value="latin"{% if script == 'latin' %} selected{% endif %}>Latin</option>
         <option value="syriac"{% if script == 'syriac' %} selected{% endif %}>Syriac</option>
@@ -64,7 +66,7 @@
     </div>
 
     <div class="s-field">
-      <label class="s-label">{{ t('settings_syriac_font', lang) if t else 'Font' }}</label>
+      <label class="s-label">{{ t('settings_syriac_font', lang) if t else 'Script style' }}</label>
       <select class="s-select" id="il-font">
         <option value="estrangela">Estrangela</option>
         <option value="eastern">Eastern</option>

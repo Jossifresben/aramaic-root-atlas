@@ -701,6 +701,40 @@ h3.subhead{
 /* ═══════════════════════════════════════════════════════════════
    INTERLINEAR
    ═══════════════════════════════════════════════════════════════ */
+/* Controls bar — compact horizontal layout */
+.interlinear-controls{
+  display:flex;align-items:flex-end;flex-wrap:wrap;gap:10px;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:14px 16px;margin-bottom:20px;
+}
+.interlinear-controls .s-field{flex:1;min-width:110px;}
+.interlinear-controls .s-field.narrow{flex:0 0 90px;min-width:70px;}
+.interlinear-controls .s-field.wide{flex:2;min-width:160px;}
+.interlinear-controls .il-range-sep{
+  font-size:1rem;color:var(--ink-3);padding-bottom:8px;flex:0 0 auto;
+}
+.interlinear-controls .btn{flex:0 0 auto;align-self:flex-end;}
+/* Export + action bar */
+.il-export-bar{
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:16px;
+}
+.il-export-bar .btn{font-size:.82rem;padding:5px 12px;}
+.il-translation-toggle{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--sans);font-size:.82rem;color:var(--ink-2);cursor:pointer;
+  margin-left:auto;
+}
+.il-nav{
+  font-family:var(--sans);font-size:.82rem;color:var(--ink-3);
+  margin-bottom:12px;
+}
+.il-nav a{color:var(--accent);text-decoration:none;font-weight:500;}
+.il-nav a:hover{text-decoration:underline;}
+.il-truncated-warn{
+  background:var(--bg-2);border:1px solid var(--rule);border-radius:6px;
+  padding:8px 12px;font-family:var(--sans);font-size:.82rem;color:var(--ink-3);
+  margin-bottom:12px;
+}
 .il-verse{
   margin-bottom:32px;padding:20px 0 24px;border-bottom:1px solid var(--rule);
 }
