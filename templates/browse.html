@@ -25,7 +25,7 @@
   <a class="chip{% if corpus_filter == 'peshitta_ot' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=peshitta_ot">Peshitta OT</a>
   <a class="chip{% if corpus_filter == 'biblical_aramaic' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=biblical_aramaic">Biblical Aramaic</a>
   <a class="chip{% if corpus_filter == 'targum_onkelos' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=targum_onkelos">Targum Onkelos</a>
-  <a class="chip{% if corpus_filter == 'ephrem_nisibis' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=ephrem_nisibis">Ephrem</a>
+  <a class="chip{% if corpus_filter == 'ephrem_nisibis' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=ephrem_nisibis">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</a>
 </div>
 
 {% for group in corpus_groups %}
