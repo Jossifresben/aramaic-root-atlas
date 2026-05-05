@@ -707,7 +707,8 @@
     "hapax_col_ref": "Referencia",
     "hapax_col_corpus": "Corpus",
     "hapax_col_confidence": "Confianza",
-    "bookmarks_saved": "Guardado ✓"
+    "bookmarks_saved": "Guardado ✓",
+    "quick_search_placeholder": "Buscar raíz — ej. SH-L-M"
   },
   "en": {
     "app_title": "Peshitta Constellations",
@@ -1417,7 +1418,8 @@
     "hapax_col_ref": "Reference",
     "hapax_col_corpus": "Corpus",
     "hapax_col_confidence": "Confidence",
-    "bookmarks_saved": "Saved ✓"
+    "bookmarks_saved": "Saved ✓",
+    "quick_search_placeholder": "Root lookup — e.g. SH-L-M"
   },
   "he": {
     "app_title": "קונסטלציות הפשיטתא",
@@ -2127,7 +2129,8 @@
     "hapax_col_ref": "מקור",
     "hapax_col_corpus": "קורפוס",
     "hapax_col_confidence": "ביטחון",
-    "bookmarks_saved": "נשמר ✓"
+    "bookmarks_saved": "נשמר ✓",
+    "quick_search_placeholder": "חיפוש שורש — למשל SH-L-M"
   },
   "ar": {
     "app_title": "أبراج الپشيطتا",
@@ -2837,6 +2840,7 @@
     "hapax_col_ref": "المرجع",
     "hapax_col_corpus": "المدوّنة",
     "hapax_col_confidence": "الثقة",
-    "bookmarks_saved": "تم الحفظ ✓"
+    "bookmarks_saved": "تم الحفظ ✓",
+    "quick_search_placeholder": "بحث عن جذر — مثلاً SH-L-M"
   }
 }
