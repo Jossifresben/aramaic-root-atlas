@@ -57,7 +57,7 @@
         {%- if not loop.last %} {% endif -%}
       {%- endfor -%}
     </div>
-    {% if v.transliteration %}<div class="v-tr layer-tr">{{ v.transliteration }}</div>{% endif %}
+    {% if v.transliteration %}<div class="v-tr layer-tr" style="text-align:right;direction:ltr">{{ v.transliteration.split()|reverse|join(' ') }}</div>{% endif %}
     {% if v.translation %}<div class="v-en layer-en"{% if trans in ('he','ar') %} dir="rtl"{% endif %}>{{ v.translation }}</div>{% endif %}
   </div>
   <div class="v-actions">

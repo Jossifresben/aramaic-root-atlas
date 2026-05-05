@@ -86,9 +86,8 @@
     color: var(--ink-3);
     margin-top: 4px;
     word-spacing: 4px;
-    direction: rtl;
+    direction: ltr;
     text-align: right;
-    unicode-bidi: plaintext;
 }
 .parallel-cell .translation-text {
     font-size: 0.85rem;
@@ -329,7 +328,7 @@ async function loadParallel() {
             for (var c of corpora) {
                 var v = verseMap[vn][c];
                 html += '<div class="parallel-cell translit-cell">';
-                if (v && v.translit) html += '<div class="translit-text">' + v.translit + '</div>';
+                if (v && v.translit) html += '<div class="translit-text">' + v.translit.split(' ').reverse().join(' ') + '</div>';
                 html += '</div>';
             }
             html += '</div>';
