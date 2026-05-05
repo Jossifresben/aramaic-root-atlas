@@ -170,6 +170,28 @@ window.TOUR_I18N = {
 };
 window.TOUR_IS_RTL = {{ 'true' if lang in ('he', 'ar') else 'false' }};
 </script>
+<script>
+window.SIDE_I18N = {
+    explore:        "{{ t('side_explore',        lang)|e if t else 'Explore' }}",
+    analyze:        "{{ t('side_analyze',        lang)|e if t else 'Analyze' }}",
+    workspace:      "{{ t('side_workspace',      lang)|e if t else 'Workspace' }}",
+    nav_trace_root:   "{{ t('nav_trace_root',   lang)|e if t else 'Trace Root' }}",
+    nav_browse:       "{{ t('nav_browse_title',  lang)|e if t else 'Browse corpora' }}",
+    nav_interlinear:  "{{ t('nav_interlinear',   lang)|e if t else 'Interlinear Reader' }}",
+    nav_parallel:     "{{ t('nav_parallel',      lang)|e if t else 'Parallel viewer' }}",
+    nav_concordance:  "{{ t('nav_concordance',   lang)|e if t else 'Concordance' }}",
+    nav_diachronic:   "{{ t('nav_diachronic',    lang)|e if t else 'Diachronic Analysis' }}",
+    nav_hapax:        "{{ t('nav_hapax',         lang)|e if t else 'Hapax Legomena' }}",
+    nav_heatmap:      "{{ t('nav_heatmap',       lang)|e if t else 'Frequency Map' }}",
+    nav_parse:        "{{ t('nav_parse',         lang)|e if t else 'Word Parser' }}",
+    nav_collocations: "{{ t('nav_collocations',  lang)|e if t else 'Collocations' }}",
+    nav_semantic:     "{{ t('nav_semantic',      lang)|e if t else 'Semantic Fields' }}",
+    nav_passage:      "{{ t('nav_passage',       lang)|e if t else 'Passage Profile' }}",
+    nav_bookmarks:    "{{ t('nav_bookmarks',     lang)|e if t else 'Bookmarks' }}",
+    nav_annotations:  "{{ t('nav_annotations',   lang)|e if t else 'Research Notes' }}",
+    nav_about:        "{{ t('nav_about',         lang)|e if t else 'About &amp; Guide' }}",
+};
+</script>
 <script src="{{ url_for('static', filename='js/global.js') }}"></script>
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 <script src="{{ url_for('static', filename='cite-modal.js') }}"></script>

@@ -26,43 +26,44 @@
   window.setTheme = setTheme;
 
   // ── Sidebar nav data — Flask URL routing ────────────────
+  var S = window.SIDE_I18N || {};
   var NAV = {
     explore: [
-      { id:'search',      href:'/',               label:'Trace Root',     kbd:'/',
+      { id:'search',      href:'/',               label: S.nav_trace_root   || 'Trace Root',        kbd:'/',
         ic:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>' },
-      { id:'browse',      href:'/browse',          label:'Browse corpora',
+      { id:'browse',      href:'/browse',          label: S.nav_browse       || 'Browse corpora',
         ic:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
-      { id:'interlinear', href:'/interlinear',     label:'Interlinear Reader',
+      { id:'interlinear', href:'/interlinear',     label: S.nav_interlinear  || 'Interlinear Reader',
         ic:'<path d="M3 6h18M3 11h18M3 16h12"/>' },
-      { id:'parallel',    href:'/parallel',        label:'Parallel viewer',
+      { id:'parallel',    href:'/parallel',        label: S.nav_parallel     || 'Parallel viewer',
         ic:'<path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2v-4M9 21H5a2 2 0 01-2-2v-4m0 0h18"/>' },
     ],
     analyze: [
-      { id:'concordance',     href:'/concordance',      label:'Concordance',
+      { id:'concordance',     href:'/concordance',      label: S.nav_concordance  || 'Concordance',
         ic:'<path d="M4 6h16M4 12h16M4 18h10"/>' },
-      { id:'diachronic',      href:'/diachronic',       label:'Diachronic Analysis',
+      { id:'diachronic',      href:'/diachronic',       label: S.nav_diachronic   || 'Diachronic Analysis',
         ic:'<path d="M3 20V4M3 20h18M7 16l3-4 4 2 5-7"/>' },
-      { id:'hapax',           href:'/hapax',            label:'Hapax Legomena',
+      { id:'hapax',           href:'/hapax',            label: S.nav_hapax        || 'Hapax Legomena',
         ic:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' },
-      { id:'heatmap',         href:'/heatmap',          label:'Frequency Map',
+      { id:'heatmap',         href:'/heatmap',          label: S.nav_heatmap      || 'Frequency Map',
         ic:'<rect x="3" y="3" width="4" height="4"/><rect x="10" y="3" width="4" height="4"/><rect x="17" y="3" width="4" height="4"/><rect x="3" y="10" width="4" height="4"/><rect x="10" y="10" width="4" height="4"/><rect x="17" y="10" width="4" height="4"/><rect x="3" y="17" width="4" height="4"/><rect x="10" y="17" width="4" height="4"/><rect x="17" y="17" width="4" height="4"/>' },
-      { id:'parse',           href:'/parse',            label:'Word Parser',
+      { id:'parse',           href:'/parse',            label: S.nav_parse        || 'Word Parser',
         ic:'<path d="M4 7h3m10 0h3M4 12h3m10 0h3M4 17h3m10 0h3M10 7v10"/>' },
-      { id:'collocations',    href:'/collocations',     label:'Collocations',
+      { id:'collocations',    href:'/collocations',     label: S.nav_collocations || 'Collocations',
         ic:'<circle cx="9" cy="12" r="4"/><circle cx="15" cy="12" r="4"/>' },
-      { id:'semantic-fields', href:'/semantic-fields',  label:'Semantic Fields',
+      { id:'semantic-fields', href:'/semantic-fields',  label: S.nav_semantic     || 'Semantic Fields',
         ic:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>' },
-      { id:'passage-profile', href:'/passage-profile',  label:'Passage Profile',
+      { id:'passage-profile', href:'/passage-profile',  label: S.nav_passage      || 'Passage Profile',
         ic:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>' },
     ],
     workspace: [
-      { id:'bookmarks',   href:'/bookmarks',    label:'Bookmarks',
+      { id:'bookmarks',   href:'/bookmarks',    label: S.nav_bookmarks    || 'Bookmarks',
         ic:'<path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>' },
-      { id:'annotations', href:'/annotations',  label:'Research Notes',
+      { id:'annotations', href:'/annotations',  label: S.nav_annotations  || 'Research Notes',
         ic:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>' },
     ],
     info: [
-      { id:'about', href:'/about', label:'About & Guide',
+      { id:'about', href:'/about', label: S.nav_about || 'About & Guide',
         ic:'<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16v.01"/>' },
     ],
   };
@@ -78,6 +79,7 @@
         +(it.kbd?'<span class="kbd">'+it.kbd+'</span>':'')
         +'</a>';
     }
+    var SI = window.SIDE_I18N || {};
     side.innerHTML = ''
       +'<a href="/" class="brand">'
         +'<div class="brand-mark">ܐ</div>'
@@ -85,15 +87,15 @@
         +'<div class="brand-sub">Aramaic Corpora</div></div>'
       +'</a>'
       +'<div class="side-group" id="side-explore">'
-        +'<div class="side-label">Explore</div>'
+        +'<div class="side-label">'+(SI.explore||'Explore')+'</div>'
         +NAV.explore.map(link).join('')
       +'</div>'
       +'<div class="side-group" id="side-analyze">'
-        +'<div class="side-label">Analyze</div>'
+        +'<div class="side-label">'+(SI.analyze||'Analyze')+'</div>'
         +NAV.analyze.map(link).join('')
       +'</div>'
       +'<div class="side-group" id="side-workspace">'
-        +'<div class="side-label">Workspace</div>'
+        +'<div class="side-label">'+(SI.workspace||'Workspace')+'</div>'
         +NAV.workspace.map(link).join('')
       +'</div>'
       +'<div class="side-group">'

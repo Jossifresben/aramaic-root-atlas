@@ -12,49 +12,49 @@
 {% endblock %}
 
 {% block content %}
-<div class="eyebrow">A research tool for Semitic philology</div>
-<h1 class="display">Trace triliteral <em>roots</em> across two millennia of Aramaic literature.</h1>
-<p class="lede">Search {{ total_verses|default('38,062') }} verses across the Peshitta, Targum Onkelos, Biblical Aramaic, and Ephrem of Nisibis. <a href="/about">About this project →</a></p>
+<div class="eyebrow">{{ t('app_subtitle', lang) if t else 'A research tool for Semitic philology' }}</div>
+<h1 class="display">{{ t('index_headline', lang)|safe if t else 'Trace triliteral <em>roots</em> across two millennia of Aramaic literature.' }}</h1>
+<p class="lede">{{ (t('index_lede', lang) if t else 'Search {n} verses across the Peshitta, Targum Onkelos, Biblical Aramaic, and Ephrem of Nisibis.')|replace('{n}', total_verses|default('38,062')|string) }} <a href="/about">{{ t('index_about_link', lang) if t else 'About this project →' }}</a></p>
 
 <section class="search-card">
   <div class="search-tabs">
-    <button class="s-tab active" data-tab="root" onclick="switchSearchTab('root')"><span class="num">01</span>By root</button>
-    <button class="s-tab" data-tab="cognate" onclick="switchSearchTab('cognate')"><span class="num">02</span>By cognate</button>
-    <button class="s-tab" data-tab="meaning" onclick="switchSearchTab('meaning')"><span class="num">03</span>By meaning</button>
-    <button class="s-tab" data-tab="prox" onclick="switchSearchTab('prox')"><span class="num">04</span>Co-occurrence</button>
-    <button class="s-tab" data-tab="text" onclick="switchSearchTab('text')"><span class="num">05</span>Full text</button>
+    <button class="s-tab active" data-tab="root" onclick="switchSearchTab('root')"><span class="num">01</span>{{ t('tab_root', lang) if t else 'By root' }}</button>
+    <button class="s-tab" data-tab="cognate" onclick="switchSearchTab('cognate')"><span class="num">02</span>{{ t('tab_cognate', lang) if t else 'By cognate' }}</button>
+    <button class="s-tab" data-tab="meaning" onclick="switchSearchTab('meaning')"><span class="num">03</span>{{ t('tab_meaning', lang) if t else 'By meaning' }}</button>
+    <button class="s-tab" data-tab="prox" onclick="switchSearchTab('prox')"><span class="num">04</span>{{ t('tab_prox', lang) if t else 'Co-occurrence' }}</button>
+    <button class="s-tab" data-tab="text" onclick="switchSearchTab('text')"><span class="num">05</span>{{ t('tab_text', lang) if t else 'Full text' }}</button>
   </div>
 
   {# Panel 01: Root search #}
   <div class="s-panel" data-panel="root">
     <div class="s-body">
-      <div class="s-field"><label class="s-label">Triliteral root</label>
+      <div class="s-field"><label class="s-label">{{ t('label_root', lang) if t else 'Triliteral root' }}</label>
         <div class="autocomplete-wrap">
           <input class="s-input" id="rootInput" placeholder="K-TH-B, SH-L-M, Q-D-SH" autofocus autocomplete="off">
           <div id="autocomplete-list" class="autocomplete-list"></div>
         </div>
       </div>
-      <div class="s-field"><label class="s-label">Corpus</label>
+      <div class="s-field"><label class="s-label">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
         <select class="s-select" id="corpusFilter">
-          <option value="">All corpora</option>
+          <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
           {% for c in corpora %}
           <option value="{{ c.id }}">{{ c.label }}</option>
           {% endfor %}
         </select>
       </div>
-      <button class="btn" id="root-search-btn" type="button">Analyse
+      <button class="btn" id="root-search-btn" type="button">{{ t('btn_analyse', lang) if t else 'Analyse' }}
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
       </button>
     </div>
     <div class="s-foot">
-      <div class="examples"><span class="ex-label">Try:</span>
+      <div class="examples"><span class="ex-label">{{ t('label_try', lang) if t else 'Try:' }}</span>
         <button class="ex" type="button" onclick="fillExample('K-TH-B')">K-TH-B</button>
         <button class="ex" type="button" onclick="fillExample('SH-L-M')">SH-L-M</button>
         <button class="ex" type="button" onclick="fillExample('Q-D-SH')">Q-D-SH</button>
         <button class="ex" type="button" onclick="fillExample('B-R-K')">B-R-K</button>
         <button class="ex" type="button" onclick="fillExample('R-KH-M')">R-KH-M</button>
       </div>
-      <button class="help" type="button" onclick="toggleTranslit()">Transliteration table</button>
+      <button class="help" type="button" onclick="toggleTranslit()">{{ t('btn_translit_table', lang) if t else 'Transliteration table' }}</button>
     </div>
     <div id="translit-help" class="translit-help hidden">
       <table><tr><td>B=ܒ</td><td>G=ܓ</td><td>D=ܕ</td><td>H=ܗ</td><td>W=ܘ</td><td>Z=ܙ</td></tr>
@@ -68,10 +68,10 @@
   {# Panel 02: Cognate search #}
   <div class="s-panel hidden" data-panel="cognate">
     <div class="s-body">
-      <div class="s-field"><label class="s-label">Hebrew / Arabic / Transliterated cognate</label>
+      <div class="s-field"><label class="s-label">{{ t('label_cognate_input', lang) if t else 'Hebrew / Arabic / Transliterated cognate' }}</label>
         <input class="s-input" id="cognateInput" placeholder="{{ t('cognate_placeholder', lang) if t else 'e.g. shalom, سلام' }}" autocomplete="off">
       </div>
-      <button class="btn" id="cognate-search-btn" type="button">Search</button>
+      <button class="btn" id="cognate-search-btn" type="button">{{ t('btn_search', lang) if t else 'Search' }}</button>
     </div>
     <div id="cognate-results"></div>
   </div>
@@ -79,10 +79,10 @@
   {# Panel 03: Meaning search #}
   <div class="s-panel hidden" data-panel="meaning">
     <div class="s-body">
-      <div class="s-field"><label class="s-label">English or Spanish gloss</label>
+      <div class="s-field"><label class="s-label">{{ t('label_meaning_input', lang) if t else 'English or Spanish gloss' }}</label>
         <input class="s-input" id="meaningInput" placeholder="{{ t('meaning_placeholder', lang) if t else 'e.g. peace, covenant, write' }}" autocomplete="off">
       </div>
-      <button class="btn" id="meaning-search-btn" type="button">Search</button>
+      <button class="btn" id="meaning-search-btn" type="button">{{ t('btn_search', lang) if t else 'Search' }}</button>
     </div>
     <div id="meaning-results"></div>
   </div>
@@ -90,33 +90,33 @@
   {# Panel 04: Co-occurrence / Proximity #}
   <div class="s-panel hidden" data-panel="prox">
     <div class="s-body">
-      <div class="s-field"><label class="s-label">Root 1</label>
+      <div class="s-field"><label class="s-label">{{ t('label_root1', lang) if t else 'Root 1' }}</label>
         <div class="autocomplete-wrap">
           <input class="s-input" id="proxRoot1" placeholder="SH-L-M" autocomplete="off">
           <div id="prox-ac-list1" class="autocomplete-list"></div>
         </div>
       </div>
-      <div class="s-field"><label class="s-label">Root 2</label>
+      <div class="s-field"><label class="s-label">{{ t('label_root2', lang) if t else 'Root 2' }}</label>
         <div class="autocomplete-wrap">
           <input class="s-input" id="proxRoot2" placeholder="'-M-R" autocomplete="off">
           <div id="prox-ac-list2" class="autocomplete-list"></div>
         </div>
       </div>
-      <div class="s-field"><label class="s-label">Scope</label>
+      <div class="s-field"><label class="s-label">{{ t('label_scope', lang) if t else 'Scope' }}</label>
         <select class="s-select" id="proxScope">
-          <option value="verse">Verse</option>
-          <option value="chapter">Chapter</option>
+          <option value="verse">{{ t('opt_verse', lang) if t else 'Verse' }}</option>
+          <option value="chapter">{{ t('opt_chapter', lang) if t else 'Chapter' }}</option>
         </select>
       </div>
-      <div class="s-field"><label class="s-label">Corpus</label>
+      <div class="s-field"><label class="s-label">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
         <select class="s-select" id="proxCorpusFilter">
-          <option value="">All corpora</option>
+          <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
           {% for c in corpora %}
           <option value="{{ c.id }}">{{ c.label }}</option>
           {% endfor %}
         </select>
       </div>
-      <button class="btn" id="prox-search-btn" type="button">Search</button>
+      <button class="btn" id="prox-search-btn" type="button">{{ t('btn_search', lang) if t else 'Search' }}</button>
     </div>
     <div id="prox-results"></div>
   </div>
@@ -124,10 +124,10 @@
   {# Panel 05: Full text search #}
   <div class="s-panel hidden" data-panel="text">
     <div class="s-body">
-      <div class="s-field"><label class="s-label">Search text</label>
+      <div class="s-field"><label class="s-label">{{ t('label_search_text', lang) if t else 'Search text' }}</label>
         <input class="s-input" id="textInput" placeholder="{{ t('text_search_placeholder', lang) if t else 'Enter word or phrase in English, Hebrew, Aramaic...' }}" autocomplete="off">
       </div>
-      <div class="s-field"><label class="s-label">Language</label>
+      <div class="s-field"><label class="s-label">{{ t('label_language', lang) if t else 'Language' }}</label>
         <select class="s-select" id="textLangSelect">
           <option value="en">English</option>
           <option value="es">Español</option>
@@ -135,15 +135,15 @@
           <option value="ar">العربية</option>
         </select>
       </div>
-      <div class="s-field"><label class="s-label">Corpus</label>
+      <div class="s-field"><label class="s-label">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
         <select class="s-select" id="textCorpusFilter">
-          <option value="">All corpora</option>
+          <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
           {% for c in corpora %}
           <option value="{{ c.id }}">{{ c.label }}</option>
           {% endfor %}
         </select>
       </div>
-      <button class="btn" id="text-search-btn" type="button">Search</button>
+      <button class="btn" id="text-search-btn" type="button">{{ t('btn_search', lang) if t else 'Search' }}</button>
     </div>
     <div id="text-results"></div>
   </div>
@@ -152,7 +152,7 @@
 {# Shared results container for root/cognate/meaning/prox/text search results #}
 <div id="results" style="margin-top:2rem"></div>
 
-<h2 class="section" style="margin-top:64px">Indexed corpora</h2>
+<h2 class="section" style="margin-top:64px">{{ t('section_indexed_corpora', lang) if t else 'Indexed corpora' }}</h2>
 {% set corpus_meta = [
   {'id':'pnt','name':'Peshitta NT','corpus_key':'peshitta_nt','period':'~ 2nd–5th c. CE · Classical Syriac'},
   {'id':'pot','name':'Peshitta OT','corpus_key':'peshitta_ot','period':'~ 2nd–5th c. CE · Classical Syriac'},
@@ -165,21 +165,21 @@
   {% set c_info = corpora | selectattr('id', 'equalto', cm.corpus_key) | first | default(none) %}
   <div class="corpus-cell {{ cm.id }}">
     <div class="nm">{{ cm.name }}</div>
-    <div class="verses">{{ "{:,}".format(c_info.verses | int) if c_info else '-' }}<small>verses</small></div>
+    <div class="verses">{{ "{:,}".format(c_info.verses | int) if c_info else '-' }}<small>{{ t('label_verses', lang) if t else 'verses' }}</small></div>
     <div class="words">{{ "{:,}".format(c_info.words | int) if c_info else '-' }} words</div>
     <div class="period">{{ cm.period }}</div>
   </div>
   {% endfor %}
 </div>
 
-<h2 class="section" style="margin-top:64px">Continue your work</h2>
+<h2 class="section" style="margin-top:64px">{{ t('section_continue', lang) if t else 'Continue your work' }}</h2>
 <div class="quick-list">
-  <a href="/read/Matthew/1"><div class="ql-num">01</div><div><div class="ql-name">Open the reader</div><div class="ql-desc">Verse-by-verse Syriac with transliteration, gloss, and translation.</div></div><div class="ql-arr">→</div></a>
-  <a href="/diachronic"><div class="ql-num">02</div><div><div class="ql-name">Diachronic frequency</div><div class="ql-desc">Plot a root's distribution across periods and corpora.</div></div><div class="ql-arr">→</div></a>
-  <a href="/interlinear"><div class="ql-num">03</div><div><div class="ql-name">Interlinear word study</div><div class="ql-desc">Word-by-word alignment with root, stem, and morphological gloss.</div></div><div class="ql-arr">→</div></a>
-  <a href="/concordance"><div class="ql-num">04</div><div><div class="ql-name">Concordance with KWIC</div><div class="ql-desc">Keyword-in-context across all 38,062 verses, sortable by context.</div></div><div class="ql-arr">→</div></a>
-  <a href="/browse"><div class="ql-num">05</div><div><div class="ql-name">Browse 66 books</div><div class="ql-desc">Direct chapter access across all five corpora.</div></div><div class="ql-arr">→</div></a>
-  <a href="/hapax"><div class="ql-num">06</div><div><div class="ql-name">Hapax &amp; rare forms</div><div class="ql-desc">Words attested only once or twice — useful for textual criticism.</div></div><div class="ql-arr">→</div></a>
+  <a href="/read/Matthew/1"><div class="ql-num">01</div><div><div class="ql-name">{{ t('ql_reader', lang) if t else 'Open the reader' }}</div><div class="ql-desc">{{ t('ql_reader_desc', lang) if t else 'Verse-by-verse Syriac with transliteration, gloss, and translation.' }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/diachronic"><div class="ql-num">02</div><div><div class="ql-name">{{ t('ql_diachronic', lang) if t else 'Diachronic frequency' }}</div><div class="ql-desc">{{ t('ql_diachronic_desc', lang) if t else "Plot a root's distribution across periods and corpora." }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/interlinear"><div class="ql-num">03</div><div><div class="ql-name">{{ t('ql_interlinear', lang) if t else 'Interlinear word study' }}</div><div class="ql-desc">{{ t('ql_interlinear_desc', lang) if t else 'Word-by-word alignment with root, stem, and morphological gloss.' }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/concordance"><div class="ql-num">04</div><div><div class="ql-name">{{ t('ql_concordance', lang) if t else 'Concordance with KWIC' }}</div><div class="ql-desc">{{ t('ql_concordance_desc', lang) if t else 'Keyword-in-context across all 38,062 verses, sortable by context.' }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/browse"><div class="ql-num">05</div><div><div class="ql-name">{{ t('ql_browse', lang) if t else 'Browse 66 books' }}</div><div class="ql-desc">{{ t('ql_browse_desc', lang) if t else 'Direct chapter access across all five corpora.' }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/hapax"><div class="ql-num">06</div><div><div class="ql-name">{{ t('ql_hapax', lang) if t else 'Hapax &amp; rare forms' }}</div><div class="ql-desc">{{ t('ql_hapax_desc', lang) if t else 'Words attested only once or twice — useful for textual criticism.' }}</div></div><div class="ql-arr">→</div></a>
 </div>
 {% endblock %}
 
