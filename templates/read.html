@@ -5,7 +5,7 @@
 {% block topbar %}
 <div class="crumb">
   <a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span>
-  <a href="/browse?lang={{ lang }}">Browse</a><span class="sep">›</span>
+  <a href="/browse?lang={{ lang }}">{{ t('nav_browse_title', lang) if t else 'Browse' }}</a><span class="sep">›</span>
   <b>{{ bn(book, lang) if bn else book }} {{ chapter }}</b>
 </div>
 <div class="quick-search">
@@ -18,28 +18,28 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <h1 class="ph-title">{{ bn(book, lang) if bn else book }} · <em>Chapter {{ chapter }}</em></h1>
+    <h1 class="ph-title">{{ bn(book, lang) if bn else book }} · <em>{{ t('read_chapter_prefix', lang) if t else 'Chapter' }} {{ chapter }}</em></h1>
     <div class="ph-sub" style="display:flex;align-items:center;gap:10px;margin-top:8px">
       <span class="cbadge {{ corpus_abbr }}">{{ corpus_label }}</span>
-      <span>{{ verse_count }} verses</span>
+      <span>{{ verse_count }} {{ t('read_verses', lang) if t else 'verses' }}</span>
     </div>
   </div>
   <div class="ph-actions">
-    {% if chapter > 1 %}<a href="/read/{{ book }}/{{ chapter - 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}" class="btn secondary">‹ Ch {{ chapter - 1 }}</a>{% endif %}
-    <a href="/browse?lang={{ lang }}" class="btn secondary">All books</a>
-    {% if chapter < max_ch %}<a href="/read/{{ book }}/{{ chapter + 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}" class="btn secondary">Ch {{ chapter + 1 }} ›</a>{% endif %}
+    {% if chapter > 1 %}<a href="/read/{{ book }}/{{ chapter - 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}" class="btn secondary">‹ {{ t('read_chapter_prefix', lang) if t else 'Ch' }} {{ chapter - 1 }}</a>{% endif %}
+    <a href="/browse?lang={{ lang }}" class="btn secondary">{{ t('read_all_books', lang) if t else 'All books' }}</a>
+    {% if chapter < max_ch %}<a href="/read/{{ book }}/{{ chapter + 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}" class="btn secondary">{{ t('read_chapter_prefix', lang) if t else 'Ch' }} {{ chapter + 1 }} ›</a>{% endif %}
   </div>
 </div>
 
 <div class="reader-bar">
-  <span style="font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">Show</span>
-  <button class="chip on" id="chip-syr" onclick="toggleChip(this);toggleLayer('syr')">Syriac</button>
-  <button class="chip on" id="chip-tr" onclick="toggleChip(this);toggleLayer('tr')">Translit.</button>
-  <button class="chip on" id="chip-en" onclick="toggleChip(this);toggleLayer('en')">Translation</button>
-  <button class="chip" id="chip-roots" onclick="toggleChip(this);toggleRoots()">Roots</button>
+  <span style="font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">{{ t('read_show', lang) if t else 'Show' }}</span>
+  <button class="chip on" id="chip-syr" onclick="toggleChip(this);toggleLayer('syr')">{{ t('read_syriac', lang) if t else 'Syriac' }}</button>
+  <button class="chip on" id="chip-tr" onclick="toggleChip(this);toggleLayer('tr')">{{ t('read_translit_short', lang) if t else 'Translit.' }}</button>
+  <button class="chip on" id="chip-en" onclick="toggleChip(this);toggleLayer('en')">{{ t('read_translation', lang) if t else 'Translation' }}</button>
+  <button class="chip" id="chip-roots" onclick="toggleChip(this);toggleRoots()">{{ t('read_roots_layer', lang) if t else 'Roots' }}</button>
   <span class="spacer"></span>
-  <button class="btn secondary" onclick="toggleChapterRoots()" id="chRootsBtn">Roots in chapter</button>
-  <button class="btn secondary" onclick="openCiteModal({tool:'reader',book:'{{ book|e }}',chapter:'{{ chapter }}'})">Cite</button>
+  <button class="btn secondary" onclick="toggleChapterRoots()" id="chRootsBtn">{{ t('read_roots_in_chapter', lang) if t else 'Roots in chapter' }}</button>
+  <button class="btn secondary" onclick="openCiteModal({tool:'reader',book:'{{ book|e }}',chapter:'{{ chapter }}'})">{{ t('read_cite', lang) if t else 'Cite' }}</button>
 </div>
 
 {% set hl_form = request.args.get('hl', '') %}
@@ -90,7 +90,7 @@
 
 <!-- Chapter root summary -->
 <div class="chapter-root-panel" id="chapter-root-panel" style="display:none">
-  <h3>Roots in this chapter</h3>
+  <h3>{{ t('read_roots_in_this_chapter', lang) if t else 'Roots in this chapter' }}</h3>
   <div id="chapter-root-content"></div>
 </div>
 {% endblock %}

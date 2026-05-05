@@ -3,7 +3,7 @@
 {% block title %}Browse — Aramaic Root Atlas{% endblock %}
 
 {% block topbar %}
-<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b>Browse corpora</b></div>
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('nav_browse_title', lang) if t else 'Browse corpora' }}</b></div>
 <div class="quick-search">
   <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
   <input id="quick-search-input" placeholder="Root lookup — e.g. SH-L-M" autocomplete="off"><span class="kbd">⌘K</span>
@@ -14,18 +14,18 @@
 {% block content %}
 <div class="page-head">
   <div>
-    <h1 class="ph-title">Browse <em>corpora</em></h1>
-    <p class="ph-sub">Direct chapter access across all five corpora.</p>
+    <h1 class="ph-title">{{ t('nav_browse_title', lang) if t else 'Browse corpora' }}</h1>
+    <p class="ph-sub">{{ t('browse_corpora_subtitle', lang) if t else 'Direct chapter access across all five corpora.' }}</p>
   </div>
 </div>
 
 <div class="filter-row" style="border-top:0;margin-bottom:32px">
-  <span class="fl">Filter</span>
-  <a class="chip{% if not corpus_filter %} on{% endif %}" href="/browse?lang={{ lang }}">All</a>
-  <a class="chip{% if corpus_filter == 'peshitta_nt' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=peshitta_nt">Peshitta NT</a>
-  <a class="chip{% if corpus_filter == 'peshitta_ot' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=peshitta_ot">Peshitta OT</a>
-  <a class="chip{% if corpus_filter == 'biblical_aramaic' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=biblical_aramaic">Biblical Aramaic</a>
-  <a class="chip{% if corpus_filter == 'targum_onkelos' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=targum_onkelos">Targum Onkelos</a>
+  <span class="fl">{{ t('browse_filter', lang) if t else 'Filter' }}</span>
+  <a class="chip{% if not corpus_filter %} on{% endif %}" href="/browse?lang={{ lang }}">{{ t('all', lang) if t else 'All' }}</a>
+  <a class="chip{% if corpus_filter == 'peshitta_nt' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=peshitta_nt">{{ t('corpus_peshitta_nt', lang) if t else 'Peshitta NT' }}</a>
+  <a class="chip{% if corpus_filter == 'peshitta_ot' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=peshitta_ot">{{ t('corpus_peshitta_ot', lang) if t else 'Peshitta OT' }}</a>
+  <a class="chip{% if corpus_filter == 'biblical_aramaic' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=biblical_aramaic">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</a>
+  <a class="chip{% if corpus_filter == 'targum_onkelos' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=targum_onkelos">{{ t('corpus_targum_onkelos', lang) if t else 'Targum Onkelos' }}</a>
   <a class="chip{% if corpus_filter == 'ephrem_nisibis' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=ephrem_nisibis">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</a>
 </div>
 
@@ -35,7 +35,7 @@
   {% for book in group.books %}
   <div class="book-card {{ book.abbr }}">
     <div class="b-name">{{ bn(book.name, lang) if bn else book.name }}</div>
-    <div class="b-meta"><span class="cbadge {{ book.abbr }}">{{ book.abbr|upper }}</span> {{ book.chapter_count }} ch.</div>
+    <div class="b-meta"><span class="cbadge {{ book.abbr }}">{{ book.abbr|upper }}</span> {{ book.chapter_count }} {{ t('browse_ch', lang) if t else 'ch.' }}</div>
     <div class="chapters">
       {% for ch in book.chapters %}
       <a class="ch{% if ch.heat_level %} heat-{{ ch.heat_level }}{% endif %}" href="/read/{{ book.name }}/{{ ch.num }}?lang={{ lang }}">{{ ch.num }}</a>
