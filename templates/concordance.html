@@ -1,96 +1,131 @@
 {% extends "base.html" %}
-{% block title %}{{ t('concordance_title', lang) }} — Aramaic Root Atlas{% endblock %}
+{% set page_id = 'concordance' %}
+{% block title %}Concordance — Aramaic Root Atlas{% endblock %}
+
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">Search</a><span class="sep">›</span><b id="crumb-root">Concordance</b></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-root-input" placeholder="Root — K-TH-B"><span class="kbd">⌘K</span>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:1200px;margin:0 auto;padding:1.5rem 1rem;">
-    <div style="margin-bottom:1.2rem;">
-        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('concordance_title', lang) }}</h1>
-        <p style="color:var(--muted);margin:0;">{{ t('concordance_subtitle', lang) }}</p>
-    </div>
+<div class="page-head">
+  <div>
+    <h1 class="ph-title">KWIC <em>concordance</em></h1>
+    <p class="ph-sub">Keyword-in-context across all five corpora. Enter a triliteral root below.</p>
+  </div>
+  <div class="ph-actions">
+    <button class="btn secondary" onclick="openCiteModal(getCiteContext())" title="Cite">Cite</button>
+    <button class="btn secondary" onclick="exportConc('csv')">Export CSV</button>
+    <button class="btn secondary" onclick="exportConc('json')">Export JSON</button>
+    <button class="btn secondary" onclick="exportConc('text')">Export Text</button>
+    <button class="btn secondary" id="conc-tei-btn" style="display:none" onclick="exportConc('tei')">Export TEI</button>
+  </div>
+</div>
 
-    <!-- Search bar -->
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;">
-        <div class="autocomplete-wrapper" style="flex:1;min-width:160px;max-width:260px;">
-            <input type="text" id="conc-root-input" placeholder="e.g. SH-L-M, K-T-B"
-                   value="{{ initial_root }}" autocomplete="off"
-                   style="width:100%;padding:.5rem .8rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
-            <div id="conc-ac-list" class="autocomplete-list"></div>
+<!-- Root input row -->
+<div style="display:flex;gap:14px;align-items:end;padding:8px 0 28px;flex-wrap:wrap">
+  <div class="s-field" style="max-width:280px;flex:1">
+    <label class="s-label">Triliteral root</label>
+    <div class="autocomplete-wrap">
+      <input class="s-input" id="conc-root-input" value="{{ initial_root }}" placeholder="K-TH-B,  SH-L-M,  Q-D-SH" autocomplete="off">
+      <div id="conc-ac-list" class="autocomplete-list"></div>
+    </div>
+  </div>
+  <div class="s-field">
+    <label class="s-label">Sort</label>
+    <select class="s-select" id="conc-sort">
+      <option value="book">Book order</option>
+      <option value="frequency">By frequency</option>
+      <option value="form">By form</option>
+    </select>
+  </div>
+  <div class="s-field">
+    <label class="s-label">Group by</label>
+    <select class="s-select" id="conc-group">
+      <option value="none">None</option>
+      <option value="form">By form</option>
+      <option value="stem">By stem</option>
+    </select>
+  </div>
+  <div class="s-field">
+    <label class="s-label">Context: <span id="conc-ctx-val">5</span> words</label>
+    <input type="range" id="conc-ctx" min="2" max="12" value="5" style="width:100px">
+  </div>
+  <button class="btn" onclick="loadConcordance()">Search
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+  </button>
+</div>
+
+<div class="entry-grid">
+  <div>
+    <!-- Entry head (populated by JS after root loads) -->
+    <div class="entry-head" id="entry-head" style="display:none">
+      <div class="glyphs">
+        <div class="glyph-syr" id="glyph-syr"></div>
+        <div>
+          <div class="glyph-translit" id="glyph-translit"></div>
+          <div class="glyph-heb" id="glyph-heb"></div>
         </div>
-        <button onclick="loadConcordance()" style="padding:.5rem 1.2rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;">
-            Search
-        </button>
+      </div>
+      <div class="entry-meta" id="entry-meta"></div>
+    </div>
+    <p class="gloss" id="root-gloss" style="display:none"></p>
+
+    <!-- Stat strip -->
+    <div class="entry-stats" id="entry-stats" style="display:none">
+      <div class="estat"><div class="estat-num" id="stat-total">—</div><div class="estat-label">Attestations</div></div>
+      <div class="estat"><div class="estat-num" id="stat-forms">—</div><div class="estat-label">Distinct forms</div></div>
+      <div class="estat"><div class="estat-num" id="stat-corpora">—</div><div class="estat-label">Corpora</div></div>
+      <div class="estat"><div class="estat-num" id="stat-rate">—</div><div class="estat-label">Per 1k words</div></div>
     </div>
 
-    <!-- Controls -->
-    <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;padding:.6rem .9rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);font-size:.85rem;">
-        <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
-            Corpus:
-            <select id="conc-corpus" style="padding:.25rem .5rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
-                <option value="">All</option>
-                <option value="biblical_aramaic">Biblical Aramaic</option>
-                <option value="targum_onkelos">Targum Onkelos</option>
-                <option value="peshitta_nt">Peshitta NT</option>
-                <option value="peshitta_ot">Peshitta OT</option>
-                <option value="ephrem_nisibis">Ephrem — Nisibis</option>
-            </select>
-        </label>
-        <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
-            Sort:
-            <select id="conc-sort" style="padding:.25rem .5rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
-                <option value="book">Book order</option>
-                <option value="frequency">By frequency</option>
-                <option value="form">By form</option>
-            </select>
-        </label>
-        <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
-            Context words:
-            <input type="range" id="conc-ctx" min="2" max="12" value="5" style="width:80px;">
-            <span id="conc-ctx-val">5</span>
-        </label>
-        <label style="display:flex;align-items:center;gap:.4rem;font-weight:500;">
-            Group:
-            <select id="conc-group" style="padding:.25rem .5rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);">
-                <option value="none">None</option>
-                <option value="form">By form</option>
-                <option value="stem">By stem</option>
-            </select>
-        </label>
+    <!-- Corpus chips -->
+    <div class="filter-row" id="conc-filters" style="display:none;margin-bottom:8px">
+      <span class="fl">Corpora</span>
+      <button class="chip on" data-c="pnt" onclick="toggleChip(this);reloadConc()">Peshitta NT</button>
+      <button class="chip on" data-c="pot" onclick="toggleChip(this);reloadConc()">Peshitta OT</button>
+      <button class="chip on" data-c="bib" onclick="toggleChip(this);reloadConc()">Biblical Aramaic</button>
+      <button class="chip on" data-c="tar" onclick="toggleChip(this);reloadConc()">Targum Onkelos</button>
+      <button class="chip on" data-c="eph" onclick="toggleChip(this);reloadConc()">Ephrem</button>
     </div>
 
-    <!-- Summary + Export -->
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;">
-        <div id="conc-summary" style="font-size:.88rem;color:var(--muted);"></div>
-        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-            <button class="btn-secondary" onclick="exportConc('csv')">{{ t('concordance_export_csv', lang) }}</button>
-            <button class="btn-secondary" onclick="exportConc('json')">Export JSON</button>
-            <button class="btn-secondary" onclick="exportConc('text')">Export Text</button>
-            <button class="btn-secondary" id="conc-tei-btn" style="display:none;" onclick="exportConc('tei')">{{ t('concordance_export_tei', lang) }}</button>
-            <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
-                <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
-            </button>
-        </div>
-    </div>
+    <!-- Loading / empty states -->
+    <div id="conc-loading" style="display:none;text-align:center;padding:48px 0;color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</div>
+    <div id="conc-empty" style="font-family:var(--serif);font-style:italic;color:var(--ink-3);padding:48px 0;text-align:center">Enter a root above to begin</div>
 
-    <div id="conc-loading" style="display:none;text-align:center;padding:3rem;color:var(--muted);">
-        <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
-    </div>
+    <!-- Hidden #conc-summary for JS compatibility -->
+    <div id="conc-summary" style="display:none"></div>
 
-    <div id="conc-empty" style="display:none;text-align:center;padding:3rem;color:var(--muted);">Enter a root to view its concordance.</div>
+    <!-- KWIC table -->
+    <table class="kwic-table" id="kwic-table" style="display:none">
+      <thead>
+        <tr>
+          <th class="left" style="text-align:left;font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">Left context</th>
+          <th style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;text-align:center;">Keyword</th>
+          <th class="right" style="text-align:right;font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">Right context</th>
+          <th class="ref" style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">Ref</th>
+          <th style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600;padding-bottom:8px;">Corpus / Stem</th>
+        </tr>
+      </thead>
+      <tbody id="conc-tbody"></tbody>
+    </table>
+    <div id="conc-pagination" style="display:flex;justify-content:space-between;align-items:center;padding:18px 0;font-family:var(--sans);font-size:12.5px;color:var(--ink-3)"></div>
+  </div>
 
-    <div class="kwic-wrap" id="conc-results" style="display:none;">
-        <table class="kwic-table" id="conc-table">
-            <thead>
-                <tr>
-                    <th class="kwic-left">{{ t('concordance_left_ctx', lang) }}</th>
-                    <th class="kwic-kw">{{ t('concordance_keyword', lang) }}</th>
-                    <th class="kwic-right">{{ t('concordance_right_ctx', lang) }}</th>
-                    <th class="kwic-ref">Ref</th>
-                    <th class="kwic-meta">Corpus / Stem</th>
-                </tr>
-            </thead>
-            <tbody id="conc-tbody"></tbody>
-        </table>
+  <!-- Right rail: apparatus -->
+  <aside id="conc-apparatus" style="position:sticky;top:80px;font-size:13px;display:none">
+    <div style="padding-bottom:24px;margin-bottom:24px;border-bottom:1px solid var(--rule)">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px;font-family:var(--sans)">Cognates</div>
+      <div id="apparatus-cognates" style="display:grid;grid-template-columns:auto 1fr;gap:12px 14px;align-items:baseline;font-family:var(--sans)"></div>
     </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px;font-family:var(--sans)">Distribution</div>
+      <div id="apparatus-distribution"></div>
+    </div>
+  </aside>
 </div>
 {% endblock %}
 
@@ -101,7 +136,7 @@
     var LANG = {{ lang|tojson }};
     var SCRIPT = {{ script|tojson }};
     var currentData = null;
-    var currentRoot = '';
+    var currentRoot = '{{ initial_root|e }}';
 
     var ctxSlider = document.getElementById('conc-ctx');
     var ctxVal = document.getElementById('conc-ctx-val');
@@ -109,6 +144,22 @@
 
     initRootAutocomplete('conc-root-input', 'conc-ac-list', function() { loadConcordance(); });
 
+    // ─── chip helpers ───────────────────────────────────────────────────────────
+    window.toggleChip = function(el) {
+        el.classList.toggle('on');
+    };
+
+    // Map chip data-c values to corpus IDs
+    var CHIP_TO_CORPUS = {pnt:'peshitta_nt', pot:'peshitta_ot', bib:'biblical_aramaic', tar:'targum_onkelos', eph:'ephrem_nisibis'};
+
+    function getActiveCorpora() {
+        var chips = document.querySelectorAll('#conc-filters .chip.on');
+        var corpora = [];
+        chips.forEach(function(c) { var cid = CHIP_TO_CORPUS[c.getAttribute('data-c')]; if (cid) corpora.push(cid); });
+        return corpora;
+    }
+
+    // ─── utility ────────────────────────────────────────────────────────────────
     function escHtml(s) {
         return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
@@ -119,21 +170,40 @@
         return m[cid] || cid;
     }
 
+    // ─── main load ──────────────────────────────────────────────────────────────
     window.loadConcordance = function() {
         var root = document.getElementById('conc-root-input').value.trim();
         if (!root) return;
         currentRoot = root;
-        var corpus = document.getElementById('conc-corpus').value;
+
+        // Update crumb
+        var crumb = document.getElementById('crumb-root');
+        if (crumb) crumb.textContent = root;
+
         var sort = document.getElementById('conc-sort').value;
         var ctx = ctxSlider.value;
+
+        // Build corpus param from active chips (empty = all)
+        var activeCorpora = getActiveCorpora();
+        var corpusParam = (activeCorpora.length === 5 || activeCorpora.length === 0) ? '' : activeCorpora[0];
+        // Note: API accepts a single corpus filter; if multiple chips are deselected we pass the first active one.
+        // For multi-corpus filtering, pass all active as comma-separated if the API supports it.
+        var corpusParamStr = activeCorpora.length > 0 && activeCorpora.length < 5 ? activeCorpora.join(',') : '';
+
         var url = '/api/concordance?root=' + encodeURIComponent(root) + '&sort=' + sort +
                   '&context_words=' + ctx + '&lang=' + LANG + '&script=' + SCRIPT;
-        if (corpus) url += '&corpus=' + corpus;
+        if (corpusParamStr) url += '&corpus=' + encodeURIComponent(corpusParamStr);
 
         document.getElementById('conc-loading').style.display = 'block';
-        document.getElementById('conc-results').style.display = 'none';
+        document.getElementById('kwic-table').style.display = 'none';
         document.getElementById('conc-empty').style.display = 'none';
         document.getElementById('conc-summary').textContent = '';
+        document.getElementById('conc-pagination').textContent = '';
+        document.getElementById('entry-head').style.display = 'none';
+        document.getElementById('root-gloss').style.display = 'none';
+        document.getElementById('entry-stats').style.display = 'none';
+        document.getElementById('conc-filters').style.display = 'none';
+        document.getElementById('conc-apparatus').style.display = 'none';
 
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
             currentData = data;
@@ -146,19 +216,102 @@
                 return;
             }
 
+            // Populate entry head
+            if (data.root) {
+                document.getElementById('glyph-syr').textContent = data.root;
+                document.getElementById('glyph-translit').textContent = data.root_translit || root;
+                document.getElementById('glyph-heb').textContent = '';
+                document.getElementById('entry-meta').innerHTML = '<b>' + escHtml(data.root_translit || root) + '</b>';
+                document.getElementById('entry-head').style.display = '';
+            }
+
+            if (data.gloss) {
+                document.getElementById('root-gloss').textContent = data.gloss;
+                document.getElementById('root-gloss').style.display = '';
+            }
+
+            // Stat strip
+            var distinctForms = {};
+            var distinctCorpora = {};
+            lines.forEach(function(l) {
+                if (l.form) distinctForms[l.form] = 1;
+                if (l.corpus_id) distinctCorpora[l.corpus_id] = 1;
+            });
+            document.getElementById('stat-total').textContent = data.total || lines.length;
+            document.getElementById('stat-forms').textContent = Object.keys(distinctForms).length;
+            document.getElementById('stat-corpora').textContent = Object.keys(distinctCorpora).length;
+            document.getElementById('stat-rate').textContent = data.per_1k !== undefined ? data.per_1k.toFixed(2) : '—';
+            document.getElementById('entry-stats').style.display = '';
+
+            // Show corpus chips & filters
+            document.getElementById('conc-filters').style.display = '';
+            document.getElementById('conc-tei-btn').style.display = '';
+
+            // Summary (hidden div for legacy compat)
             document.getElementById('conc-summary').textContent =
                 data.total + ' ' + (LANG === 'es' ? 'líneas' : 'lines') + ' — ' + data.root_translit;
-            document.getElementById('conc-tei-btn').style.display = '';
+
+            // Pagination line
+            document.getElementById('conc-pagination').textContent =
+                (data.total || lines.length) + ' lines · ' + (data.root_translit || root);
 
             var groupBy = document.getElementById('conc-group').value;
             renderTable(lines, groupBy);
-            document.getElementById('conc-results').style.display = '';
+            document.getElementById('kwic-table').style.display = '';
+
+            // Populate apparatus
+            populateApparatus(data);
+
         }).catch(function(err) {
             document.getElementById('conc-loading').style.display = 'none';
             document.getElementById('conc-empty').style.display = 'block';
             document.getElementById('conc-empty').textContent = 'Error loading concordance.';
         });
     };
+
+    function populateApparatus(data) {
+        var cogDiv = document.getElementById('apparatus-cognates');
+        var distDiv = document.getElementById('apparatus-distribution');
+        cogDiv.innerHTML = '';
+        distDiv.innerHTML = '';
+
+        // Cognates from data if present
+        var cogs = data.cognates || {};
+        if (cogs.hebrew) {
+            cogDiv.innerHTML += '<span style="color:var(--ink-3);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em">Heb</span>' +
+                '<span dir="rtl" style="font-family:var(--heb);font-size:18px">' + escHtml(cogs.hebrew) + '</span>';
+        }
+        if (cogs.arabic) {
+            cogDiv.innerHTML += '<span style="color:var(--ink-3);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em">Ar</span>' +
+                '<span dir="rtl" style="font-family:var(--ara);font-size:18px">' + escHtml(cogs.arabic) + '</span>';
+        }
+        if (cogs.greek) {
+            cogDiv.innerHTML += '<span style="color:var(--ink-3);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em">Gk</span>' +
+                '<span style="font-size:14px">' + escHtml(cogs.greek) + '</span>';
+        }
+
+        // Distribution bars from corpus_attestation
+        var att = data.corpus_attestation || {};
+        var total = 0;
+        Object.keys(att).forEach(function(k) { total += att[k]; });
+        var CORP_NAMES = {peshitta_nt:'Peshitta NT', peshitta_ot:'Peshitta OT', biblical_aramaic:'Biblical Aramaic', targum_onkelos:'Targum Onkelos', ephrem_nisibis:'Ephrem Nisibis'};
+        Object.keys(att).sort(function(a,b){return att[b]-att[a];}).forEach(function(cid) {
+            var pct = total > 0 ? Math.round(att[cid] / total * 100) : 0;
+            var abbr = CORPUS_ABBR[cid] || cid;
+            distDiv.innerHTML +=
+                '<div style="margin-bottom:10px">' +
+                '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">' +
+                '<span>' + escHtml(CORP_NAMES[cid] || cid) + '</span>' +
+                '<span style="color:var(--ink-3)">' + att[cid] + '</span></div>' +
+                '<div style="height:4px;border-radius:2px;background:var(--rule);overflow:hidden">' +
+                '<div class="cbadge ' + abbr + '" style="height:100%;width:' + pct + '%;background:var(--c-' + abbr + ', var(--accent));border-radius:2px"></div>' +
+                '</div></div>';
+        });
+
+        if (cogDiv.innerHTML || distDiv.innerHTML) {
+            document.getElementById('conc-apparatus').style.display = '';
+        }
+    }
 
     document.getElementById('conc-group').addEventListener('change', function() {
         if (currentData) renderTable(currentData.lines || [], this.value);
@@ -181,11 +334,11 @@
                 var grpLines = groups[k];
                 var hdr = document.createElement('tr');
                 var label = groupBy === 'stem'
-                    ? (k !== '—' ? '<span class="stem-badge stem-' + k.toLowerCase() + '">' + escHtml(k) + '</span>' : '<span style="color:var(--muted);">—</span>')
-                    : '<span dir="rtl" style="font-family:var(--syriac-font);font-size:1rem;">' + escHtml(k) + '</span>' +
+                    ? (k !== '—' ? '<span class="stem-badge stem-' + k.toLowerCase() + '">' + escHtml(k) + '</span>' : '<span style="color:var(--ink-3);">—</span>')
+                    : '<span dir="rtl" style="font-family:var(--syr);font-size:1rem;">' + escHtml(k) + '</span>' +
                       (grpLines[0].stem ? ' <span class="stem-badge stem-' + grpLines[0].stem.toLowerCase() + '">' + escHtml(grpLines[0].stem) + '</span>' : '');
-                hdr.innerHTML = '<td colspan="5" class="kwic-group-header">' + label +
-                    ' <span style="color:var(--muted);font-size:.8rem;font-weight:400;">— ' + grpLines.length + ' occ.</span></td>';
+                hdr.innerHTML = '<td colspan="5" style="padding:10px 12px;background:var(--surface);font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-2)">' + label +
+                    ' <span style="color:var(--ink-3);font-size:.8rem;font-weight:400">— ' + grpLines.length + ' occ.</span></td>';
                 tbody.appendChild(hdr);
                 grpLines.forEach(function(line) { makeLine(line).forEach(function(r) { tbody.appendChild(r); }); });
             });
@@ -204,25 +357,24 @@
 
         // Main Syriac row
         var tr = document.createElement('tr');
-        tr.className = 'kwic-syriac-row';
         tr.innerHTML =
-            '<td class="kwic-left">' + escHtml((line.left_context||[]).join(' ')) + '</td>' +
-            '<td class="kwic-kw">' +
+            '<td class="left">' + escHtml((line.left_context||[]).join(' ')) + '</td>' +
+            '<td class="key">' +
                 escHtml(line.keyword||'') +
-                (line.form_translit ? '<br><span class="kwic-kw-translit">' + escHtml(line.form_translit) + '</span>' : '') +
+                (line.form_translit ? '<br><span class="tr">' + escHtml(line.form_translit) + '</span>' : '') +
             '</td>' +
-            '<td class="kwic-right">' + escHtml((line.right_context||[]).join(' ')) + '</td>' +
-            '<td class="kwic-ref" rowspan="2"><a href="' + readUrl + '" style="color:var(--accent);font-size:.75rem;">' + escHtml(ref) + '</a></td>' +
-            '<td class="kwic-meta" rowspan="2">' +
+            '<td class="right">' + escHtml((line.right_context||[]).join(' ')) + '</td>' +
+            '<td class="ref" rowspan="2"><a href="' + readUrl + '">' + escHtml(ref) + '</a></td>' +
+            '<td rowspan="2" style="white-space:nowrap">' +
                 '<span class="cbadge ' + (CORPUS_ABBR[line.corpus_id||''] || line.corpus_id||'') + '" style="font-size:.65rem;padding:1px 5px;">' + corpusLabel(line.corpus_id||'') + '</span>' +
                 (line.stem ? ' <span class="stem-badge stem-' + line.stem.toLowerCase() + '" style="font-size:.65rem;">' + escHtml(line.stem) + '</span>' : '') +
             '</td>';
 
         // Translation sub-row
         var tr2 = document.createElement('tr');
-        tr2.className = 'kwic-trans-row';
+        tr2.style.borderBottom = '1px solid var(--rule-soft)';
         tr2.innerHTML =
-            '<td colspan="3" class="kwic-translation">' + escHtml(line.translation||'') + '</td>';
+            '<td colspan="3" style="padding:4px 12px 12px;font-family:var(--sans);font-size:12px;color:var(--ink-3);direction:ltr">' + escHtml(line.translation||'') + '</td>';
 
         return [tr, tr2];
     }
@@ -232,10 +384,11 @@
         var lines = currentData.lines || [];
         if (fmt === 'tei') {
             var root = document.getElementById('conc-root-input').value.trim();
-            var corpus = document.getElementById('conc-corpus').value;
             var ctx = ctxSlider.value;
+            var activeCorpora = getActiveCorpora();
+            var corpusParamStr = activeCorpora.length > 0 && activeCorpora.length < 5 ? activeCorpora.join(',') : '';
             var url = '/api/concordance/export?root=' + encodeURIComponent(root) +
-                      '&context_words=' + ctx + (corpus ? '&corpus=' + corpus : '');
+                      '&context_words=' + ctx + (corpusParamStr ? '&corpus=' + encodeURIComponent(corpusParamStr) : '');
             window.location.href = url;
             return;
         }
@@ -262,7 +415,7 @@
             rows.push([l.reference, (l.left_context||[]).join(' '), l.keyword||'',
                 (l.right_context||[]).join(' '), l.translation||'', l.corpus_id||'', l.stem||'']);
         });
-        var csv = '\uFEFF' + rows.map(function(r) {
+        var csv = '﻿' + rows.map(function(r) {
             return r.map(function(c) { return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
         }).join('\n');
         var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
@@ -271,11 +424,12 @@
     };
 
     window.getCiteContext = function() {
-        var corpusSel = document.getElementById('conc-corpus');
-        var corpusLabel = (corpusSel && corpusSel.value)
-            ? corpusSel.options[corpusSel.selectedIndex].text : '';
-        var root = (currentData && currentData.root_translit) || '';
+        var root = (currentData && currentData.root_translit) || currentRoot || '';
         var rootSyr = (currentData && currentData.root) || '';
+        var activeCorpora = getActiveCorpora();
+        var corpusLabel = activeCorpora.length === 5 || activeCorpora.length === 0
+            ? 'All corpora'
+            : activeCorpora.join(', ');
         return {
             tool: 'concordance',
             root: root,
@@ -284,6 +438,31 @@
             url: window.location.href
         };
     };
+
+    window.reloadConc = function() { loadConcordance(); };
+
+    // Quick-search bar (topbar) → focus main input
+    var qs = document.getElementById('quick-root-input');
+    if (qs) {
+        qs.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                var v = this.value.trim();
+                if (v) {
+                    document.getElementById('conc-root-input').value = v;
+                    loadConcordance();
+                }
+            }
+        });
+    }
+
+    // ⌘K / Ctrl+K focus quick search
+    document.addEventListener('keydown', function(e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            var el = document.getElementById('quick-root-input');
+            if (el) el.focus();
+        }
+    });
 
     // Auto-load if root passed in URL
     if ('{{ initial_root }}') {

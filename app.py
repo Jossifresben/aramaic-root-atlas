@@ -1985,7 +1985,7 @@ def concordance_page():
     root = request.args.get('root', '')
     return render_template('concordance.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn,
-                           initial_root=root)
+                           initial_root=root, page_id='concordance')
 
 
 @app.route('/api/concordance')
