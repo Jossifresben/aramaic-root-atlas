@@ -1,12 +1,21 @@
 {% extends "base.html" %}
+{% set page_id = 'annotations' %}
 
 {% block title %}{{ t('ann_page_title', lang) if t else 'Research Notes' }} — Aramaic Root Atlas{% endblock %}
+
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('ann_page_title', lang) if t else 'Research Notes' }}</b></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width:1000px;margin:0 auto;padding:1.5rem 1rem;">
 
     <div class="storage-warning" id="storage-warning" style="display:none">
-        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">warning</span>
         {{ t('storage_warning', lang) if t else 'Notes and bookmarks are stored in your browser\'s local storage. Clearing your browser cache will permanently delete them. Export regularly to keep a backup.' }}
         <button class="storage-warning-dismiss" onclick="dismissStorageWarning()">{{ t('storage_warning_dismiss', lang) if t else 'Got it' }}</button>
     </div>
@@ -17,44 +26,34 @@
     </header>
 
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center">
-        <button class="bm-action-btn" onclick="exportAnnJSON()">
-            <span class="material-symbols-outlined">download</span> JSON
-        </button>
-        <button class="bm-action-btn" onclick="exportAnnCSV()">
-            <span class="material-symbols-outlined">table_chart</span> CSV
-        </button>
-        <button class="bm-action-btn" onclick="exportAnnMarkdown()">
-            <span class="material-symbols-outlined">description</span> Markdown
-        </button>
+        <button class="bm-action-btn" onclick="exportAnnJSON()">JSON</button>
+        <button class="bm-action-btn" onclick="exportAnnCSV()">CSV</button>
+        <button class="bm-action-btn" onclick="exportAnnMarkdown()">Markdown</button>
         <div id="tag-filter-chips" style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-left:0.5rem"></div>
         <button id="tag-clear-btn" class="bm-tag-clear" onclick="clearAnnTagFilter()" style="display:none">
-            {{ t('ann_filter_tag', lang) if t else 'Show all' }}
+            {{ t('ann_show_all', lang) if t else 'Show all' }}
         </button>
     </div>
 
     <section>
-        <h2 style="font-size:1.1rem;margin-bottom:0.8rem;color:var(--muted)">
-            <span class="material-symbols-outlined" style="vertical-align:middle;font-size:18px">menu_book</span>
+        <h2 style="font-size:1.1rem;margin-bottom:0.8rem;color:var(--ink-3)">
             {{ t('ann_verses_heading', lang) if t else 'Annotated Verses' }}
             <span id="verse-ann-count" style="font-size:0.85rem;font-weight:400"></span>
         </h2>
         <div id="verses-ann-list">
             <div class="bookmarks-empty" id="verses-ann-empty" style="display:none">
-                <span class="material-symbols-outlined" style="font-size:36px;color:var(--text-muted)">edit_note</span>
                 <p>{{ t('ann_empty', lang) if t else 'No verse annotations yet. Click the note icon on any verse in the reader.' }}</p>
             </div>
         </div>
     </section>
 
     <section style="margin-top:2rem">
-        <h2 style="font-size:1.1rem;margin-bottom:0.8rem;color:var(--muted)">
-            <span class="material-symbols-outlined" style="vertical-align:middle;font-size:18px">hub</span>
+        <h2 style="font-size:1.1rem;margin-bottom:0.8rem;color:var(--ink-3)">
             {{ t('ann_roots_heading', lang) if t else 'Annotated Roots' }}
             <span id="root-ann-count" style="font-size:0.85rem;font-weight:400"></span>
         </h2>
         <div id="roots-ann-list">
             <div class="bookmarks-empty" id="roots-ann-empty" style="display:none">
-                <span class="material-symbols-outlined" style="font-size:36px;color:var(--text-muted)">edit_note</span>
                 <p>{{ t('ann_empty', lang) if t else 'No root annotations yet. Click "Add note" in the root card on the visualizer.' }}</p>
             </div>
         </div>
@@ -107,7 +106,7 @@ function renderAnnotations() {
             var readUrl = parts ? '/read/' + encodeURIComponent(parts[1]) + '/' + parts[2] + '?lang=' + currentLang + '#v' + parts[3] : '#';
             vh += '<div class="bm-card">';
             vh += '<div class="bm-card-header"><a class="bm-ref" href="' + escHtml(readUrl) + '">' + escHtml(ref) + '</a>';
-            vh += '<span class="bm-date" style="font-size:0.78rem;color:var(--muted);margin-left:0.5rem">' + escHtml(note.updated || note.created || '') + '</span></div>';
+            vh += '<span class="bm-date" style="font-size:0.78rem;color:var(--ink-3);margin-left:0.5rem">' + escHtml(note.updated || note.created || '') + '</span></div>';
             vh += '<div class="bm-note-text" style="margin:0.4rem 0;font-size:0.92rem">' + escHtml(note.text) + '</div>';
             if (note.tags && note.tags.length) {
                 vh += '<div class="bm-tag-chips">';
@@ -141,10 +140,10 @@ function renderAnnotations() {
         var rh = '';
         rootEntries.forEach(function(entry) {
             var key = entry[0], note = entry[1];
-            var vizUrl = '/visualize/' + encodeURIComponent(key) + '?lang=' + currentLang;
+            var vizUrl = '/visualize/' + encodeURIComponent(key) + '?lang=' + currentLang + '&tab=ficha';
             rh += '<div class="bm-card">';
             rh += '<div class="bm-card-header"><a class="bm-ref" href="' + escHtml(vizUrl) + '">' + escHtml(key.toUpperCase()) + '</a>';
-            rh += '<span class="bm-date" style="font-size:0.78rem;color:var(--muted);margin-left:0.5rem">' + escHtml(note.updated || note.created || '') + '</span></div>';
+            rh += '<span class="bm-date" style="font-size:0.78rem;color:var(--ink-3);margin-left:0.5rem">' + escHtml(note.updated || note.created || '') + '</span></div>';
             rh += '<div class="bm-note-text" style="margin:0.4rem 0;font-size:0.92rem">' + escHtml(note.text) + '</div>';
             if (note.tags && note.tags.length) {
                 rh += '<div class="bm-tag-chips">';

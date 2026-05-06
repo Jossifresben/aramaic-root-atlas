@@ -1,60 +1,83 @@
 {% extends "base.html" %}
+{% set page_id = 'interlinear' %}
 {% block title %}{{ t('il_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
-{% block content %}
-<div class="container" style="max-width:1100px;margin:2rem auto;padding:0 1rem;">
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('nav_interlinear', lang) if t else 'Interlinear' }}</b></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
+</div>
+{% endblock %}
 
-  <h1 class="page-title">{{ t('il_title', lang) }}</h1>
-  <p class="page-subtitle" style="color:var(--muted);margin-bottom:1.5rem;">{{ t('il_subtitle', lang) }}</p>
+{% block content %}
+
+  <div class="page-head">
+    <div>
+      <h1 class="ph-title"><em>{{ t('nav_interlinear', lang) if t else 'Interlinear' }}</em> viewer</h1>
+      <p class="ph-sub">{{ t('il_subtitle', lang) }}</p>
+    </div>
+  </div>
 
   <!-- Controls -->
   <div class="interlinear-controls" id="il-controls">
 
-    <label>Corpus
-      <select id="il-corpus">
+    <div class="s-field">
+      <label class="s-label">{{ t('il_corpus_label', lang) if t else 'Corpus' }}</label>
+      <select class="s-select" id="il-corpus">
         <option value="">{{ t('all_corpora', lang) if t else 'All Corpora' }}</option>
-        <option value="biblical_aramaic">Biblical Aramaic</option>
-        <option value="targum_onkelos">Targum Onkelos</option>
-        <option value="peshitta_nt">Peshitta NT</option>
-        <option value="peshitta_ot">Peshitta OT</option>
-        <option value="ephrem_nisibis">Ephrem — Nisibis</option>
+        <option value="biblical_aramaic">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</option>
+        <option value="targum_onkelos">{{ t('corpus_targum_onkelos', lang) if t else 'Targum Onkelos' }}</option>
+        <option value="peshitta_nt">{{ t('corpus_peshitta_nt', lang) if t else 'Peshitta NT' }}</option>
+        <option value="peshitta_ot">{{ t('corpus_peshitta_ot', lang) if t else 'Peshitta OT' }}</option>
+        <option value="ephrem_nisibis">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</option>
       </select>
-    </label>
+    </div>
 
-    <label>{{ t('read_book', lang) if t else 'Book' }}
-      <select id="il-book">
+    <div class="s-field wide">
+      <label class="s-label">{{ t('read_book', lang) if t else 'Book' }}</label>
+      <select class="s-select" id="il-book">
         <option value="">— select —</option>
       </select>
-    </label>
+    </div>
 
-    <label>{{ t('il_from', lang) }}
-      <input type="text" id="il-ch-start" placeholder="ch:v" value="{{ initial_ch_start }}{% if initial_v_start %}:{{ initial_v_start }}{% endif %}" style="width:80px;">
-    </label>
+    <div class="s-field narrow">
+      <label class="s-label">{{ t('il_from', lang) }}</label>
+      <select class="s-select" id="il-ch-start">
+        <option value="">Ch</option>
+      </select>
+    </div>
 
     <span class="il-range-sep">—</span>
 
-    <label>{{ t('il_to', lang) }}
-      <input type="text" id="il-ch-end" placeholder="ch:v" value="{{ initial_ch_end }}{% if initial_v_end %}:{{ initial_v_end }}{% endif %}" style="width:80px;">
-    </label>
+    <div class="s-field narrow">
+      <label class="s-label">{{ t('il_to', lang) }}</label>
+      <select class="s-select" id="il-ch-end">
+        <option value="">Ch</option>
+      </select>
+    </div>
 
-    <label>{{ t('settings_script', lang) if t else 'Script' }}
-      <select id="il-script">
+    <div class="s-field">
+      <label class="s-label">{{ t('settings_script', lang) if t else 'Transliteration' }}</label>
+      <select class="s-select" id="il-script">
         <option value="latin"{% if script == 'latin' %} selected{% endif %}>Latin</option>
         <option value="syriac"{% if script == 'syriac' %} selected{% endif %}>Syriac</option>
         <option value="hebrew"{% if script == 'hebrew' %} selected{% endif %}>Hebrew</option>
         <option value="arabic"{% if script == 'arabic' %} selected{% endif %}>Arabic</option>
       </select>
-    </label>
+    </div>
 
-    <label>{{ t('settings_syriac_font', lang) if t else 'Font' }}
-      <select id="il-font">
+    <div class="s-field">
+      <label class="s-label">{{ t('settings_syriac_font', lang) if t else 'Script style' }}</label>
+      <select class="s-select" id="il-font">
         <option value="estrangela">Estrangela</option>
         <option value="eastern">Eastern</option>
         <option value="western">Western</option>
       </select>
-    </label>
+    </div>
 
-    <button class="il-analyze-btn" onclick="loadInterlinear()">{{ t('il_analyze', lang) }}</button>
+    <button class="btn" onclick="loadInterlinear()">{{ t('il_analyze', lang) }}</button>
 
   </div>
 
@@ -63,16 +86,10 @@
 
   <div id="il-action-bar" style="display:none;margin-bottom:1rem;">
     <div class="il-export-bar">
-      <button class="il-export-btn" onclick="exportTEI()">{{ t('il_export_tei', lang) }}</button>
-      <button class="il-export-btn" onclick="exportTXT()">{{ t('il_export_txt', lang) }}</button>
-      <button class="il-export-btn" onclick="exportCSV()">{{ t('il_export_csv', lang) }}</button>
-      <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
-          <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
-      </button>
-      <label class="il-translation-toggle">
-        <input type="checkbox" id="il-show-trans" checked onchange="toggleTranslation()">
-        {{ t('il_translation_toggle', lang) }}
-      </label>
+      <button class="btn secondary" onclick="exportTEI()">{{ t('il_export_tei', lang) }}</button>
+      <button class="btn secondary" onclick="exportTXT()">{{ t('il_export_txt', lang) }}</button>
+      <button class="btn secondary" onclick="exportCSV()">{{ t('il_export_csv', lang) }}</button>
+      <button class="btn secondary" onclick="openCiteModal(getCiteContext())">{{ t('read_cite', lang) if t else 'Cite' }}</button>
     </div>
   </div>
 
@@ -82,59 +99,43 @@
 
   <div id="il-body" class="interlinear-body"></div>
 
-</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-var LANG = '{{ lang }}';
-var TRANS = '{{ trans }}';
+var LANG = {{ lang|tojson }};
+var TRANS = {{ trans|tojson }};
 var _ilData = null;
 
-function parseChVerse(s) {
-    s = s.trim();
-    var parts = s.split(':');
-    return { ch: parseInt(parts[0]) || 1, v: parseInt(parts[1]) || 1 };
-}
-
 function loadInterlinear() {
-    var book    = document.getElementById('il-book').value;
-    var corpus  = document.getElementById('il-corpus').value;
-    var script  = document.getElementById('il-script').value;
-    var fromStr = document.getElementById('il-ch-start').value.trim();
-    var toStr   = document.getElementById('il-ch-end').value.trim();
+    var book   = document.getElementById('il-book').value;
+    var corpus = document.getElementById('il-corpus').value;
+    var script = document.getElementById('il-script').value;
+    var chFrom = parseInt(document.getElementById('il-ch-start').value) || 0;
+    var chTo   = parseInt(document.getElementById('il-ch-end').value)   || chFrom;
 
-    if (!book) { alert('Please select a book.'); return; }
-    if (!fromStr) { alert('Please enter a start chapter (e.g. 5:1).'); return; }
-
-    var from = parseChVerse(fromStr);
-    var to   = toStr ? parseChVerse(toStr) : { ch: from.ch, v: 9999 };
-
-    var fontMap = { estrangela: "'Noto Sans Syriac', serif",
-                    eastern:    "'Noto Sans Syriac Eastern', serif",
-                    western:    "'Noto Sans Syriac Western', serif" };
-    var font = document.getElementById('il-font').value;
-    document.documentElement.style.setProperty('--syriac-font', fontMap[font] || fontMap.estrangela);
+    if (!book)   { alert('Please select a book.');    return; }
+    if (!chFrom) { alert('Please select a chapter.'); return; }
 
     var url = '/api/interlinear?book=' + encodeURIComponent(book)
-            + '&ch_start=' + from.ch + '&v_start=' + from.v
-            + '&ch_end='   + to.ch   + '&v_end='   + to.v
+            + '&ch_start=' + chFrom + '&v_start=1'
+            + '&ch_end='   + chTo   + '&v_end=9999'
             + '&corpus=' + encodeURIComponent(corpus)
             + '&script=' + encodeURIComponent(script)
             + '&lang='   + encodeURIComponent(LANG)
             + '&trans='  + encodeURIComponent(TRANS);
 
     document.getElementById('il-body').innerHTML =
-        '<p style="color:var(--muted);padding:1rem;">Loading\u2026</p>';
+        '<p style="color:var(--ink-3);padding:1rem;">Loading…</p>';
     document.getElementById('il-action-bar').style.display = 'none';
     document.getElementById('il-nav').style.display = 'none';
     document.getElementById('il-truncated').style.display = 'none';
 
     fetch(url)
-        .then(function(r) { return r.json(); })
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function(data) {
             _ilData = data;
-            renderInterlinear(data, book, from.ch, to.ch, script);
+            renderInterlinear(data, book, chFrom, chTo, script);
         })
         .catch(function(e) {
             document.getElementById('il-body').innerHTML =
@@ -143,10 +144,10 @@ function loadInterlinear() {
 }
 
 function confClass(c) {
-    if (c >= 0.8) return 'il-root-high';
-    if (c >= 0.5) return 'il-root-med';
-    if (c > 0)    return 'il-root-low';
-    return 'il-root-none';
+    if (c >= 0.8) return 'high';
+    if (c >= 0.5) return 'med';
+    if (c > 0)    return 'low';
+    return 'none';
 }
 
 function escHtml(s) {
@@ -155,80 +156,101 @@ function escHtml(s) {
 }
 
 function renderInterlinear(data, book, chStart, chEnd, script) {
-    var showTrans = document.getElementById('il-show-trans').checked;
-    var rtlScript = (script === 'hebrew' || script === 'arabic');
     var html = '';
+    var isFirstVerse = true;
+
+    // Build inline nav links for the first verse header
+    var navInline = '<div class="il-ref-nav">';
+    if (chStart > 1) {
+        navInline += '<a href="#" onclick="jumpChapter(' + (chStart - 1) + ');return false;">← Ch ' + (chStart - 1) + '</a>';
+    }
+    navInline += '<a href="#" onclick="jumpChapter(' + (chEnd + 1) + ');return false;">Ch ' + (chEnd + 1) + ' →</a>';
+    navInline += '</div>';
 
     data.verses.forEach(function(v) {
-        html += '<div class="interlinear-verse" id="v' + v.chapter + '-' + v.verse + '">';
-        html += '<div class="interlinear-ref">' + escHtml(v.ref) + '</div>';
-        html += '<div class="interlinear-words">';
+        html += '<div class="il-verse" id="v' + v.chapter + '-' + v.verse + '">';
 
+        // Reference: Book · Chapter:Verse — nav appears only on the first verse
+        var refMatch = v.ref.match(/^(.*?)\s+(\d+:\d+)$/);
+        var bookPart  = refMatch ? refMatch[1] : v.ref;
+        var versePart = refMatch ? refMatch[2] : '';
+        html += '<div class="il-ref">'
+              + '<span class="il-ref-label">' + escHtml(bookPart)
+              + (versePart
+                  ? '<span class="il-ref-sep">·</span><span class="il-ref-chapter-verse">'
+                    + escHtml(versePart) + '</span>'
+                  : '')
+              + '</span>'
+              + (isFirstVerse ? navInline : '')
+              + '</div>';
+        isFirstVerse = false;
+
+        // Translation BEFORE the word grid
+        var transDir = (TRANS === 'he' || TRANS === 'ar') ? ' dir="rtl"' : '';
+        if (v.translation) {
+            html += '<div class="il-trans"' + transDir + '>' + escHtml(v.translation) + '</div>';
+        }
+
+        // Word grid (direction:rtl in CSS makes words flow right-to-left)
+        html += '<div class="il-grid">';
         v.words.forEach(function(w) {
-            html += '<div class="il-word">';
-            html += '<span class="il-syriac">' + escHtml(w.syriac) + '</span>';
+            html += '<div class="il-tok">';
+            html += '<span class="syr">' + escHtml(w.syriac) + '</span>';
             if (script !== 'syriac') {
-                html += '<span class="il-translit' + (rtlScript ? ' il-rtl-script' : '') + '">'
-                      + escHtml(w.translit) + '</span>';
+                html += '<span class="tr">' + escHtml(w.translit) + '</span>';
             } else {
-                html += '<span class="il-translit" style="display:none"></span>';
+                html += '<span class="tr" style="display:none"></span>';
             }
-            html += '<span class="il-gloss">' + escHtml(w.gloss || '\u2014') + '</span>';
+            html += '<span class="gl">' + escHtml(w.gloss || '—') + '</span>';
             if (w.root) {
-                html += '<a class="il-root ' + confClass(w.confidence) + '" '
-                      + 'href="/visualize/' + encodeURIComponent(w.root_key) + '?lang=' + LANG + '" '
+                html += '<a class="root ' + confClass(w.confidence) + '" '
+                      + 'href="/visualize/' + encodeURIComponent(w.root_key) + '?lang=' + LANG + '&tab=ficha" '
                       + 'target="_blank" rel="noopener">' + escHtml(w.root) + '</a>';
             } else {
-                html += '<span class="il-root il-root-none">\u2014</span>';
+                html += '<span class="root none">—</span>';
             }
             if (w.stem) {
-                html += '<span class="il-stem"><span class="stem-badge stem-'
-                      + escHtml(w.stem.toLowerCase()) + '" style="font-size:.6rem;">'
-                      + escHtml(w.stem) + '</span></span>';
-            } else {
-                html += '<span class="il-stem"></span>';
+                html += '<span class="stem">' + escHtml(w.stem) + '</span>';
             }
             html += '</div>';
         });
-
         html += '</div>';
-
-        var transDir = (TRANS === 'he' || TRANS === 'ar') ? ' dir="rtl"' : '';
-        html += '<div class="interlinear-translation' + (showTrans ? '' : ' il-trans-hidden') + '"'
-              + transDir + '>' + escHtml(v.translation || '') + '</div>';
 
         html += '</div>';
     });
 
     document.getElementById('il-body').innerHTML = html ||
-        '<p style="color:var(--muted);">No verses found for this range.</p>';
+        '<p style="color:var(--ink-3);">No verses found for this range.</p>';
 
     if (data.truncated) {
         document.getElementById('il-truncated').style.display = 'block';
     }
 
-    var navHtml = '';
-    if (chStart > 1) {
-        navHtml += '<a href="#" onclick="jumpChapter(' + (chStart - 1) + ');return false;">\u2190 Ch ' + (chStart - 1) + '</a>';
-    }
-    navHtml += '<a href="#" onclick="jumpChapter(' + (chEnd + 1) + ');return false;">Ch ' + (chEnd + 1) + ' \u2192</a>';
-    document.getElementById('il-nav').innerHTML = navHtml;
-    document.getElementById('il-nav').style.display = 'flex';
+    // Hide the old standalone nav (nav is now inline in the verse header)
+    document.getElementById('il-nav').style.display = 'none';
     document.getElementById('il-action-bar').style.display = 'block';
 }
 
 function jumpChapter(ch) {
-    document.getElementById('il-ch-start').value = ch + ':1';
-    document.getElementById('il-ch-end').value   = ch + ':9999';
-    loadInterlinear();
+    var startSel = document.getElementById('il-ch-start');
+    var endSel   = document.getElementById('il-ch-end');
+    // Select the chapter if it exists in the dropdown, otherwise refresh then load
+    var found = false;
+    for (var i = 0; i < startSel.options.length; i++) {
+        if (parseInt(startSel.options[i].value) === ch) { found = true; break; }
+    }
+    if (found) {
+        startSel.value = ch;
+        endSel.value   = ch;
+        loadInterlinear();
+    } else {
+        // Chapter might be in a different range — refresh chapter list then navigate
+        var book   = document.getElementById('il-book').value;
+        var corpus = document.getElementById('il-corpus').value;
+        refreshChapterSelects(book, corpus, ch, ch, function() { loadInterlinear(); });
+    }
 }
 
-function toggleTranslation() {
-    var show = document.getElementById('il-show-trans').checked;
-    document.querySelectorAll('.interlinear-translation').forEach(function(el) {
-        el.classList.toggle('il-trans-hidden', !show);
-    });
-}
 
 function downloadBlob(content, filename, mime) {
     var blob = new Blob([content], { type: mime });
@@ -251,7 +273,7 @@ function exportTEI() {
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<TEI xmlns="http://www.tei-c.org/ns/1.0">',
         '  <teiHeader><fileDesc><titleStmt>',
-        '    <title>Aramaic Root Atlas \u2014 Interlinear: ' + escHtml(_ilData.book) + '</title>',
+        '    <title>Aramaic Root Atlas — Interlinear: ' + escHtml(_ilData.book) + '</title>',
         '  </titleStmt></fileDesc></teiHeader>',
         '  <text><body>',
         '    <div type="book" n="' + escHtml(_ilData.book) + '">'
@@ -304,32 +326,73 @@ function exportCSV() {
                  exportFilename('csv'), 'text/csv;charset=utf-8');
 }
 
-var _initialBook = '{{ initial_book|e }}';
+var _initialBook   = '{{ initial_book|e }}';
+var _initialChFrom = {{ initial_ch_start|default(0)|int }};
+var _initialChTo   = {{ initial_ch_end|default(0)|int }};
 
-function refreshBookList(preserveBook) {
+// Populate FROM/TO chapter selects with actual chapters from the API.
+// preFrom / preTo: chapter numbers to pre-select; callback: called after DOM update.
+function refreshChapterSelects(book, corpus, preFrom, preTo, callback) {
+    var startSel = document.getElementById('il-ch-start');
+    var endSel   = document.getElementById('il-ch-end');
+    if (!book) {
+        startSel.innerHTML = '<option value="">Ch</option>';
+        endSel.innerHTML   = '<option value="">Ch</option>';
+        if (callback) callback();
+        return;
+    }
+    var url = '/api/chapters?book=' + encodeURIComponent(book)
+            + (corpus ? '&corpus=' + encodeURIComponent(corpus) : '');
+    fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var chs = data.chapters || [];
+            var buildOpts = function(sel, preVal) {
+                sel.innerHTML = '<option value="">Ch</option>';
+                chs.forEach(function(ch) {
+                    var opt = document.createElement('option');
+                    opt.value = ch;
+                    opt.textContent = 'Ch ' + ch;
+                    if (ch === preVal) opt.selected = true;
+                    sel.appendChild(opt);
+                });
+                // Default to first chapter if nothing pre-selected
+                if (!preVal && chs.length) sel.value = chs[0];
+            };
+            buildOpts(startSel, preFrom || chs[0]);
+            buildOpts(endSel,   preTo   || chs[0]);
+            if (callback) callback();
+        });
+}
+
+function refreshBookList(preserveBook, preserveChFrom, preserveChTo) {
     var corpus = document.getElementById('il-corpus').value;
     var url = '/api/books' + (corpus ? '?corpus=' + encodeURIComponent(corpus) : '');
     fetch(url)
         .then(function(r) { return r.json(); })
         .then(function(data) {
             var sel = document.getElementById('il-book');
-            var prevBook = preserveBook || '';
             sel.innerHTML = '<option value="">— select —</option>';
             (data.books || []).forEach(function(b) {
                 var opt = document.createElement('option');
                 opt.value = b.name;
                 opt.textContent = b.name;
-                if (b.name === prevBook) opt.selected = true;
+                if (b.name === preserveBook) opt.selected = true;
                 sel.appendChild(opt);
             });
-            if (!preserveBook) {
-                // Corpus changed by user — reset passage fields
-                document.getElementById('il-ch-start').value = '';
-                document.getElementById('il-ch-end').value = '';
-                _ilData = null;
-                document.getElementById('il-body').innerHTML = '';
-                document.getElementById('il-action-bar').style.display = 'none';
-                document.getElementById('il-nav').style.display = 'none';
+            // Populate chapters for the selected book
+            var chosenBook = preserveBook || '';
+            if (chosenBook) {
+                refreshChapterSelects(chosenBook, corpus, preserveChFrom, preserveChTo);
+            } else {
+                document.getElementById('il-ch-start').innerHTML = '<option value="">Ch</option>';
+                document.getElementById('il-ch-end').innerHTML   = '<option value="">Ch</option>';
+                if (!preserveBook) {
+                    _ilData = null;
+                    document.getElementById('il-body').innerHTML = '';
+                    document.getElementById('il-action-bar').style.display = 'none';
+                    document.getElementById('il-nav').style.display = 'none';
+                }
             }
         });
 }
@@ -338,8 +401,17 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('il-corpus').addEventListener('change', function() {
         refreshBookList(null);
     });
-    // On initial load, populate books for the current corpus and restore any URL-linked book
-    refreshBookList(_initialBook);
+    document.getElementById('il-book').addEventListener('change', function() {
+        var book   = this.value;
+        var corpus = document.getElementById('il-corpus').value;
+        refreshChapterSelects(book, corpus, 0, 0);
+        _ilData = null;
+        document.getElementById('il-body').innerHTML = '';
+        document.getElementById('il-action-bar').style.display = 'none';
+        document.getElementById('il-nav').style.display = 'none';
+    });
+    // On initial load restore URL-linked book + chapters
+    refreshBookList(_initialBook, _initialChFrom, _initialChTo);
 });
 
 function getCiteContext() {
@@ -361,8 +433,8 @@ document.addEventListener('keydown', function(e) {
     if (!_ilData) return;
     var chStart = parseInt(document.getElementById('il-ch-start').value) || 1;
     var chEnd   = parseInt(document.getElementById('il-ch-end').value)   || chStart;
-    if (e.key === 'ArrowLeft')  jumpChapter(chEnd + 1);
-    if (e.key === 'ArrowRight') { if (chStart > 1) jumpChapter(chStart - 1); }
+    if (e.key === 'ArrowRight') jumpChapter(chEnd + 1);
+    if (e.key === 'ArrowLeft')  { if (chStart > 1) jumpChapter(chStart - 1); }
 });
 
 {% if initial_book and initial_ch_start %}

@@ -1,170 +1,200 @@
 {% extends "base.html" %}
+{% set page_id = 'search' %}
+{% block title %}Aramaic Root Atlas — Search{% endblock %}
 
-{% block title %}Aramaic Root Atlas — Cross-Corpus Root Explorer{% endblock %}
+{% block topbar %}
+<div class="crumb"><b>Trace Root</b><span class="sep">›</span><span>Trace a root across all corpora</span></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
+</div>
+{% endblock %}
 
 {% block content %}
-<section class="hero">
-    <h1>{{ t('atlas_title', lang) if t else 'Aramaic Root Atlas' }}</h1>
-    <p class="subtitle">{{ t('home_subtitle', lang) }} <a href="/about?lang={{ lang }}" class="subtitle-link">{{ t('learn_more', lang) }}</a></p>
+<div class="eyebrow">{{ t('app_subtitle', lang) if t else 'A research tool for Semitic philology' }}</div>
+<h1 class="display">{{ t('index_headline', lang)|safe if t else 'Trace triliteral <em>roots</em> across two millennia of Aramaic literature.' }}</h1>
+<p class="lede">{{ (t('index_lede', lang) if t else 'Search {n} verses across the Peshitta, Targum Onkelos, Biblical Aramaic, and Ephrem of Nisibis.')|replace('{n}', total_verses|default('38,062')|string) }} <a href="/about">{{ t('index_about_link', lang) if t else 'About this project →' }}</a></p>
 
-    <div class="search-tabs">
-        <button class="search-tab active" id="tab-root" onclick="switchTab('root')">{{ t('tab_root', lang) }}</button>
-        <button class="search-tab" id="tab-cognate" onclick="switchTab('cognate')">{{ t('tab_cognate', lang) }}</button>
-        <button class="search-tab" id="tab-meaning" onclick="switchTab('meaning')">{{ t('tab_meaning', lang) }}</button>
-        <button class="search-tab" id="tab-proximity" onclick="switchTab('proximity')">{{ t('tab_proximity', lang) }}</button>
-        <button class="search-tab" id="tab-text" onclick="switchTab('text')">{{ t('tab_text', lang) }}</button>
-    </div>
+<section class="search-card">
+  <div class="search-tabs">
+    <button class="s-tab active" data-tab="root" onclick="switchSearchTab('root')"><span class="num">01</span>{{ t('tab_root', lang) if t else 'By root' }}</button>
+    <button class="s-tab" data-tab="cognate" onclick="switchSearchTab('cognate')"><span class="num">02</span>{{ t('tab_cognate', lang) if t else 'By cognate' }}</button>
+    <button class="s-tab" data-tab="meaning" onclick="switchSearchTab('meaning')"><span class="num">03</span>{{ t('tab_meaning', lang) if t else 'By meaning' }}</button>
+    <button class="s-tab" data-tab="prox" onclick="switchSearchTab('prox')"><span class="num">04</span>{{ t('tab_prox', lang) if t else 'Co-occurrence' }}</button>
+    <button class="s-tab" data-tab="text" onclick="switchSearchTab('text')"><span class="num">05</span>{{ t('tab_text', lang) if t else 'Full text' }}</button>
+  </div>
 
-    {# --- Panel: Root Search --- #}
-    <div class="search-panel" id="panel-root">
-        <form class="search-form" action="/" method="get" id="rootSearchForm">
-            <div class="search-row">
-                <div class="autocomplete-wrapper">
-                    <input type="text" name="q" id="rootInput"
-                           placeholder="E.g.: K-TH-B, SH-L-M, Q-D-SH, G-SH"
-                           autocomplete="off" autofocus>
-                    <div id="autocomplete-list" class="autocomplete-list"></div>
-                </div>
-                <select name="corpus" id="corpusFilter">
-                    <option value="">{{ t('all_corpora', lang) }}</option>
-                    {% for c in corpora %}
-                    <option value="{{ c.id }}">{{ c.label }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit">{{ t('search', lang) }}</button>
-            </div>
-        </form>
-        <p class="search-hint">{{ t('root_hint', lang) }} <a href="javascript:void(0)" onclick="document.getElementById('translit-help').style.display=document.getElementById('translit-help').style.display==='none'?'':'none'">{{ t('show_translit_table', lang) }}</a></p>
-        <div id="translit-help" style="display:none" class="translit-help-table">
-            <table><tr><td>B=ܒ</td><td>G=ܓ</td><td>D=ܕ</td><td>H=ܗ</td><td>W=ܘ</td><td>Z=ܙ</td></tr>
-            <tr><td>KH=ܚ</td><td>T=ܛ</td><td>Y=ܝ</td><td>K=ܟ</td><td>L=ܠ</td><td>M=ܡ</td></tr>
-            <tr><td>N=ܢ</td><td>S=ܣ</td><td>'=ܥ</td><td>P=ܦ</td><td>TS=ܨ</td><td>Q=ܩ</td></tr>
-            <tr><td>R=ܪ</td><td>SH=ܫ</td><td>TH=ܬ</td><td>A/'-=ܐ</td><td></td><td></td></tr></table>
+  {# Panel 01: Root search #}
+  <div class="s-panel" data-panel="root">
+    <div class="s-body">
+      <div class="s-field"><label class="s-label">{{ t('label_root', lang) if t else 'Triliteral root' }}</label>
+        <div class="autocomplete-wrap">
+          <input class="s-input" id="rootInput" placeholder="K-TH-B, SH-L-M, Q-D-SH" autofocus autocomplete="off">
+          <div id="autocomplete-list" class="autocomplete-list"></div>
         </div>
+      </div>
+      <div class="s-field"><label class="s-label">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
+        <select class="s-select" id="corpusFilter">
+          <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
+          {% for c in corpora %}
+          <option value="{{ c.id }}">{{ c.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="btn" id="root-search-btn" type="button">{{ t('btn_analyse', lang) if t else 'Analyse' }}
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </button>
     </div>
+    <div class="s-foot">
+      <div class="examples"><span class="ex-label">{{ t('label_try', lang) if t else 'Try:' }}</span>
+        <button class="ex" type="button" onclick="fillExample('K-TH-B')">K-TH-B</button>
+        <button class="ex" type="button" onclick="fillExample('SH-L-M')">SH-L-M</button>
+        <button class="ex" type="button" onclick="fillExample('Q-D-SH')">Q-D-SH</button>
+        <button class="ex" type="button" onclick="fillExample('B-R-K')">B-R-K</button>
+        <button class="ex" type="button" onclick="fillExample('R-KH-M')">R-KH-M</button>
+      </div>
+      <button class="help" type="button" onclick="toggleTranslit()">{{ t('btn_translit_table', lang) if t else 'Transliteration table' }}</button>
+    </div>
+    <div id="translit-help" class="translit-help hidden">
+      <table><tr><td>B=ܒ</td><td>G=ܓ</td><td>D=ܕ</td><td>H=ܗ</td><td>W=ܘ</td><td>Z=ܙ</td></tr>
+      <tr><td>KH=ܚ</td><td>T=ܛ</td><td>Y=ܝ</td><td>K=ܟ</td><td>L=ܠ</td><td>M=ܡ</td></tr>
+      <tr><td>N=ܢ</td><td>S=ܣ</td><td>'=ܥ</td><td>P=ܦ</td><td>TS=ܨ</td><td>Q=ܩ</td></tr>
+      <tr><td>R=ܪ</td><td>SH=ܫ</td><td>TH=ܬ</td><td>A/'-=ܐ</td><td></td><td></td></tr></table>
+    </div>
+    <div id="root-results"></div>
+  </div>
 
-    {# --- Panel: Cognate Search --- #}
-    <div class="search-panel" id="panel-cognate" style="display:none">
-        <form class="search-form" id="cognateSearchForm">
-            <div class="search-row">
-                <input type="text" id="cognateInput"
-                       placeholder="{{ t('cognate_placeholder', lang) }}"
-                       autocomplete="off">
-                <button type="submit">{{ t('search', lang) }}</button>
-            </div>
-        </form>
+  {# Panel 02: Cognate search #}
+  <div class="s-panel hidden" data-panel="cognate">
+    <div class="s-body">
+      <div class="s-field"><label class="s-label">{{ t('label_cognate_input', lang) if t else 'Hebrew / Arabic / Transliterated cognate' }}</label>
+        <input class="s-input" id="cognateInput" placeholder="{{ t('cognate_placeholder', lang) if t else 'e.g. shalom, سلام' }}" autocomplete="off">
+      </div>
+      <button class="btn" id="cognate-search-btn" type="button">{{ t('btn_search', lang) if t else 'Search' }}</button>
     </div>
+    <div id="cognate-results"></div>
+  </div>
 
-    {# --- Panel: Meaning Search --- #}
-    <div class="search-panel" id="panel-meaning" style="display:none">
-        <form class="search-form" id="meaningSearchForm">
-            <div class="search-row">
-                <input type="text" id="meaningInput"
-                       placeholder="{{ t('meaning_placeholder', lang) }}"
-                       autocomplete="off">
-                <button type="submit">{{ t('search', lang) }}</button>
-            </div>
-        </form>
+  {# Panel 03: Meaning search #}
+  <div class="s-panel hidden" data-panel="meaning">
+    <div class="s-body">
+      <div class="s-field"><label class="s-label">{{ t('label_meaning_input', lang) if t else 'English or Spanish gloss' }}</label>
+        <input class="s-input" id="meaningInput" placeholder="{{ t('meaning_placeholder', lang) if t else 'e.g. peace, covenant, write' }}" autocomplete="off">
+      </div>
+      <button class="btn" id="meaning-search-btn" type="button">{{ t('btn_search', lang) if t else 'Search' }}</button>
     </div>
+    <div id="meaning-results"></div>
+  </div>
 
-    {# --- Panel: Co-occurrence / Proximity --- #}
-    <div class="search-panel" id="panel-proximity" style="display:none">
-        <form class="search-form" id="proximitySearchForm">
-            <div class="prox-row">
-                <div class="autocomplete-wrapper prox-input-wrap">
-                    <input type="text" id="proxRoot1"
-                           placeholder="{{ t('proximity_root1', lang) }}: SH-L-M"
-                           autocomplete="off">
-                    <div id="prox-ac-list1" class="autocomplete-list"></div>
-                </div>
-                <div class="autocomplete-wrapper prox-input-wrap">
-                    <input type="text" id="proxRoot2"
-                           placeholder="{{ t('proximity_root2', lang) }}: '-M-R"
-                           autocomplete="off">
-                    <div id="prox-ac-list2" class="autocomplete-list"></div>
-                </div>
-            </div>
-            <div class="prox-options">
-                <select id="proxScope">
-                    <option value="verse">{{ t('proximity_verse', lang) }}</option>
-                    <option value="chapter">{{ t('proximity_chapter', lang) }}</option>
-                </select>
-                <select id="proxCorpusFilter">
-                    <option value="">{{ t('all_corpora', lang) }}</option>
-                    {% for c in corpora %}
-                    <option value="{{ c.id }}">{{ c.label }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit">{{ t('search', lang) }}</button>
-            </div>
-        </form>
+  {# Panel 04: Co-occurrence / Proximity #}
+  <div class="s-panel hidden" data-panel="prox">
+    <div class="s-body">
+      <div class="s-field"><label class="s-label">{{ t('label_root1', lang) if t else 'Root 1' }}</label>
+        <div class="autocomplete-wrap">
+          <input class="s-input" id="proxRoot1" placeholder="SH-L-M" autocomplete="off">
+          <div id="prox-ac-list1" class="autocomplete-list"></div>
+        </div>
+      </div>
+      <div class="s-field"><label class="s-label">{{ t('label_root2', lang) if t else 'Root 2' }}</label>
+        <div class="autocomplete-wrap">
+          <input class="s-input" id="proxRoot2" placeholder="'-M-R" autocomplete="off">
+          <div id="prox-ac-list2" class="autocomplete-list"></div>
+        </div>
+      </div>
+      <div class="s-field"><label class="s-label">{{ t('label_scope', lang) if t else 'Scope' }}</label>
+        <select class="s-select" id="proxScope">
+          <option value="verse">{{ t('opt_verse', lang) if t else 'Verse' }}</option>
+          <option value="chapter">{{ t('opt_chapter', lang) if t else 'Chapter' }}</option>
+        </select>
+      </div>
+      <div class="s-field"><label class="s-label">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
+        <select class="s-select" id="proxCorpusFilter">
+          <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
+          {% for c in corpora %}
+          <option value="{{ c.id }}">{{ c.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="btn" id="prox-search-btn" type="button">{{ t('btn_search', lang) if t else 'Search' }}</button>
     </div>
+    <div id="prox-results"></div>
+  </div>
 
-    {# --- Panel: Text Search --- #}
-    <div class="search-panel" id="panel-text" style="display:none">
-        <form class="search-form" id="textSearchForm">
-            <div class="search-row">
-                <input type="text" id="textInput"
-                       placeholder="{{ t('text_search_placeholder', lang) }}"
-                       autocomplete="off">
-                <select id="textCorpusFilter">
-                    <option value="">{{ t('all_corpora', lang) }}</option>
-                    {% for c in corpora %}
-                    <option value="{{ c.id }}">{{ c.label }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit">{{ t('search', lang) }}</button>
-            </div>
-        </form>
+  {# Panel 05: Full text search #}
+  <div class="s-panel hidden" data-panel="text">
+    <div class="s-body">
+      <div class="s-field"><label class="s-label">{{ t('label_search_text', lang) if t else 'Search text' }}</label>
+        <input class="s-input" id="textInput" placeholder="{{ t('text_search_placeholder', lang) if t else 'Enter word or phrase in English, Hebrew, Aramaic...' }}" autocomplete="off">
+      </div>
+      <div class="s-field"><label class="s-label">{{ t('label_language', lang) if t else 'Language' }}</label>
+        <select class="s-select" id="textLangSelect">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="he">עברית</option>
+          <option value="ar">العربية</option>
+        </select>
+      </div>
+      <div class="s-field"><label class="s-label">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
+        <select class="s-select" id="textCorpusFilter">
+          <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
+          {% for c in corpora %}
+          <option value="{{ c.id }}">{{ c.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="btn" id="text-search-btn" type="button">{{ t('btn_search', lang) if t else 'Search' }}</button>
     </div>
-
-    <div style="text-align:center; margin-top:1rem;">
-        <a href="/browse?lang={{ lang }}" class="browse-btn">
-            <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">menu_book</span>
-            {{ t('browse', lang) if t else 'Browse' }} &amp; {{ t('read', lang) if t else 'Read' }}
-        </a>
-    </div>
-    <div id="tour-start-container" style="text-align:center; margin-top:0.6rem;">
-        <button class="tour-start-btn" onclick="startTourFromBtn()">
-            <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">help_outline</span>
-            {{ t('tour_start', lang) if t else 'Guided Tour' }}
-        </button>
-        <p id="tour-restart-hint" style="display:none; font-size:0.78rem; color:var(--muted); margin:.4rem 0 0; transition:opacity 0.6s;">
-            {{ t('tour_restart_hint', lang) if t else 'Use the ? button in the toolbar to restart the tour.' }}
-        </p>
-    </div>
+    <div id="text-results"></div>
+  </div>
 </section>
 
-<div id="results" style="margin-bottom: 2rem; padding: 0 2rem; max-width: 1200px; margin-left: auto; margin-right: auto;"></div>
+{# Shared results container for root/cognate/meaning/prox/text search results #}
+<div id="results" style="margin-top:2rem"></div>
 
-<section class="stats">
-    <div class="stat-grid">
-        {% for c in corpora %}
-        <div class="stat-card">
-            <div class="stat-label">{{ c.label }}</div>
-            <div class="stat-value">{{ "{:,}".format(c.verses) }} {{ t('verses', lang) }}</div>
-            <div class="stat-detail">{{ "{:,}".format(c.words) }} {{ t('words', lang) }}</div>
-        </div>
-        {% endfor %}
-        <div class="stat-card stat-card-accent">
-            <div class="stat-label">{{ t('roots_indexed', lang) }}</div>
-            <div class="stat-value">{{ "{:,}".format(root_count) }}</div>
-            <div class="stat-detail">{{ t('across_all_corpora', lang) }}</div>
-        </div>
-    </div>
-    <div style="text-align:center; margin-top:1rem;">
-        <script src="https://tiptopjar.com/widget.js"
-          data-username="jossif"
-          data-mode="button"
-          data-button-text="{% if lang == 'es' %}Apoya este proyecto{% elif lang == 'he' %}תמכו בפרויקט{% elif lang == 'ar' %}ادعم هذا المشروع{% else %}Support this project{% endif %}"
-          data-button-color="white"
-          data-button-size="sm"></script>
-    </div>
-</section>
+<h2 class="section" style="margin-top:64px">{{ t('section_indexed_corpora', lang) if t else 'Indexed corpora' }}</h2>
+{% set corpus_meta = [
+  {'id':'pnt','name':'Peshitta NT','corpus_key':'peshitta_nt','period':'~ 2nd–5th c. CE · Classical Syriac'},
+  {'id':'pot','name':'Peshitta OT','corpus_key':'peshitta_ot','period':'~ 2nd–5th c. CE · Classical Syriac'},
+  {'id':'bib','name':'Biblical Aramaic','corpus_key':'biblical_aramaic','period':'~ 6th–2nd c. BCE · Imperial'},
+  {'id':'tar','name':'Targum Onkelos','corpus_key':'targum_onkelos','period':'~ 1st–3rd c. CE · Jewish Aramaic'},
+  {'id':'eph','name':'Ephrem — Nisibis','corpus_key':'ephrem_nisibis','period':'~ 350–363 CE · Patristic Syriac'},
+] %}
+<div class="corpora-grid">
+  {% for cm in corpus_meta %}
+  {% set c_info = corpora | selectattr('id', 'equalto', cm.corpus_key) | first | default(none) %}
+  <div class="corpus-cell {{ cm.id }}">
+    <div class="nm">{{ cm.name }}</div>
+    <div class="verses">{{ "{:,}".format(c_info.verses | int) if c_info else '-' }}<small>{{ t('label_verses', lang) if t else 'verses' }}</small></div>
+    <div class="words">{{ "{:,}".format(c_info.words | int) if c_info else '-' }} words</div>
+    <div class="period">{{ cm.period }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<h2 class="section" style="margin-top:64px">{{ t('section_continue', lang) if t else 'Continue your work' }}</h2>
+<div class="quick-list">
+  <a href="/read/Matthew/1"><div class="ql-num">01</div><div><div class="ql-name">{{ t('ql_reader', lang) if t else 'Open the reader' }}</div><div class="ql-desc">{{ t('ql_reader_desc', lang) if t else 'Verse-by-verse Syriac with transliteration, gloss, and translation.' }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/diachronic"><div class="ql-num">02</div><div><div class="ql-name">{{ t('ql_diachronic', lang) if t else 'Diachronic frequency' }}</div><div class="ql-desc">{{ t('ql_diachronic_desc', lang) if t else "Plot a root's distribution across periods and corpora." }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/interlinear"><div class="ql-num">03</div><div><div class="ql-name">{{ t('ql_interlinear', lang) if t else 'Interlinear word study' }}</div><div class="ql-desc">{{ t('ql_interlinear_desc', lang) if t else 'Word-by-word alignment with root, stem, and morphological gloss.' }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/concordance"><div class="ql-num">04</div><div><div class="ql-name">{{ t('ql_concordance', lang) if t else 'Concordance with KWIC' }}</div><div class="ql-desc">{{ t('ql_concordance_desc', lang) if t else 'Keyword-in-context across all 38,062 verses, sortable by context.' }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/browse"><div class="ql-num">05</div><div><div class="ql-name">{{ t('ql_browse', lang) if t else 'Browse 66 books' }}</div><div class="ql-desc">{{ t('ql_browse_desc', lang) if t else 'Direct chapter access across all five corpora.' }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/hapax"><div class="ql-num">06</div><div><div class="ql-name">{{ t('ql_hapax', lang) if t else 'Hapax &amp; rare forms' }}</div><div class="ql-desc">{{ t('ql_hapax_desc', lang) if t else 'Words attested only once or twice — useful for textual criticism.' }}</div></div><div class="ql-arr">→</div></a>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+// --- Scroll helper: accounts for sticky topbar ---
+function scrollToEl(el) {
+    var topbar = document.querySelector('.topbar');
+    var offset = topbar ? topbar.offsetHeight + 8 : 8;
+    var container = document.querySelector('.main') || document.documentElement;
+    var elTop = el.getBoundingClientRect().top;
+    var containerTop = container.getBoundingClientRect().top;
+    container.scrollBy({ top: elTop - containerTop - offset, behavior: 'smooth' });
+}
+
 // --- Book name translations ---
 var BOOK_NAMES = {{ book_names_json|safe if book_names_json else '{}' }};
 function translateBook(name) { return BOOK_NAMES[name] || name; }
@@ -175,7 +205,10 @@ function translateRef(ref) {
     return translateBook(book) + ref.substring(lastSpace);
 }
 
-// --- Autocomplete ---
+// --- Autocomplete for root input ---
+// Note: inline implementation rather than initRootAutocomplete() from autocomplete.js
+// because the onSelect callback must trigger doRootSearch() and render results — too
+// tightly coupled to this page's state to be cleanly passed as a callback parameter.
 (function() {
     var rootInput = document.getElementById('rootInput');
     var acList = document.getElementById('autocomplete-list');
@@ -241,8 +274,7 @@ function translateRef(ref) {
                         item.addEventListener('click', function() {
                             rootInput.value = this.getAttribute('data-value');
                             acList.innerHTML = '';
-                            // Trigger the submit event so the JS handler catches it
-                            rootInput.closest('form').dispatchEvent(new Event('submit', { cancelable: true }));
+                            doRootSearch();
                         });
                         acList.appendChild(item);
                     }
@@ -255,7 +287,7 @@ function translateRef(ref) {
     });
 })();
 
-async function doRootSearch() {
+async function doRootSearch(noScroll) {
     const q = document.getElementById('rootInput').value.trim();
     const corpus = document.getElementById('corpusFilter').value;
     if (!q) return;
@@ -290,26 +322,28 @@ async function doRootSearch() {
     if (gloss) html += `<div class="root-meaning">${gloss}</div>`;
 
     // Cross-corpus attestation badges
-    const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+    const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'ephrem_nisibis': 'Ephrem Nisibis'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
     const corpusKeys = Object.keys(att);
     if (corpusKeys.length > 0) {
         html += `<div class="corpus-attestation">`;
         for (const cid of corpusKeys) {
-            html += `<span class="corpus-badge corpus-${cid}">${corpusLabels[cid] || cid}: ${att[cid]}×</span>`;
+            var abbr = CORPUS_ABBR[cid] || cid.split('_').map(function(w){return w[0]}).join('');
+            html += `<span class="cbadge ${abbr}">${corpusLabels[cid] || cid}: ${att[cid]}×</span>`;
         }
         html += `</div>`;
     }
 
-    const vizKey = data.root_transliteration.replace(/ /g, '-').replace(/\u0027/g, 'A');
+    const vizKey = data.root_transliteration.replace(/ /g, '-').replace(/'/g, 'A');
     // Bookmark button for root
     const rootBmKey = data.root_transliteration;
     const rootBmSyriac = data.root;
     const rootBmGloss = gloss;
     const rootBmExists = getBookmarks().roots.some(r => r.key === rootBmKey);
-    html += `<div class="root-bm-wrap"><button class="bm-root-btn${rootBmExists ? ' bookmarked' : ''}" id="bm-root-toggle" title="Bookmark" onclick="toggleRootBookmark()"><span class="material-symbols-outlined">${rootBmExists ? 'bookmark' : 'bookmark_border'}</span></button></div>`;
+    html += `<div class="root-bm-wrap"><button class="bm-root-btn${rootBmExists ? ' bookmarked' : ''}" id="bm-root-toggle" title="Bookmark" onclick="toggleRootBookmark()"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button></div>`;
 
     html += `<div class="root-header-nav">
-            <a href="/visualize/${vizKey}?lang=${lang}" class="root-tab viz-btn" style="text-decoration:none"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">hub</span> Visualize</a>
+            <a href="/visualize/${vizKey}?lang=${lang}" class="root-tab viz-btn" style="text-decoration:none">Visualize</a>
             <button class="root-tab active" data-tab="peshitta" onclick="switchResultTab(this)">Occurrences (${data.total_occurrences})</button>
             <button class="root-tab" data-tab="hebrew" onclick="switchResultTab(this)">Hebrew Cognates</button>
             <button class="root-tab" data-tab="arabic" onclick="switchResultTab(this)">Arabic Cognates</button>
@@ -320,7 +354,7 @@ async function doRootSearch() {
     html += `<div id="panel-peshitta" class="result-panel">
         <div class="panel-header">
             <span>Occurrences</span>
-            <button class="export-btn" onclick="exportCSV()"><span class="material-symbols-outlined">download</span> CSV</button>
+            <button class="export-btn" onclick="exportCSV()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>CSV</button>
         </div>
         <div class="panel-body">`;
 
@@ -348,7 +382,7 @@ async function doRootSearch() {
         const overflow = m.references.length > 20 ? m.references.length - 20 : 0;
         let refHtml = refs20.map(r =>
             `<span class="ref-link" data-ref="${r}" data-form="${m.form}" data-root="${data.root}" data-root-translit="${data.root_transliteration}" onclick="toggleContext(this)">${translateRef(r)}</span>`
-        ).join(' ');
+        ).join('<span class="ref-sep">·</span>');
         if (overflow) refHtml += ` <span class="ref-more">... +${overflow}</span>`;
 
         html += `<tr>
@@ -396,10 +430,10 @@ async function doRootSearch() {
     _bmRootKey = rootBmKey;
     _bmRootSyriac = rootBmSyriac;
     _bmRootGloss = rootBmGloss;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!noScroll) scrollToEl(el);
 }
 
-// --- Tab switching ---
+// --- Result tab switching (within root card) ---
 function switchResultTab(btn) {
     const tab = btn.getAttribute('data-tab');
     document.querySelectorAll('.root-tab').forEach(b => b.classList.remove('active'));
@@ -408,10 +442,9 @@ function switchResultTab(btn) {
     const panel = document.getElementById('panel-' + tab);
     if (panel) {
         panel.style.display = '';
-        // Scroll so the tab bar stays visible at top, panel content below
         var banner = document.querySelector('.root-header-banner');
         if (banner) {
-            banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            scrollToEl(banner);
         }
     }
 }
@@ -451,7 +484,7 @@ function exportCSV() {
         if (more) { const m = more.textContent.match(/\+(\d+)/); if (m) count += parseInt(m[1]); }
         csv += `"${form}","${translit}","${gloss}",${count},"${refs.join('; ')}"\n`;
     });
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'root_forms.csv';
@@ -514,9 +547,12 @@ function toggleContext(el) {
         });
 }
 
-document.getElementById('rootSearchForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+// --- Root search button / enter key ---
+document.getElementById('root-search-btn').addEventListener('click', function() {
     doRootSearch();
+});
+document.getElementById('rootInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); doRootSearch(); }
 });
 
 // --- Verse Modal ---
@@ -627,8 +663,8 @@ function copyVerseModal() {
     }
     navigator.clipboard.writeText(lines.join('\n').trim()).then(function() {
         var btn = document.getElementById('verse-copy-btn');
-        btn.textContent = '\u2713';
-        setTimeout(function() { btn.textContent = '\u29C9'; }, 1500);
+        btn.textContent = '✓';
+        setTimeout(function() { btn.textContent = '⧉'; }, 1500);
     });
 }
 
@@ -647,7 +683,7 @@ function toggleRootBookmark() {
     var btn = document.getElementById('bm-root-toggle');
     if (idx >= 0) {
         bm.roots.splice(idx, 1);
-        if (btn) { btn.querySelector('.material-symbols-outlined').textContent = 'bookmark_border'; btn.classList.remove('bookmarked'); }
+        if (btn) { btn.classList.remove('bookmarked'); }
     } else {
         bm.roots.push({
             key: _bmRootKey,
@@ -656,33 +692,18 @@ function toggleRootBookmark() {
             date: new Date().toISOString().slice(0, 10),
             note: ''
         });
-        if (btn) { btn.querySelector('.material-symbols-outlined').textContent = 'bookmark'; btn.classList.add('bookmarked'); }
+        if (btn) { btn.classList.add('bookmarked'); }
     }
     saveBookmarks(bm);
 }
 
-// --- Tab Switching ---
-var _searchTabs = ['root', 'cognate', 'meaning', 'proximity', 'text'];
-function switchTab(tab) {
-    _searchTabs.forEach(function(t) {
-        var panel = document.getElementById('panel-' + t);
-        var btn = document.getElementById('tab-' + t);
-        if (panel) panel.style.display = (t === tab) ? '' : 'none';
-        if (btn) btn.classList.toggle('active', t === tab);
-    });
-    var focusMap = {root: 'rootInput', cognate: 'cognateInput', meaning: 'meaningInput', proximity: 'proxRoot1', text: 'textInput'};
-    var focusEl = document.getElementById(focusMap[tab]);
-    if (focusEl) focusEl.focus();
-}
-
 // --- Cognate Search Handler ---
-document.getElementById('cognateSearchForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+document.getElementById('cognate-search-btn').addEventListener('click', async function() {
     var word = document.getElementById('cognateInput').value.trim();
     if (!word) return;
     var el = document.getElementById('results');
     el.innerHTML = '<p style="text-align:center">Searching...</p>';
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToEl(el);
     var res = await fetch('/api/cognate-lookup?word=' + encodeURIComponent(word));
     var data = await res.json();
     if (!data.results || !data.results.length) {
@@ -690,9 +711,8 @@ document.getElementById('cognateSearchForm').addEventListener('submit', async fu
         return;
     }
     if (data.results.length === 1) {
-        // Single match — trigger root search inline
         document.getElementById('rootInput').value = data.results[0].key;
-        switchTab('root');
+        switchSearchTab('root');
         doRootSearch();
         return;
     }
@@ -710,33 +730,34 @@ document.getElementById('cognateSearchForm').addEventListener('submit', async fu
     el.querySelectorAll('.meaning-result-card[data-root]').forEach(function(card) {
         card.addEventListener('click', function() {
             document.getElementById('rootInput').value = this.getAttribute('data-root');
-            switchTab('root');
+            switchSearchTab('root');
             doRootSearch();
         });
     });
 });
 
+document.getElementById('cognateInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('cognate-search-btn').click(); }
+});
+
 // --- Meaning Search Handler ---
-document.getElementById('meaningSearchForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+document.getElementById('meaning-search-btn').addEventListener('click', async function() {
     var q = document.getElementById('meaningInput').value.trim();
     if (!q) return;
     var el = document.getElementById('results');
     el.innerHTML = '<p style="text-align:center">Searching...</p>';
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToEl(el);
     var res = await fetch('/api/reverse-search?q=' + encodeURIComponent(q) + '&lang={{ lang }}');
     var data = await res.json();
     if (!data.results || !data.results.length) {
         el.innerHTML = '<div class="no-results">{{ t("no_results_found", lang) }}: "' + q.replace(/</g, '&lt;') + '"</div>';
         return;
     }
-    // If single result, show root card directly
     if (data.results.length === 1) {
         document.getElementById('rootInput').value = data.results[0].key;
         doRootSearch();
         return;
     }
-    // Multiple results: show summary header then load first root card
     var html = '<div class="meaning-results-header"><h3>' + data.total + ' roots for "' + q.replace(/</g, '&lt;') + '"</h3>';
     html += '<div class="meaning-pills">';
     data.results.forEach(function(r, idx) {
@@ -747,10 +768,8 @@ document.getElementById('meaningSearchForm').addEventListener('submit', async fu
     });
     html += '</div></div><div id="meaning-root-detail"></div>';
     el.innerHTML = html;
-    // Load first root immediately
     document.getElementById('rootInput').value = data.results[0].key;
     doRootSearch();
-    // Click a pill → load that root
     el.querySelectorAll('.meaning-pill[data-root]').forEach(function(pill) {
         pill.addEventListener('click', function() {
             el.querySelectorAll('.meaning-pill').forEach(function(p) { p.classList.remove('active'); });
@@ -761,16 +780,19 @@ document.getElementById('meaningSearchForm').addEventListener('submit', async fu
     });
 });
 
+document.getElementById('meaningInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('meaning-search-btn').click(); }
+});
+
 // --- Proximity Search Handler ---
-document.getElementById('proximitySearchForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+document.getElementById('prox-search-btn').addEventListener('click', async function() {
     var r1 = document.getElementById('proxRoot1').value.trim();
     var r2 = document.getElementById('proxRoot2').value.trim();
     var scope = document.getElementById('proxScope').value;
     if (!r1 || !r2) return;
     var el = document.getElementById('results');
     el.innerHTML = '<p style="text-align:center">Searching...</p>';
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToEl(el);
     var proxCorpus = document.getElementById('proxCorpusFilter').value;
     var params = new URLSearchParams({root1: r1, root2: r2, scope: scope, lang: '{{ lang }}'});
     if (proxCorpus) params.set('corpus', proxCorpus);
@@ -786,7 +808,8 @@ document.getElementById('proximitySearchForm').addEventListener('submit', async 
     }
     var html = '<div class="proximity-results">';
     html += '<h3>' + data.count + ' co-occurrences: <span class="prox-hl1">' + (data.root1 || r1) + '</span> + <span class="prox-hl2">' + (data.root2 || r2) + '</span> (' + scope + ')</h3>';
-    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'ephrem_nisibis': 'Ephrem Nisibis'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
     data.results.forEach(function(r) {
         var ref = r.ref || r.reference || '';
         var refParts = ref.match(/^(.+?)\s+(\d+):(\d+)/);
@@ -794,7 +817,7 @@ document.getElementById('proximitySearchForm').addEventListener('submit', async 
         html += '<div class="text-result-card">';
         html += '<div class="text-result-header">';
         html += '<a href="' + readerLink + '" class="text-result-ref">' + ref + '</a>';
-        if (r.corpus_id) html += '<span class="corpus-badge corpus-' + r.corpus_id + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>';
+        if (r.corpus_id) { var abbr = CORPUS_ABBR[r.corpus_id] || r.corpus_id.split('_').map(function(w){return w[0]}).join(''); html += '<span class="cbadge ' + abbr + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>'; }
         html += '</div>';
         if (r.syriac) html += '<div class="text-result-syriac" dir="rtl">' + r.syriac + '</div>';
         if (r.translit || r.transliteration) html += '<div class="text-result-translit">' + (r.translit || r.transliteration) + '</div>';
@@ -884,27 +907,37 @@ document.getElementById('proximitySearchForm').addEventListener('submit', async 
 (function() {
     var urlParams = new URLSearchParams(window.location.search);
     var q = urlParams.get('q');
-    if (q) {
+    var tab = urlParams.get('tab') || 'root';
+    if (!q) return;
+    if (tab === 'text') {
+        switchSearchTab('text');
+        var textInp = document.getElementById('textInput');
+        if (textInp) textInp.value = q;
+        window.__pageLoadSearch = true;   // suppress scroll inside handler
+        document.getElementById('text-search-btn').click();
+    } else {
         document.getElementById('rootInput').value = q;
         var corpus = urlParams.get('corpus');
         if (corpus) document.getElementById('corpusFilter').value = corpus;
-        doRootSearch();
+        doRootSearch(true);   // noScroll — page loaded at top already
     }
 })();
 
 // --- Text Search Handler ---
-document.getElementById('textSearchForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+document.getElementById('text-search-btn').addEventListener('click', async function() {
     var q = document.getElementById('textInput').value.trim();
     var corpus = document.getElementById('textCorpusFilter').value;
     if (!q) return;
+
+    var skipScroll = window.__pageLoadSearch;
+    window.__pageLoadSearch = false;
 
     var params = new URLSearchParams({q: q, lang: '{{ lang }}'});
     if (corpus) params.set('corpus', corpus);
 
     var el = document.getElementById('results');
     el.innerHTML = '<p style="text-align:center">Searching...</p>';
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!skipScroll) scrollToEl(el);
 
     var res = await fetch('/api/search?' + params);
     var data = await res.json();
@@ -917,7 +950,8 @@ document.getElementById('textSearchForm').addEventListener('submit', async funct
     var html = '<div class="text-search-results">';
     html += '<h3 class="text-search-header">' + data.count + ' results for "' + q.replace(/</g, '&lt;') + '"</h3>';
 
-    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'};
+    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'ephrem_nisibis': 'Ephrem Nisibis'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
 
     for (var i = 0; i < data.results.length; i++) {
         var r = data.results[i];
@@ -927,12 +961,12 @@ document.getElementById('textSearchForm').addEventListener('submit', async funct
         html += '<div class="text-result-card">';
         html += '<div class="text-result-header">';
         html += '<a href="' + readerLink + '" class="text-result-ref">' + r.reference + '</a>';
-        html += '<span class="corpus-badge corpus-' + r.corpus_id + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>';
+        var abbr = CORPUS_ABBR[r.corpus_id] || r.corpus_id.split('_').map(function(w){return w[0]}).join('');
+        html += '<span class="cbadge ' + abbr + '">' + (corpusLabels[r.corpus_id] || r.corpus_id) + '</span>';
         html += '</div>';
         if (r.syriac) html += '<div class="text-result-syriac" dir="rtl">' + r.syriac + '</div>';
         if (r.transliteration) html += '<div class="text-result-translit">' + r.transliteration + '</div>';
         if (r.translation) {
-            // Highlight the search term in the translation
             var regex = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
             var highlighted = r.translation.replace(regex, '<mark>$1</mark>');
             html += '<div class="text-result-translation">' + highlighted + '</div>';
@@ -946,6 +980,10 @@ document.getElementById('textSearchForm').addEventListener('submit', async funct
 
     html += '</div>';
     el.innerHTML = html;
+});
+
+document.getElementById('textInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('text-search-btn').click(); }
 });
 </script>
 {% endblock %}

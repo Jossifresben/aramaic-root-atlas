@@ -16,13 +16,18 @@
             if (themeIcon) themeIcon.textContent = theme === 'dark' ? 'bedtime' : 'sunny';
         }
 
-        var savedTheme = localStorage.getItem('theme');
+        // Migrate legacy theme key
+        if (!localStorage.getItem('ara.theme') && localStorage.getItem('theme')) {
+            localStorage.setItem('ara.theme', localStorage.getItem('theme'));
+        }
+
+        var savedTheme = localStorage.getItem('ara.theme');
         if (savedTheme) applyTheme(savedTheme);
 
         themeBtn.addEventListener('click', function() {
             var current = html.getAttribute('data-theme') || 'light';
             var next = current === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('theme', next);
+            localStorage.setItem('ara.theme', next);
             applyTheme(next);
         });
     }

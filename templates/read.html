@@ -1,75 +1,97 @@
 {% extends "base.html" %}
+{% set page_id = 'reader' %}
+{% block title %}{{ bn(book, lang) if bn else book }} {{ chapter }} — Aramaic Root Atlas{% endblock %}
 
-{% block title %}{{ book }} {{ chapter }} — Aramaic Root Atlas{% endblock %}
+{% block topbar %}
+<div class="crumb">
+  <a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span>
+  <a href="/browse?lang={{ lang }}">{{ t('nav_browse_title', lang) if t else 'Browse' }}</a><span class="sep">›</span>
+  <b>{{ bn(book, lang) if bn else book }} {{ chapter }}</b>
+</div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="reader-header">
-    <div>
-        <h1>{{ bn(book, lang) if bn else book }} — {{ t('chapter', lang) if t else 'Chapter' }} {{ chapter }}</h1>
-        {% set cid = verses[0].corpus_id if verses else '' %}
-        {% set corpus_labels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos'} %}
-        <span class="corpus-badge corpus-{{ cid }}">{{ corpus_labels.get(cid, cid) }}</span>
-        <button onclick="toggleChapterRoots()" id="chRootsBtn" class="ch-roots-btn" style="margin-left:0.5rem">
-            <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">list_alt</span>
-            <span id="chRootsBtnText">Roots in this chapter</span>
-        </button>
+<div class="page-head">
+  <div>
+    <h1 class="ph-title">{{ bn(book, lang) if bn else book }} · <em>{{ t('read_chapter_prefix', lang) if t else 'Chapter' }} {{ chapter }}</em></h1>
+    <div class="ph-sub" style="display:flex;align-items:center;gap:10px;margin-top:8px">
+      <span class="cbadge {{ corpus_abbr }}">{{ corpus_label }}</span>
+      <span>{{ verse_count }} {{ t('read_verses', lang) if t else 'verses' }}</span>
     </div>
-    <div class="reader-nav">
-        {% if chapter > 1 %}
-        <a href="/read/{{ book }}/{{ chapter - 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}">&larr; Ch {{ chapter - 1 }}</a>
-        {% endif %}
-        <a href="/browse?lang={{ lang }}">All Books</a>
-        {% if chapter < max_ch %}
-        <a href="/read/{{ book }}/{{ chapter + 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}">Ch {{ chapter + 1 }} &rarr;</a>
-        {% endif %}
-    </div>
-</div>
-<div id="chRootsPanel" class="ch-roots-panel" style="display:none">
-    <div id="chRootsContent"></div>
+  </div>
+  <div class="ph-actions">
+    {% if chapter > 1 %}<a href="/read/{{ book }}/{{ chapter - 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}" class="btn secondary">‹ {{ t('read_chapter_prefix', lang) if t else 'Ch' }} {{ chapter - 1 }}</a>{% endif %}
+    <a href="/browse?lang={{ lang }}" class="btn secondary">{{ t('read_all_books', lang) if t else 'All books' }}</a>
+    {% if chapter < max_ch %}<a href="/read/{{ book }}/{{ chapter + 1 }}?lang={{ lang }}&trans={{ trans }}&script={{ script }}" class="btn secondary">{{ t('read_chapter_prefix', lang) if t else 'Ch' }} {{ chapter + 1 }} ›</a>{% endif %}
+  </div>
 </div>
 
-<div class="verses">
-    {% set hl_form = request.args.get('hl', '') %}
-    {% for v in verses %}
-    <div class="verse-row" id="v{{ v.verse }}">
-        <span class="verse-num">{{ v.verse }}</span>
-        <div class="verse-content">
-            <div class="verse-syriac" dir="rtl">
-                {%- for w in v.syriac.split() -%}
-                    {%- set idx = loop.index0 -%}
-                    {%- set wr = v.word_roots[idx] if v.word_roots and idx < v.word_roots|length else None -%}
-                    <span class="word-token{% if w == hl_form %} hl{% endif %}{% if wr %} has-root{% endif %}"
-                          data-word="{{ w }}"
-                          {% if wr %}data-root="{{ wr.r }}" data-translit="{{ wr.t }}" data-gloss="{{ wr.g }}" data-conf="{{ wr.c }}" data-stem="{{ wr.s }}"{% endif %}
-                          >{{ w }}</span>
-                    {%- if not loop.last %} {% endif -%}
-                {%- endfor -%}
-            </div>
-            {% if v.transliteration %}
-            <div class="verse-translit{% if script in ('hebrew', 'arabic') %} verse-translit--rtl{% endif %}">{{ v.transliteration }}</div>
-            {% endif %}
-            {% if v.translation %}
-            <div class="verse-translation" {% if trans in ('he', 'ar') %}dir="rtl"{% endif %}>{{ v.translation }}</div>
-            {% endif %}
-        </div>
-        <div class="verse-actions">
-            <button class="bm-verse-btn" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}" data-book="{{ book }}" data-chapter="{{ chapter }}" data-verse="{{ v.verse }}" title="{{ t('bookmarks_toggle', lang) if t else 'Bookmark' }}"><span class="material-symbols-outlined">bookmark_border</span></button>
-            <a href="/constellation?book={{ book }}&chapter={{ chapter }}&v_start={{ v.verse }}&v_end={{ v.verse }}&lang={{ lang }}&script={{ script }}&trans={{ trans }}"
-               class="verse-action-link" title="{{ t('constellation', lang) if t else 'Constellation' }}">
-                <span class="material-symbols-outlined">scatter_plot</span>
-            </a>
-            <button class="verse-note-btn" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}" title="{{ t('ann_add_note', lang) if t else 'Add note' }}"><span class="material-symbols-outlined">edit_note</span></button>
-        </div>
-        <div class="verse-note-block" id="vnote-{{ v.verse }}" style="display:none">
-            <textarea class="verse-note-ta" maxlength="500" placeholder="{{ t('ann_placeholder', lang) if t else 'Add a research note...' }}"></textarea>
-            <div class="verse-note-footer">
-                <span class="verse-note-count">0/500</span>
-                <button class="verse-note-save" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}">{{ t('ann_save', lang) if t else 'Save' }}</button>
-                <button class="verse-note-cancel" data-verse="{{ v.verse }}">{{ t('ann_cancel', lang) if t else 'Cancel' }}</button>
-            </div>
-        </div>
+<div class="reader-bar">
+  <span style="font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">{{ t('read_show', lang) if t else 'Show' }}</span>
+  <button class="chip on" id="chip-syr" onclick="toggleChip(this);toggleLayer('syr')">{{ t('read_syriac', lang) if t else 'Syriac' }}</button>
+  <button class="chip on" id="chip-tr" onclick="toggleChip(this);toggleLayer('tr')">{{ t('read_translit_short', lang) if t else 'Translit.' }}</button>
+  <button class="chip on" id="chip-en" onclick="toggleChip(this);toggleLayer('en')">{{ t('read_translation', lang) if t else 'Translation' }}</button>
+  <button class="chip" id="chip-roots" onclick="toggleChip(this);toggleRoots()">{{ t('read_roots_layer', lang) if t else 'Roots' }}</button>
+  <span class="spacer"></span>
+  <button class="btn secondary" onclick="toggleChapterRoots()" id="chRootsBtn">{{ t('read_roots_in_chapter', lang) if t else 'Roots in chapter' }}</button>
+  <button class="btn secondary" onclick="openCiteModal({tool:'reader',book:'{{ book|e }}',chapter:'{{ chapter }}'})">{{ t('read_cite', lang) if t else 'Cite' }}</button>
+</div>
+
+{% set hl_form = request.args.get('hl', '') %}
+{% set is_hebrew_script = corpus_abbr in ('bib', 'tar') %}
+{% set script_class = 'v-heb' if is_hebrew_script else 'v-syr' %}
+{% for v in verses %}
+<div class="verse" id="v{{ v.verse }}" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}">
+  <div class="v-num">{{ v.verse }}</div>
+  <div>
+    <div class="{{ script_class }} layer-syr" dir="rtl">
+      {%- for w in v.syriac.split() -%}
+        {%- set idx = loop.index0 -%}
+        {%- set wr = v.word_roots[idx] if v.word_roots and idx < v.word_roots|length else None -%}
+        <span class="word-token{% if w == hl_form %} hl{% endif %}{% if wr %} has-root{% endif %}"
+              data-word="{{ w }}"
+              {% if wr %}data-root="{{ wr.r }}" data-translit="{{ wr.t }}" data-gloss="{{ wr.g }}" data-conf="{{ wr.c }}" data-stem="{{ wr.s }}"{% endif %}
+              >{{ w }}</span>
+        {%- if not loop.last %} {% endif -%}
+      {%- endfor -%}
     </div>
-    {% endfor %}
+    {% if v.transliteration %}<div class="v-tr layer-tr" style="text-align:right;direction:ltr">{{ v.transliteration.split()|reverse|join(' ') }}</div>{% endif %}
+    {% if v.translation %}<div class="v-en layer-en"{% if trans in ('he','ar') %} dir="rtl"{% endif %}>{{ v.translation }}</div>{% endif %}
+  </div>
+  <div class="v-actions">
+    <button class="bm-verse-btn" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}" data-book="{{ book }}" data-chapter="{{ chapter }}" data-verse="{{ v.verse }}" title="Bookmark">
+      <svg class="bm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+    </button>
+    <a href="/constellation?book={{ book }}&chapter={{ chapter }}&v_start={{ v.verse }}&v_end={{ v.verse }}&lang={{ lang }}" class="verse-action-link" title="Constellation">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="2"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/><path d="M6 6l4 4M14 14l4 4M14 10l4-4M6 18l4-4"/></svg>
+    </a>
+    <button class="verse-note-btn" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}" title="Add note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 4H4v16h16v-7M18.5 2.5a2.12 2.12 0 113 3L12 15l-4 1 1-4z"/></svg>
+    </button>
+  </div>
+  <div class="verse-note-block" id="vnote-{{ v.verse }}" style="display:none">
+    <textarea class="verse-note-ta" maxlength="500" placeholder="{{ t('ann_placeholder', lang) if t else 'Add a research note...' }}"></textarea>
+    <div class="verse-note-footer">
+      <span class="verse-note-count">0/500</span>
+      <button class="verse-note-save" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}">{{ t('ann_save', lang) if t else 'Save' }}</button>
+      <button class="verse-note-cancel" data-verse="{{ v.verse }}">{{ t('ann_cancel', lang) if t else 'Cancel' }}</button>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- Word popover (injected by JS) -->
+<div id="word-pop" class="word-pop" style="display:none"></div>
+
+<!-- Chapter root summary -->
+<div class="chapter-root-panel" id="chapter-root-panel" style="display:none">
+  <h3>{{ t('read_roots_in_this_chapter', lang) if t else 'Roots in this chapter' }}</h3>
+  <div id="chapter-root-content"></div>
 </div>
 {% endblock %}
 
@@ -83,7 +105,7 @@
     document.querySelectorAll('.bm-verse-btn').forEach(function(btn) {
         var ref = btn.getAttribute('data-ref');
         if (refs[ref]) {
-            btn.querySelector('.material-symbols-outlined').textContent = 'bookmark';
+            btn.querySelector('.bm-icon').setAttribute('fill', 'currentColor');
             btn.classList.add('bookmarked');
         }
     });
@@ -102,12 +124,12 @@
             }
             if (idx >= 0) {
                 bm.verses.splice(idx, 1);
-                this.querySelector('.material-symbols-outlined').textContent = 'bookmark_border';
+                this.querySelector('.bm-icon').setAttribute('fill', 'none');
                 this.classList.remove('bookmarked');
             } else {
-                var row = this.closest('.verse-row');
-                var syriac = row ? (row.querySelector('.verse-syriac') || {}).textContent || '' : '';
-                var translation = row ? (row.querySelector('.verse-translation') || {}).textContent || '' : '';
+                var row = this.closest('.verse');
+                var syriac = row ? (row.querySelector('.v-syr, .v-heb') || {}).textContent || '' : '';
+                var translation = row ? (row.querySelector('.v-en') || {}).textContent || '' : '';
                 bm.verses.push({
                     ref: ref, book: book, chapter: chapter, verse: verse,
                     syriac: syriac.substring(0, 120),
@@ -115,7 +137,7 @@
                     date: new Date().toISOString().slice(0, 10),
                     note: ''
                 });
-                this.querySelector('.material-symbols-outlined').textContent = 'bookmark';
+                this.querySelector('.bm-icon').setAttribute('fill', 'currentColor');
                 this.classList.add('bookmarked');
             }
             saveBookmarks(bm);
@@ -148,21 +170,22 @@ function exportChapterRootsCSV() {
     a.download = '{{ book }}-ch{{ chapter }}-roots.csv';
     a.click();
 }
+
 function toggleChapterRoots() {
-    var panel = document.getElementById('chRootsPanel');
+    var panel = document.getElementById('chapter-root-panel');
     if (panel.style.display === 'none') {
         panel.style.display = 'block';
         if (!_chRootsLoaded) {
-            document.getElementById('chRootsContent').innerHTML = '<p style="text-align:center;color:var(--muted)">Loading...</p>';
+            document.getElementById('chapter-root-content').innerHTML = '<p style="text-align:center;color:var(--ink-4);font-family:var(--serif);font-style:italic">Loading…</p>';
             fetch('/api/chapter-roots?book={{ book }}&chapter={{ chapter }}')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     _chRootsLoaded = true;
                     if (!data.roots || !data.roots.length) {
-                        document.getElementById('chRootsContent').innerHTML = '<p>No roots found.</p>';
+                        document.getElementById('chapter-root-content').innerHTML = '<p>No roots found.</p>';
                         return;
                     }
-                    var html = '<div style="text-align:right;margin-bottom:0.4rem"><button class="ch-roots-csv-btn" onclick="exportChapterRootsCSV()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> CSV</button> <button class="ch-roots-csv-btn" onclick="exportChapterRootsJSON()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> JSON</button></div>';
+                    var html = '<div style="text-align:right;margin-bottom:0.4rem"><button class="ch-roots-csv-btn" onclick="exportChapterRootsCSV()">CSV</button> <button class="ch-roots-csv-btn" onclick="exportChapterRootsJSON()">JSON</button></div>';
                     html += '<table class="ch-roots-table"><thead><tr>';
                     html += '<th>Root</th><th>Translit</th><th>Gloss</th><th>Count</th><th></th>';
                     html += '</tr></thead><tbody>';
@@ -175,17 +198,17 @@ function toggleChapterRoots() {
                         html += '<td>' + r.translit + '</td>';
                         html += '<td>' + (r.gloss || '') + '</td>';
                         html += '<td><strong>' + r.count + '</strong> <span class="wp-conf ' + tier + '" title="Avg confidence: ' + r.confidence + '"></span></td>';
-                        html += '<td><a href="/visualize/' + encodeURIComponent(vizKey) + '?lang={{ lang }}" class="wp-link">Visualize</a></td>';
+                        html += '<td><a href="/visualize/' + encodeURIComponent(vizKey) + '?lang={{ lang }}&tab=ficha" class="wp-link">Visualize</a></td>';
                         html += '</tr>';
                     }
                     html += '</tbody></table>';
                     html += '<div class="ch-roots-footer">';
                     html += '<p class="ch-roots-summary">' + data.total_roots + ' roots in ' + data.roots.reduce(function(s,r){return s+r.count},0) + ' word tokens</p>';
-                    html += '<button class="ch-roots-csv-btn" onclick="exportChapterRootsCSV()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> CSV</button> ';
-                    html += '<button class="ch-roots-csv-btn" onclick="exportChapterRootsJSON()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">download</span> JSON</button>';
+                    html += '<button class="ch-roots-csv-btn" onclick="exportChapterRootsCSV()">CSV</button> ';
+                    html += '<button class="ch-roots-csv-btn" onclick="exportChapterRootsJSON()">JSON</button>';
                     html += '</div>';
                     _chRootsData = data;
-                    document.getElementById('chRootsContent').innerHTML = html;
+                    document.getElementById('chapter-root-content').innerHTML = html;
                 });
         }
     } else {
@@ -254,8 +277,8 @@ function toggleChapterRoots() {
         html += '</div>';
         if (gloss) html += '<div class="wp-gloss">' + escHtml(gloss) + '</div>';
         if (stem) html += '<div class="wp-meta"><span class="stem-badge stem-' + stem.toLowerCase() + '">' + escHtml(stem) + '</span></div>';
-        html += '<div class="wp-loading">Loading morphemes\u2026</div>';
-        var vizUrl = '/visualize/' + encodeURIComponent(translit) + '?lang=' + LANG;
+        html += '<div class="wp-loading">Loading morphemes…</div>';
+        var vizUrl = '/visualize/' + encodeURIComponent(translit) + '?lang=' + LANG + '&tab=ficha';
         html += '<div class="wp-actions"><a href="' + vizUrl + '" class="wp-link">{{ t("visualize", lang) if t else "Visualize" }}</a></div>';
         return html;
     }
@@ -294,7 +317,7 @@ function toggleChapterRoots() {
         if (data.cognates && data.cognates.hebrew) cogParts.push(data.cognates.hebrew);
         if (data.cognates && data.cognates.arabic) cogParts.push(data.cognates.arabic);
         if (cogParts.length) html += '<div class="wp-cognates-row">' + escHtml(cogParts.join(' · ')) + '</div>';
-        var vizUrl = '/visualize/' + encodeURIComponent(data.root_key || '') + '?lang=' + LANG;
+        var vizUrl = '/visualize/' + encodeURIComponent(data.root_key || '') + '?lang=' + LANG + '&tab=ficha';
         var parseUrl = '/parse?word=' + encodeURIComponent(data.word) + '&lang=' + LANG;
         html += '<div class="wp-actions">';
         if (data.root_key) html += '<a href="' + vizUrl + '" class="wp-link">{{ t("visualize", lang) if t else "Visualize" }}</a>';
@@ -345,7 +368,6 @@ function toggleChapterRoots() {
         var ref = btn.getAttribute('data-ref');
         if (ann.verses[ref]) {
             btn.classList.add('has-note');
-            btn.querySelector('.material-symbols-outlined').textContent = 'sticky_note_2';
         }
     });
 
@@ -386,19 +408,16 @@ function toggleChapterRoots() {
             var verseNum = ref.split(':')[1];
             var block = document.getElementById('vnote-' + verseNum);
             var text = block.querySelector('.verse-note-ta').value.trim();
+            var noteBtn = document.querySelector('.verse-note-btn[data-ref="' + ref + '"]');
             if (text) {
                 setAnnotation('verses', ref, text, []);
-                var noteBtn = document.querySelector('.verse-note-btn[data-ref="' + ref + '"]');
                 if (noteBtn) {
                     noteBtn.classList.add('has-note');
-                    noteBtn.querySelector('.material-symbols-outlined').textContent = 'sticky_note_2';
                 }
             } else {
                 deleteAnnotation('verses', ref);
-                var noteBtn = document.querySelector('.verse-note-btn[data-ref="' + ref + '"]');
                 if (noteBtn) {
                     noteBtn.classList.remove('has-note');
-                    noteBtn.querySelector('.material-symbols-outlined').textContent = 'edit_note';
                 }
             }
             block.style.display = 'none';
@@ -414,5 +433,17 @@ function toggleChapterRoots() {
         });
     });
 })();
+
+function toggleLayer(name) {
+    document.querySelectorAll('.layer-' + name).forEach(function(el) {
+        el.style.display = el.style.display === 'none' ? '' : 'none';
+    });
+}
+
+function toggleRoots() {
+    document.querySelectorAll('.has-root').forEach(function(el) {
+        el.classList.toggle('root-visible');
+    });
+}
 </script>
 {% endblock %}

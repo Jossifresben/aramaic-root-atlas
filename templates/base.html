@@ -1,290 +1,206 @@
 <!DOCTYPE html>
-<html lang="{{ lang }}" dir="{{ 'rtl' if lang in ('he', 'ar') else 'ltr' }}">
+<html lang="{{ lang }}" dir="{{ 'rtl' if lang in ('he', 'ar') else 'ltr' }}" {% if page_id is defined %}data-pageid="{{ page_id }}"{% endif %}>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Aramaic Root Atlas{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Syriac&family=Noto+Sans+Syriac+Eastern&family=Noto+Sans+Syriac+Western&family=Noto+Sans+Hebrew&family=Noto+Sans+Arabic&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Syriac:wght@400;500&family=Noto+Serif+Hebrew:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.css">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XWZC618EC4"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-XWZC618EC4');
-    </script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XWZC618EC4');</script>
     {% block head %}{% endblock %}
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-inner">
-            <a href="/?lang={{ lang }}" class="nav-brand">
-                <img src="{{ url_for('static', filename='logo.svg') }}" alt="Aramaic Root Atlas" class="nav-logo">
-                <span class="nav-brand-text">Aramaic Root Atlas</span>
-            </a>
-            <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
-            <div class="nav-links" id="nav-links">
-                <a href="/browse?lang={{ lang }}" id="nav-browse">{{ t('browse', lang) if t else 'Browse' }}</a>
 
-                <div class="nav-dropdown">
-                    <button class="nav-drop-btn" id="nav-explore-btn" aria-haspopup="true" aria-expanded="false">
-                        {{ t('nav_explore', lang) if t else 'Explore' }}<span class="drop-arrow">▾</span>
-                    </button>
-                    <div class="nav-drop-menu">
-                        <a href="/parallel?lang={{ lang }}">{{ t('parallel_viewer', lang) if t else 'Parallel Viewer' }}</a>
-                        <a href="/heatmap?lang={{ lang }}">{{ t('heat_map', lang) if t else 'Heat Map' }}</a>
-                    </div>
-                </div>
+<div class="app">
+  <aside class="side" data-page="{{ page_id|default('search') }}"></aside>
 
-                <div class="nav-dropdown">
-                    <button class="nav-drop-btn" id="nav-research-btn" aria-haspopup="true" aria-expanded="false">
-                        {{ t('nav_research', lang) if t else 'Research' }}<span class="drop-arrow">▾</span>
-                    </button>
-                    <div class="nav-drop-menu">
-                        <a href="/hapax?lang={{ lang }}">{{ t('hapax_title', lang) if t else 'Hapax Legomena' }}</a>
-                        <a href="/concordance?lang={{ lang }}">{{ t('concordance_title', lang) if t else 'Concordance' }}</a>
-                        <a href="/diachronic?lang={{ lang }}">{{ t('diachronic_title', lang) if t else 'Diachronic Analysis' }}</a>
-                        <a href="/collocations?lang={{ lang }}">{{ t('coll_title', lang) if t else 'Collocations' }}</a>
-                        <a href="/semantic-fields?lang={{ lang }}">{{ t('sf_title', lang) if t else 'Semantic Fields' }}</a>
-                        <a href="/parse?lang={{ lang }}">{{ t('parse_title', lang) if t else 'Word Parser' }}</a>
-                        <a href="/passage-profile?lang={{ lang }}">{{ t('pp_title', lang) if t else 'Passage Profile' }}</a>
-                        <a href="/interlinear?lang={{ lang }}">{{ t('il_title', lang) if t else 'Interlinear Reader' }}</a>
-                        <hr class="nav-drop-sep">
-                        <a href="/bookmarks?lang={{ lang }}">{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}</a>
-                        <a href="/annotations?lang={{ lang }}">{{ t('ann_page_title', lang) if t else 'Research Notes' }}</a>
-                    </div>
-                </div>
-
-                <a href="/about?lang={{ lang }}">{{ t('about', lang) if t else 'About' }}</a>
-            </div>
-            <div class="nav-icons">
-                    <!-- Language Dropdown -->
-                    <div class="lang-wrapper">
-                        <button class="nav-btn lang-toggle" id="lang-toggle" aria-label="Language"
-                                aria-haspopup="true" aria-expanded="false"
-                                data-tooltip="{{ t('nav_language', lang) if t else 'Language' }}">
-                            <span class="material-symbols-outlined">captive_portal</span>
-                        </button>
-                        <div class="lang-dropdown" id="lang-dropdown" role="menu">
-                            <a class="lang-option{% if lang == 'en' %} active{% endif %}" role="menuitem" data-lang="en">English</a>
-                            <a class="lang-option{% if lang == 'es' %} active{% endif %}" role="menuitem" data-lang="es">Español</a>
-                            <a class="lang-option{% if lang == 'he' %} active{% endif %}" role="menuitem" data-lang="he">עברית</a>
-                            <a class="lang-option{% if lang == 'ar' %} active{% endif %}" role="menuitem" data-lang="ar">العربية</a>
-                        </div>
-                    </div>
-
-                    <!-- Settings -->
-                    <div class="settings-wrapper">
-                        <button class="nav-btn settings-toggle" id="settings-toggle" aria-label="Settings"
-                                aria-haspopup="true" aria-expanded="false"
-                                data-tooltip="{{ t('nav_settings', lang) if t else 'Settings' }}">
-                            <span class="material-symbols-outlined">settings</span>
-                        </button>
-                        <div class="settings-dropdown" id="settings-dropdown" role="menu">
-                            <div class="settings-label">{{ t('settings_script', lang) if t else 'Transliteration' }}</div>
-                            <button class="settings-option{% if script == 'latin' %} active{% endif %}"
-                                    data-script="latin" role="menuitemradio">Latin (ABC)</button>
-                            <button class="settings-option{% if script == 'syriac' %} active{% endif %}"
-                                    data-script="syriac" role="menuitemradio">Syriac (ʾbg)</button>
-                            <button class="settings-option{% if script == 'hebrew' %} active{% endif %}"
-                                    data-script="hebrew" role="menuitemradio">Hebrew (אבג)</button>
-                            <button class="settings-option{% if script == 'arabic' %} active{% endif %}"
-                                    data-script="arabic" role="menuitemradio">Arabic (ابج)</button>
-                            <div class="settings-divider"></div>
-                            <div class="settings-label">{{ t('settings_translation', lang) if t else 'Translation' }}</div>
-                            <button class="settings-option{% if trans == 'en' %} active{% endif %}"
-                                    data-trans="en" role="menuitemradio">English</button>
-                            <button class="settings-option{% if trans == 'es' %} active{% endif %}"
-                                    data-trans="es" role="menuitemradio">Español</button>
-                            <button class="settings-option{% if trans == 'he' %} active{% endif %}"
-                                    data-trans="he" role="menuitemradio">עברית (Hebrew)</button>
-                            <button class="settings-option{% if trans == 'ar' %} active{% endif %}"
-                                    data-trans="ar" role="menuitemradio">العربية (Arabic)</button>
-                            <button class="settings-option{% if trans == 'el' %} active{% endif %}"
-                                    data-trans="el" role="menuitemradio">Ελληνικά (SBLGNT)</button>
-                            <div class="settings-divider"></div>
-                            <div class="settings-label">{{ t('settings_syriac_font', lang) if t else 'Script style' }}</div>
-                            <button class="settings-option syriac-font-option" data-syriac-font="estrangela" role="menuitemradio">
-                                Estrangela (classical)</button>
-                            <button class="settings-option syriac-font-option" data-syriac-font="eastern" role="menuitemradio">
-                                Eastern (Madnḥāyā)</button>
-                            <button class="settings-option syriac-font-option" data-syriac-font="western" role="menuitemradio">
-                                Western (Serṭo)</button>
-                        </div>
-                    </div>
-
-                    <!-- Bookmarks -->
-                    <a class="nav-btn" id="nav-bookmarks" href="/bookmarks?lang={{ lang }}" aria-label="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}"
-                       data-tooltip="{{ t('bookmarks_title', lang) if t else 'Bookmarks' }}">
-                        <span class="material-symbols-outlined">bookmark</span>
-                    </a>
-
-                    <!-- API Reference -->
-                    <a class="nav-btn{% if page_id == 'api-docs' %} active{% endif %}" href="/api-docs?lang={{ lang }}" aria-label="API Reference"
-                       data-tooltip="API Reference">
-                        <span class="material-symbols-outlined">api</span>
-                    </a>
-
-                    <!-- Guided Tour -->
-                    <button class="nav-btn" id="tour-nav-btn"
-                            aria-label="{{ t('tour_start', lang) if t else 'Guided Tour' }}"
-                            data-tooltip="{{ t('tour_start', lang) if t else 'Guided Tour' }}">
-                        <span class="material-symbols-outlined">help_outline</span>
-                    </button>
-
-                    <!-- Theme Toggle -->
-                    <button class="nav-btn theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"
-                            data-tooltip="{{ t('nav_dark_mode', lang) if t else 'Dark mode' }}">
-                        <span class="material-symbols-outlined">sunny</span>
-                    </button>
-
-                    <!-- Share / QR -->
-                    <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share"
-                            data-tooltip="{{ t('share_title', lang) if t else 'Share' }}">
-                        <span class="material-symbols-outlined">qr_code_2</span>
-                    </button>
-                </div>{# /nav-icons #}
-        </div>{# /nav-inner #}
-    </nav>
-
-    <!-- Share Modal -->
-    <div id="share-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Share">
-        <div class="modal-content share-modal-content">
-            <button class="modal-close" id="share-close" aria-label="Close">&times;</button>
-            <h3 class="share-modal-title">{{ t('share_title', lang) if t else 'Share this page' }}</h3>
-            <div class="share-qr-wrap">
-                <div id="share-qr"></div>
-                <p class="share-qr-hint">{{ t('share_scan', lang) if t else 'Scan with your device' }}</p>
-            </div>
-            <div class="share-url-wrap">
-                <input type="text" id="share-url" class="share-url-input" readonly aria-label="URL">
-                <button id="share-copy-btn" class="share-copy-btn" title="Copy">
-                    <span class="material-symbols-outlined">content_copy</span>
-                </button>
-            </div>
+  <div class="main">
+    <header class="topbar">
+      {% block topbar %}
+      <div class="crumb">
+        <a href="/?lang={{ lang }}">Trace Root</a>
+      </div>
+      <div class="quick-search">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+        <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+        <div id="quick-search-list" class="qs-list" hidden></div>
+      </div>
+      {% endblock %}
+      <div class="topbar-tools">
+        <!-- Language -->
+        <div class="lang-wrapper">
+          <button class="nav-btn lang-toggle" id="lang-toggle" aria-label="Language" aria-haspopup="true" aria-expanded="false">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+          </button>
+          <div class="lang-dropdown" id="lang-dropdown" role="menu">
+            <a class="lang-option{% if lang == 'en' %} active{% endif %}" role="menuitem" data-lang="en">English</a>
+            <a class="lang-option{% if lang == 'es' %} active{% endif %}" role="menuitem" data-lang="es">Español</a>
+            <a class="lang-option{% if lang == 'he' %} active{% endif %}" role="menuitem" data-lang="he">עברית</a>
+            <a class="lang-option{% if lang == 'ar' %} active{% endif %}" role="menuitem" data-lang="ar">العربية</a>
+          </div>
         </div>
-    </div>
-
-    <!-- Cite Modal -->
-    <div id="cite-modal" class="modal-overlay" onclick="if(event.target===this)closeCiteModal()" role="dialog" aria-modal="true" aria-label="Cite this">
-        <div class="modal-content cite-modal-content" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeCiteModal()" aria-label="Close">&times;</button>
-            <h3 class="cite-modal-title">Cite this</h3>
-            <div class="cite-tabs" role="tablist">
-                <button class="cite-tab active" data-tab="bibtex" onclick="switchCiteTab('bibtex')" role="tab">BibTeX</button>
-                <button class="cite-tab" data-tab="chicago" onclick="switchCiteTab('chicago')" role="tab">Chicago</button>
-                <button class="cite-tab" data-tab="mla" onclick="switchCiteTab('mla')" role="tab">MLA</button>
-                <button class="cite-tab" data-tab="apa" onclick="switchCiteTab('apa')" role="tab">APA</button>
-                <button class="cite-tab" data-tab="sbl" onclick="switchCiteTab('sbl')" role="tab">SBL</button>
-            </div>
-            <div id="cite-panel-bibtex" class="cite-panel active" role="tabpanel">
-                <pre id="cite-text-bibtex" class="cite-code"></pre>
-            </div>
-            <div id="cite-panel-chicago" class="cite-panel" role="tabpanel">
-                <pre id="cite-text-chicago" class="cite-code"></pre>
-            </div>
-            <div id="cite-panel-mla" class="cite-panel" role="tabpanel">
-                <pre id="cite-text-mla" class="cite-code"></pre>
-            </div>
-            <div id="cite-panel-apa" class="cite-panel" role="tabpanel">
-                <pre id="cite-text-apa" class="cite-code"></pre>
-            </div>
-            <div id="cite-panel-sbl" class="cite-panel" role="tabpanel">
-                <pre id="cite-text-sbl" class="cite-code"></pre>
-            </div>
-            <div class="cite-footer">
-                <button class="cite-copy-btn" id="cite-copy-btn" onclick="copyCiteText()">
-                    <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">content_copy</span> Copy
-                </button>
-                <a class="cite-doi-link" href="https://doi.org/10.5281/zenodo.19358625" target="_blank" rel="noopener">
-                    <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">link</span>
-                    DOI: 10.5281/zenodo.19358625
-                </a>
-            </div>
-            <div class="cite-orcid">ORCID: 0009-0000-2026-0836</div>
+        <!-- Settings -->
+        <div class="settings-wrapper">
+          <button class="nav-btn settings-toggle" id="settings-toggle" aria-label="Settings" aria-haspopup="true" aria-expanded="false">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1.2l2-1.6-2-3.4-2.4.8a7 7 0 00-2-1.2L14 3h-4l-.5 2.4a7 7 0 00-2 1.2L5 5.8l-2 3.4 2 1.6a7 7 0 000 2.4l-2 1.6 2 3.4 2.4-.8a7 7 0 002 1.2L10 21h4l.5-2.4a7 7 0 002-1.2l2.4.8 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg>
+          </button>
+          <div class="settings-dropdown" id="settings-dropdown" role="menu">
+            <div class="settings-label">{{ t('settings_script', lang) if t else 'Transliteration' }}</div>
+            <button class="settings-option{% if script == 'latin' %} active{% endif %}" data-script="latin" role="menuitemradio">Latin (ABC)</button>
+            <button class="settings-option{% if script == 'syriac' %} active{% endif %}" data-script="syriac" role="menuitemradio">Syriac (ʾbg)</button>
+            <button class="settings-option{% if script == 'hebrew' %} active{% endif %}" data-script="hebrew" role="menuitemradio">Hebrew (אבג)</button>
+            <div class="settings-divider"></div>
+            <div class="settings-label">{{ t('settings_translation', lang) if t else 'Translation' }}</div>
+            <button class="settings-option{% if trans == 'en' %} active{% endif %}" data-trans="en" role="menuitemradio">English</button>
+            <button class="settings-option{% if trans == 'es' %} active{% endif %}" data-trans="es" role="menuitemradio">Español</button>
+            <button class="settings-option{% if trans == 'he' %} active{% endif %}" data-trans="he" role="menuitemradio">עברית</button>
+            <button class="settings-option{% if trans == 'ar' %} active{% endif %}" data-trans="ar" role="menuitemradio">العربية</button>
+            <button class="settings-option{% if trans == 'el' %} active{% endif %}" data-trans="el" role="menuitemradio">Greek (SBLGNT)</button>
+            <div class="settings-divider"></div>
+            <div class="settings-label">{{ t('settings_syriac_font', lang) if t else 'Script style' }}</div>
+            <button class="settings-option syriac-font-option" data-syriac-font="estrangela" role="menuitemradio">Estrangela</button>
+            <button class="settings-option syriac-font-option" data-syriac-font="eastern" role="menuitemradio">Eastern (Madnḥāyā)</button>
+            <button class="settings-option syriac-font-option" data-syriac-font="western" role="menuitemradio">Western (Serṭo)</button>
+          </div>
         </div>
-    </div>
+        <!-- Share -->
+        <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98M21 5a3 3 0 11-6 0 3 3 0 016 0zM9 12a3 3 0 11-6 0 3 3 0 016 0zM21 19a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </button>
+        <!-- API Reference -->
+        <a class="nav-btn{% if page_id == 'api-docs' %} active{% endif %}" href="/api-docs?lang={{ lang }}" aria-label="API Reference">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 6l-4 6 4 6M16 6l4 6-4 6M12 3v18"/></svg>
+        </a>
+        <!-- Tour -->
+        <button class="nav-btn" id="tour-nav-btn" aria-label="Guided Tour">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 0c0 2-2.5 2-2.5 4M12 17v.01"/></svg>
+        </button>
+      </div>
+    </header>
 
-    <!-- Verse Modal -->
-    <div id="verse-modal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('active')">
-        <div class="modal-content verse-modal-content" onclick="event.stopPropagation()">
-            <div class="modal-sticky-header">
-                <button class="modal-close" onclick="document.getElementById('verse-modal').classList.remove('active')">&times;</button>
-                <button class="modal-copy" id="verse-copy-btn" onclick="copyVerseModal()" title="Copy">&#10697;</button>
-                <div class="modal-ref" id="modal-ref"></div>
-            </div>
-            <button class="modal-nav-arrow" id="nav-prev" onclick="navigateVerse(-1)" disabled>&#9650;</button>
-            <div id="modal-verses-container"></div>
-            <button class="modal-nav-arrow" id="nav-next" onclick="navigateVerse(1)" disabled>&#9660;</button>
-            <div class="modal-loading" id="modal-loading">Loading...</div>
-        </div>
-    </div>
-
-    <main class="main">
-        {% block content %}{% endblock %}
+    <main class="content">
+      {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
-        <p>{% if lang == 'es' %}Por{% elif lang == 'he' %}מאת{% elif lang == 'ar' %}بواسطة{% else %}By{% endif %} <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a> &middot; <a href="https://github.com/Jossifresben/aramaic-root-atlas" target="_blank" rel="noopener">GitHub</a> &middot; Apache 2.0</p>
-        <p style="margin-top:.4rem;display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;">
-          <a href="https://orcid.org/0009-0000-2026-0836" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.3rem;text-decoration:none;">
-            <img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID" width="16" height="16" style="vertical-align:middle;">
-            <span style="font-size:.78rem;color:var(--muted);">0009-0000-2026-0836</span>
-          </a>
-          <a href="https://doi.org/10.5281/zenodo.19358625" target="_blank" rel="noopener">
-            <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.19358625.svg" alt="DOI: 10.5281/zenodo.19358625" style="height:18px;vertical-align:middle;">
-          </a>
-        </p>
+    <footer class="foot">
+      <div class="foot-inner">
+        <div>Aramaic Root Atlas · By <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a> · <a href="https://github.com/Jossifresben/aramaic-root-atlas" target="_blank" rel="noopener">GitHub</a> · Apache 2.0</div>
+        <div class="foot-meta">
+          <span>ORCID 0009-0000-2026-0836</span>
+          <span>DOI 10.5281/zenodo.19358625</span>
+        </div>
+      </div>
     </footer>
+  </div>{# /main #}
+</div>{# /app #}
 
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <script src="{{ url_for('static', filename='js/global.js') }}"></script>
-    <script>
-    window.TOUR_I18N = {
-        next:                  "{{ t('tour_next',              lang)|e }}",
-        skip:                  "{{ t('tour_skip',              lang)|e }}",
-        finish:                "{{ t('tour_finish',            lang)|e }}",
-        welcome_title:         "{{ t('tour_welcome_title',     lang)|e }}",
-        welcome_body:          "{{ t('tour_welcome_body',      lang)|e }}",
-        nav_browse_title:      "{{ t('tour_nav_browse_title',  lang)|e }}",
-        nav_browse_body:       "{{ t('tour_nav_browse_body',   lang)|e }}",
-        nav_explore_title:     "{{ t('tour_nav_explore_title', lang)|e }}",
-        nav_explore_body:      "{{ t('tour_nav_explore_body',  lang)|e }}",
-        nav_research_title:    "{{ t('tour_nav_research_title',lang)|e }}",
-        nav_research_body:     "{{ t('tour_nav_research_body', lang)|e }}",
-        search_title:          "{{ t('tour_search_title',      lang)|e }}",
-        search_body:           "{{ t('tour_search_body',       lang)|e }}",
-        cognate_title:         "{{ t('tour_cognate_title',     lang)|e }}",
-        cognate_body:          "{{ t('tour_cognate_body',      lang)|e }}",
-        meaning_title:         "{{ t('tour_meaning_title',     lang)|e }}",
-        meaning_body:          "{{ t('tour_meaning_body',      lang)|e }}",
-        text_title:            "{{ t('tour_text_title',        lang)|e }}",
-        text_body:             "{{ t('tour_text_body',         lang)|e }}",
-        reader_title:          "{{ t('tour_reader_title',      lang)|e }}",
-        reader_body:           "{{ t('tour_reader_body',       lang)|e }}",
-        settings_title:        "{{ t('tour_settings_title',    lang)|e }}",
-        settings_body:         "{{ t('tour_settings_body',     lang)|e }}",
-        lang_title:            "{{ t('tour_lang_title',        lang)|e }}",
-        lang_body:             "{{ t('tour_lang_body',         lang)|e }}",
-        bookmarks_title:       "{{ t('tour_bookmarks_title',   lang)|e }}",
-        bookmarks_body:        "{{ t('tour_bookmarks_body',    lang)|e }}",
-        share_title:           "{{ t('tour_share_title',       lang)|e }}",
-        share_body:            "{{ t('tour_share_body',        lang)|e }}",
-        end_title:             "{{ t('tour_end_title',         lang)|e }}",
-        end_body:              "{{ t('tour_end_body',          lang)|e }}"
-    };
-    window.TOUR_IS_RTL = {{ 'true' if lang in ('he', 'ar') else 'false' }};
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.js.iife.js"></script>
-    <script src="{{ url_for('static', filename='js/tour.js') }}"></script>
-    <script src="/static/cite-modal.js"></script>
-    {% block scripts %}{% endblock %}
+<!-- Share Modal -->
+<div id="share-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Share">
+  <div class="modal-content share-modal-content">
+    <button class="modal-close" id="share-close" aria-label="Close">&times;</button>
+    <h3 class="share-modal-title">{{ t('share_title', lang) if t else 'Share this page' }}</h3>
+    <div class="share-qr-wrap"><div id="share-qr"></div><p class="share-qr-hint">Scan with your device</p></div>
+    <div class="share-url-wrap">
+      <input type="text" id="share-url" class="share-url-input" readonly aria-label="URL">
+      <button id="share-copy-btn" class="share-copy-btn" title="Copy">&#10697;</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cite Modal -->
+<div id="cite-modal" class="modal-overlay" onclick="if(event.target===this)closeCiteModal()" role="dialog" aria-modal="true" aria-label="Cite this">
+  <div class="modal-content cite-modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeCiteModal()" aria-label="Close">&times;</button>
+    <h3 class="cite-modal-title">Cite this</h3>
+    <div class="cite-tabs" role="tablist">
+      <button class="cite-tab active" data-tab="bibtex" onclick="switchCiteTab('bibtex')" role="tab">BibTeX</button>
+      <button class="cite-tab" data-tab="chicago" onclick="switchCiteTab('chicago')" role="tab">Chicago</button>
+      <button class="cite-tab" data-tab="mla" onclick="switchCiteTab('mla')" role="tab">MLA</button>
+      <button class="cite-tab" data-tab="apa" onclick="switchCiteTab('apa')" role="tab">APA</button>
+      <button class="cite-tab" data-tab="sbl" onclick="switchCiteTab('sbl')" role="tab">SBL</button>
+    </div>
+    <div id="cite-panel-bibtex" class="cite-panel active" role="tabpanel"><pre id="cite-text-bibtex" class="cite-code"></pre></div>
+    <div id="cite-panel-chicago" class="cite-panel" role="tabpanel"><pre id="cite-text-chicago" class="cite-code"></pre></div>
+    <div id="cite-panel-mla" class="cite-panel" role="tabpanel"><pre id="cite-text-mla" class="cite-code"></pre></div>
+    <div id="cite-panel-apa" class="cite-panel" role="tabpanel"><pre id="cite-text-apa" class="cite-code"></pre></div>
+    <div id="cite-panel-sbl" class="cite-panel" role="tabpanel"><pre id="cite-text-sbl" class="cite-code"></pre></div>
+    <div class="cite-footer">
+      <button class="cite-copy-btn" id="cite-copy-btn" onclick="copyCiteText()">&#10697; Copy</button>
+      <a class="cite-doi-link" href="https://doi.org/10.5281/zenodo.19358625" target="_blank" rel="noopener">DOI: 10.5281/zenodo.19358625</a>
+    </div>
+    <div class="cite-orcid">ORCID: 0009-0000-2026-0836</div>
+  </div>
+</div>
+
+<!-- Verse Modal -->
+<div id="verse-modal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('active')">
+  <div class="modal-content verse-modal-content" onclick="event.stopPropagation()">
+    <div class="modal-sticky-header">
+      <button class="modal-close" onclick="document.getElementById('verse-modal').classList.remove('active')">&times;</button>
+      <button class="modal-copy" id="verse-copy-btn" onclick="copyVerseModal()" title="Copy">&#10697;</button>
+      <div class="modal-ref" id="modal-ref"></div>
+    </div>
+    <button class="modal-nav-arrow" id="nav-prev" onclick="navigateVerse(-1)" disabled>&#9650;</button>
+    <div id="modal-verses-container"></div>
+    <button class="modal-nav-arrow" id="nav-next" onclick="navigateVerse(1)" disabled>&#9660;</button>
+    <div class="modal-loading" id="modal-loading">Loading…</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+window.TOUR_I18N = {
+    next:                  "{{ t('tour_next',              lang)|e if t else 'Next' }}",
+    skip:                  "{{ t('tour_skip',              lang)|e if t else 'Skip' }}",
+    finish:                "{{ t('tour_finish',            lang)|e if t else 'Finish' }}",
+    welcome_title:         "{{ t('tour_welcome_title',     lang)|e if t else 'Welcome' }}",
+    welcome_body:          "{{ t('tour_welcome_body',      lang)|e if t else '' }}",
+    nav_browse_title:      "{{ t('tour_nav_browse_title',  lang)|e if t else 'Browse' }}",
+    nav_browse_body:       "{{ t('tour_nav_browse_body',   lang)|e if t else '' }}",
+    nav_explore_title:     "{{ t('tour_nav_explore_title', lang)|e if t else 'Explore' }}",
+    nav_explore_body:      "{{ t('tour_nav_explore_body',  lang)|e if t else '' }}",
+    nav_research_title:    "{{ t('tour_nav_research_title',lang)|e if t else 'Research' }}",
+    nav_research_body:     "{{ t('tour_nav_research_body', lang)|e if t else '' }}",
+    search_title:          "{{ t('tour_search_title',      lang)|e if t else 'Search' }}",
+    search_body:           "{{ t('tour_search_body',       lang)|e if t else '' }}",
+    end_title:             "{{ t('tour_end_title',         lang)|e if t else 'Done' }}",
+    end_body:              "{{ t('tour_end_body',          lang)|e if t else '' }}"
+};
+window.TOUR_IS_RTL = {{ 'true' if lang in ('he', 'ar') else 'false' }};
+</script>
+<script>
+window.SIDE_I18N = {
+    explore:        "{{ t('side_explore',        lang)|e if t else 'Explore' }}",
+    analyze:        "{{ t('side_analyze',        lang)|e if t else 'Analyze' }}",
+    workspace:      "{{ t('side_workspace',      lang)|e if t else 'Workspace' }}",
+    nav_trace_root:   "{{ t('nav_trace_root',   lang)|e if t else 'Trace Root' }}",
+    nav_browse:       "{{ t('nav_browse_title',  lang)|e if t else 'Browse corpora' }}",
+    nav_interlinear:  "{{ t('nav_interlinear',   lang)|e if t else 'Interlinear Reader' }}",
+    nav_parallel:     "{{ t('nav_parallel',      lang)|e if t else 'Parallel viewer' }}",
+    nav_concordance:  "{{ t('nav_concordance',   lang)|e if t else 'Concordance' }}",
+    nav_diachronic:   "{{ t('nav_diachronic',    lang)|e if t else 'Diachronic Analysis' }}",
+    nav_hapax:        "{{ t('nav_hapax',         lang)|e if t else 'Hapax Legomena' }}",
+    nav_heatmap:      "{{ t('nav_heatmap',       lang)|e if t else 'Frequency Map' }}",
+    nav_parse:        "{{ t('nav_parse',         lang)|e if t else 'Word Parser' }}",
+    nav_collocations: "{{ t('nav_collocations',  lang)|e if t else 'Collocations' }}",
+    nav_semantic:     "{{ t('nav_semantic',      lang)|e if t else 'Semantic Fields' }}",
+    nav_passage:      "{{ t('nav_passage',       lang)|e if t else 'Passage Profile' }}",
+    nav_bookmarks:    "{{ t('nav_bookmarks',     lang)|e if t else 'Bookmarks' }}",
+    nav_annotations:  "{{ t('nav_annotations',   lang)|e if t else 'Research Notes' }}",
+    nav_about:        "{{ t('nav_about',         lang)|e if t else 'About &amp; Guide' }}",
+};
+</script>
+<script src="{{ url_for('static', filename='js/global.js') }}"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+<script src="{{ url_for('static', filename='cite-modal.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.js.iife.js"></script>
+<script src="{{ url_for('static', filename='js/tour.js') }}"></script>
+{% block scripts %}{% endblock %}
 </body>
 </html>

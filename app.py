@@ -192,6 +192,7 @@ def index():
                 'words': info.word_count,
             })
     book_names = _i18n.get(lang, {}).get('book_names', {})
+    total_verses = sum(c['verses'] for c in corpora_info)
     return render_template('index.html',
                            lang=lang, script=_get_script(), trans=_get_trans(),
                            t=_t_proxy, bn=_bn,
@@ -199,7 +200,9 @@ def index():
                            corpora=corpora_info,
                            root_count=_extractor.get_root_count(),
                            total_words=_corpus.total_words(),
-                           total_unique=_corpus.total_unique())
+                           total_unique=_corpus.total_unique(),
+                           total_verses=total_verses,
+                           page_id='search')
 
 
 @app.route('/api/stats')
@@ -321,6 +324,17 @@ def api_books():
     })
 
 
+@app.route('/api/chapters')
+def api_chapters():
+    """Return sorted list of chapter numbers that have verses for a given book+corpus."""
+    book          = request.args.get('book', '').strip()
+    corpus_filter = request.args.get('corpus', None) or None
+    if not book:
+        return jsonify({'chapters': [], 'book': book, 'corpus': corpus_filter})
+    chapters = _corpus.get_chapters(book, corpus_filter)
+    return jsonify({'chapters': chapters, 'book': book, 'corpus': corpus_filter})
+
+
 @app.route('/api/chapter/<path:book>/<int:chapter>')
 def api_chapter(book, chapter):
     """Return all verses in a chapter.
@@ -437,9 +451,45 @@ def api_search():
 def browse():
     lang = _get_lang()
     corpus_filter = request.args.get('corpus', None)
-    books = _corpus.get_books(corpus_filter)
-    return render_template('browse.html', lang=lang, script=_get_script(), trans=_get_trans(),
-                           t=_t_proxy, bn=_bn, books=books, corpus_filter=corpus_filter)
+
+    CORPUS_ABBR = {
+        'peshitta_nt': 'pnt',
+        'peshitta_ot': 'pot',
+        'biblical_aramaic': 'bib',
+        'targum_onkelos': 'tar',
+        'ephrem_nisibis': 'eph',
+    }
+
+    # Build corpus_groups — one entry per corpus (or just the filtered one)
+    corpus_ids_to_show = [corpus_filter] if corpus_filter else _corpus.get_corpus_ids()
+
+    corpus_groups = []
+    for cid in corpus_ids_to_show:
+        info = _corpus.get_corpus_info(cid)
+        if not info:
+            continue
+        books_for_corpus = _corpus.get_books(cid)
+        group_books = []
+        for book_name, max_ch in books_for_corpus:
+            group_books.append({
+                'name': book_name,
+                'corpus_id': cid,
+                'abbr': CORPUS_ABBR.get(cid, cid),
+                'chapter_count': max_ch,
+                'chapters': [{'num': ch, 'heat_level': None} for ch in range(1, max_ch + 1)],
+            })
+        corpus_groups.append({
+            'label': info.label,
+            'abbr': CORPUS_ABBR.get(cid, cid),
+            'books': group_books,
+        })
+
+    return render_template('browse.html',
+                           lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t_proxy, bn=_bn,
+                           corpus_groups=corpus_groups,
+                           corpus_filter=corpus_filter,
+                           page_id='browse')
 
 
 @app.route('/read/<path:book>/<int:chapter>')
@@ -509,9 +559,16 @@ def read(book, chapter):
         if b_name == book:
             max_ch = b_ch
             break
+    CORPUS_ABBR = {'peshitta_nt':'pnt','peshitta_ot':'pot','biblical_aramaic':'bib','targum_onkelos':'tar','ephrem_nisibis':'eph'}
+    CORPUS_LABELS = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos','ephrem_nisibis':'Ephrem Nisibis'}
+    cid = verse_data[0]['corpus_id'] if verse_data else ''
     return render_template('read.html', lang=lang, script=_get_script(), trans=trans,
                            t=_t_proxy, bn=_bn, book=book, chapter=chapter,
-                           verses=verse_data, books=books, max_ch=max_ch)
+                           verses=verse_data, books=books, max_ch=max_ch,
+                           corpus_abbr=CORPUS_ABBR.get(cid, cid),
+                           corpus_label=CORPUS_LABELS.get(cid, cid),
+                           verse_count=len(verse_data),
+                           page_id='reader')
 
 
 @app.route('/bookmarks')
@@ -520,19 +577,20 @@ def bookmarks():
     book_names = _i18n.get(lang, {}).get('book_names', {})
     return render_template('bookmarks.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn,
-                           book_names_json=json.dumps(book_names, ensure_ascii=False))
+                           book_names_json=json.dumps(book_names, ensure_ascii=False),
+                           page_id='bookmarks')
 
 
 @app.route('/about')
 def about():
     lang = _get_lang()
-    return render_template('about.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn)
+    return render_template('about.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='about')
 
 
 @app.route('/api-docs')
 def api_docs():
     lang = _get_lang()
-    return render_template('api_docs.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn)
+    return render_template('api_docs.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='api-docs')
 
 
 @app.route('/api/verse')
@@ -640,12 +698,15 @@ def api_interlinear():
                     else:
                         t = transliterate_syriac(w)
 
+                # Check word-level overrides first (e.g. ܒܪܫܝܬ → "in the beginning")
+                _word_ov = (_glosser._overrides.get(w) or {}) if _glosser else {}
+
                 # Root, stem, gloss (with SEDRA fallback for low-confidence tokens)
                 resolved = _resolve_word(w, script)
                 root_syr = resolved['root_syr']
                 root_key = resolved['root_key']
                 confidence = resolved['confidence']
-                gloss = resolved['gloss']
+                gloss = _word_ov.get(lang) or _word_ov.get('en') or resolved['gloss']
                 stem = resolved['stem'] or None
                 root_translit = root_key            # uppercase dash-separated (SH-L-M)
                 root_key_lower = root_key.lower()   # lowercase key (sh-l-m)
@@ -891,7 +952,7 @@ def parse_page():
     initial_word = request.args.get('word', '')
     return render_template('parse.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn,
-                           initial_word=initial_word)
+                           initial_word=initial_word, page_id='parse')
 
 
 @app.route('/api/suggest')
@@ -1410,7 +1471,7 @@ def parallel():
 
     return render_template('parallel.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn, books=parallel_books,
-                           book=book, chapter=chapter)
+                           book=book, chapter=chapter, page_id='parallel')
 
 
 @app.route('/constellation')
@@ -1424,7 +1485,8 @@ def constellation():
     books = _corpus.get_books()
     return render_template('constellation.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn, books=books,
-                           book=book, chapter=chapter, v_start=v_start, v_end=v_end)
+                           book=book, chapter=chapter, v_start=v_start, v_end=v_end,
+                           page_id='constellation')
 
 
 @app.route('/api/chapter-roots')
@@ -1540,7 +1602,7 @@ def heatmap():
     """Root frequency heat map page."""
     lang = _get_lang()
     return render_template('heatmap.html', lang=lang, script=_get_script(),
-                           trans=_get_trans(), t=_t_proxy, bn=_bn)
+                           trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='heatmap')
 
 
 @app.route('/visualize/<root_key>')
@@ -1554,7 +1616,7 @@ def visualize(root_key):
         display_key = "'" + display_key[1:]
     return render_template('visualize.html', lang=lang, script=script,
                            trans=trans, t=_t_proxy, bn=_bn,
-                           root_key=display_key)
+                           root_key=display_key, page_id='visualize')
 
 
 @app.route('/api/root-family')
@@ -1824,7 +1886,7 @@ def hapax_page():
     """Hapax legomena finder page."""
     lang = _get_lang()
     return render_template('hapax.html', lang=lang, script=_get_script(),
-                           trans=_get_trans(), t=_t_proxy, bn=_bn)
+                           trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='hapax')
 
 
 @app.route('/api/hapax')
@@ -1945,7 +2007,7 @@ def concordance_page():
     root = request.args.get('root', '')
     return render_template('concordance.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn,
-                           initial_root=root)
+                           initial_root=root, page_id='concordance')
 
 
 @app.route('/api/concordance')
@@ -2134,7 +2196,7 @@ def diachronic_page():
     root = request.args.get('root', '')
     return render_template('diachronic.html', lang=lang, script=_get_script(),
                            trans=_get_trans(), t=_t_proxy, bn=_bn,
-                           initial_root=root)
+                           initial_root=root, page_id='diachronic')
 
 
 @app.route('/api/diachronic/root')
@@ -2193,9 +2255,16 @@ def api_diachronic_root():
             'stem_distribution': corpus_stems.get(cid, {}),
         })
 
+    root_entry2 = _extractor.lookup_root(root_syriac)
+    root_hebrew = ''
+    if root_entry2 and hasattr(root_entry2, 'root_hebrew'):
+        root_hebrew = root_entry2.root_hebrew or ''
+
     return jsonify({
         'root': root_syriac,
+        'root_syriac': root_syriac,
         'root_translit': _root_translit(root_syriac, script),
+        'root_hebrew': root_hebrew,
         'gloss': gloss,
         'corpora': data,
     })
@@ -2643,7 +2712,8 @@ def passage_profile_page():
                            books=books,
                            initial_book=initial_book,
                            initial_ch_start=initial_ch_start,
-                           initial_ch_end=initial_ch_end)
+                           initial_ch_end=initial_ch_end,
+                           page_id='passage-profile')
 
 
 @app.route('/collocations')
@@ -2652,7 +2722,7 @@ def collocations_page():
     lang = _get_lang()
     initial_root = request.args.get('root', '')
     return render_template('collocations.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang),
-                           initial_root=initial_root)
+                           initial_root=initial_root, page_id='collocations')
 
 
 @app.route('/interlinear')
@@ -2668,6 +2738,7 @@ def interlinear_page():
         t=lambda k, l=None: _t(k, lang),
         bn=_bn,
         books=books,
+        page_id='interlinear',
         initial_book=request.args.get('book', ''),
         initial_ch_start=request.args.get('ch_start', ''),
         initial_v_start=request.args.get('v_start', ''),
@@ -2680,7 +2751,7 @@ def interlinear_page():
 def annotations_page():
     _init()
     lang = _get_lang()
-    return render_template('annotations.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang))
+    return render_template('annotations.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang), page_id='annotations')
 
 
 _SEMANTIC_DOMAINS = [
@@ -2767,8 +2838,8 @@ def semantic_fields_page():
     lang = _get_lang()
     has_data = bool(_semantic_fields)
     return render_template('semantic_fields.html', lang=lang, trans=_get_trans(), script=_get_script(), t=lambda k, l=None: _t(k, lang),
-                           has_data=has_data)
+                           has_data=has_data, page_id='semantic-fields')
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5002)

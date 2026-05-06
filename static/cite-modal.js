@@ -147,7 +147,7 @@
             var btn = document.getElementById('cite-copy-btn');
             if (!btn) return;
             var orig = btn.innerHTML;
-            btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">check</span> Copied!';
+            btn.innerHTML = '✓ Copied!';
             setTimeout(function () { btn.innerHTML = orig; }, 1800);
         });
     };

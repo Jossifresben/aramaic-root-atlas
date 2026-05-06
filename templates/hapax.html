@@ -1,85 +1,93 @@
 {% extends "base.html" %}
+{% set page_id = 'hapax' %}
 {% block title %}{{ t('hapax_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('nav_hapax', lang) if t else 'Hapax legomena' }}</b></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="container" style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem;">
-    <div style="margin-bottom:1.5rem;">
-        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('hapax_title', lang) }}</h1>
-        <p style="color:var(--muted);margin:0;">{{ t('hapax_subtitle', lang) }}</p>
-    </div>
+<div class="page-head">
+  <div>
+    <h1 class="ph-title"><em>Hapax</em> legomena</h1>
+    <p class="ph-sub">{{ t('hapax_subtitle', lang) }}</p>
+  </div>
+  <div class="ph-actions">
+    <button class="btn secondary" onclick="exportHapax('csv')">{{ t('hapax_export_csv', lang) }}</button>
+    <button class="btn secondary" onclick="exportHapax('json')">{{ t('hapax_export_json', lang) }}</button>
+    <button class="btn secondary" onclick="openCiteModal(getCiteContext())">{{ t('read_cite', lang) if t else 'Cite' }}</button>
+  </div>
+</div>
 
-    <!-- Controls -->
-    <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem;padding:.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);">
-        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
-            {{ t('hapax_threshold', lang) }}:
-            <input type="range" id="freq-slider" min="1" max="10" value="1" style="width:100px;">
-            <span id="freq-val" style="font-weight:700;color:var(--accent);min-width:1.2rem;">1</span>
-        </label>
-        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
-            Corpus:
-            <select id="corpus-filter" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);font-size:.88rem;">
-                <option value="">{{ t('hapax_all_corpora', lang) }}</option>
-                <option value="biblical_aramaic">Biblical Aramaic</option>
-                <option value="targum_onkelos">Targum Onkelos</option>
-                <option value="peshitta_nt">Peshitta NT</option>
-                <option value="peshitta_ot">Peshitta OT</option>
-                <option value="ephrem_nisibis">Ephrem — Nisibis</option>
-            </select>
-        </label>
-        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
-            Scope:
-            <select id="scope-filter" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);font-size:.88rem;">
-                <option value="root">{{ t('hapax_scope_root', lang) }}</option>
-                <option value="form">{{ t('hapax_scope_form', lang) }}</option>
-            </select>
-        </label>
-        <label style="display:flex;align-items:center;gap:.5rem;font-size:.88rem;font-weight:500;">
-            Sort:
-            <select id="sort-filter" style="padding:.3rem .6rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--fg);font-size:.88rem;">
-                <option value="alpha">A–Z</option>
-                <option value="confidence">Confidence</option>
-            </select>
-        </label>
+<!-- Controls -->
+<div style="display:flex;gap:14px;align-items:end;flex-wrap:wrap;padding:8px 0 28px">
+  <div class="s-field">
+    <label class="s-label">{{ t('hapax_threshold', lang) }}</label>
+    <div style="display:flex;align-items:center;gap:8px">
+      <input type="range" class="s-input" id="freq-slider" min="1" max="10" value="1" style="width:100px;padding:0">
+      <span id="freq-val" style="font-weight:700;color:var(--accent);min-width:1.5rem;font-family:var(--mono)">1</span>
     </div>
+  </div>
+  <div class="s-field">
+    <label class="s-label">{{ t('hapax_corpus_label', lang) if t else 'Corpus' }}</label>
+    <select class="s-select" id="corpus-filter">
+      <option value="">{{ t('hapax_all_corpora', lang) }}</option>
+      <option value="biblical_aramaic">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</option>
+      <option value="targum_onkelos">{{ t('corpus_targum_onkelos', lang) if t else 'Targum Onkelos' }}</option>
+      <option value="peshitta_nt">{{ t('corpus_peshitta_nt', lang) if t else 'Peshitta NT' }}</option>
+      <option value="peshitta_ot">{{ t('corpus_peshitta_ot', lang) if t else 'Peshitta OT' }}</option>
+      <option value="ephrem_nisibis">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</option>
+    </select>
+  </div>
+  <div class="s-field">
+    <label class="s-label">{{ t('hapax_scope_label', lang) if t else 'Scope' }}</label>
+    <select class="s-select" id="scope-filter">
+      <option value="root">{{ t('hapax_scope_root', lang) }}</option>
+      <option value="form">{{ t('hapax_scope_form', lang) }}</option>
+    </select>
+  </div>
+  <div class="s-field">
+    <label class="s-label">{{ t('hapax_sort_label', lang) if t else 'Sort' }}</label>
+    <select class="s-select" id="sort-filter">
+      <option value="alpha">{{ t('hapax_sort_alpha', lang) if t else 'A–Z' }}</option>
+      <option value="confidence">{{ t('hapax_sort_confidence', lang) if t else 'Confidence' }}</option>
+    </select>
+  </div>
+</div>
 
-    <!-- Summary + Export -->
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;">
-        <div id="hapax-summary" style="font-size:.9rem;color:var(--muted);"></div>
-        <div style="display:flex;gap:.5rem;">
-            <button class="btn-secondary" onclick="exportHapax('csv')">{{ t('hapax_export_csv', lang) }}</button>
-            <button class="btn-secondary" onclick="exportHapax('json')">{{ t('hapax_export_json', lang) }}</button>
-                <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
-                    <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
-                </button>
-        </div>
-    </div>
+<!-- Summary bar -->
+<div id="hapax-summary" style="font-size:.9rem;color:var(--ink-3);margin-bottom:.8rem;"></div>
 
-    <!-- Loading -->
-    <div id="hapax-loading" style="text-align:center;padding:3rem;color:var(--muted);display:none;">
-        <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
-    </div>
+<!-- Loading -->
+<div id="hapax-loading" style="text-align:center;padding:3rem;display:none;">
+  <p style="color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</p>
+</div>
 
-    <!-- Results table -->
-    <div style="overflow-x:auto;">
-        <table class="hapax-table" id="hapax-table" style="display:none;">
-            <thead>
-                <tr>
-                    <th style="width:12%;">Root</th>
-                    <th style="width:10%;">Translit</th>
-                    <th style="width:18%;">Gloss</th>
-                    <th style="width:14%;">Form</th>
-                    <th style="width:8%;text-align:center;">Count</th>
-                    <th style="width:14%;">Reference</th>
-                    <th style="width:14%;">Corpus</th>
-                    <th style="width:10%;text-align:center;">Confidence</th>
-                </tr>
-            </thead>
-            <tbody id="hapax-tbody"></tbody>
-        </table>
-        <div id="hapax-empty" style="display:none;text-align:center;padding:3rem;color:var(--muted);">
-            {{ t('hapax_no_results', lang) }}
-        </div>
-    </div>
+<!-- Results table -->
+<div style="overflow-x:auto;">
+  <table class="dtable" id="hapax-table" style="display:none;">
+    <thead>
+      <tr>
+        <th>{{ t('hapax_col_root', lang) if t else 'Root' }}</th>
+        <th>{{ t('hapax_col_translit', lang) if t else 'Translit' }}</th>
+        <th>{{ t('hapax_col_gloss', lang) if t else 'Gloss' }}</th>
+        <th>{{ t('hapax_col_form', lang) if t else 'Form' }}</th>
+        <th style="text-align:center;">{{ t('hapax_col_count', lang) if t else 'Count' }}</th>
+        <th>{{ t('hapax_col_ref', lang) if t else 'Reference' }}</th>
+        <th>{{ t('hapax_col_corpus', lang) if t else 'Corpus' }}</th>
+        <th style="text-align:center;">{{ t('hapax_col_confidence', lang) if t else 'Confidence' }}</th>
+      </tr>
+    </thead>
+    <tbody id="hapax-tbody"></tbody>
+  </table>
+  <div id="hapax-empty" style="display:none;text-align:center;padding:3rem;color:var(--ink-3);font-family:var(--serif);font-style:italic">
+    {{ t('hapax_no_results', lang) }}
+  </div>
 </div>
 {% endblock %}
 
@@ -104,8 +112,9 @@
         el.addEventListener('change', loadHapax);
     });
 
+    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
     function corpusLabel(cid) {
-        var map = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos'};
+        var map = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos','ephrem_nisibis':'Ephrem Nisibis'};
         return map[cid] || cid;
     }
 
@@ -132,7 +141,7 @@
         document.getElementById('hapax-empty').style.display = 'none';
         document.getElementById('hapax-summary').textContent = '';
 
-        fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+        fetch(url).then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(data) {
             currentData = data.results || [];
             document.getElementById('hapax-loading').style.display = 'none';
             document.getElementById('hapax-summary').textContent =
@@ -149,17 +158,17 @@
                 var ref = (row.references || [])[0] || '';
                 var corpAtt = row.corpus_attestation || {};
                 var corpBadges = Object.keys(corpAtt).map(function(cid) {
-                    return '<span class="corpus-badge corpus-' + cid + '" style="font-size:.68rem;padding:1px 6px;">' + corpusLabel(cid) + '</span>';
+                    return '<span class="cbadge ' + escHtml(CORPUS_ABBR[cid] || cid) + '" style="font-size:.68rem;padding:1px 6px;">' + escHtml(corpusLabel(cid)) + '</span>';
                 }).join(' ');
                 var tier = confTier(row.confidence || 0.5);
                 var readUrl = '/read/' + encodeURIComponent((ref.split(' ')[0]||'')) + '/' + encodeURIComponent((ref.split(' ')[1]||'').split(':')[0]||'1') + '?lang=' + LANG;
-                var vizUrl = '/visualize/' + encodeURIComponent(row.root_translit) + '?lang=' + LANG;
+                var vizUrl = '/visualize/' + encodeURIComponent(row.root_translit) + '?lang=' + LANG + '&tab=ficha';
                 var tr = document.createElement('tr');
                 tr.innerHTML =
                     '<td class="hx-root"><a href="' + vizUrl + '" style="text-decoration:none;color:inherit;">' + escHtml(row.root) + '</a></td>' +
                     '<td style="font-size:.82rem;"><a href="' + vizUrl + '" style="color:var(--accent);text-decoration:none;">' + escHtml(row.root_translit) + '</a></td>' +
-                    '<td style="font-style:italic;color:var(--muted);font-size:.82rem;">' + escHtml(row.gloss || '') + '</td>' +
-                    '<td dir="rtl" style="font-family:var(--syriac-font);">' + escHtml(row.form || '') + '</td>' +
+                    '<td style="font-style:italic;color:var(--ink-3);font-size:.82rem;">' + escHtml(row.gloss || '') + '</td>' +
+                    '<td dir="rtl" style="font-family:var(--syr);font-size:20px;line-height:1.3;">' + escHtml(row.form || '') + '</td>' +
                     '<td style="text-align:center;font-weight:600;">' + row.count + '</td>' +
                     '<td style="font-size:.78rem;"><a href="' + readUrl + '" style="color:var(--accent);">' + escHtml(ref) + '</a></td>' +
                     '<td>' + corpBadges + '</td>' +
@@ -168,7 +177,9 @@
             });
         }).catch(function() {
             document.getElementById('hapax-loading').style.display = 'none';
-            document.getElementById('hapax-empty').style.display = 'block';
+            var emptyEl = document.getElementById('hapax-empty');
+            emptyEl.style.display = 'block';
+            emptyEl.textContent = 'Error loading results. Please try again.';
         });
     }
 
@@ -177,19 +188,19 @@
         if (fmt === 'json') {
             var blob = new Blob([JSON.stringify(currentData, null, 2)], {type:'application/json'});
             var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = 'hapax-legomena.json'; a.click();
+            a.download = 'hapax-legomena.json'; a.click(); URL.revokeObjectURL(a.href);
         } else {
             var rows = [['Root','Transliteration','Gloss','Form','Count','Reference','Corpora','Confidence']];
             currentData.forEach(function(r) {
                 rows.push([r.root, r.root_translit, r.gloss||'', r.form||'', r.count,
                     (r.references||[])[0]||'', Object.keys(r.corpus_attestation||{}).join(';'), r.confidence]);
             });
-            var csv = '\uFEFF' + rows.map(function(r) {
+            var csv = '﻿' + rows.map(function(r) {
                 return r.map(function(c) { return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
             }).join('\n');
             var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
             var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = 'hapax-legomena.csv'; a.click();
+            a.download = 'hapax-legomena.csv'; a.click(); URL.revokeObjectURL(a.href);
         }
     };
 

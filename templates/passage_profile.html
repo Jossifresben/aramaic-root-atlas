@@ -1,48 +1,62 @@
 {% extends "base.html" %}
+{% set page_id = 'passage-profile' %}
 {% block title %}{{ t('pp_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('pp_title', lang) if t else 'Passage Profile' }}</b></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="container" style="max-width:1000px;margin:0 auto;padding:1.5rem 1rem;">
-    <div style="margin-bottom:1.2rem;">
-        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('pp_title', lang) }}</h1>
-        <p style="color:var(--muted);margin:0;">{{ t('pp_subtitle', lang) }}</p>
+    <div class="page-head">
+        <div>
+            <h1 class="ph-title">{{ t('pp_title', lang) }}</h1>
+            <p class="ph-sub">{{ t('pp_subtitle', lang) }}</p>
+        </div>
     </div>
 
     <!-- Controls -->
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1.5rem;padding:1rem;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);">
-        <div style="position:relative;">
-            <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.2rem;">{{ t('pp_book_label', lang) }}</label>
-            <input type="text" id="pp-book-input"
-                   value="{{ bn(initial_book, lang) if initial_book else '' }}"
-                   autocomplete="off" spellcheck="false"
-                   placeholder="Book…"
-                   style="padding:.4rem .7rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);min-width:160px;font-size:.9rem;">
-            <input type="hidden" id="pp-book" value="{{ initial_book }}">
-            <div id="pp-book-ac"
-                 style="display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,.15);max-height:240px;overflow-y:auto;"></div>
+    <div class="interlinear-controls" style="margin-bottom:20px;">
+        <div class="s-field wide">
+            <label class="s-label">{{ t('pp_book_label', lang) }}</label>
+            <select class="s-select" id="pp-book" onchange="onBookChange()">
+                <option value="">— select book —</option>
+                {% for b_name, b_ch in books %}
+                <option value="{{ b_name }}" data-maxch="{{ b_ch }}"
+                    {% if b_name == initial_book %}selected{% endif %}>
+                    {{ bn(b_name, lang) }}
+                </option>
+                {% endfor %}
+            </select>
         </div>
-        <div>
-            <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.2rem;">{{ t('pp_chapter_from', lang) }}</label>
-            <input type="number" id="pp-ch-start" min="1" value="{{ initial_ch_start or 1 }}"
-                   style="width:70px;padding:.4rem .6rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
+        <div class="s-field narrow">
+            <label class="s-label">{{ t('pp_chapter_from', lang) }}</label>
+            <select class="s-select" id="pp-ch-start">
+                <option value="">Ch</option>
+            </select>
         </div>
-        <div>
-            <label style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.2rem;">{{ t('pp_chapter_to', lang) }}</label>
-            <input type="number" id="pp-ch-end" min="1" value="{{ initial_ch_end or 1 }}"
-                   style="width:70px;padding:.4rem .6rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
+        <span class="il-range-sep">—</span>
+        <div class="s-field narrow">
+            <label class="s-label">{{ t('pp_chapter_to', lang) }}</label>
+            <select class="s-select" id="pp-ch-end">
+                <option value="">Ch</option>
+            </select>
         </div>
-        <button onclick="runProfile()"
-                style="padding:.45rem 1.3rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;align-self:flex-end;">
-            {{ t('pp_analyze', lang) }}
-        </button>
+        <button class="btn" onclick="runProfile()">{{ t('pp_analyze', lang) }}</button>
     </div>
 
+<div style="max-width:1000px;">
+
     <!-- Loading / empty -->
-    <div id="pp-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">
-        <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
+    <div id="pp-loading" style="display:none;text-align:center;padding:2rem;">
+        <p style="color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</p>
     </div>
-    <div id="pp-empty" style="text-align:center;padding:3rem;color:var(--muted);font-style:italic;">
-        {{ t('pp_subtitle', lang) }}
+    <div id="pp-empty" style="text-align:center;padding:3rem;color:var(--ink-3);font-style:italic;font-family:var(--serif);">
+        {{ t('pp_empty_state', lang) if t else 'Select a book and chapter range above, then click Analyze.' }}
     </div>
 
     <!-- Results -->
@@ -57,60 +71,60 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.7rem;margin-bottom:1.2rem;">
             <div class="stat-card" style="padding:.9rem;text-align:center;">
                 <div id="pp-stat-unique" style="font-size:1.8rem;font-weight:700;color:var(--accent);"></div>
-                <div style="font-size:.75rem;color:var(--muted);">{{ t('pp_unique_roots', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);">{{ t('pp_unique_roots', lang) }}</div>
             </div>
             <div class="stat-card" style="padding:.9rem;text-align:center;">
                 <div id="pp-stat-density" style="font-size:1.8rem;font-weight:700;color:var(--accent);"></div>
-                <div style="font-size:.75rem;color:var(--muted);">{{ t('pp_lexical_density', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);">{{ t('pp_lexical_density', lang) }}</div>
             </div>
             <div class="stat-card" style="padding:.9rem;text-align:center;">
                 <div id="pp-stat-hapax" style="font-size:1.8rem;font-weight:700;color:var(--accent);"></div>
-                <div style="font-size:.75rem;color:var(--muted);">{{ t('pp_passage_hapaxes', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);">{{ t('pp_passage_hapaxes', lang) }}</div>
             </div>
             <div class="stat-card" style="padding:.9rem;text-align:center;">
                 <div id="pp-stat-corpus-hapax" style="font-size:1.8rem;font-weight:700;color:var(--accent);"></div>
-                <div style="font-size:.75rem;color:var(--muted);">{{ t('pp_corpus_hapaxes', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);">{{ t('pp_corpus_hapaxes', lang) }}</div>
             </div>
         </div>
 
         <!-- Charts row -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;">
             <div class="stat-card" style="padding:1rem;">
-                <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_rarity_dist', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_rarity_dist', lang) }}</div>
                 <div id="pp-rarity-chart"></div>
             </div>
             <div class="stat-card" style="padding:1rem;">
-                <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_stem_dist', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_stem_dist', lang) }}</div>
                 <div id="pp-stem-chart"></div>
             </div>
         </div>
 
         <!-- Verse density -->
         <div class="stat-card" style="padding:1rem;margin-bottom:1.2rem;">
-            <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_verse_density', lang) }}</div>
+            <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_verse_density', lang) }}</div>
             <div id="pp-density-chart" style="overflow-x:auto;"></div>
         </div>
 
         <!-- Bottom two-column: top roots + semantic domains -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;">
             <div class="stat-card" style="padding:1rem;">
-                <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_top_roots', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_top_roots', lang) }}</div>
                 <table style="width:100%;border-collapse:collapse;font-size:.85rem;">
                     <thead>
-                        <tr style="border-bottom:1px solid var(--border);">
-                            <th style="text-align:left;padding:.3rem .4rem;color:var(--muted);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_root', lang) }}</th>
-                            <th style="text-align:left;padding:.3rem .4rem;color:var(--muted);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_gloss', lang) }}</th>
-                            <th style="text-align:right;padding:.3rem .4rem;color:var(--muted);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_freq', lang) }}</th>
-                            <th style="text-align:right;padding:.3rem .4rem;color:var(--muted);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_rarity', lang) }}</th>
+                        <tr style="border-bottom:1px solid var(--line);">
+                            <th style="text-align:left;padding:.3rem .4rem;color:var(--ink-3);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_root', lang) }}</th>
+                            <th style="text-align:left;padding:.3rem .4rem;color:var(--ink-3);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_gloss', lang) }}</th>
+                            <th style="text-align:right;padding:.3rem .4rem;color:var(--ink-3);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_freq', lang) }}</th>
+                            <th style="text-align:right;padding:.3rem .4rem;color:var(--ink-3);font-size:.72rem;text-transform:uppercase;">{{ t('pp_col_rarity', lang) }}</th>
                         </tr>
                     </thead>
                     <tbody id="pp-roots-tbody"></tbody>
                 </table>
             </div>
             <div class="stat-card" style="padding:1rem;">
-                <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_semantic_domains', lang) }}</div>
+                <div style="font-size:.75rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.7rem;">{{ t('pp_semantic_domains', lang) }}</div>
                 <div id="pp-domains-chart"></div>
-                <div id="pp-no-domains" style="display:none;font-size:.8rem;color:var(--muted);font-style:italic;">
+                <div id="pp-no-domains" style="display:none;font-size:.8rem;color:var(--ink-3);font-style:italic;">
                     Semantic field data not loaded.
                 </div>
             </div>
@@ -118,16 +132,14 @@
 
         <!-- Export buttons -->
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-            <button class="cite-btn" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">
-                <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;">format_quote</span> Cite
-            </button>
+            <button class="btn secondary" onclick="openCiteModal(getCiteContext())" title="Cite this analysis">{{ t('read_cite', lang) if t else 'Cite' }}</button>
             <button onclick="exportJSON()"
-                    style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);cursor:pointer;font-size:.85rem;">
-                Export JSON
+                    style="padding:.4rem .9rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);cursor:pointer;font-size:.85rem;">
+                {{ t('pp_export_json', lang) if t else 'Export JSON' }}
             </button>
             <button onclick="exportCSV()"
-                    style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);cursor:pointer;font-size:.85rem;">
-                Export CSV
+                    style="padding:.4rem .9rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--ink);cursor:pointer;font-size:.85rem;">
+                {{ t('pp_export_csv', lang) if t else 'Export CSV' }}
             </button>
         </div>
     </div>
@@ -141,73 +153,35 @@
     var SCRIPT = {{ script|tojson }};
     var _profileData = null;
 
-    // --- Book autocomplete data ---
-    var BOOK_DATA = [
-        {% for b_name, b_ch in books %}
-        {name: {{ b_name|tojson }}, display: {{ bn(b_name, lang)|tojson }}, max_ch: {{ b_ch }}}{% if not loop.last %},{% endif %}
-        {% endfor %}
-    ];
-
-    (function initBookAC() {
-        var inp  = document.getElementById('pp-book-input');
-        var hid  = document.getElementById('pp-book');
-        var drop = document.getElementById('pp-book-ac');
-
-        function showDropdown(filtered) {
-            drop.innerHTML = '';
-            if (!filtered.length) { drop.style.display = 'none'; return; }
-            filtered.forEach(function(b) {
-                var item = document.createElement('div');
-                item.style.cssText = 'padding:.4rem .7rem;cursor:pointer;font-size:.9rem;white-space:nowrap;';
-                item.textContent = b.display;
-                item.addEventListener('mousedown', function(e) { e.preventDefault(); selectBook(b); });
-                item.addEventListener('mouseover', function() { item.style.background = 'var(--border)'; });
-                item.addEventListener('mouseout',  function() { item.style.background = ''; });
-                drop.appendChild(item);
-            });
-            drop.style.display = 'block';
+    // Populate chapter selects from /api/chapters when book changes
+    function refreshPPChapterSelects(book, preFrom, preTo, callback) {
+        var startSel = document.getElementById('pp-ch-start');
+        var endSel   = document.getElementById('pp-ch-end');
+        if (!book) {
+            startSel.innerHTML = '<option value="">Ch</option>';
+            endSel.innerHTML   = '<option value="">Ch</option>';
+            if (callback) callback();
+            return;
         }
+        fetch('/api/chapters?book=' + encodeURIComponent(book))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var chapters = data.chapters || [];
+                var opts = '<option value="">Ch</option>';
+                chapters.forEach(function(ch) { opts += '<option value="' + ch + '">' + ch + '</option>'; });
+                startSel.innerHTML = opts;
+                endSel.innerHTML   = opts;
+                if (preFrom) startSel.value = preFrom;
+                if (preTo)   endSel.value   = preTo;
+                if (callback) callback();
+            })
+            .catch(function() { if (callback) callback(); });
+    }
 
-        function selectBook(b) {
-            inp.value = b.display;
-            hid.value = b.name;
-            drop.style.display = 'none';
-            // Update ch_end max hint
-            document.getElementById('pp-ch-start').max = b.max_ch;
-            document.getElementById('pp-ch-end').max   = b.max_ch;
-        }
-
-        inp.addEventListener('input', function() {
-            hid.value = '';  // clear hidden until a match is selected
-            var q = inp.value.trim().toLowerCase();
-            if (!q) { drop.style.display = 'none'; return; }
-            var filtered = BOOK_DATA.filter(function(b) {
-                return b.display.toLowerCase().indexOf(q) !== -1 ||
-                       b.name.toLowerCase().indexOf(q) !== -1;
-            });
-            showDropdown(filtered);
-        });
-
-        inp.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') { drop.style.display = 'none'; runProfile(); }
-            if (e.key === 'Escape') { drop.style.display = 'none'; }
-            if (e.key === 'ArrowDown') {
-                var first = drop.querySelector('div');
-                if (first) { e.preventDefault(); first.focus(); }
-            }
-        });
-
-        inp.addEventListener('blur', function() {
-            // If the typed text matches exactly one book display name, auto-select it
-            setTimeout(function() {
-                if (drop.style.display === 'none') return;
-                var q = inp.value.trim().toLowerCase();
-                var exact = BOOK_DATA.find(function(b) { return b.display.toLowerCase() === q; });
-                if (exact) selectBook(exact);
-                else drop.style.display = 'none';
-            }, 150);
-        });
-    })();
+    window.onBookChange = function() {
+        var book = document.getElementById('pp-book').value;
+        refreshPPChapterSelects(book, 1, 1);
+    };
 
     var RARITY_COLORS = {
         hapax:       '#9c27b0',
@@ -227,18 +201,11 @@
     }
 
     window.runProfile = function() {
-        // Accept either the hidden exact-name or fall back to matching the typed display name
-        var book = document.getElementById('pp-book').value.trim();
-        if (!book) {
-            var typed = document.getElementById('pp-book-input').value.trim().toLowerCase();
-            var match = BOOK_DATA.find(function(b) {
-                return b.display.toLowerCase() === typed || b.name.toLowerCase() === typed;
-            });
-            if (match) book = match.name;
-        }
-        var chStart  = document.getElementById('pp-ch-start').value;
-        var chEnd    = document.getElementById('pp-ch-end').value;
-        if (!book || !chStart) return;
+        var book    = document.getElementById('pp-book').value.trim();
+        var chStart = document.getElementById('pp-ch-start').value;
+        var chEnd   = document.getElementById('pp-ch-end').value || chStart;
+        if (!book) { alert('Please select a book.'); return; }
+        if (!chStart) { alert('Please select a chapter.'); return; }
 
         document.getElementById('pp-empty').style.display   = 'none';
         document.getElementById('pp-results').style.display = 'none';
@@ -302,8 +269,8 @@
             var row   = document.createElement('div');
             row.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem;';
             row.innerHTML =
-                '<div style="width:100px;font-size:.72rem;color:var(--muted);flex-shrink:0;">' + escHtml(RARITY_LABELS[key]) + '</div>' +
-                '<div style="flex:1;background:var(--border);border-radius:3px;height:12px;overflow:hidden;">' +
+                '<div style="width:100px;font-size:.72rem;color:var(--ink-3);flex-shrink:0;">' + escHtml(RARITY_LABELS[key]) + '</div>' +
+                '<div style="flex:1;background:var(--line);border-radius:3px;height:12px;overflow:hidden;">' +
                   '<div style="width:' + pct + '%;height:100%;background:' + RARITY_COLORS[key] + ';border-radius:3px;"></div>' +
                 '</div>' +
                 '<div style="width:32px;text-align:right;font-size:.75rem;">' + count + '</div>';
@@ -318,7 +285,7 @@
             .filter(function(e) { return e[0] !== 'unknown'; })
             .sort(function(a, b) { return b[1] - a[1]; }).slice(0, 8);
         if (!entries.length) {
-            el.innerHTML = '<div style="font-size:.8rem;color:var(--muted);font-style:italic;padding:.4rem 0;">Verb stem detection is available for Syriac script only.</div>';
+            el.innerHTML = '<div style="font-size:.8rem;color:var(--ink-3);font-style:italic;padding:.4rem 0;">Verb stem detection is available for Syriac script only.</div>';
             return;
         }
         var maxVal = entries[0][1];
@@ -331,7 +298,7 @@
                 '<div style="width:80px;font-size:.72rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;">' +
                   '<span class="stem-badge stem-' + escHtml(key) + '" style="font-size:.65rem;">' + escHtml(key) + '</span>' +
                 '</div>' +
-                '<div style="flex:1;background:var(--border);border-radius:3px;height:10px;overflow:hidden;">' +
+                '<div style="flex:1;background:var(--line);border-radius:3px;height:10px;overflow:hidden;">' +
                   '<div style="width:' + pct + '%;height:100%;background:var(--accent);border-radius:3px;opacity:.7;"></div>' +
                 '</div>' +
                 '<div style="width:32px;text-align:right;font-size:.75rem;">' + count + '</div>';
@@ -355,7 +322,7 @@
         });
         el.appendChild(wrap);
         var label = document.createElement('div');
-        label.style.cssText = 'font-size:.7rem;color:var(--muted);margin-top:.3rem;';
+        label.style.cssText = 'font-size:.7rem;color:var(--ink-3);margin-top:.3rem;';
         label.textContent = verseDensity.length + ' verses';
         el.appendChild(label);
     }
@@ -364,9 +331,11 @@
         peshitta_nt:      'NT',
         peshitta_ot:      'OT',
         biblical_aramaic: 'BA',
-        targum_onkelos:   'Targ'
+        targum_onkelos:   'Targ',
+        ephrem_nisibis:   'Eph'
     };
-    var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos'];
+    var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos', 'ephrem_nisibis'];
+    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
 
     function renderTopRoots(roots) {
         var tbody  = document.getElementById('pp-roots-tbody');
@@ -380,29 +349,29 @@
             var att = r.corpus_attestation || {};
             CORPUS_ORDER.forEach(function(cid) {
                 if (att[cid] > 0) {
-                    pillsHtml += '<span class="corpus-badge corpus-' + cid + '" style="font-size:.6rem;padding:1px 5px;margin:1px 2px 0 0;display:inline-block;">'
+                    pillsHtml += '<span class="cbadge ' + (CORPUS_ABBR[cid] || cid) + '" style="font-size:.6rem;padding:1px 5px;margin:1px 2px 0 0;display:inline-block;">'
                                + escHtml(CORPUS_LABELS[cid]) + '</span>';
                 }
             });
 
             var tr  = document.createElement('tr');
-            tr.style.borderBottom = '1px solid var(--border)';
-            var vizUrl = '/visualize/' + encodeURIComponent(r.root_key) + '?lang=' + LANG;
+            tr.style.borderBottom = '1px solid var(--line)';
+            var vizUrl = '/visualize/' + encodeURIComponent(r.root_key) + '?lang=' + LANG + '&tab=ficha';
             tr.innerHTML =
                 '<td style="padding:.3rem .4rem;">' +
-                  '<a href="' + vizUrl + '" style="font-family:var(--syriac-font);font-size:1.4rem;line-height:1.2;color:var(--fg);text-decoration:none;" dir="rtl" title="' + escHtml(r.root_key) + '">' + escHtml(r.root) + '</a>' +
+                  '<a href="' + vizUrl + '" style="font-family:var(--syr);font-size:1.4rem;line-height:1.2;color:var(--ink);text-decoration:none;" dir="rtl" title="' + escHtml(r.root_key) + '">' + escHtml(r.root) + '</a>' +
                   (pillsHtml ? '<div style="margin-top:3px;">' + pillsHtml + '</div>' : '') +
                 '</td>' +
-                '<td style="padding:.3rem .4rem;color:var(--muted);font-size:.8rem;font-style:italic;">' + escHtml(r.gloss) + '</td>' +
+                '<td style="padding:.3rem .4rem;color:var(--ink-3);font-size:.8rem;font-style:italic;">' + escHtml(r.gloss) + '</td>' +
                 '<td style="padding:.3rem .4rem;text-align:right;">' +
                   '<div style="display:flex;align-items:center;gap:.3rem;justify-content:flex-end;">' +
-                    '<div style="width:40px;background:var(--border);border-radius:2px;height:8px;">' +
+                    '<div style="width:40px;background:var(--line);border-radius:2px;height:8px;">' +
                       '<div style="width:' + pct + '%;height:100%;background:var(--accent);border-radius:2px;"></div>' +
                     '</div>' +
                     '<span style="font-size:.8rem;min-width:20px;text-align:right;">' + r.passage_count + '</span>' +
                   '</div>' +
                 '</td>' +
-                '<td style="padding:.3rem .4rem;text-align:right;font-size:.75rem;color:var(--muted);">' + r.corpus_total + '</td>';
+                '<td style="padding:.3rem .4rem;text-align:right;font-size:.75rem;color:var(--ink-3);">' + r.corpus_total + '</td>';
             tbody.appendChild(tr);
         });
     }
@@ -417,10 +386,13 @@
             var pct    = Math.round(count / maxVal * 100);
             var row    = document.createElement('div');
             row.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;';
+            var sfUrl = '/semantic-fields?domain=' + encodeURIComponent(domain) + '&lang=' + LANG;
             row.innerHTML =
-                '<div style="width:100px;font-size:.72rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;">' + escHtml(domain) + '</div>' +
-                '<div style="flex:1;background:var(--border);border-radius:3px;height:10px;overflow:hidden;">' +
-                  '<div style="width:' + pct + '%;height:100%;background:#059669;border-radius:3px;"></div>' +
+                '<div style="width:100px;font-size:.72rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;">' +
+                  '<a href="' + sfUrl + '" style="color:var(--link);text-decoration:none;" title="Explore ' + escHtml(domain) + '">' + escHtml(domain) + '</a>' +
+                '</div>' +
+                '<div style="flex:1;background:var(--line);border-radius:3px;height:10px;overflow:hidden;">' +
+                  '<div style="width:' + pct + '%;height:100%;background:var(--c-pnt);border-radius:3px;"></div>' +
                 '</div>' +
                 '<div style="width:28px;text-align:right;font-size:.72rem;">' + count + '</div>';
             el.appendChild(row);
@@ -452,9 +424,17 @@
         a.click();
     };
 
-    {% if initial_book and initial_ch_start %}
-    document.addEventListener('DOMContentLoaded', function() { runProfile(); });
-    {% endif %}
+    // On load: if a book is already selected, populate chapters then optionally run
+    document.addEventListener('DOMContentLoaded', function() {
+        var book = document.getElementById('pp-book').value;
+        if (book) {
+            refreshPPChapterSelects(book,
+                {{ initial_ch_start|default(1)|int }},
+                {{ initial_ch_end|default(1)|int }},
+                {% if initial_book and initial_ch_start %}function() { runProfile(); }{% else %}null{% endif %}
+            );
+        }
+    });
 })();
 
 window.getCiteContext = function() {

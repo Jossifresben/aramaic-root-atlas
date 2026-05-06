@@ -1,6 +1,16 @@
 {% extends "base.html" %}
+{% set page_id = 'about' %}
 
 {% block title %}{{ t('about_title', lang) if t else 'About' }} — Aramaic Root Atlas{% endblock %}
+
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('about_crumb', lang) if t else 'About &amp; Guide' }}</b></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
+</div>
+{% endblock %}
 
 {% block head %}
 <style>
@@ -48,7 +58,7 @@
     }
     .about-stat {
         background: var(--card-bg, #fff);
-        border: 1px solid var(--border, #ddd);
+        border: 1px solid var(--line, #ddd);
         border-radius: 8px;
         padding: 0.75rem 1.25rem;
         text-align: center;
@@ -62,7 +72,7 @@
     }
     .about-stat .stat-label {
         font-size: 0.85rem;
-        color: var(--muted, #888);
+        color: var(--ink-3, #888);
     }
     .about-table-wrap {
         overflow-x: auto;
@@ -76,7 +86,7 @@
     .about-table th,
     .about-table td {
         padding: 0.5rem 0.75rem;
-        border: 1px solid var(--border, #ddd);
+        border: 1px solid var(--line, #ddd);
         text-align: left;
     }
     [dir="rtl"] .about-table th,
@@ -99,7 +109,7 @@
     }
     .feature-card {
         background: var(--card-bg, #fff);
-        border: 1px solid var(--border, #ddd);
+        border: 1px solid var(--line, #ddd);
         border-radius: 8px;
         padding: 1rem 1.25rem;
     }
@@ -131,7 +141,7 @@
     }
     .use-case-list li {
         padding: 0.6rem 0;
-        border-bottom: 1px solid var(--border, #ddd);
+        border-bottom: 1px solid var(--line, #ddd);
         line-height: 1.6;
     }
     .use-case-list li:last-child {
@@ -143,9 +153,9 @@
     .about-credit {
         margin-top: 2.5rem;
         padding-top: 1.5rem;
-        border-top: 1px solid var(--border, #ddd);
+        border-top: 1px solid var(--line, #ddd);
         font-size: 0.95rem;
-        color: var(--muted, #888);
+        color: var(--ink-3, #888);
     }
     .about-credit a {
         color: var(--accent, #b8860b);
@@ -170,7 +180,7 @@
         transition: opacity .15s;
     }
     .watch-video-btn:hover { opacity: .85; }
-    .watch-video-btn .material-symbols-outlined { font-size: 1.3rem; }
+    .watch-video-btn svg { font-size: 1.3rem; }
     /* Video modal */
     #video-modal {
         display: none;
@@ -222,8 +232,7 @@
         transition: background .15s;
     }
     .video-modal-close:hover, .video-modal-fs:hover { background: rgba(255,255,255,.15); }
-    .video-modal-close .material-symbols-outlined,
-    .video-modal-fs .material-symbols-outlined { font-size: 1.4rem; }
+    .video-modal-close, .video-modal-fs { font-size: 1.4rem; }
     #about-video {
         width: 100%;
         display: block;
@@ -250,36 +259,36 @@
 
         <h1>{{ t('about_atlas_title', lang) }}</h1>
 
-        <p>El Atlas de Ra&iacute;ces Arameas es un explorador de ra&iacute;ces tril&iacute;teras que abarca unos 1.500 a&ntilde;os de historia literaria aramea. Re&uacute;ne cuatro corpus &mdash; la Peshitta (NT y AT), el arameo b&iacute;blico y el T&aacute;rgum Onkelos &mdash; bajo un &uacute;nico &iacute;ndice de ra&iacute;ces consonant&iacute;cas, permitiendo rastrear una misma ra&iacute;z sem&iacute;tica a trav&eacute;s de tradiciones textuales, escrituras y siglos, con cognados hebreos y &aacute;rabes visibles en cada capa.</p>
+        <p>El Atlas de Ra&iacute;ces Arameas es un explorador de ra&iacute;ces tril&iacute;teras que abarca unos 1.500 a&ntilde;os de historia literaria aramea. Re&uacute;ne cinco corpus &mdash; la Peshitta (NT y AT), el arameo b&iacute;blico, el T&aacute;rgum Onkelos y los Himnos de Efrén de N&iacute;sibis &mdash; bajo un &uacute;nico &iacute;ndice de ra&iacute;ces consonant&iacute;cas, permitiendo rastrear una misma ra&iacute;z sem&iacute;tica a trav&eacute;s de tradiciones textuales, escrituras y siglos, con cognados hebreos y &aacute;rabes visibles en cada capa.</p>
 
         {% elif lang == 'he' %}
 
         <h1>{{ t('about_atlas_title', lang) }}</h1>
 
-        <p>אטלס השורשים הארמיים הוא כלי לחקירת שורשים תלת-עיצוריים המקיף כ-1,500 שנות היסטוריה ספרותית ארמית. הוא מאגד ארבעה קורפוסים &mdash; הפשיטתא (הברית החדשה והתנ"ך), הארמית המקראית והתרגום אונקלוס &mdash; תחת אינדקס שורשים עיצוריים אחד, ומאפשר לעקוב אחר שורש שמי יחיד דרך מסורות טקסטואליות, כתבים ותקופות, עם קוגנטים בעברית ובערבית בכל שכבה.</p>
+        <p>אטלס השורשים הארמיים הוא כלי לחקירת שורשים תלת-עיצוריים המקיף כ-1,500 שנות היסטוריה ספרותית ארמית. הוא מאגד חמישה קורפוסים &mdash; הפשיטתא (הברית החדשה והתנ"ך), הארמית המקראית, התרגום אונקלוס והמזמורים של אפרם ניסיביס &mdash; תחת אינדקס שורשים עיצוריים אחד, ומאפשר לעקוב אחר שורש שמי יחיד דרך מסורות טקסטואליות, כתבים ותקופות, עם קוגנטים בעברית ובערבית בכל שכבה.</p>
 
         {% elif lang == 'ar' %}
 
         <h1>{{ t('about_atlas_title', lang) }}</h1>
 
-        <p>أطلس الجذور الآرامية هو أداة لاستكشاف الجذور الثلاثية تغطي نحو 1,500 عام من التاريخ الأدبي الآرامي. يجمع أربعة مدوّنات نصية &mdash; الپشيطتا (العهد الجديد والقديم)، والآرامية التوراتية، وترجوم أونكيلوس &mdash; تحت فهرس جذور صوامتي واحد، ممّا يتيح تتبّع جذر سامي واحد عبر التقاليد النصية والخطوط والقرون، مع عرض المُشتركات العبرية والعربية في كل طبقة.</p>
+        <p>أطلس الجذور الآرامية هو أداة لاستكشاف الجذور الثلاثية تغطي نحو 1,500 عام من التاريخ الأدبي الآرامي. يجمع خمس مدوّنات نصية &mdash; الپشيطتا (العهد الجديد والقديم)، والآرامية التوراتية، وترجوم أونكيلوس، وأناشيد أفرام النصيبيني &mdash; تحت فهرس جذور صوامتي واحد، ممّا يتيح تتبّع جذر سامي واحد عبر التقاليد النصية والخطوط والقرون، مع عرض المُشتركات العبرية والعربية في كل طبقة.</p>
 
         {% else %}
 
         <h1>{{ t('about_atlas_title', lang) }}</h1>
 
-        <p>The Aramaic Root Atlas is a cross-corpus triliteral root explorer spanning roughly 1,500 years of Aramaic literary history. It brings four corpora &mdash; the Peshitta (NT and OT), Biblical Aramaic, and Targum Onkelos &mdash; under a single consonantal root index, enabling scholars to trace a single Semitic root across textual traditions, scripts, and centuries, with Hebrew and Arabic cognates visible at every layer.</p>
+        <p>The Aramaic Root Atlas is a cross-corpus triliteral root explorer spanning roughly 1,500 years of Aramaic literary history. It brings five corpora &mdash; the Peshitta (NT and OT), Biblical Aramaic, Targum Onkelos, and the Hymns of Ephrem of Nisibis &mdash; under a single consonantal root index, enabling scholars to trace a single Semitic root across textual traditions, scripts, and centuries, with Hebrew and Arabic cognates visible at every layer.</p>
 
         {% endif %}
 
         {# Stats bar #}
         <div class="about-stats">
             <div class="about-stat">
-                <span class="stat-num">36,627</span>
+                <span class="stat-num">38,062</span>
                 <span class="stat-label">{% if lang == 'es' %}vers&iacute;culos{% elif lang == 'he' %}פסוקים{% elif lang == 'ar' %}آية{% else %}verses{% endif %}</span>
             </div>
             <div class="about-stat">
-                <span class="stat-num">498,922</span>
+                <span class="stat-num">528,399</span>
                 <span class="stat-label">{% if lang == 'es' %}palabras{% elif lang == 'he' %}מילים{% elif lang == 'ar' %}كلمة{% else %}words{% endif %}</span>
             </div>
             <div class="about-stat">
@@ -287,11 +296,11 @@
                 <span class="stat-label">{% if lang == 'es' %}ra&iacute;ces{% elif lang == 'he' %}שורשים{% elif lang == 'ar' %}جذر{% else %}roots{% endif %}</span>
             </div>
             <div class="about-stat">
-                <span class="stat-num">1,584</span>
+                <span class="stat-num">1,127</span>
                 <span class="stat-label">{% if lang == 'es' %}familias de cognados{% elif lang == 'he' %}משפחות קוגנטים{% elif lang == 'ar' %}عائلة اشتقاقية{% else %}cognate families{% endif %}</span>
             </div>
             <div class="about-stat">
-                <span class="stat-num">4</span>
+                <span class="stat-num">5</span>
                 <span class="stat-label">{% if lang == 'es' %}corpus{% elif lang == 'he' %}קורפוסים{% elif lang == 'ar' %}مدوّنات{% else %}corpora{% endif %}</span>
             </div>
         </div>
@@ -299,8 +308,7 @@
         {# Watch Video button #}
         <div class="watch-video-wrap">
             <button class="watch-video-btn" onclick="openVideoModal()">
-                <span class="material-symbols-outlined">play_circle</span>
-                {% if lang == 'es' %}Ver video{% elif lang == 'he' %}צפה בסרטון{% elif lang == 'ar' %}مشاهدة الفيديو{% else %}Watch Video{% endif %}
+                ▶ {% if lang == 'es' %}Ver video{% elif lang == 'he' %}צפה בסרטון{% elif lang == 'ar' %}مشاهدة الفيديو{% else %}Watch Video{% endif %}
             </button>
         </div>
 
@@ -309,13 +317,13 @@
         <h2>{% if lang == 'es' %}Corpus{% elif lang == 'he' %}קורפוסים{% elif lang == 'ar' %}المدوّنات النصية{% else %}Corpora{% endif %}</h2>
 
         {% if lang == 'es' %}
-        <p>El Atlas indexa cuatro corpus de texto aram&eacute;o, que representan dos escrituras y m&aacute;s de un milenio de producci&oacute;n literaria:</p>
+        <p>El Atlas indexa cinco corpus de texto aram&eacute;o, que representan dos escrituras y m&aacute;s de un milenio y medio de producci&oacute;n literaria:</p>
         {% elif lang == 'he' %}
-        <p>האטלס מאנדקס ארבעה קורפוסים של טקסט ארמי, המייצגים שני כתבים ומעל אלף שנות יצירה ספרותית:</p>
+        <p>האטלס מאנדקס חמישה קורפוסים של טקסט ארמי, המייצגים שני כתבים ומעל אלף וחמש מאות שנות יצירה ספרותית:</p>
         {% elif lang == 'ar' %}
-        <p>يفهرس الأطلس أربع مدوّنات من النصوص الآرامية، تمثّل خطّين كتابيين وأكثر من ألف عام من الإنتاج الأدبي:</p>
+        <p>يفهرس الأطلس خمس مدوّنات من النصوص الآرامية، تمثّل خطّين كتابيين وأكثر من ألف وخمسمائة عام من الإنتاج الأدبي:</p>
         {% else %}
-        <p>The Atlas indexes four corpora of Aramaic text, representing two scripts and over a millennium of literary production:</p>
+        <p>The Atlas indexes five corpora of Aramaic text, representing two scripts and over 1,500 years of literary production:</p>
         {% endif %}
 
         <div class="about-table-wrap">
@@ -362,6 +370,14 @@
                     <td>{% if lang == 'es' %}Hebreo cuadrado{% elif lang == 'he' %}כתב מרובע{% elif lang == 'ar' %}الخط العبري المربع{% else %}Hebrew square{% endif %}</td>
                     <td>Sefaria</td>
                     <td>CC-BY-SA</td>
+                </tr>
+                <tr>
+                    <td>{% if lang == 'es' %}Efrén de N&iacute;sibis (Himnos){% elif lang == 'he' %}אפרם ניסיביס (מזמורים){% elif lang == 'ar' %}أفرام النصيبيني (أناشيد){% else %}Ephrem of Nisibis (Hymns){% endif %}</td>
+                    <td>1,435</td>
+                    <td>29,577</td>
+                    <td>{% if lang == 'es' %}Siríaco{% elif lang == 'he' %}סורית{% elif lang == 'ar' %}سرياني{% else %}Syriac{% endif %}</td>
+                    <td>{% if lang == 'es' %}Digital Syriac Corpus{% elif lang == 'he' %}Digital Syriac Corpus{% elif lang == 'ar' %}Digital Syriac Corpus{% else %}Digital Syriac Corpus{% endif %}</td>
+                    <td>CC-BY</td>
                 </tr>
             </tbody>
         </table>
@@ -574,7 +590,7 @@
             {# Diachronic Analysis #}
             <div class="feature-card">
                 <h4>{% if lang == 'es' %}An&aacute;lisis diacr&oacute;nico{% elif lang == 'he' %}ניתוח דיאכרוני{% elif lang == 'ar' %}التحليل الزمني{% else %}Diachronic Root Analysis{% endif %}</h4>
-                <p>{% if lang == 'es' %}Compara la frecuencia normalizada de una ra&iacute;z a trav&eacute;s de los corpus en orden cronol&oacute;gico (arameo b&iacute;blico &rarr; T&aacute;rgum &rarr; Peshitta NT &rarr; OT). La vista de cambios clasifica las ra&iacute;ces con los mayores desplazamientos, identificando t&eacute;rminos emergentes o en declive a lo largo de 1500 a&ntilde;os. En la tabla de cambios, cada punto de color representa un corpus en orden cronol&oacute;gico &mdash; <span style="color:#6b3d9e">&#9679;</span> arameo b&iacute;blico, <span style="color:#2e7d5e">&#9679;</span> T&aacute;rgum, <span style="color:#1a4d6b">&#9679;</span> Peshitta NT, <span style="color:#7a6b1a">&#9679;</span> Peshitta OT &mdash; y el tama&ntilde;o del punto es proporcional a la frecuencia normalizada en ese corpus.{% elif lang == 'he' %}משווה את התדירות המנורמלת של שורש לאורך הקורפוסים בסדר כרונולוגי (ארמית מקראית &rarr; תרגום &rarr; פשיטתא NT &rarr; TN). תצוגת השינויים מדרגת שורשים עם ה&zwnj;תזוזות הגדולות ביותר, ומזהה מונחים עולים או דועכים לאורך 1500 שנה. בטבלת השינויים, כל נקודה צבעונית מייצגת קורפוס בסדר כרונולוגי &mdash; <span style="color:#6b3d9e">&#9679;</span> ארמית מקראית, <span style="color:#2e7d5e">&#9679;</span> תרגום, <span style="color:#1a4d6b">&#9679;</span> פשיטתא NT, <span style="color:#7a6b1a">&#9679;</span> פשיטתא OT &mdash; וגודל הנקודה פרופורציונלי לתדירות המנורמלת באותו קורפוס.{% elif lang == 'ar' %}يقارن التواتر المُطبَّع لجذر ما عبر المدوّنات بترتيب زمني (الآرامية المقدسية &rarr; الترجوم &rarr; الپشيطتا NT &rarr; AT). تعرض نافذة التحوّلات الجذور ذات أكبر التغيّرات، مُحدِّدةً المصطلحات الناشئة أو المتراجعة عبر 1500 عام. في جدول التحوّلات، تمثّل كل نقطة ملوّنة مدوّنةً بالترتيب الزمني &mdash; <span style="color:#6b3d9e">&#9679;</span> الآرامية المقدسية، <span style="color:#2e7d5e">&#9679;</span> الترجوم، <span style="color:#1a4d6b">&#9679;</span> پشيطتا NT، <span style="color:#7a6b1a">&#9679;</span> پشيطتا OT &mdash; وحجم النقطة متناسب مع التواتر المُطبَّع في تلك المدوّنة.{% else %}Compares the normalized frequency of a root across corpora in chronological order (Biblical Aramaic &rarr; Targum &rarr; Peshitta NT &rarr; OT). The Shifts view ranks roots with the greatest frequency changes, identifying emerging or declining terms over 1,500 years. In the Shifts table, each colored dot represents a corpus in chronological order &mdash; <span style="color:#7c3aed">&#9679;</span> Biblical Aramaic, <span style="color:#059669">&#9679;</span> Targum, <span style="color:#1a4d6b">&#9679;</span> Peshitta NT, <span style="color:#6b5a1a">&#9679;</span> Peshitta OT &mdash; and dot size is proportional to the normalized frequency in that corpus.{% endif %}</p>
+                <p>{% if lang == 'es' %}Compara la frecuencia normalizada de una ra&iacute;z a trav&eacute;s de los corpus en orden cronol&oacute;gico (arameo b&iacute;blico &rarr; T&aacute;rgum &rarr; Efrén &rarr; Peshitta NT &rarr; OT). La vista de cambios clasifica las ra&iacute;ces con los mayores desplazamientos, identificando t&eacute;rminos emergentes o en declive a lo largo de 1500 a&ntilde;os. En la tabla de cambios, cada punto de color representa un corpus en orden cronol&oacute;gico &mdash; <span style="color:#6435a0">&#9679;</span> arameo b&iacute;blico, <span style="color:#c0780a">&#9679;</span> T&aacute;rgum, <span style="color:#b83232">&#9679;</span> Efrén, <span style="color:#0e7c5e">&#9679;</span> Peshitta NT, <span style="color:#1d62a8">&#9679;</span> Peshitta OT &mdash; y el tama&ntilde;o del punto es proporcional a la frecuencia normalizada en ese corpus.{% elif lang == 'he' %}משווה את התדירות המנורמלת של שורש לאורך הקורפוסים בסדר כרונולוגי (ארמית מקראית &rarr; תרגום &rarr; אפרם &rarr; פשיטתא NT &rarr; TN). תצוגת השינויים מדרגת שורשים עם ה&zwnj;תזוזות הגדולות ביותר, ומזהה מונחים עולים או דועכים לאורך 1500 שנה. בטבלת השינויים, כל נקודה צבעונית מייצגת קורפוס בסדר כרונולוגי &mdash; <span style="color:#6435a0">&#9679;</span> ארמית מקראית, <span style="color:#c0780a">&#9679;</span> תרגום, <span style="color:#b83232">&#9679;</span> אפרם, <span style="color:#0e7c5e">&#9679;</span> פשיטתא NT, <span style="color:#1d62a8">&#9679;</span> פשיטתא OT &mdash; וגודל הנקודה פרופורציונלי לתדירות המנורמלת באותו קורפוס.{% elif lang == 'ar' %}يقارن التواتر المُطبَّع لجذر ما عبر المدوّنات بترتيب زمني (الآرامية المقدسية &rarr; الترجوم &rarr; أفرام &rarr; الپشيطتا NT &rarr; AT). تعرض نافذة التحوّلات الجذور ذات أكبر التغيّرات، مُحدِّدةً المصطلحات الناشئة أو المتراجعة عبر 1500 عام. في جدول التحوّلات، تمثّل كل نقطة ملوّنة مدوّنةً بالترتيب الزمني &mdash; <span style="color:#6435a0">&#9679;</span> الآرامية المقدسية، <span style="color:#c0780a">&#9679;</span> الترجوم، <span style="color:#b83232">&#9679;</span> أفرام، <span style="color:#0e7c5e">&#9679;</span> پشيطتا NT، <span style="color:#1d62a8">&#9679;</span> پشيطتا OT &mdash; وحجم النقطة متناسب مع التواتر المُطبَّع في تلك المدوّنة.{% else %}Compares the normalized frequency of a root across corpora in chronological order (Biblical Aramaic &rarr; Targum &rarr; Ephrem &rarr; Peshitta NT &rarr; OT). The Shifts view ranks roots with the greatest frequency changes, identifying emerging or declining terms over 1,500 years. In the Shifts table, each colored dot represents a corpus in chronological order &mdash; <span style="color:#6435a0">&#9679;</span> Biblical Aramaic, <span style="color:#c0780a">&#9679;</span> Targum, <span style="color:#b83232">&#9679;</span> Ephrem, <span style="color:#0e7c5e">&#9679;</span> Peshitta NT, <span style="color:#1d62a8">&#9679;</span> Peshitta OT &mdash; and dot size is proportional to the normalized frequency in that corpus.{% endif %}</p>
                 <a href="/diachronic?root=SH-L-M&lang={{ lang }}" class="feature-example-link">{% if lang == 'es' %}Ejemplo: SH-L-M{% elif lang == 'he' %}דוגמה: SH-L-M{% elif lang == 'ar' %}مثال: SH-L-M{% else %}Example: SH-L-M{% endif %} &rarr;</a>
             </div>
 
@@ -635,7 +651,7 @@
             {# Guided Tour #}
             <div class="feature-card">
                 <h4>{% if lang == 'es' %}Tour guiado{% elif lang == 'he' %}סיור מודרך{% elif lang == 'ar' %}الجولة الإرشادية{% else %}Guided Tour{% endif %}</h4>
-                <p>{% if lang == 'es' %}Recorrido interactivo de 12 pasos que presenta todas las funciones principales. Disponible en los cuatro idiomas de la interfaz. Inicia con el bot&oacute;n de ayuda (<span class="material-symbols-outlined" style="font-size:.95em;vertical-align:middle;">help_outline</span>) en la barra de navegaci&oacute;n.{% elif lang == 'he' %}סיור אינטראקטיבי של 12 שלבים המציג את כל התכונות העיקריות. זמין בארבע שפות הממשק. הפעל באמצעות כפתור העזרה (<span class="material-symbols-outlined" style="font-size:.95em;vertical-align:middle;">help_outline</span>) בסרגל הניווט.{% elif lang == 'ar' %}جولة تفاعلية من 12 خطوة تعرّف بجميع الميزات الرئيسية. متاحة بالل غات الأربع للواجهة. ابدأها بزر المساعدة (<span class="material-symbols-outlined" style="font-size:.95em;vertical-align:middle;">help_outline</span>) في شريط التنقل.{% else %}Interactive 12-step walkthrough introducing all main features. Available in all four UI languages. Launch via the help button (<span class="material-symbols-outlined" style="font-size:.95em;vertical-align:middle;">help_outline</span>) in the navbar.{% endif %}</p>
+                <p>{% if lang == 'es' %}Recorrido interactivo de 12 pasos que presenta todas las funciones principales. Disponible en los cuatro idiomas de la interfaz. Inicia con el bot&oacute;n de ayuda (<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;display:inline-block"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>) en la barra de navegaci&oacute;n.{% elif lang == 'he' %}סיור אינטראקטיבי של 12 שלבים המציג את כל התכונות העיקריות. זמין בארבע שפות הממשק. הפעל באמצעות כפתור העזרה (<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;display:inline-block"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>) בסרגל הניווט.{% elif lang == 'ar' %}جولة تفاعلية من 12 خطوة تعرّف بجميع الميزات الرئيسية. متاحة بالل غات الأربع للواجهة. ابدأها بزر المساعدة (<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;display:inline-block"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>) في شريط التنقل.{% else %}Interactive 12-step walkthrough introducing all main features. Available in all four UI languages. Launch via the help button (<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;display:inline-block"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>) in the navbar.{% endif %}</p>
             </div>
 
         </div>
@@ -789,6 +805,11 @@
                     <td>CC-BY-SA</td>
                     <td>{% if lang == 'es' %}Solo pipeline{% elif lang == 'he' %}צנרת בלבד{% elif lang == 'ar' %}خط الإنتاج فقط{% else %}Pipeline only{% endif %}</td>
                 </tr>
+                <tr>
+                    <td>{% if lang == 'es' %}Digital Syriac Corpus (TEI XML){% elif lang == 'he' %}Digital Syriac Corpus (TEI XML){% elif lang == 'ar' %}Digital Syriac Corpus (TEI XML){% else %}Digital Syriac Corpus (TEI XML){% endif %}</td>
+                    <td>CC-BY</td>
+                    <td>{% if lang == 'es' %}Efrén Nis&iacute;bis{% elif lang == 'he' %}אפרם ניסיביס{% elif lang == 'ar' %}أفرام النصيبيني{% else %}Ephrem Nisibis{% endif %}</td>
+                </tr>
             </tbody>
         </table>
         </div>
@@ -846,11 +867,9 @@
         <div class="video-modal-bar">
             <span class="video-modal-title">Aramaic Root Atlas</span>
             <button class="video-modal-fs" onclick="toggleVideoFullscreen()" title="Fullscreen">
-                <span class="material-symbols-outlined" id="video-fs-icon">fullscreen</span>
+                <svg id="video-fs-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
             </button>
-            <button class="video-modal-close" onclick="closeVideoModal()" title="Close">
-                <span class="material-symbols-outlined">close</span>
-            </button>
+            <button class="video-modal-close" onclick="closeVideoModal()" title="Close">&times;</button>
         </div>
         <video id="about-video" controls preload="none"
                src="{{ url_for('static', filename='video/AramaicRootAtlas.mp4') }}"

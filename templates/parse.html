@@ -1,114 +1,97 @@
 {% extends "base.html" %}
+{% set page_id = 'parse' %}
 {% block title %}{{ t('parse_title', lang) }} — Aramaic Root Atlas{% endblock %}
 
-{% block content %}
-<style>
-/* Larger morpheme boxes for the standalone parse page */
-.parse-morpheme-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-    direction: rtl;
-}
-.parse-morpheme-row .wp-morph {
-    padding: 8px 12px;
-    border-radius: 7px;
-    min-width: 52px;
-}
-.parse-morpheme-row .wp-morph-char {
-    font-size: 1.5rem;
-    line-height: 1.3;
-}
-.parse-morpheme-row .wp-morph-label {
-    font-size: 0.78rem;
-    max-width: none;
-    white-space: normal;
-    overflow: visible;
-    text-overflow: unset;
-    margin-top: 4px;
-    line-height: 1.4;
-}
-</style>
-<div class="container" style="max-width:820px;margin:0 auto;padding:1.5rem 1rem;">
-    <div style="margin-bottom:1.2rem;">
-        <h1 style="font-size:1.6rem;margin:0 0 .4rem;">{{ t('parse_title', lang) }}</h1>
-        <p style="color:var(--muted);margin:0;">{{ t('parse_subtitle', lang) }}</p>
-    </div>
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a><span class="sep">›</span><b>{{ t('parse_title', lang) if t else 'Word Parser' }}</b></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
+</div>
+{% endblock %}
 
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1 class="ph-title">{{ t('parse_title', lang) }}</h1>
+        <p class="ph-sub">{{ t('parse_subtitle', lang) }}</p>
+    </div>
+</div>
+
+<div style="max-width:820px;">
     <!-- Input row -->
-    <div style="display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+    <div style="display:flex;gap:.6rem;margin-bottom:.75rem;flex-wrap:wrap;align-items:stretch;">
         <input type="text" id="parse-input"
                placeholder="{{ t('parse_input_placeholder', lang) }}"
                value="{{ initial_word }}"
                autocomplete="off" spellcheck="false"
                dir="auto"
-               style="flex:1;min-width:200px;padding:.6rem .9rem;font-family:var(--syriac-font);font-size:1.3rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);">
-        <div id="parse-translit-hint" style="display:none;font-size:.75rem;color:var(--muted);align-self:center;white-space:nowrap;">
-            → <span id="parse-translit-resolved" dir="rtl" style="font-family:var(--syriac-font);font-size:.95rem;color:var(--fg);"></span>
-        </div>
-        <button onclick="analyzeWord()"
-                style="padding:.6rem 1.4rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:.95rem;">
+               style="flex:1;min-width:200px;padding:.65rem 1rem;font-family:var(--syr);font-size:1.4rem;border:2px solid var(--rule);border-radius:var(--radius);background:var(--surface);color:var(--ink);outline:none;transition:border-color .15s;"
+               onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--rule)'">
+        <button onclick="analyzeWord()" class="btn" style="padding:.65rem 1.6rem;font-size:1rem;">
             {{ t('parse_analyze', lang) }}
         </button>
     </div>
 
-    <!-- Transliteration hint -->
-    <div style="font-size:.74rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6;">
+    <!-- Resolved Syriac hint (when Latin input) -->
+    <div id="parse-translit-hint" style="display:none;font-size:.8rem;color:var(--ink-3);margin-bottom:.75rem;">
+        → <span id="parse-translit-resolved" dir="rtl" style="font-family:var(--syr);font-size:1rem;color:var(--ink);"></span>
+    </div>
+
+    <!-- Transliteration key -->
+    <div style="font-size:.74rem;color:var(--ink-3);margin-bottom:1.5rem;line-height:1.6;">
         {{ t('parse_translit_hint', lang) }}
     </div>
 
     <!-- States -->
-    <div id="parse-loading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">
-        <span class="material-symbols-outlined" style="font-size:2rem;animation:spin 1s linear infinite;">autorenew</span>
+    <div id="parse-loading" style="display:none;text-align:center;padding:2rem;">
+        <p style="color:var(--ink-3);font-family:var(--serif);font-style:italic">Loading…</p>
     </div>
-    <div id="parse-empty" style="text-align:center;padding:3rem;color:var(--muted);">
-        <span class="material-symbols-outlined" style="font-size:2.5rem;display:block;margin-bottom:.5rem;opacity:.4;">translate</span>
+    <div id="parse-empty" style="padding:2rem 0;color:var(--ink-3);font-family:var(--serif);font-style:italic;">
         {{ t('parse_subtitle', lang) }}
     </div>
 
     <!-- Results -->
     <div id="parse-results" style="display:none;">
 
-        <!-- Morpheme row -->
-        <div class="stat-card" style="padding:1.5rem 1.2rem;margin-bottom:1rem;">
-            <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;text-align:center;">
+        <!-- Morpheme breakdown card -->
+        <div style="background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:1.5rem 1.5rem 1.2rem;margin-bottom:1rem;">
+            <div style="font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.2rem;text-align:center;font-family:var(--sans);font-weight:500;">
                 {{ t('parse_prefixes', lang) }} · {{ t('parse_root', lang) }} · {{ t('parse_suffixes', lang) }}
             </div>
             <div id="parse-morpheme-row" class="parse-morpheme-row"></div>
         </div>
 
-        <!-- Two-column details -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem;">
+        <!-- Details row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
             <!-- Gloss + stem + POS + confidence -->
-            <div class="stat-card" style="padding:1rem;">
-                <div id="parse-gloss" style="font-size:1.05rem;font-style:italic;margin-bottom:.6rem;line-height:1.4;"></div>
+            <div style="background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:1.1rem 1.2rem;">
+                <div id="parse-gloss" style="font-family:var(--serif);font-size:1.15rem;font-style:italic;margin-bottom:.75rem;color:var(--ink);line-height:1.4;"></div>
                 <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
                     <span id="parse-stem-badge"></span>
-                    <span id="parse-pos" style="font-size:.78rem;background:var(--border);padding:2px 8px;border-radius:4px;color:var(--muted);"></span>
+                    <span id="parse-pos" style="font-size:.75rem;background:var(--bg-2);padding:2px 8px;border-radius:4px;color:var(--ink-3);font-family:var(--sans);"></span>
                     <span id="parse-conf-dot" class="wp-conf"></span>
-                    <span id="parse-conf-label" style="font-size:.78rem;color:var(--muted);"></span>
+                    <span id="parse-conf-label" style="font-size:.75rem;color:var(--ink-3);font-family:var(--sans);"></span>
                 </div>
             </div>
-            <!-- Cognates + corpus attestations -->
-            <div class="stat-card" style="padding:1rem;">
-                <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem;">
+            <!-- Cognates + corpus -->
+            <div style="background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:1.1rem 1.2rem;">
+                <div style="font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;font-family:var(--sans);font-weight:500;">
                     {{ t('parse_cognates', lang) }}
                 </div>
-                <div id="parse-cognates" style="margin-bottom:.8rem;"></div>
-                <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;">Corpora</div>
-                <div id="parse-corpus" style="display:flex;flex-wrap:wrap;gap:.3rem;"></div>
+                <div id="parse-cognates" style="margin-bottom:.9rem;line-height:1.7;"></div>
+                <div style="font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;font-family:var(--sans);font-weight:500;">{{ t('parse_corpora_label', lang) if t else 'Corpora' }}</div>
+                <div id="parse-corpus" style="display:flex;flex-wrap:wrap;gap:.35rem;"></div>
             </div>
         </div>
 
         <!-- Actions -->
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
-            <button id="parse-copy-btn" onclick="copyGloss()"
-                    style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--fg);cursor:pointer;font-size:.85rem;">
+            <button id="parse-copy-btn" onclick="copyGloss()" class="btn secondary" style="font-size:.85rem;">
                 {{ t('parse_copy_gloss', lang) }}
             </button>
-            <a id="parse-viz-link" href="#"
-               style="padding:.4rem .9rem;border:1px solid var(--border);border-radius:var(--radius);color:var(--accent);text-decoration:none;font-size:.85rem;">
+            <a id="parse-viz-link" href="#" class="wp-link" style="font-size:.85rem;">
                 {{ t('visualize', lang) if t else 'Visualize Root' }} →
             </a>
         </div>
@@ -190,7 +173,7 @@
             morphRow.appendChild(makeBox(s.char, s.label, 'wp-suffix'));
         });
         if (!data.root && data.prefixes.length === 0 && data.suffixes.length === 0) {
-            morphRow.innerHTML = '<span style="color:var(--muted);font-style:italic;font-size:.9rem;">No root identified for this word.</span>';
+            morphRow.innerHTML = '<span style="color:var(--ink-3);font-style:italic;font-size:.9rem;">No root identified for this word.</span>';
         }
 
         // Gloss
@@ -225,17 +208,19 @@
             row.style.cssText = 'display:flex;align-items:baseline;gap:.5rem;margin-bottom:.4rem;';
             row.innerHTML =
                 '<span style="font-size:.65rem;padding:1px 6px;border-radius:10px;border:1px solid rgba(255,255,255,.3);font-weight:500;color:#fff;background:' + cl.color + ';flex-shrink:0;">' + cl.label + '</span>' +
-                '<span style="font-family:var(--syriac-font);font-size:1rem;direction:rtl;">' + escHtml(data.cognates[cl.key]) + '</span>';
+                '<span style="font-family:var(--syr);font-size:1rem;direction:rtl;">' + escHtml(data.cognates[cl.key]) + '</span>';
             cogEl.appendChild(row);
         });
         if (!hasCog) {
-            cogEl.innerHTML = '<span style="color:var(--muted);font-size:.85rem;">—</span>';
+            cogEl.innerHTML = '<span style="color:var(--ink-3);font-size:.85rem;">—</span>';
         }
 
-        // Corpus attestations — reuse .corpus-badge classes
-        var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos'];
+        // Corpus attestations — use .cbadge classes
+        var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos', 'ephrem_nisibis'];
         var CORPUS_LABELS = {peshitta_nt: 'Pesh. NT', peshitta_ot: 'Pesh. OT',
-                             biblical_aramaic: 'Bibl. Aram.', targum_onkelos: 'Targ. Onk.'};
+                             biblical_aramaic: 'Bibl. Aram.', targum_onkelos: 'Targ. Onk.',
+                             ephrem_nisibis: 'Ephrem Nis.'};
+        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
         var corpEl = document.getElementById('parse-corpus');
         corpEl.innerHTML = '';
         var hasCorpus = false;
@@ -244,19 +229,19 @@
             if (!n) return;
             hasCorpus = true;
             var badge = document.createElement('span');
-            badge.className = 'corpus-badge corpus-' + cid;
+            badge.className = 'cbadge ' + (CORPUS_ABBR[cid] || cid);
             badge.style.cssText = 'font-size:.68rem;padding:2px 7px;';
             badge.textContent = (CORPUS_LABELS[cid] || cid) + '\u00a0' + n + '\u00d7';
             corpEl.appendChild(badge);
         });
         if (!hasCorpus) {
-            corpEl.innerHTML = '<span style="color:var(--muted);font-size:.8rem;">—</span>';
+            corpEl.innerHTML = '<span style="color:var(--ink-3);font-size:.8rem;">—</span>';
         }
 
         // Viz link
         if (data.root_key) {
             document.getElementById('parse-viz-link').href =
-                '/visualize/' + encodeURIComponent(data.root_key) + '?lang=' + LANG;
+                '/visualize/' + encodeURIComponent(data.root_key) + '?lang=' + LANG + '&tab=ficha';
             document.getElementById('parse-viz-link').style.display = '';
         } else {
             document.getElementById('parse-viz-link').style.display = 'none';

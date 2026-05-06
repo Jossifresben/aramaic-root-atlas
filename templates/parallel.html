@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set page_id = 'parallel' %}
 
 {% block title %}{{ t('parallel_viewer', lang) }} — Aramaic Root Atlas{% endblock %}
 
@@ -12,15 +13,15 @@
     margin-bottom: 20px;
     padding: 16px;
     background: var(--card-bg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
 }
 .parallel-controls select, .parallel-controls button {
     padding: 8px 12px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--bg);
-    color: var(--fg);
+    color: var(--ink);
     font-size: 0.9rem;
 }
 .parallel-controls button {
@@ -32,7 +33,7 @@
 .parallel-grid {
     display: grid;
     gap: 0;
-    border: 1px solid var(--border);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     overflow: hidden;
 }
@@ -58,18 +59,18 @@
 .parallel-row:hover { background: var(--accent-light); }
 .parallel-cell {
     padding: 10px 14px;
-    border-right: 1px solid var(--border);
+    border-right: 1px solid var(--line);
     line-height: 1.8;
 }
 .parallel-cell:last-child { border-right: none; }
 .parallel-cell.verse-num {
     font-weight: bold;
-    color: var(--muted);
+    color: var(--ink-3);
     text-align: center;
     padding-top: 14px;
 }
 .parallel-cell .syriac-text {
-    font-family: var(--syriac-font);
+    font-family: var(--syr);
     font-size: 1.4rem;
     direction: rtl;
     text-align: right;
@@ -82,16 +83,18 @@
 .parallel-cell .translit-text {
     font-family: monospace;
     font-size: 0.82rem;
-    color: var(--muted);
+    color: var(--ink-3);
     margin-top: 4px;
     word-spacing: 4px;
+    direction: ltr;
+    text-align: right;
 }
 .parallel-cell .translation-text {
     font-size: 0.85rem;
-    color: var(--muted);
+    color: var(--ink-3);
     font-style: italic;
     margin-top: 4px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--line);
     padding-top: 4px;
 }
 .parallel-row + .parallel-translit-row {
@@ -109,8 +112,8 @@
 }
 .parallel-translation-row {
     padding: 6px 14px 10px;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
     text-align: center;
 }
 .parallel-translation-row .translation-text {
@@ -118,7 +121,7 @@
     padding-top: 0;
 }
 .parallel-cell.empty {
-    color: var(--muted);
+    color: var(--ink-3);
     font-style: italic;
     font-size: 0.85rem;
 }
@@ -141,7 +144,7 @@
 .parallel-nav a:hover { opacity: 0.9; }
 .parallel-info {
     font-size: 0.85rem;
-    color: var(--muted);
+    color: var(--ink-3);
     margin-bottom: 16px;
 }
 .parallel-single-notice {
@@ -149,42 +152,57 @@
     border-left: 3px solid var(--accent, #2c5f7c);
     padding: 0.6rem 1rem;
     font-size: 0.9rem;
-    color: var(--fg, #333);
+    color: var(--ink, #333);
     margin-bottom: 1rem;
     border-radius: 0 4px 4px 0;
 }
 </style>
 {% endblock %}
 
-{% block content %}
-<h1 style="margin-bottom: 4px;">{{ t('parallel_viewer', lang) }}</h1>
-<p class="parallel-info">{{ t('parallel_desc', lang) }}</p>
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">Trace Root</a><span class="sep">›</span><b>{{ t('parallel_viewer', lang) if t else 'Parallel Viewer' }}</b></div>
+<div class="quick-search">
+  <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>
+  <input id="quick-search-input" placeholder="{{ t('quick_search_placeholder', lang) if t else 'Root lookup — e.g. SH-L-M' }}" autocomplete="off"><span class="kbd">⌘K</span>
+  <div id="quick-search-list" class="qs-list" hidden></div>
+</div>
+{% endblock %}
 
-<div class="parallel-controls">
-    <label>{{ t('book', lang) }}:</label>
-    <select id="par-book">
-        {% for b_name, b_ch in books %}
-        <option value="{{ b_name }}" data-chapters="{{ b_ch }}"{% if b_name == book %} selected{% endif %}>{{ bn(b_name, lang) }}</option>
-        {% endfor %}
-    </select>
-    <label>{{ t('chapter', lang) }}:</label>
-    <select id="par-chapter">
-        {% for i in range(1, 151) %}
-        <option value="{{ i }}"{% if i == chapter|int %} selected{% endif %}>{{ i }}</option>
-        {% endfor %}
-    </select>
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1 class="ph-title"><em>{{ t('parallel_viewer', lang) if t else 'Parallel' }}</em> viewer</h1>
+    <p class="ph-sub">{{ t('parallel_desc', lang) }}</p>
+  </div>
+</div>
+
+<div class="interlinear-controls">
+    <div class="s-field wide">
+        <label class="s-label">{{ t('book', lang) }}</label>
+        <select class="s-select" id="par-book">
+            {% for b_name, b_ch in books %}
+            <option value="{{ b_name }}" data-chapters="{{ b_ch }}"{% if b_name == book %} selected{% endif %}>{{ bn(b_name, lang) }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="s-field narrow">
+        <label class="s-label">{{ t('chapter', lang) }}</label>
+        <select class="s-select" id="par-chapter">
+            {# Populated dynamically on load from data-chapters of the selected book #}
+        </select>
+    </div>
 </div>
 
 <div class="parallel-nav" id="parallel-nav-top" style="display:none">
-    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t('prev', lang) != 'prev' else 'Previous' }}</a>
-    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t('next', lang) != 'next' else 'Next' }} &#9654;</a>
+    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t else 'Previous' }}</a>
+    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t else 'Next' }} &#9654;</a>
 </div>
 
 <div id="parallel-results"></div>
 
 <div class="parallel-nav" id="parallel-nav-bottom" style="display:none">
-    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t('prev', lang) != 'prev' else 'Previous' }}</a>
-    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t('next', lang) != 'next' else 'Next' }} &#9654;</a>
+    <a href="#" class="par-prev-btn" onclick="navChapter(-1); return false;">&#9664; {{ t('prev', lang) if t else 'Previous' }}</a>
+    <a href="#" class="par-next-btn" onclick="navChapter(1); return false;">{{ t('next', lang) if t else 'Next' }} &#9654;</a>
 </div>
 {% endblock %}
 
@@ -234,18 +252,28 @@ function navChapter(delta) {
     loadParallel();
 }
 
+function escHtml(s){return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 async function loadParallel() {
     var book = document.getElementById('par-book').value;
     var chapter = document.getElementById('par-chapter').value;
     var el = document.getElementById('parallel-results');
-    el.innerHTML = '<p>Loading...</p>';
+    el.innerHTML = '<p>{{ t("loading", lang) if t else "Loading…" }}</p>';
 
     // Get chapter verses for all corpora
-    var res = await fetch('/api/chapter/' + encodeURIComponent(book) + '/' + chapter + '?trans=' + TRANS + '&parallel=true');
-    var data = await res.json();
+    var data;
+    try {
+        var res = await fetch('/api/chapter/' + encodeURIComponent(book) + '/' + chapter + '?trans=' + TRANS + '&parallel=true');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        data = await res.json();
+    } catch (e) {
+        el.innerHTML = '<p style="color:var(--ink-3);font-style:italic">'
+            + '{{ t("error_loading", lang) if t else "Error loading" }}: ' + escHtml(e.message) + '</p>';
+        return;
+    }
 
     if (!data.verses || !data.verses.length) {
-        el.innerHTML = '<p>No verses found for this chapter.</p>';
+        el.innerHTML = '<p>{{ t("text_search_no_results", lang) if t else "No verses found." }}</p>';
         return;
     }
 
@@ -263,7 +291,8 @@ async function loadParallel() {
         'peshitta_nt': 'Peshitta NT',
         'peshitta_ot': 'Peshitta OT',
         'biblical_aramaic': 'Biblical Aramaic',
-        'targum_onkelos': 'Targum Onkelos'
+        'targum_onkelos': 'Targum Onkelos',
+        'ephrem_nisibis': 'Ephrem Nisibis'
     };
 
     // Only show parallel view if multiple corpora
@@ -309,7 +338,7 @@ async function loadParallel() {
             for (var c of corpora) {
                 var v = verseMap[vn][c];
                 html += '<div class="parallel-cell translit-cell">';
-                if (v && v.translit) html += '<div class="translit-text">' + v.translit + '</div>';
+                if (v && v.translit) html += '<div class="translit-text">' + escHtml(v.translit.split(' ').reverse().join(' ')) + '</div>';
                 html += '</div>';
             }
             html += '</div>';
@@ -332,7 +361,7 @@ async function loadParallel() {
             'he': '\u05d2\u05e8\u05e1\u05d4 \u05d0\u05e8\u05de\u05d9\u05ea \u05d0\u05d7\u05ea \u05d1\u05dc\u05d1\u05d3 \u05d6\u05de\u05d9\u05e0\u05d4 \u05dc\u05e4\u05e8\u05e7 \u05d6\u05d4. \u05d1\u05d7\u05dc\u05e7 \u05de\u05d4\u05e1\u05e4\u05e8\u05d9\u05dd \u05d9\u05e9 \u05d8\u05e7\u05e1\u05d8\u05d9\u05dd \u05de\u05e7\u05d1\u05d9\u05dc\u05d9\u05dd \u05e8\u05e7 \u05d1\u05e4\u05e8\u05e7\u05d9\u05dd \u05de\u05e1\u05d5\u05d9\u05de\u05d9\u05dd (\u05dc\u05de\u05e9\u05dc, \u05d3\u05e0\u05d9\u05d0\u05dc 2\u20137, \u05e2\u05d6\u05e8\u05d0 4\u20137).',
             'ar': '\u0646\u0633\u062e\u0629 \u0622\u0631\u0627\u0645\u064a\u0629 \u0648\u0627\u062d\u062f\u0629 \u0641\u0642\u0637 \u0645\u062a\u0627\u062d\u0629 \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0635\u0644. \u0628\u0639\u0636 \u0627\u0644\u0643\u062a\u0628 \u0644\u0647\u0627 \u0646\u0635\u0648\u0635 \u0645\u062a\u0648\u0627\u0632\u064a\u0629 \u0641\u064a \u0641\u0635\u0648\u0644 \u0645\u062d\u062f\u062f\u0629 \u0641\u0642\u0637 (\u0645\u062b\u0644\u0627\u064b\u060c \u062f\u0627\u0646\u064a\u0627\u0644 2\u20137\u060c \u0639\u0632\u0631\u0627 4\u20137).'
         };
-        html = '<p class="parallel-single-notice"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">info</span> ' + (noticeMsg[LANG] || noticeMsg['en']) + '</p>' + html;
+        html = '<p class="parallel-single-notice">' + (noticeMsg[LANG] || noticeMsg['en']) + '</p>' + html;
     }
 
     el.innerHTML = html;
