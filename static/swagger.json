@@ -1,0 +1,1123 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Aramaic Root Atlas API",
+    "description": "REST API for the Aramaic Root Atlas — a cross-corpus triliteral root explorer spanning ~1,500 years of Aramaic literary history across five corpora.\n\n**Corpora**\n| ID | Name | Script |\n|---|---|---|\n| `peshitta_nt` | Peshitta NT | Syriac |\n| `peshitta_ot` | Peshitta OT | Syriac |\n| `biblical_aramaic` | Biblical Aramaic | Hebrew square |\n| `targum_onkelos` | Targum Onkelos | Hebrew square |\n| `ephrem_nisibis` | Ephrem of Nisibis | Syriac |\n\n**Root format** — roots are expressed as dash-separated transliteration, e.g. `SH-L-M` (peace/completeness) or `K-T-B` (write). The API also accepts Syriac Unicode directly.\n\n**Common query parameters** shared by most endpoints:\n- `lang` — UI language for labels (`en` | `es` | `he` | `ar`, default `en`)\n- `script` — transliteration display (`latin` | `syriac` | `hebrew` | `arabic`, default `latin`)\n- `trans` — translation track (`en` | `es` | `he` | `ar` | `el`, default `en`)\n- `corpus` — filter to one corpus by ID; omit for all corpora",
+    "version": "2.4.0",
+    "contact": {
+      "name": "Jossi Fresco",
+      "url": "https://jossifresco.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "servers": [
+    { "url": "/", "description": "This server" },
+    { "url": "https://aramaic-root-atlas.onrender.com", "description": "Production" }
+  ],
+  "tags": [
+    { "name": "Corpus", "description": "Corpus statistics and book listings" },
+    { "name": "Root", "description": "Root search, lookup, and visualizer data" },
+    { "name": "Text", "description": "Verse and chapter retrieval" },
+    { "name": "Search", "description": "Text search and suggestions" },
+    { "name": "Analysis", "description": "Concordance, diachronic, hapax, collocations, and other research tools" },
+    { "name": "Parallel", "description": "Parallel and interlinear text comparison" },
+    { "name": "Utilities", "description": "Word parsing, semantic fields, passage profiles" }
+  ],
+  "components": {
+    "parameters": {
+      "lang": {
+        "name": "lang",
+        "in": "query",
+        "description": "UI language for labels and glosses",
+        "schema": { "type": "string", "enum": ["en", "es", "he", "ar"], "default": "en" }
+      },
+      "script": {
+        "name": "script",
+        "in": "query",
+        "description": "Transliteration display script",
+        "schema": { "type": "string", "enum": ["latin", "syriac", "hebrew", "arabic"], "default": "latin" }
+      },
+      "trans": {
+        "name": "trans",
+        "in": "query",
+        "description": "Translation track",
+        "schema": { "type": "string", "enum": ["en", "es", "he", "ar", "el"], "default": "en" }
+      },
+      "corpus": {
+        "name": "corpus",
+        "in": "query",
+        "description": "Filter to a single corpus ID; omit for all corpora",
+        "schema": {
+          "type": "string",
+          "enum": ["", "peshitta_nt", "peshitta_ot", "biblical_aramaic", "targum_onkelos", "ephrem_nisibis"]
+        }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string", "example": "Missing query parameter q" }
+        }
+      },
+      "CorpusStats": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "peshitta_nt" },
+          "label": { "type": "string", "example": "Peshitta NT" },
+          "verses": { "type": "integer", "example": 7440 },
+          "words": { "type": "integer", "example": 101469 }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/stats": {
+      "get": {
+        "tags": ["Corpus"],
+        "summary": "Corpus statistics",
+        "description": "Returns word and verse counts for each corpus plus totals.",
+        "operationId": "getStats",
+        "responses": {
+          "200": {
+            "description": "Statistics object",
+            "content": {
+              "application/json": {
+                "example": {
+                  "corpora": [
+                    { "id": "peshitta_nt", "label": "Peshitta NT", "verses": 7440, "words": 101469 }
+                  ],
+                  "total_verses": 38062,
+                  "total_words": 528399,
+                  "total_unique": 72566,
+                  "root_count": 5039
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/books": {
+      "get": {
+        "tags": ["Corpus"],
+        "summary": "Book list",
+        "description": "Returns all books available, optionally filtered to one corpus.",
+        "operationId": "getBooks",
+        "parameters": [
+          { "$ref": "#/components/parameters/corpus" }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of book names",
+            "content": {
+              "application/json": {
+                "example": { "books": ["Genesis", "Exodus", "Matthew"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/roots": {
+      "get": {
+        "tags": ["Root"],
+        "summary": "Search a triliteral root",
+        "description": "Looks up a root by transliteration (e.g. `SH-L-M`) or Syriac Unicode. Returns all attested word forms, occurrence counts, corpus attestation breakdown, and cognates.",
+        "operationId": "getRoots",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Root in dash-separated transliteration (e.g. `SH-L-M`) or Syriac Unicode",
+            "schema": { "type": "string", "example": "SH-L-M" }
+          },
+          { "$ref": "#/components/parameters/corpus" },
+          { "$ref": "#/components/parameters/lang" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Root entry with forms, attestation, and cognates",
+            "content": {
+              "application/json": {
+                "example": {
+                  "root": "ܫܠܡ",
+                  "root_transliteration": "SH-L-M",
+                  "total_occurrences": 412,
+                  "matches": [
+                    {
+                      "form": "ܫܠܡܐ",
+                      "transliteration": "shlama",
+                      "count": 87,
+                      "references": ["Matthew 5:9"],
+                      "gloss_en": "peace",
+                      "gloss_es": "paz"
+                    }
+                  ],
+                  "corpus_attestation": {
+                    "peshitta_nt": 87,
+                    "peshitta_ot": 210
+                  },
+                  "cognates": {
+                    "gloss_en": "peace, completeness",
+                    "hebrew": [{ "word": "שָׁלוֹם", "transliteration": "shalom", "meaning_en": "peace" }],
+                    "arabic": [{ "word": "سَلَام", "transliteration": "salaam", "meaning_en": "peace" }]
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing or unparseable root", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "404": { "description": "Root not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/suggest": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Root autocomplete suggestions",
+        "description": "Returns up to 10 root suggestions matching a transliteration prefix. Used for autocomplete widgets.",
+        "operationId": "getSuggest",
+        "parameters": [
+          {
+            "name": "prefix",
+            "in": "query",
+            "required": true,
+            "description": "Uppercase transliteration prefix, e.g. `SH`",
+            "schema": { "type": "string", "example": "SH" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of root suggestions",
+            "content": {
+              "application/json": {
+                "example": [
+                  { "root": "ܫܠܡ", "translit": "SH-L-M", "count": 412 },
+                  { "root": "ܫܡܥ", "translit": "SH-M-A", "count": 289 }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/search": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Full-text search",
+        "description": "Searches verse text or English/Spanish glosses. Returns matching verses with context.",
+        "operationId": "getSearch",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Search query",
+            "schema": { "type": "string", "example": "peace" }
+          },
+          { "$ref": "#/components/parameters/corpus" },
+          { "$ref": "#/components/parameters/lang" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "example": {
+                  "query": "peace",
+                  "total": 24,
+                  "results": [{ "ref": "Matthew 5:9", "text": "ܛܘܒܝܗܘܢ ܠܥܒܕ̈ܝ ܫܠܡܐ", "corpus": "peshitta_nt" }]
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing query", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/verse": {
+      "get": {
+        "tags": ["Text"],
+        "summary": "Single verse with word-level root data",
+        "description": "Returns a single verse with per-word root analysis: root key, transliteration, gloss, confidence score, and verb stem.",
+        "operationId": "getVerse",
+        "parameters": [
+          {
+            "name": "ref",
+            "in": "query",
+            "required": true,
+            "description": "Verse reference in `Book Chapter:Verse` format",
+            "schema": { "type": "string", "example": "Matthew 5:9" }
+          },
+          { "$ref": "#/components/parameters/trans" },
+          { "$ref": "#/components/parameters/lang" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verse with word-level analysis",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ref": "Matthew 5:9",
+                  "text": "ܛܘܒܝܗܘܢ ܠܥܒܕ̈ܝ ܫܠܡܐ",
+                  "translation": "Blessed are the peacemakers",
+                  "words": [
+                    {
+                      "form": "ܫܠܡܐ",
+                      "root": "SH-L-M",
+                      "gloss": "peace",
+                      "confidence": 0.95,
+                      "stem": "Peal"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing ref", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "404": { "description": "Verse not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/chapter/{book}/{chapter}": {
+      "get": {
+        "tags": ["Text"],
+        "summary": "All verses in a chapter",
+        "description": "Returns every verse in a chapter with optional translation.",
+        "operationId": "getChapter",
+        "parameters": [
+          {
+            "name": "book",
+            "in": "path",
+            "required": true,
+            "description": "Book name, e.g. `Matthew` or `Genesis`",
+            "schema": { "type": "string", "example": "Matthew" }
+          },
+          {
+            "name": "chapter",
+            "in": "path",
+            "required": true,
+            "description": "Chapter number",
+            "schema": { "type": "integer", "example": 5 }
+          },
+          { "$ref": "#/components/parameters/corpus" },
+          { "$ref": "#/components/parameters/trans" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chapter verses",
+            "content": {
+              "application/json": {
+                "example": {
+                  "book": "Matthew",
+                  "chapter": 5,
+                  "verses": [{ "ref": "Matthew 5:1", "verse_num": 1, "text": "ܟܕ ܕܝܢ ܚܙܐ...", "translation": "And seeing the multitudes..." }]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/chapter-roots": {
+      "get": {
+        "tags": ["Text"],
+        "summary": "All roots in a chapter",
+        "description": "Returns all triliteral roots attested in a chapter, sorted by frequency.",
+        "operationId": "getChapterRoots",
+        "parameters": [
+          {
+            "name": "book",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "Matthew" }
+          },
+          {
+            "name": "chapter",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "example": 5 }
+          },
+          { "$ref": "#/components/parameters/lang" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Root frequency list for the chapter",
+            "content": {
+              "application/json": {
+                "example": {
+                  "book": "Matthew",
+                  "chapter": 5,
+                  "roots": [{ "root": "SH-L-M", "count": 4, "gloss": "peace" }]
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing book", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/root-family": {
+      "get": {
+        "tags": ["Root"],
+        "summary": "Root family visualizer data",
+        "description": "Returns full data for the root family visualizer: word forms by stem, cognates, sister roots (sharing 2 consonants), semantic bridge, and corpus attestation.",
+        "operationId": "getRootFamily",
+        "parameters": [
+          {
+            "name": "root",
+            "in": "query",
+            "required": true,
+            "description": "Root in dash-separated transliteration",
+            "schema": { "type": "string", "example": "SH-L-M" }
+          },
+          { "$ref": "#/components/parameters/lang" },
+          { "$ref": "#/components/parameters/trans" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Root family data",
+            "content": {
+              "application/json": {
+                "example": {
+                  "root_translit": "SH-L-M",
+                  "root_syriac": "ܫܠܡ",
+                  "gloss": "peace, completeness",
+                  "sister_roots": ["SH-L-H", "SH-L-T"],
+                  "cognates": {},
+                  "stems": { "Peal": ["ܫܠܡ", "ܫܠܡܐ"] }
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing root", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/paradigm": {
+      "get": {
+        "tags": ["Root"],
+        "summary": "Verb paradigm (word forms by stem)",
+        "description": "Returns all attested word forms grouped by verb stem (Peal, Ethpeel, Pael, Ethpaal, Aphel, Shafel, Ettaphal).",
+        "operationId": "getParadigm",
+        "parameters": [
+          {
+            "name": "root",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "K-T-B" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paradigm table grouped by stem",
+            "content": {
+              "application/json": {
+                "example": {
+                  "root": "K-T-B",
+                  "stems": {
+                    "Peal": [{ "form": "ܟܬܒ", "count": 12 }],
+                    "Ethpeel": [{ "form": "ܐܬܟܬܒ", "count": 3 }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cognate-lookup": {
+      "get": {
+        "tags": ["Root"],
+        "summary": "Reverse cognate lookup",
+        "description": "Finds Aramaic roots by a Hebrew, Arabic, or transliterated cognate word.",
+        "operationId": "getCognateLookup",
+        "parameters": [
+          {
+            "name": "word",
+            "in": "query",
+            "required": true,
+            "description": "Hebrew, Arabic, or transliterated word, e.g. `shalom`",
+            "schema": { "type": "string", "example": "shalom" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching Aramaic roots",
+            "content": {
+              "application/json": {
+                "example": { "word": "shalom", "count": 1, "results": [{ "root": "SH-L-M", "gloss_en": "peace" }] }
+              }
+            }
+          },
+          "400": { "description": "Missing word", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/reverse-search": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Search roots by meaning",
+        "description": "Finds roots whose English or Spanish gloss matches the query.",
+        "operationId": "getReverseSearch",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "English or Spanish meaning keyword",
+            "schema": { "type": "string", "example": "peace" }
+          },
+          { "$ref": "#/components/parameters/lang" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching roots",
+            "content": {
+              "application/json": {
+                "example": {
+                  "query": "peace",
+                  "total": 3,
+                  "results": [{ "root": "SH-L-M", "gloss_en": "peace, completeness" }]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/heatmap": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "Root frequency heat map data",
+        "description": "Returns the most frequent roots across all corpora, with per-corpus counts for building a heat map.",
+        "operationId": "getHeatmap",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of roots to return (max 500)",
+            "schema": { "type": "integer", "default": 100, "example": 50 }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort order",
+            "schema": { "type": "string", "enum": ["total", "alpha"], "default": "total" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Heat map rows",
+            "content": {
+              "application/json": {
+                "example": {
+                  "roots": [
+                    {
+                      "root": "SH-L-M",
+                      "total": 412,
+                      "peshitta_nt": 87,
+                      "peshitta_ot": 210,
+                      "biblical_aramaic": 5,
+                      "targum_onkelos": 90,
+                      "ephrem_nisibis": 20
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hapax": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "Hapax legomena",
+        "description": "Returns roots or word forms attested ≤ N times across all (or one) corpus. Useful for identifying rare vocabulary.",
+        "operationId": "getHapax",
+        "parameters": [
+          {
+            "name": "max_freq",
+            "in": "query",
+            "description": "Maximum attestation frequency (1 = true hapax)",
+            "schema": { "type": "integer", "default": 1, "minimum": 1, "maximum": 10 }
+          },
+          { "$ref": "#/components/parameters/corpus" },
+          {
+            "name": "scope",
+            "in": "query",
+            "description": "Whether to count at root level or word-form level",
+            "schema": { "type": "string", "enum": ["root", "form"], "default": "root" }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["alpha", "confidence", "corpus"], "default": "alpha" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 500 }
+          },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hapax legomena list",
+            "content": {
+              "application/json": {
+                "example": {
+                  "count": 142,
+                  "results": [{ "root": "A-B-G", "count": 1, "corpus": "ephrem_nisibis", "gloss": "..." }]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/concordance": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "KWIC concordance",
+        "description": "Returns Key-Word-In-Context concordance lines for a root, with left context, keyword, and right context.",
+        "operationId": "getConcordance",
+        "parameters": [
+          {
+            "name": "root",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "SH-L-M" }
+          },
+          { "$ref": "#/components/parameters/corpus" },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["book", "frequency", "form"], "default": "book" }
+          },
+          {
+            "name": "group_by",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["none", "form"], "default": "none" }
+          },
+          {
+            "name": "context_words",
+            "in": "query",
+            "description": "Number of words of context on each side",
+            "schema": { "type": "integer", "default": 5, "minimum": 1, "maximum": 15 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 500 }
+          },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Concordance lines",
+            "content": {
+              "application/json": {
+                "example": {
+                  "root": "SH-L-M",
+                  "total": 87,
+                  "lines": [
+                    {
+                      "ref": "Matthew 5:9",
+                      "left": "ܛܘܒܝܗܘܢ ܠܥܒܕ̈ܝ",
+                      "keyword": "ܫܠܡܐ",
+                      "right": "ܕܗܢܘܢ ܒܢܝܐ",
+                      "form": "ܫܠܡܐ"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing root", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/concordance/export": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "Export concordance",
+        "description": "Exports concordance data in CSV, JSON, plain text, or TEI XML format.",
+        "operationId": "exportConcordance",
+        "parameters": [
+          {
+            "name": "root",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "SH-L-M" }
+          },
+          { "$ref": "#/components/parameters/corpus" },
+          {
+            "name": "context_words",
+            "in": "query",
+            "schema": { "type": "integer", "default": 5 }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Export format",
+            "schema": { "type": "string", "enum": ["csv", "json", "txt", "tei"], "default": "csv" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File download in the requested format",
+            "content": {
+              "text/csv": {},
+              "application/json": {},
+              "text/plain": {},
+              "application/xml": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/diachronic/root": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "Diachronic root frequency",
+        "description": "Returns normalized frequency (per 1,000 words) of a root across all five corpora in chronological order.",
+        "operationId": "getDiachronicRoot",
+        "parameters": [
+          {
+            "name": "root",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "K-T-B" }
+          },
+          { "$ref": "#/components/parameters/lang" },
+          { "$ref": "#/components/parameters/trans" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Per-corpus frequency data in chronological order",
+            "content": {
+              "application/json": {
+                "example": {
+                  "root_translit": "K-T-B",
+                  "root_syriac": "ܟܬܒ",
+                  "gloss": "write",
+                  "corpora": [
+                    { "corpus_id": "biblical_aramaic", "label": "Biblical Aramaic", "period": "5th c. BCE", "raw_count": 8, "normalized": 1.64 }
+                  ]
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing root", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/diachronic/shifts": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "Frequency shift leaders",
+        "description": "Returns roots with the largest normalized-frequency shifts between the earliest and latest corpus in which they appear.",
+        "operationId": "getDiachronicShifts",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 50 }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "description": "Filter to emerging, declining, or all roots",
+            "schema": { "type": "string", "enum": ["all", "emerging", "declining"], "default": "all" }
+          },
+          {
+            "name": "min_occurrences",
+            "in": "query",
+            "description": "Minimum total attestations to include a root",
+            "schema": { "type": "integer", "default": 3 }
+          },
+          { "$ref": "#/components/parameters/trans" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roots with frequency shift data",
+            "content": {
+              "application/json": {
+                "example": {
+                  "results": [
+                    {
+                      "root_translit": "SH-L-M",
+                      "root": "ܫܠܡ",
+                      "gloss": "peace",
+                      "magnitude": 4.2,
+                      "direction": "emerging",
+                      "freqs": [0.1, 0.3, 0.8, 0.9, 1.2]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/diachronic/unique": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "Corpus-unique roots",
+        "description": "Returns roots attested in exactly one corpus — vocabulary specific to a single textual tradition.",
+        "operationId": "getDiachronicUnique",
+        "parameters": [
+          { "$ref": "#/components/parameters/corpus" },
+          { "$ref": "#/components/parameters/trans" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of corpus-unique roots",
+            "content": {
+              "application/json": {
+                "example": {
+                  "corpus": "biblical_aramaic",
+                  "count": 28,
+                  "roots": [{ "root": "P-TH-G-M", "gloss": "decree, word" }]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collocations": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "Root collocations",
+        "description": "Returns roots that most frequently co-occur with the given root within a verse or chapter window.",
+        "operationId": "getCollocations",
+        "parameters": [
+          {
+            "name": "root",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "SH-L-M" }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["verse", "chapter"], "default": "verse" }
+          },
+          { "$ref": "#/components/parameters/corpus" },
+          {
+            "name": "min_count",
+            "in": "query",
+            "schema": { "type": "integer", "default": 3 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 50 }
+          },
+          { "$ref": "#/components/parameters/lang" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collocating roots ranked by co-occurrence frequency",
+            "content": {
+              "application/json": {
+                "example": {
+                  "root": "SH-L-M",
+                  "collocates": [{ "root": "B-R-K", "gloss": "bless", "count": 12 }]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/proximity-search": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "Proximity search (two roots)",
+        "description": "Finds verses or chapters where two roots co-occur.",
+        "operationId": "getProximitySearch",
+        "parameters": [
+          {
+            "name": "root1",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "SH-L-M" }
+          },
+          {
+            "name": "root2",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "K-T-B" }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["verse", "chapter"], "default": "verse" }
+          },
+          { "$ref": "#/components/parameters/corpus" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Co-occurrence results",
+            "content": {
+              "application/json": {
+                "example": {
+                  "root1": "SH-L-M",
+                  "root2": "K-T-B",
+                  "scope": "verse",
+                  "count": 4,
+                  "results": [{ "ref": "Daniel 6:9", "text": "..." }]
+                }
+              }
+            }
+          },
+          "400": { "description": "Two roots required", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/parallel": {
+      "get": {
+        "tags": ["Parallel"],
+        "summary": "Parallel texts for a verse",
+        "description": "Returns the same verse reference across all corpora that contain it, enabling side-by-side comparison.",
+        "operationId": "getParallel",
+        "parameters": [
+          {
+            "name": "ref",
+            "in": "query",
+            "required": true,
+            "description": "Verse reference, e.g. `Genesis 1:1`",
+            "schema": { "type": "string", "example": "Genesis 1:1" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Parallel text results",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ref": "Genesis 1:1",
+                  "results": [
+                    { "corpus": "peshitta_ot", "label": "Peshitta OT", "text": "ܒܪܫܝܬ ܒܪܐ ܐܠܗܐ..." },
+                    { "corpus": "targum_onkelos", "label": "Targum Onkelos", "text": "בְּקַדְמִין בְּרָא..." }
+                  ]
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing ref", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/interlinear": {
+      "get": {
+        "tags": ["Parallel"],
+        "summary": "Interlinear reader data",
+        "description": "Returns a passage with per-word root analysis suitable for building an interlinear display.",
+        "operationId": "getInterlinear",
+        "parameters": [
+          {
+            "name": "book",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "Matthew" }
+          },
+          { "name": "ch_start", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "v_start", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "ch_end", "in": "query", "schema": { "type": "integer" } },
+          { "name": "v_end", "in": "query", "schema": { "type": "integer" } },
+          { "$ref": "#/components/parameters/corpus" },
+          { "$ref": "#/components/parameters/script" },
+          { "$ref": "#/components/parameters/lang" },
+          { "$ref": "#/components/parameters/trans" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Interlinear passage data",
+            "content": {
+              "application/json": {
+                "example": {
+                  "book": "Matthew",
+                  "verses": [
+                    {
+                      "ref": "Matthew 5:1",
+                      "words": [{ "form": "ܟܕ", "root": "K-D", "gloss": "when", "confidence": 0.7 }]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/passage-constellation": {
+      "get": {
+        "tags": ["Analysis"],
+        "summary": "Passage root constellation data",
+        "description": "Returns root co-occurrence graph data for a passage, used to power the D3 constellation visualization.",
+        "operationId": "getPassageConstellation",
+        "parameters": [
+          { "name": "book", "in": "query", "required": true, "schema": { "type": "string", "example": "Matthew" } },
+          { "name": "chapter", "in": "query", "required": true, "schema": { "type": "integer", "example": 5 } },
+          { "name": "v_start", "in": "query", "required": true, "schema": { "type": "integer", "example": 1 } },
+          { "name": "v_end", "in": "query", "schema": { "type": "integer", "example": 12 } },
+          { "$ref": "#/components/parameters/corpus" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Graph nodes and edges for constellation visualization",
+            "content": {
+              "application/json": {
+                "example": {
+                  "nodes": [{ "id": "SH-L-M", "label": "ܫܠܡ", "count": 4 }],
+                  "edges": [{ "source": "SH-L-M", "target": "B-R-K", "weight": 2 }]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/passage-profile": {
+      "get": {
+        "tags": ["Utilities"],
+        "summary": "Passage lexical profile",
+        "description": "Returns a statistical lexical profile of a passage: unique roots, hapax count, stem distribution, top roots.",
+        "operationId": "getPassageProfile",
+        "parameters": [
+          { "name": "book", "in": "query", "required": true, "schema": { "type": "string", "example": "Daniel" } },
+          { "name": "ch_start", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "ch_end", "in": "query", "schema": { "type": "integer" } },
+          { "name": "v_start", "in": "query", "schema": { "type": "integer" } },
+          { "name": "v_end", "in": "query", "schema": { "type": "integer" } },
+          { "$ref": "#/components/parameters/corpus" },
+          { "$ref": "#/components/parameters/lang" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Passage lexical profile",
+            "content": {
+              "application/json": {
+                "example": {
+                  "book": "Daniel",
+                  "unique_roots": 48,
+                  "hapax_count": 7,
+                  "top_roots": [{ "root": "M-L-K", "count": 12, "gloss": "king, reign" }]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/word-parse": {
+      "get": {
+        "tags": ["Utilities"],
+        "summary": "Parse a single word",
+        "description": "Analyses a single Aramaic word form: strips affixes, identifies the triliteral root, scores confidence, and classifies the verb stem.",
+        "operationId": "getWordParse",
+        "parameters": [
+          {
+            "name": "word",
+            "in": "query",
+            "required": true,
+            "description": "Syriac or Hebrew-script Aramaic word",
+            "schema": { "type": "string", "example": "ܫܠܡܐ" }
+          },
+          { "$ref": "#/components/parameters/lang" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Parse result",
+            "content": {
+              "application/json": {
+                "example": {
+                  "word": "ܫܠܡܐ",
+                  "root": "SH-L-M",
+                  "confidence": 0.95,
+                  "stem": "Peal",
+                  "gloss_en": "peace",
+                  "prefixes": [],
+                  "suffixes": ["ܐ"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/semantic-fields": {
+      "get": {
+        "tags": ["Utilities"],
+        "summary": "List semantic fields",
+        "description": "Returns all available semantic field categories.",
+        "operationId": "getSemanticFields",
+        "parameters": [
+          { "$ref": "#/components/parameters/lang" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Semantic field list",
+            "content": {
+              "application/json": {
+                "example": { "fields": ["motion", "speech", "kinship", "divine", "time"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/semantic-fields/{field}": {
+      "get": {
+        "tags": ["Utilities"],
+        "summary": "Roots in a semantic field",
+        "description": "Returns all roots belonging to a specific semantic field.",
+        "operationId": "getSemanticField",
+        "parameters": [
+          {
+            "name": "field",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "example": "speech" }
+          },
+          { "$ref": "#/components/parameters/lang" },
+          { "$ref": "#/components/parameters/script" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roots in the field",
+            "content": {
+              "application/json": {
+                "example": {
+                  "field": "speech",
+                  "count": 14,
+                  "roots": [{ "root": "A-M-R", "gloss": "say, speak" }]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

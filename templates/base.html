@@ -126,6 +126,12 @@
                         <span class="material-symbols-outlined">bookmark</span>
                     </a>
 
+                    <!-- API Reference -->
+                    <a class="nav-btn{% if page_id == 'api-docs' %} active{% endif %}" href="/api-docs?lang={{ lang }}" aria-label="API Reference"
+                       data-tooltip="API Reference">
+                        <span class="material-symbols-outlined">api</span>
+                    </a>
+
                     <!-- Guided Tour -->
                     <button class="nav-btn" id="tour-nav-btn"
                             aria-label="{{ t('tour_start', lang) if t else 'Guided Tour' }}"
