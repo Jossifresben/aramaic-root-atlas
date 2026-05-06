@@ -41,6 +41,7 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 - **Five translation tracks** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek)
 - **Three Syriac font styles** -- Estrangela, Eastern (Madnhaya), Western (Serto)
 - **Dark mode** and QR sharing
+- **Swagger API docs** -- interactive OpenAPI 3.0 reference at [`/api-docs`](https://aramaic-root-atlas.onrender.com/api-docs) covering all 28 REST endpoints with parameters, response schemas, examples, and try-it-out
 - **Guided Tour** -- 12-step interactive walkthrough of all features, available in all four UI languages; accessible via the ? button in the navbar or the Watch Video / Tour button on the Guide page
 - **Watch Video** -- in-app video walkthrough on the Guide page, plays in a viewport-wide modal with fullscreen support
 
@@ -154,7 +155,9 @@ The Atlas exposes a full JSON API for programmatic access. All endpoints support
 
 **Root input formats:** Dash-separated Latin (`SH-L-M`), Syriac Unicode (`ܫܠܡ`), Hebrew (`שלם`), or Arabic (`سلم`). The API auto-detects and normalizes.
 
-> **Full API documentation** with parameters, response schemas, and examples: **[docs/API.md](docs/API.md)**
+> **Interactive API documentation** (Swagger UI) with try-it-out: **[/api-docs](https://aramaic-root-atlas.onrender.com/api-docs)**
+>
+> **Full static API documentation** with parameters, response schemas, and examples: **[docs/API.md](docs/API.md)**
 
 ## Architecture
 
