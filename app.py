@@ -587,6 +587,12 @@ def about():
     return render_template('about.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='about')
 
 
+@app.route('/api-docs')
+def api_docs():
+    lang = _get_lang()
+    return render_template('api_docs.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='api-docs')
+
+
 @app.route('/api/verse')
 def api_verse():
     """Return a single verse with word-level data for the modal."""

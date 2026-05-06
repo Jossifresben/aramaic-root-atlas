@@ -73,6 +73,10 @@
         <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98M21 5a3 3 0 11-6 0 3 3 0 016 0zM9 12a3 3 0 11-6 0 3 3 0 016 0zM21 19a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         </button>
+        <!-- API Reference -->
+        <a class="nav-btn{% if page_id == 'api-docs' %} active{% endif %}" href="/api-docs?lang={{ lang }}" aria-label="API Reference">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 6l-4 6 4 6M16 6l4 6-4 6M12 3v18"/></svg>
+        </a>
         <!-- Tour -->
         <button class="nav-btn" id="tour-nav-btn" aria-label="Guided Tour">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 0c0 2-2.5 2-2.5 4M12 17v.01"/></svg>
