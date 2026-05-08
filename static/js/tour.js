@@ -70,7 +70,7 @@
                 side: 'bottom', align: 'start'
             });
             // Corpus stats row (if present)
-            addStep(steps, '.corpus-cells', {
+            addStep(steps, '.corpora-grid', {
                 title: t('nav_browse_title'),
                 description: t('nav_browse_body'),
                 side: 'top', align: 'center'
