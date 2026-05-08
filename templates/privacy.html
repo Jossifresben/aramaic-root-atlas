@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% set page_id = 'privacy' %}
+
+{% block title %}{% if lang == 'es' %}Privacidad{% elif lang == 'he' %}פרטיות{% elif lang == 'ar' %}الخصوصية{% else %}Privacy{% endif %} — Aramaic Root Atlas{% endblock %}
+
+{% block topbar %}
+<div class="crumb"><a href="/?lang={{ lang }}">{{ t('nav_trace_root', lang) if t else 'Trace Root' }}</a> › <a href="/about?lang={{ lang }}">{{ t('nav_about', lang) if t else 'About' }}</a> › {% if lang == 'es' %}Privacidad{% elif lang == 'he' %}פרטיות{% elif lang == 'ar' %}الخصوصية{% else %}Privacy{% endif %}</div>
+{% endblock %}
+
+{% block content %}
+<style>
+  .privacy-wrap { max-width: 760px; margin: 0 auto; padding: 1rem 0; line-height: 1.65; }
+  .privacy-wrap h1 { font-family: var(--serif); font-weight: 600; margin-bottom: .25rem; }
+  .privacy-wrap h2 { font-family: var(--serif); font-weight: 600; margin-top: 2rem; padding-bottom: .35rem; border-bottom: 1px solid var(--rule-soft); }
+  .privacy-wrap p, .privacy-wrap li { color: var(--ink-2); }
+  .privacy-wrap a { color: var(--link); }
+  .privacy-wrap code { font-family: var(--mono); font-size: .92em; background: var(--surface-2); padding: 1px 5px; border-radius: 3px; }
+  .privacy-wrap .updated { color: var(--ink-3); font-style: italic; font-size: .92em; margin-top: .25rem; }
+  .privacy-wrap .opt-out-row { display: flex; gap: 12px; align-items: center; margin: 1rem 0; padding: .9rem 1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; }
+  .privacy-wrap .opt-out-row button { font-family: var(--sans); font-weight: 500; padding: 6px 14px; border-radius: 4px; background: var(--ink); color: var(--bg); border: 0; cursor: pointer; }
+  .privacy-wrap .opt-out-row button:hover { opacity: .85; }
+  .privacy-wrap .opt-out-row .ok { color: var(--c-pnt); font-weight: 500; }
+</style>
+
+<div class="privacy-wrap">
+
+{% if lang == 'es' %}
+<h1>Privacidad y datos</h1>
+<p class="updated">Última actualización: 9 de mayo de 2026</p>
+<p>El Aramaic Root Atlas es una herramienta académica de acceso abierto. Esta página describe qué datos se recogen, qué se almacena en su navegador y cómo desactivar el seguimiento.</p>
+
+<h2>Qué se recoge</h2>
+<p>El sitio utiliza <strong>Google Analytics 4</strong> (propiedad <code>G-XWZC618EC4</code>) para medir el uso agregado: páginas vistas, navegador y sistema operativo, país aproximado (a nivel de ciudad como mucho), y tiempo en la página. Las direcciones IP se anonimizan automáticamente por Google antes de almacenarse. Consulte las <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">políticas de privacidad de Google</a>.</p>
+<p>El servidor de alojamiento (Render.com) registra solicitudes HTTP estándar (IP, marca de tiempo, ruta solicitada) durante un breve período para detección de abusos.</p>
+<p>El sitio <strong>no</strong> requiere registro, no recoge identificadores personales, no vende ni comparte datos con terceros más allá de Google Analytics, y no utiliza píxeles publicitarios.</p>
+
+<h2>Qué se almacena en su navegador</h2>
+<ul>
+  <li><strong>localStorage</strong> — sus preferencias de idioma, escritura, tema (claro/oscuro), pista de traducción, marcadores y notas de investigación. Esta información permanece en su dispositivo y nunca se envía al servidor.</li>
+  <li><strong>Cookies de Google Analytics</strong> (<code>_ga</code>, <code>_ga_*</code>) — únicamente si ha aceptado el aviso de cookies. Por defecto el seguimiento está <em>desactivado</em>.</li>
+</ul>
+
+<h2>Cómo desactivar el seguimiento</h2>
+<p>Use el botón siguiente en cualquier momento. Si nunca aceptó el aviso, ya está desactivado.</p>
+<div class="opt-out-row">
+  <span class="status-label" style="font-weight:500"><span class="status-state" data-fallback="">…</span></span>
+  <button onclick="aramaicAnalyticsOptOut()">Desactivar Google Analytics</button>
+  <button onclick="aramaicAnalyticsOptIn()" style="background:transparent;color:var(--ink-2);border:1px solid var(--rule)">Aceptar</button>
+</div>
+<p>También puede instalar el <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">complemento oficial de exclusión de Google Analytics</a>.</p>
+
+<h2>GDPR / RGPD</h2>
+<p>Si reside en la UE, el Reino Unido u otra jurisdicción con leyes de protección de datos similares: el seguimiento de Google Analytics se ejecuta únicamente con su consentimiento explícito mediante el aviso de cookies. Sin consentimiento, no se cargan los scripts de seguimiento.</p>
+
+<h2>Contacto</h2>
+<p>Cuestiones sobre privacidad: <a href="https://jossifresco.com" target="_blank" rel="noopener">jossifresco.com</a> o el <a href="https://github.com/Jossifresben/aramaic-root-atlas/issues" target="_blank" rel="noopener">rastreador de issues en GitHub</a>.</p>
+
+{% elif lang == 'he' %}
+<h1>פרטיות ונתונים</h1>
+<p class="updated">עודכן לאחרונה: 9 במאי 2026</p>
+<p>Aramaic Root Atlas הוא כלי אקדמי בגישה חופשית. עמוד זה מתאר אילו נתונים נאספים, מה נשמר בדפדפן שלך וכיצד לבטל את המעקב.</p>
+
+<h2>מה נאסף</h2>
+<p>האתר משתמש ב‑<strong>Google Analytics 4</strong> (נכס <code>G-XWZC618EC4</code>) לשם מדידה מצרפית של שימוש: דפים שנצפו, דפדפן ומערכת הפעלה, מדינה משוערת (עד רמת עיר לכל היותר), וזמן בדף. כתובות IP עוברות אנונימיזציה אוטומטית על‑ידי Google לפני האחסון. ראו את <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">מדיניות הפרטיות של Google</a>.</p>
+<p>שרת האחסון (Render.com) רושם בקשות HTTP סטנדרטיות (IP, חותמת זמן, נתיב מבוקש) לפרק זמן קצר, לצורך זיהוי שימוש לרעה.</p>
+<p>האתר <strong>אינו</strong> דורש הרשמה, אינו אוסף מזהים אישיים, אינו מוכר או חולק נתונים עם צדדים שלישיים מעבר ל‑Google Analytics, ואינו משתמש בפיקסלים פרסומיים.</p>
+
+<h2>מה נשמר בדפדפן שלך</h2>
+<ul>
+  <li><strong>localStorage</strong> — העדפות שפה, כתב, ערכת נושא (בהיר/כהה), מסלול תרגום, סימניות והערות מחקר. הנתונים הללו נשארים במכשיר שלך ואינם נשלחים לשרת.</li>
+  <li><strong>קוקיות Google Analytics</strong> (<code>_ga</code>, <code>_ga_*</code>) — רק אם הסכמת לאישור הקוקיות. ברירת המחדל היא שהמעקב <em>כבוי</em>.</li>
+</ul>
+
+<h2>כיצד לבטל את המעקב</h2>
+<p>השתמשו בכפתור למטה בכל עת. אם מעולם לא אישרתם, המעקב כבר כבוי.</p>
+<div class="opt-out-row">
+  <span class="status-label" style="font-weight:500"><span class="status-state" data-fallback="">…</span></span>
+  <button onclick="aramaicAnalyticsOptOut()">בטל Google Analytics</button>
+  <button onclick="aramaicAnalyticsOptIn()" style="background:transparent;color:var(--ink-2);border:1px solid var(--rule)">אשר</button>
+</div>
+<p>תוכלו גם להתקין את <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">תוסף ההסתלקות הרשמי של Google Analytics</a>.</p>
+
+<h2>GDPR</h2>
+<p>אם אתם מתגוררים באיחוד האירופי, בריטניה או בתחום שיפוט אחר עם חוקי הגנת מידע דומים: מעקב Google Analytics פועל רק לאחר הסכמה מפורשת באמצעות אישור הקוקיות. ללא הסכמה — סקריפטי המעקב לא נטענים.</p>
+
+<h2>יצירת קשר</h2>
+<p>שאלות פרטיות: <a href="https://jossifresco.com" target="_blank" rel="noopener">jossifresco.com</a> או <a href="https://github.com/Jossifresben/aramaic-root-atlas/issues" target="_blank" rel="noopener">מערכת ה‑issues ב‑GitHub</a>.</p>
+
+{% elif lang == 'ar' %}
+<h1>الخصوصية والبيانات</h1>
+<p class="updated">آخر تحديث: 9 مايو 2026</p>
+<p>الأطلس الآرامي للجذور أداة أكاديمية مفتوحة الوصول. تصف هذه الصفحة البيانات التي تُجمَع، وما يُخزَّن في متصفحك، وكيفية إيقاف التتبّع.</p>
+
+<h2>ما يُجمَع</h2>
+<p>يستخدم الموقع <strong>Google Analytics 4</strong> (رقم الخاصية <code>G-XWZC618EC4</code>) للقياس التراكمي للاستخدام: الصفحات المُشاهَدة، المتصفح ونظام التشغيل، البلد التقريبي (حتى مستوى المدينة كحدّ أقصى)، ومدّة البقاء على الصفحة. تُجَهَّل عناوين IP تلقائياً من قبل Google قبل التخزين. راجع <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسات خصوصية Google</a>.</p>
+<p>يحتفظ خادم الاستضافة (Render.com) بسجلّات HTTP قياسية (IP، الطابع الزمني، المسار المطلوب) لفترة قصيرة لأغراض كشف إساءة الاستخدام.</p>
+<p>لا يتطلّب الموقع التسجيل، ولا يجمع معرّفات شخصية، ولا يبيع البيانات أو يشاركها مع أطراف ثالثة بخلاف Google Analytics، ولا يستخدم بكسلات إعلانية.</p>
+
+<h2>ما يُخزَّن في متصفحك</h2>
+<ul>
+  <li><strong>localStorage</strong> — تفضيلات اللغة والكتابة والسمة (فاتحة/داكنة)، مسار الترجمة، الإشارات المرجعية، وملاحظات البحث. تبقى هذه البيانات على جهازك ولا تُرسَل إلى الخادم أبداً.</li>
+  <li><strong>كوكيز Google Analytics</strong> (<code>_ga</code>، <code>_ga_*</code>) — فقط إذا قبلت إشعار الكوكيز. التتبّع <em>معطَّل</em> افتراضياً.</li>
+</ul>
+
+<h2>كيفية إيقاف التتبّع</h2>
+<p>استخدم الزر أدناه في أي وقت. إذا لم تقبل الإشعار من قبل، فهو معطَّل أصلاً.</p>
+<div class="opt-out-row">
+  <span class="status-label" style="font-weight:500"><span class="status-state" data-fallback="">…</span></span>
+  <button onclick="aramaicAnalyticsOptOut()">تعطيل Google Analytics</button>
+  <button onclick="aramaicAnalyticsOptIn()" style="background:transparent;color:var(--ink-2);border:1px solid var(--rule)">قبول</button>
+</div>
+<p>يمكنك أيضاً تثبيت <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">إضافة Google Analytics الرسمية لإلغاء الاشتراك</a>.</p>
+
+<h2>اللائحة العامة لحماية البيانات (GDPR)</h2>
+<p>إذا كنت في الاتحاد الأوروبي أو المملكة المتحدة أو ولاية قضائية أخرى لها قوانين حماية بيانات مماثلة: لا يعمل تتبّع Google Analytics إلا بموافقتك الصريحة عبر إشعار الكوكيز. بدون موافقة، لا تُحمَّل سكربتات التتبّع.</p>
+
+<h2>التواصل</h2>
+<p>أسئلة الخصوصية: <a href="https://jossifresco.com" target="_blank" rel="noopener">jossifresco.com</a> أو <a href="https://github.com/Jossifresben/aramaic-root-atlas/issues" target="_blank" rel="noopener">متعقّب الإصدارات على GitHub</a>.</p>
+
+{% else %}
+<h1>Privacy &amp; data</h1>
+<p class="updated">Last updated: 9 May 2026</p>
+<p>The Aramaic Root Atlas is an open-access scholarly tool. This page describes what data is collected, what is stored in your browser, and how to opt out of tracking.</p>
+
+<h2>What is collected</h2>
+<p>This site uses <strong>Google Analytics 4</strong> (property <code>G-XWZC618EC4</code>) to measure aggregate usage: pageviews, browser and operating system, approximate country (city-level at most), and time on page. IP addresses are automatically anonymized by Google before storage. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policies</a>.</p>
+<p>The hosting provider (Render.com) keeps standard HTTP logs (IP, timestamp, requested path) for a brief retention window to support abuse detection.</p>
+<p>The site does <strong>not</strong> require registration, does <strong>not</strong> collect personal identifiers, does <strong>not</strong> sell or share data with third parties other than Google Analytics, and does <strong>not</strong> use advertising pixels.</p>
+
+<h2>What is stored in your browser</h2>
+<ul>
+  <li><strong>localStorage</strong> — your language, script, theme (light/dark), translation track, bookmarks, and research notes. This data lives on your device and is never sent to the server. Clearing your browser cache will erase it.</li>
+  <li><strong>Google Analytics cookies</strong> (<code>_ga</code>, <code>_ga_*</code>) — only if you accepted the cookie notice. The default state is <em>tracking disabled</em>.</li>
+</ul>
+
+<h2>How to opt out</h2>
+<p>Use the button below at any time. If you never accepted the cookie notice, you're already opted out.</p>
+<div class="opt-out-row">
+  <span class="status-label" style="font-weight:500"><span class="status-state" data-fallback="">…</span></span>
+  <button onclick="aramaicAnalyticsOptOut()">Opt out of Google Analytics</button>
+  <button onclick="aramaicAnalyticsOptIn()" style="background:transparent;color:var(--ink-2);border:1px solid var(--rule)">Opt in</button>
+</div>
+<p>You can also install the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">official Google Analytics opt-out browser add-on</a>.</p>
+
+<h2>GDPR / EU users</h2>
+<p>If you are in the EU, UK, or another jurisdiction with similar data-protection laws: Google Analytics tracking only runs with your explicit consent via the cookie banner. Without consent, no tracking scripts load.</p>
+
+<h2>Contact</h2>
+<p>Privacy questions: <a href="https://jossifresco.com" target="_blank" rel="noopener">jossifresco.com</a> or the <a href="https://github.com/Jossifresben/aramaic-root-atlas/issues" target="_blank" rel="noopener">GitHub issue tracker</a>.</p>
+{% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+  function refreshState() {
+    var consent = localStorage.getItem('ara_analytics_consent');
+    var label = document.querySelector('.status-state');
+    if (!label) return;
+    var lang = document.documentElement.lang || 'en';
+    var msg;
+    if (consent === 'opt-in') {
+      msg = ({en:'Tracking: ON', es:'Seguimiento: activado', he:'מעקב: פעיל', ar:'التتبّع: مُفعَّل'})[lang] || 'Tracking: ON';
+    } else {
+      msg = ({en:'Tracking: OFF (default)', es:'Seguimiento: desactivado (por defecto)', he:'מעקב: כבוי (ברירת מחדל)', ar:'التتبّع: مُعطَّل (افتراضي)'})[lang] || 'Tracking: OFF (default)';
+    }
+    label.textContent = msg;
+  }
+  refreshState();
+  // Re-render after the global opt-in/opt-out helpers run
+  window.addEventListener('storage', refreshState);
+  document.addEventListener('click', function(e){ if (e.target.matches('button[onclick^="aramaicAnalyticsOpt"]')) setTimeout(refreshState, 50); });
+})();
+</script>
+{% endblock %}

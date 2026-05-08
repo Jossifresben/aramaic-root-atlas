@@ -593,6 +593,12 @@ def api_docs():
     return render_template('api_docs.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='api-docs')
 
 
+@app.route('/privacy')
+def privacy():
+    lang = _get_lang()
+    return render_template('privacy.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='privacy')
+
+
 @app.route('/api/verse')
 def api_verse():
     """Return a single verse with word-level data for the modal."""
