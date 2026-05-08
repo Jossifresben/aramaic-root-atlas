@@ -189,13 +189,9 @@ See `docs/ROADMAP-v3.1.md` for the post-v3.0 plan addressing each item above.
 
 If you use this software, please cite it as:
 
-> Fresco Benaim, Jose. (2026). *Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer* (v3.0). Zenodo. https://doi.org/10.5281/zenodo.19358625
+> Fresco Benaim, Jose. (2026). *Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer* (v3.0.1). Zenodo. https://doi.org/10.5281/zenodo.19358625
 
 Or use the metadata in [CITATION.cff](CITATION.cff).
-
-## Support
-
-If you find this project useful, consider supporting its development via [TipTopJar](https://tiptopjar.com).
 
 ## Related
 
@@ -222,3 +218,7 @@ The **bundled corpus data** under `data/corpora/` is licensed separately, per up
 - **Ephrem — Hymns on Nisibis** — **CC-BY** (Digital Syriac Corpus) — attribution required
 
 See [LICENSE-DATA.md](LICENSE-DATA.md) for full per-file attribution and use restrictions. Mixing the Apache-2.0 source code with CC-BY-NC and CC-BY-SA data means downstream users must respect the most-restrictive license that applies to each file they reuse.
+
+---
+
+<sub>If you find this project useful, you can support its continued development at [TipTopJar](https://tiptopjar.com).</sub>
