@@ -10,6 +10,88 @@ indexed corpora, glosses, cognates, or extraction outputs (information
 researchers need when deciding whether re-runs of cited analyses are
 reproducible).
 
+## [v3.0.2] — 2026-05-09
+
+Transparency, discoverability, and validation-foundations release.
+Closes 7 additional critique items from the May 2026 review (now 24
+of 47 closed). No corpus-data changes. Real bug fixed in cross-script
+input handling.
+
+### Added
+- **`docs/VALIDATION.md`** — 12-section reference document collecting
+  every quantitative and methodological caveat in one place: no
+  precision/recall study yet, recall floor vs Brockelmann/Sokoloff,
+  genre-chronology confound, chronology debate (esp. Targum Onkelos
+  dating), LLM-generated cognates, triliteral framing failures on
+  non-CCC roots, stem-classification ambiguity, translator bias,
+  ephemeral localStorage, direction-aware Greek "cognates", thin
+  corpus coverage, what 5,039 actually means.
+- **`docs/SEARCH-ALGORITHMS.md`** — published the actual ranking
+  rubric for all five search modes; what's NOT implemented (no
+  embeddings, stemming, fuzzy match, synonym expansion).
+- **`CHANGELOG.md`** — backfilled v1.1.0 → v3.0.1 with per-release
+  Data Changes sections.
+- **`og-image.png`** + Open Graph + Twitter Card + Highwire Press +
+  Dublin Core + Schema.org `SoftwareApplication` JSON-LD on every
+  page. Project is now real-search-engine and link-preview discoverable.
+- **`/robots.txt`** + **`/sitemap.xml`** with 16 canonical URLs.
+- **Diachronic-page caveat banner** in EN/ES/HE/AR — visible
+  disclosure that the chart confounds genre with chronology and that
+  the chronological ordering is editorial.
+- **Test suite expanded 15 → 150 tests** across 6 files: smoke
+  (every page route 200 in EN; homepage/about/privacy in 4 langs),
+  API contracts (28 endpoints), cross-script normalization (8
+  paradigmatic roots, 4 input scripts), paradigmatic-root regression
+  battery (10 well-known roots × 5 endpoints).
+
+### Changed
+- README citation line bumped to v3.0.2.
+- UI version refs synced to v3.0.2 (cite-modal, sidebar foot, About
+  page citation).
+- About-page Confidence-Scoring methodology rewritten: explicit that
+  the score reflects extraction *path* not measured correctness, no
+  P/R study published, indicator is a researcher-attention prior not
+  citable evidence.
+- About-page Verb-Stem feature description: "Aramaic stems" / "tallos"
+  is now the primary term in EN/ES (was "binyanim" — that's the
+  Hebrew term for a related-but-not-identical inventory). HE/AR keep
+  their native scholarly terminology. "Group by form or binyan stem"
+  → "Group by form or stem" in concordance description.
+- TipTopJar demoted from prominent README ## Support section to a
+  discreet `<sub>` line at the bottom; institutional reviewers see
+  substance first.
+
+### Fixed
+- **`parse_root_input()` cross-script bug.** The README documented
+  Syriac/Hebrew/Arabic input as supported via `/api/roots`, but the
+  parser only handled Latin transliteration. Direct Syriac like
+  `?q=ܫܠܡ` returned HTTP 400 "Could not parse root". Extended to
+  detect input script and route accordingly: Syriac returned as-is
+  (after letter-only filter), Hebrew letter-by-letter via existing
+  `HEBREW_TO_SYRIAC` map, Arabic chained via `ARABIC_TO_LATIN →
+  LATIN_TO_SYRIAC`. All four scripts now resolve to the same
+  canonical root key. Surfaced by the new `test_cross_script.py`
+  end-to-end test.
+- BibTeX type `@misc` → `@software` in cite modal output.
+- Cite-modal default URL → canonical project URL (was
+  `window.location.href` — citing the page the user happened to be
+  on rather than the work).
+
+### Data Changes
+- None (no corpus, gloss, cognate, or extraction-output changes).
+
+### Disclosed
+- Recall floor: 5,039 attested roots ≪ ~7,000 in Brockelmann's
+  *Lexicon Syriacum*, ~6,000 in Sokoloff's *DJBA*. The Atlas figure
+  reflects what's attested in 5 specific corpora, not a coverage
+  ceiling.
+- Diachronic charts confound genre/register/dialect/translation
+  source with chronology — explicit banner now on the page.
+- Chronological ordering is editorial; Targum Onkelos dating is
+  scholarly debated.
+
+---
+
 ## [v3.0.1] — 2026-05-09
 
 Compliance, transparency, and credibility hotfix. No new features, no API
@@ -196,6 +278,7 @@ Corpus expansion: Targum Onkelos.
 
 ---
 
+[v3.0.2]: https://github.com/Jossifresben/aramaic-root-atlas/releases/tag/v3.0.2
 [v3.0.1]: https://github.com/Jossifresben/aramaic-root-atlas/releases/tag/v3.0.1
 [v3.0]: https://github.com/Jossifresben/aramaic-root-atlas/releases/tag/v3.0
 [v2.3]: https://github.com/Jossifresben/aramaic-root-atlas/releases/tag/v2.3
