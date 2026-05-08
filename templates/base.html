@@ -4,6 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Aramaic Root Atlas{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Cross-corpus triliteral root explorer for Aramaic literature. 5,039 roots across 38,062 verses from the Peshitta NT/OT, Biblical Aramaic, Targum Onkelos, and Ephrem of Nisibis.{% endblock %}">
+    <link rel="canonical" href="{% block canonical %}https://aramaic-root-atlas.onrender.com{{ request.path }}{% endblock %}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Aramaic Root Atlas">
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{{ self.meta_description() }}">
+    <meta property="og:url" content="https://aramaic-root-atlas.onrender.com{{ request.path }}">
+    <meta property="og:image" content="https://aramaic-root-atlas.onrender.com{{ url_for('static', filename='og-image.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="{% if lang == 'es' %}es_ES{% elif lang == 'he' %}he_IL{% elif lang == 'ar' %}ar_AR{% else %}en_US{% endif %}">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.title() }}">
+    <meta name="twitter:description" content="{{ self.meta_description() }}">
+    <meta name="twitter:image" content="https://aramaic-root-atlas.onrender.com{{ url_for('static', filename='og-image.png') }}">
+
+    <!-- Academic citation metadata (Highwire Press / Google Scholar) -->
+    <meta name="citation_title" content="Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer">
+    <meta name="citation_author" content="Fresco Benaim, Jose">
+    <meta name="citation_publication_date" content="2026">
+    <meta name="citation_doi" content="10.5281/zenodo.19358625">
+    <meta name="citation_public_url" content="https://aramaic-root-atlas.onrender.com">
+
+    <!-- Dublin Core -->
+    <meta name="DC.title" content="Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer">
+    <meta name="DC.creator" content="Fresco Benaim, Jose">
+    <meta name="DC.type" content="Software">
+    <meta name="DC.identifier" content="https://doi.org/10.5281/zenodo.19358625">
+    <meta name="DC.date" content="2026">
+    <meta name="DC.language" content="{{ lang }}">
+    <meta name="DC.rights" content="Apache-2.0 (code); see LICENSE-DATA.md for per-corpus data licensing">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Aramaic Root Atlas",
+      "alternateName": "Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer",
+      "applicationCategory": "ResearchApplication",
+      "applicationSubCategory": "Computational linguistics / Digital humanities",
+      "operatingSystem": "Web browser",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "url": "https://aramaic-root-atlas.onrender.com",
+      "softwareVersion": "3.0.1",
+      "datePublished": "2026-03-31",
+      "dateModified": "2026-05-09",
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "author": {
+        "@type": "Person",
+        "name": "Jose Fresco Benaim",
+        "identifier": "https://orcid.org/0009-0000-2026-0836",
+        "url": "https://jossifresco.com"
+      },
+      "sameAs": ["https://doi.org/10.5281/zenodo.19358625", "https://github.com/Jossifresben/aramaic-root-atlas"],
+      "inLanguage": ["en", "es", "he", "ar"],
+      "keywords": "Aramaic, Syriac, Peshitta, Biblical Aramaic, Targum Onkelos, triliteral roots, Semitic linguistics, computational linguistics, digital humanities, corpus linguistics, cognates"
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Syriac:wght@400;500&family=Noto+Serif+Hebrew:wght@400;500&display=swap" rel="stylesheet">
@@ -249,6 +312,8 @@ window.SIDE_I18N = {
     var consent = null;
     try { consent = localStorage.getItem('ara_analytics_consent'); } catch (e) {}
     if (consent !== null) return; // already decided
+    // Suppress for screenshot/embed contexts (e.g. OG image generation).
+    if (/[?&]_og=1\b/.test(window.location.search)) return;
     banner.style.display = 'block';
     document.getElementById('cookie-accept').addEventListener('click', function () {
       window.aramaicAnalyticsOptIn();

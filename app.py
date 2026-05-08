@@ -599,6 +599,56 @@ def privacy():
     return render_template('privacy.html', lang=lang, script=_get_script(), trans=_get_trans(), t=_t_proxy, bn=_bn, page_id='privacy')
 
 
+@app.route('/robots.txt')
+def robots_txt():
+    """Standard robots.txt — allow all, point at sitemap, throttle bots."""
+    body = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Crawl-delay: 2\n"
+        "\n"
+        "Sitemap: https://aramaic-root-atlas.onrender.com/sitemap.xml\n"
+    )
+    return body, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    """Dynamic sitemap covering primary tool pages (in English; lang variants
+    are accessible via ?lang= query param and don't need separate URLs)."""
+    base = 'https://aramaic-root-atlas.onrender.com'
+    today = '2026-05-09'
+    pages = [
+        ('/',                  '1.0', 'weekly'),
+        ('/about',             '0.9', 'monthly'),
+        ('/browse',            '0.8', 'weekly'),
+        ('/parallel',          '0.8', 'monthly'),
+        ('/concordance',       '0.8', 'monthly'),
+        ('/diachronic',        '0.8', 'monthly'),
+        ('/hapax',             '0.7', 'monthly'),
+        ('/heatmap',           '0.7', 'monthly'),
+        ('/parse',             '0.7', 'monthly'),
+        ('/collocations',      '0.7', 'monthly'),
+        ('/semantic-fields',   '0.7', 'monthly'),
+        ('/passage-profile',   '0.7', 'monthly'),
+        ('/bookmarks',         '0.5', 'yearly'),
+        ('/annotations',       '0.5', 'yearly'),
+        ('/api-docs',          '0.6', 'monthly'),
+        ('/privacy',           '0.3', 'yearly'),
+    ]
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for path, prio, freq in pages:
+        xml.append(f'  <url>')
+        xml.append(f'    <loc>{base}{path}</loc>')
+        xml.append(f'    <lastmod>{today}</lastmod>')
+        xml.append(f'    <changefreq>{freq}</changefreq>')
+        xml.append(f'    <priority>{prio}</priority>')
+        xml.append(f'  </url>')
+    xml.append('</urlset>')
+    return '\n'.join(xml), 200, {'Content-Type': 'application/xml; charset=utf-8'}
+
+
 @app.route('/api/verse')
 def api_verse():
     """Return a single verse with word-level data for the modal."""
