@@ -5,6 +5,17 @@
 > Effort scale: **S** = ½–2 days, **M** = 1–2 weeks, **L** = 1–2 months,
 > **XL** = 2+ months. **D** = decision needed from author.
 
+> **Status snapshot — 2026-05-09 (end of day):**
+> **24 of 47** critique items closed across **v3.0.1** + **v3.0.2** plus
+> a follow-on commit. Phase 0 ✅ complete. Phase 1 ✅ complete. Phase 2 ⚠️
+> partial — autonomous slice done (test suite 15→150, VALIDATION.md,
+> diachronic banner, About-page Limitations section, parse_root_input
+> bug fix). Items 2.0, 2.1, 2.2, 2.4, 2.5 remain open and require
+> Aramaic-specialist judgment or invasive engineering with expert review.
+> Phases 3–6 not yet started.
+> See `docs/SESSION-2026-05-09.md` for the day's handoff notes and
+> recommended next actions.
+
 ---
 
 ## Critical path (do first, in order)
