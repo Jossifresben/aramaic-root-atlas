@@ -49,7 +49,7 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 
 ## Video Demo
 
-A full walkthrough of the app's features is available on the **[Guide page](https://aramaic-root-atlas.onrender.com/about)** — click **Watch Video** below the stats.
+A walkthrough video is being re-recorded against the v3.0 sidebar UI; the prior recording showed the pre-redesign interface and was withdrawn. In the meantime, see the live app at **[aramaic-root-atlas.onrender.com](https://aramaic-root-atlas.onrender.com)** or take the interactive 12-step **Guided Tour** (click the ? icon in the topbar).
 
 ## Screenshot
 

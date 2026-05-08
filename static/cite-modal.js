@@ -29,6 +29,9 @@
     var VERSION     = '3.0';
     var DOI         = '10.5281/zenodo.19358625';
     var ORCID       = '0009-0000-2026-0836';
+    /* Canonical project URL — used as default citation URL when no
+       page-specific context is provided. Citing the work, not the page. */
+    var CANONICAL_URL = 'https://aramaic-root-atlas.onrender.com';
 
     var _currentTab = 'bibtex';
 
@@ -75,13 +78,14 @@
     function buildBibTeX(ctx) {
         var title = buildTitle(ctx);
         var key   = buildKey(ctx);
-        var url   = ctx.url || window.location.href;
+        var url   = ctx.url || CANONICAL_URL;
         return [
-            '@misc{' + key + ',',
+            '@software{' + key + ',',
             '  author       = {' + AUTHOR_FULL + '},',
             '  title        = {' + title.replace(/—/g, '---') + '},',
             '  year         = {' + YEAR + '},',
             '  version      = {' + VERSION + '},',
+            '  publisher    = {Zenodo},',
             '  doi          = {' + DOI + '},',
             '  url          = {' + url + '},',
             '  note         = {ORCID: ' + ORCID + '}',
@@ -91,23 +95,24 @@
 
     function buildChicago(ctx) {
         var title = buildTitle(ctx);
-        var url   = ctx.url || window.location.href;
+        var url   = ctx.url || CANONICAL_URL;
         return AUTHOR_FULL + '. ' + YEAR + '. "' + title + '."' +
-               ' Version ' + VERSION + '. ' + url + '. ' +
+               ' Version ' + VERSION + '. Zenodo. ' +
                'https://doi.org/' + DOI + '.';
     }
 
     function buildMLA(ctx) {
         var title = buildTitle(ctx);
-        var url   = ctx.url || window.location.href;
+        var url   = ctx.url || CANONICAL_URL;
         return AUTHOR_FULL + '. "' + title + '."' +
-               ' Version ' + VERSION + ', ' + YEAR + ', ' + url + '.';
+               ' Version ' + VERSION + ', Zenodo, ' + YEAR + ', ' +
+               'https://doi.org/' + DOI + '.';
     }
 
     function buildAPA(ctx) {
         var title = buildTitle(ctx);
         return AUTHOR_APA + ' (' + YEAR + '). ' + title +
-               ' (Version ' + VERSION + ') [Web application].' +
+               ' (Version ' + VERSION + ') [Computer software]. Zenodo.' +
                ' https://doi.org/' + DOI;
     }
 
@@ -115,7 +120,7 @@
         /* SBL 2nd ed. §6.4.6 — electronic source */
         var tool = ctx.tool || '';
         var accessed = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
-        var url = ctx.url || window.location.href;
+        var url = ctx.url || CANONICAL_URL;
         var corpus = ctx.corpus ? ' ' + ctx.corpus + '.' : '.';
         var rootPart = ctx.root ? ' Root ' + ctx.root + '.' : '.';
         var subtitle = '';

@@ -305,10 +305,10 @@
             </div>
         </div>
 
-        {# Watch Video button #}
-        <div class="watch-video-wrap">
-            <button class="watch-video-btn" onclick="openVideoModal()">
-                ▶ {% if lang == 'es' %}Ver video{% elif lang == 'he' %}צפה בסרטון{% elif lang == 'ar' %}مشاهدة الفيديو{% else %}Watch Video{% endif %}
+        {# Watch Video — disabled while we re-record for v3.0 (the prior recording showed the old UI) #}
+        <div class="watch-video-wrap" style="opacity:.55">
+            <button class="watch-video-btn" disabled aria-disabled="true" title="Video walkthrough is being re-recorded for v3.0" style="cursor:not-allowed">
+                ▶ {% if lang == 'es' %}Video — actualizándose para v3.0{% elif lang == 'he' %}סרטון — בעדכון לגרסה v3.0{% elif lang == 'ar' %}الفيديو — قيد التحديث للإصدار v3.0{% else %}Video — being updated for v3.0{% endif %}
             </button>
         </div>
 
