@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Syriac:wght@400;500&family=Noto+Serif+Hebrew:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.css">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <!-- Google Analytics -->
@@ -35,7 +36,7 @@
       <div class="topbar-tools">
         <!-- Language -->
         <div class="lang-wrapper">
-          <button class="nav-btn lang-toggle" id="lang-toggle" aria-label="Language" aria-haspopup="true" aria-expanded="false">
+          <button class="nav-btn lang-toggle" id="lang-toggle" aria-label="Language" title="Language" aria-haspopup="true" aria-expanded="false">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
           </button>
           <div class="lang-dropdown" id="lang-dropdown" role="menu">
@@ -47,7 +48,7 @@
         </div>
         <!-- Settings -->
         <div class="settings-wrapper">
-          <button class="nav-btn settings-toggle" id="settings-toggle" aria-label="Settings" aria-haspopup="true" aria-expanded="false">
+          <button class="nav-btn settings-toggle" id="settings-toggle" aria-label="Settings" title="Settings" aria-haspopup="true" aria-expanded="false">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1.2l2-1.6-2-3.4-2.4.8a7 7 0 00-2-1.2L14 3h-4l-.5 2.4a7 7 0 00-2 1.2L5 5.8l-2 3.4 2 1.6a7 7 0 000 2.4l-2 1.6 2 3.4 2.4-.8a7 7 0 002 1.2L10 21h4l.5-2.4a7 7 0 002-1.2l2.4.8 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg>
           </button>
           <div class="settings-dropdown" id="settings-dropdown" role="menu">
@@ -70,17 +71,17 @@
           </div>
         </div>
         <!-- Share -->
-        <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share">
+        <button class="nav-btn share-toggle" id="share-toggle" aria-label="Share" title="Share">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98M21 5a3 3 0 11-6 0 3 3 0 016 0zM9 12a3 3 0 11-6 0 3 3 0 016 0zM21 19a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         </button>
-        <!-- API Reference -->
-        <a class="nav-btn{% if page_id == 'api-docs' %} active{% endif %}" href="/api-docs?lang={{ lang }}" aria-label="API Reference">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 6l-4 6 4 6M16 6l4 6-4 6M12 3v18"/></svg>
-        </a>
         <!-- Tour -->
-        <button class="nav-btn" id="tour-nav-btn" aria-label="Guided Tour">
+        <button class="nav-btn" id="tour-nav-btn" aria-label="Guided Tour" title="Guided Tour">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 0c0 2-2.5 2-2.5 4M12 17v.01"/></svg>
         </button>
+        <!-- Swagger / API Reference -->
+        <a class="nav-btn{% if page_id == 'api-docs' %} active{% endif %}" href="/api-docs?lang={{ lang }}" aria-label="API Reference" title="API Reference (Swagger)">
+          <span class="material-symbols-outlined" style="font-size:20px;line-height:1">api</span>
+        </a>
       </div>
     </header>
 

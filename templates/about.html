@@ -340,7 +340,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{% if lang == 'es' %}Peshitta NT{% elif lang == 'he' %}פשיטתא ב"ח{% elif lang == 'ar' %}الپشيطتا &mdash; العهد الجديد{% else %}Peshitta NT{% endif %}</td>
+                    <td style="background:var(--c-pnt-soft)">{% if lang == 'es' %}Peshitta NT{% elif lang == 'he' %}פשיטתא ב"ח{% elif lang == 'ar' %}الپشيطتا &mdash; العهد الجديد{% else %}Peshitta NT{% endif %}</td>
                     <td>7,440</td>
                     <td>101,469</td>
                     <td>{% if lang == 'es' %}Siríaco{% elif lang == 'he' %}סורית{% elif lang == 'ar' %}سرياني{% else %}Syriac{% endif %}</td>
@@ -348,7 +348,7 @@
                     <td>&mdash;</td>
                 </tr>
                 <tr>
-                    <td>{% if lang == 'es' %}Peshitta AT{% elif lang == 'he' %}פשיטתא תנ"ך{% elif lang == 'ar' %}الپشيطتا &mdash; العهد القديم{% else %}Peshitta OT{% endif %}</td>
+                    <td style="background:var(--c-pot-soft)">{% if lang == 'es' %}Peshitta AT{% elif lang == 'he' %}פשיטתא תנ"ך{% elif lang == 'ar' %}الپشيطتا &mdash; العهد القديم{% else %}Peshitta OT{% endif %}</td>
                     <td>23,072</td>
                     <td>309,889</td>
                     <td>{% if lang == 'es' %}Siríaco{% elif lang == 'he' %}סורית{% elif lang == 'ar' %}سرياني{% else %}Syriac{% endif %}</td>
@@ -356,7 +356,7 @@
                     <td>CC-BY-NC</td>
                 </tr>
                 <tr>
-                    <td>{% if lang == 'es' %}Arameo b&iacute;blico{% elif lang == 'he' %}ארמית מקראית{% elif lang == 'ar' %}الآرامية التوراتية{% else %}Biblical Aramaic{% endif %}</td>
+                    <td style="background:var(--c-bib-soft)">{% if lang == 'es' %}Arameo b&iacute;blico{% elif lang == 'he' %}ארמית מקראית{% elif lang == 'ar' %}الآرامية التوراتية{% else %}Biblical Aramaic{% endif %}</td>
                     <td>269</td>
                     <td>4,880</td>
                     <td>{% if lang == 'es' %}Hebreo cuadrado{% elif lang == 'he' %}כתב מרובע{% elif lang == 'ar' %}الخط العبري المربع{% else %}Hebrew square{% endif %}</td>
@@ -364,7 +364,7 @@
                     <td>CC-BY-SA</td>
                 </tr>
                 <tr>
-                    <td>{% if lang == 'es' %}T&aacute;rgum Onkelos{% elif lang == 'he' %}תרגום אונקלוס{% elif lang == 'ar' %}ترجوم أونكيلوس{% else %}Targum Onkelos{% endif %}</td>
+                    <td style="background:var(--c-tar-soft)">{% if lang == 'es' %}T&aacute;rgum Onkelos{% elif lang == 'he' %}תרגום אונקלוס{% elif lang == 'ar' %}ترجوم أونكيلوس{% else %}Targum Onkelos{% endif %}</td>
                     <td>5,846</td>
                     <td>82,584</td>
                     <td>{% if lang == 'es' %}Hebreo cuadrado{% elif lang == 'he' %}כתב מרובע{% elif lang == 'ar' %}الخط العبري المربع{% else %}Hebrew square{% endif %}</td>
@@ -372,7 +372,7 @@
                     <td>CC-BY-SA</td>
                 </tr>
                 <tr>
-                    <td>{% if lang == 'es' %}Efrén de N&iacute;sibis (Himnos){% elif lang == 'he' %}אפרם ניסיביס (מזמורים){% elif lang == 'ar' %}أفرام النصيبيني (أناشيد){% else %}Ephrem of Nisibis (Hymns){% endif %}</td>
+                    <td style="background:var(--c-eph-soft)">{% if lang == 'es' %}Efrén de N&iacute;sibis (Himnos){% elif lang == 'he' %}אפרם ניסיביס (מזמורים){% elif lang == 'ar' %}أفرام النصيبيني (أناشيد){% else %}Ephrem of Nisibis (Hymns){% endif %}</td>
                     <td>1,435</td>
                     <td>29,577</td>
                     <td>{% if lang == 'es' %}Siríaco{% elif lang == 'he' %}סורית{% elif lang == 'ar' %}سرياني{% else %}Syriac{% endif %}</td>
@@ -848,7 +848,7 @@
 
         <div class="about-credit">
             <p>{% if lang == 'es' %}Creado por <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a>.{% elif lang == 'he' %}נוצר על ידי <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a>.{% elif lang == 'ar' %}أنشأه <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a>.{% else %}Created by <a href="https://jossifresco.com" target="_blank" rel="noopener">Jossi Fresco</a>.{% endif %}</p>
-            <p><a href="https://doi.org/10.5281/zenodo.19358625" target="_blank" rel="noopener"><img src="https://zenodo.org/badge/1190998648.svg" alt="DOI" style="vertical-align:middle;margin-right:.4rem;">https://doi.org/10.5281/zenodo.19358625</a></p>
+            <p><a href="https://doi.org/10.5281/zenodo.19358625" target="_blank" rel="noopener"><img src="https://zenodo.org/badge/1190998648.svg" alt="DOI" style="vertical-align:middle;"></a></p>
             <p style="font-size:.9rem;margin-top:.5rem;">
                 {% if lang == 'es' %}Si utilizas este software, por favor cítalo como:{% elif lang == 'he' %}אם אתה משתמש בתוכנה זו, אנא צטט כך:{% elif lang == 'ar' %}إذا استخدمت هذا البرنامج، يُرجى الاستشهاد به كما يلي:{% else %}If you use this software, please cite it as:{% endif %}<br>
                 <em>Fresco Benaim, Jose. (2026). Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer (v2.3). Zenodo. <a href="https://doi.org/10.5281/zenodo.19358625" target="_blank" rel="noopener">https://doi.org/10.5281/zenodo.19358625</a></em>
