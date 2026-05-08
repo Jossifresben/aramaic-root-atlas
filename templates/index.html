@@ -42,7 +42,7 @@
           {% endfor %}
         </select>
       </div>
-      <button class="btn" id="root-search-btn" type="button">{{ t('btn_analyse', lang) if t else 'Analyse' }}
+      <button class="btn" id="root-search-btn" type="button">{{ t('btn_analyse', lang) if t else 'Analyze' }}
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
       </button>
     </div>
@@ -189,10 +189,10 @@
 function scrollToEl(el) {
     var topbar = document.querySelector('.topbar');
     var offset = topbar ? topbar.offsetHeight + 8 : 8;
-    var container = document.querySelector('.main') || document.documentElement;
-    var elTop = el.getBoundingClientRect().top;
-    var containerTop = container.getBoundingClientRect().top;
-    container.scrollBy({ top: elTop - containerTop - offset, behavior: 'smooth' });
+    // Window/document is the scrolling element in this layout (.main is a
+    // flex container without overflow). Use window.scrollTo for reliability.
+    var elTop = el.getBoundingClientRect().top + window.pageYOffset;
+    window.scrollTo({ top: elTop - offset, behavior: 'smooth' });
 }
 
 // --- Book name translations ---

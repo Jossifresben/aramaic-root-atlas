@@ -26,7 +26,7 @@
     var AUTHOR_FULL = 'Fresco Benaim, Jose';
     var AUTHOR_APA  = 'Fresco Benaim, J.';
     var YEAR        = '2026';
-    var VERSION     = '2.3';
+    var VERSION     = '3.0';
     var DOI         = '10.5281/zenodo.19358625';
     var ORCID       = '0009-0000-2026-0836';
 

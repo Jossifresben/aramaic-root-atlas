@@ -4,20 +4,25 @@ type: software
 title: "Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer"
 abstract: >-
   A cross-corpus triliteral root explorer for Aramaic literature,
-  indexing 5,039 roots across 36,627 verses from the Peshitta (NT & OT),
-  Biblical Aramaic (Daniel, Ezra), and Targum Onkelos. Features
-  cross-script root normalization, 1,584 Hebrew/Arabic/Greek cognate entries,
+  indexing 5,039 roots across 38,062 verses and 528,399 words from
+  five corpora spanning ~1,500 years: Peshitta NT, Peshitta OT,
+  Biblical Aramaic (Daniel, Ezra), Targum Onkelos, and the Hymns
+  of Ephrem of Nisibis. Features cross-script root normalization,
+  1,127 Hebrew/Arabic cognate families plus 2,192 Greek NT cognates,
   root family visualization, KWIC concordance, diachronic analysis,
-  collocations, semantic fields, word parser, passage lexical profiles,
-  parallel viewer, frequency heat maps, and guided tour.
-  Quadrilingual interface (EN/ES/HE/AR).
+  collocations, semantic fields (15 domains), word parser, passage
+  lexical profiles, parallel viewer, frequency heat maps, researcher
+  annotations, BibTeX/Zotero/Chicago/MLA/APA/SBL citation export,
+  guided tour, in-app video walkthrough, and an interactive Swagger
+  UI API reference. Quadrilingual interface (EN/ES/HE/AR) with RTL
+  support, full sidebar navigation, and dark mode.
 authors:
   - family-names: Fresco Benaim
     given-names: Jose
     website: https://jossifresco.com
     orcid: https://orcid.org/0009-0000-2026-0836
-version: "2.3"
-date-released: "2026-03-31"
+version: "3.0"
+date-released: "2026-05-08"
 doi: 10.5281/zenodo.19358625
 license: Apache-2.0
 url: https://aramaic-root-atlas.onrender.com

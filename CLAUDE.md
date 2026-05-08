@@ -157,6 +157,15 @@ python3 app.py  # starts on port 5001
 - ✅ **Diachronic Root Analysis** — `/diachronic` page with Root View (normalized frequency bars in chronological order) and Shifts View (roots with largest frequency changes, magnitude + direction); `/api/diachronic/root`, `/api/diachronic/shifts`, `/api/diachronic/unique` endpoints
 - ✅ Shared `static/autocomplete.js` — `initRootAutocomplete()` used on concordance, diachronic, and home pages
 
+## v3.0 Release — UI Redesign + API Reference (May 2026)
+- ✅ **New sidebar app shell** — persistent left rail (Explore / Analyze / Workspace groups) + sticky topbar with breadcrumb, ⌘K quick-search, and tooltipped action icons (Language, Settings, Share, Tour, Swagger). All 18 templates ported from old horizontal nav.
+- ✅ **Swagger / OpenAPI 3.0 reference** — interactive API docs at `/api-docs` with try-it-out, parameter examples, response schemas; navbar icon (Material Symbols `api`)
+- ✅ **Cite modal** — one-click citation export in BibTeX, Chicago, MLA, APA, SBL formats from any tool page; DOI-linked, copy-to-clipboard
+- ✅ **Full template i18n sweep** — every page (homepage, browse, reader, concordance, diachronic, hapax, heatmap, parallel, visualize, parse, collocations, semantic-fields, passage-profile, bookmarks, annotations, about) translated EN/ES/HE/AR
+- ✅ **Type scale lift** — html root font-size 16px→18px (+12.5% on rem-based content); chrome floor sweep on the smallest px values (10/11/12/13px → 11/12/13/14px) for ~8.6% on small UI text
+- ✅ **Corpus color palette overhaul** — distinct emerald/blue/purple/amber/crimson hues with soft variants for backgrounds, applied consistently across stat cards, badges, and the corpora table
+- ✅ **Quality polish** — sticky-topbar-aware scroll helper, lang param preserved across nav, RTL alignment fixes, ref-sep dot visibility, dropdown active-state checkmarks, mobile overflow patches, semantic-domain links from passage profile, dynamic chapter dropdowns
+
 ## Conventions
 - Syriac text uses Unicode (U+0710-U+074F), stored as-is in CSV
 - Roots are 2-3 character Syriac strings (e.g., ܫܠܡ for SH-L-M)

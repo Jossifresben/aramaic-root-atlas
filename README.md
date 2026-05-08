@@ -20,6 +20,7 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 - **Collocations** -- `/collocations` page computes Pointwise Mutual Information (PMI) between roots co-occurring in the same verse or chapter; filter by corpus and minimum co-occurrence count to surface statistically significant lexical associations; CSV/JSON export
 - **Semantic Fields** -- `/semantic-fields` page organizes all roots into 15 semantic domains (legal/covenant, cultic, kinship, war, knowledge, etc.) via AI classification; each domain lists roots sorted by frequency with corpus badges and links to the visualizer
 - **Researcher Annotations** -- `/annotations` page for inline notes on verses and roots, stored in localStorage; tag-based filtering, export as JSON/CSV/Markdown; inline note icons in the verse reader and root card
+- **Cite This** -- one-click citation export in five academic formats (BibTeX, Chicago, MLA, APA, SBL) plus Zotero RDF, accessible from any tool page; copy-to-clipboard and DOI-linked
 - **BibTeX & Zotero Export** -- generate academic citations from bookmarks in BibTeX (`.bib`) or Zotero RDF (`.rdf`) formats directly from the bookmarks page
 - **Word Parser** -- `/parse` page provides full morphological breakdown of any Syriac word: prefixes, root, suffixes shown as colour-coded morpheme boxes; stem badge; cognates with Hebrew/Arabic pills; corpus attestation counts; accepts Syriac Unicode or Latin transliteration input (`shlm`, `sh-l-m`)
 - **Passage Lexical Profile** -- `/passage-profile` page analyses any passage range (book + chapter span): word count, unique roots, lexical density, hapax count, stem distribution chart, root rarity breakdown, top-15 roots with corpus pills, verse-by-verse density sparkline
@@ -36,6 +37,7 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 - **Bookmarks** -- save verses and roots with tags, export as CSV/JSON, copy formatted citations
 
 ### Interface
+- **Sidebar navigation** -- persistent left rail groups every tool by purpose (Explore, Analyze, Workspace), keeping the active page highlighted; sticky topbar with breadcrumb, ⌘K quick-search across all roots, and shortcut menus for language, settings, share, tour, and Swagger
 - **Quadrilingual UI** -- full interface in English, Spanish, Hebrew, and Arabic with RTL support
 - **Greek cognates** -- 2,192 Greek NT equivalents linked to Aramaic roots in the visualizer (e.g., SH-L-M -> eirene "peace")
 - **Five translation tracks** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek)
@@ -155,9 +157,7 @@ The Atlas exposes a full JSON API for programmatic access. All endpoints support
 
 **Root input formats:** Dash-separated Latin (`SH-L-M`), Syriac Unicode (`ܫܠܡ`), Hebrew (`שלם`), or Arabic (`سلم`). The API auto-detects and normalizes.
 
-> **Interactive API documentation** (Swagger UI) with try-it-out: **[/api-docs](https://aramaic-root-atlas.onrender.com/api-docs)**
->
-> **Full static API documentation** with parameters, response schemas, and examples: **[docs/API.md](docs/API.md)**
+> **Interactive API documentation** (Swagger UI) with try-it-out, parameter examples, and response schemas: **[/api-docs](https://aramaic-root-atlas.onrender.com/api-docs)**
 
 ## Architecture
 
@@ -203,7 +203,7 @@ See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details.
 
 If you use this software, please cite it as:
 
-> Fresco Benaim, Jose. (2026). *Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer* (v2.3). Zenodo. https://doi.org/10.5281/zenodo.19358625
+> Fresco Benaim, Jose. (2026). *Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer* (v3.0). Zenodo. https://doi.org/10.5281/zenodo.19358625
 
 Or use the metadata in [CITATION.cff](CITATION.cff).
 
