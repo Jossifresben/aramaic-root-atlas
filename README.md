@@ -51,43 +51,11 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 
 A full walkthrough of the app's features is available on the **[Guide page](https://aramaic-root-atlas.onrender.com/about)** — click **Watch Video** below the stats.
 
-## Screenshots
+## Screenshot
 
 ![Homepage](docs/screenshots/homepage.png)
 
-### Scholarly Research Tools
-
-| Verb Stem Analysis | Hapax Legomena |
-|:---:|:---:|
-| ![Verb Stems](docs/screenshots/verb-stems.png) | ![Hapax](docs/screenshots/hapax.png) |
-
-| KWIC Concordance | Diachronic Analysis |
-|:---:|:---:|
-| ![Concordance](docs/screenshots/concordance.png) | ![Diachronic](docs/screenshots/diachronic.png) |
-
-| Collocations | Semantic Fields |
-|:---:|:---:|
-| ![Collocations](docs/screenshots/collocations.png) | ![Semantic Fields](docs/screenshots/semantic-fields.png) |
-
-| Researcher Annotations | BibTeX / Zotero Export |
-|:---:|:---:|
-| ![Annotations](docs/screenshots/annotations.png) | ![BibTeX Export](docs/screenshots/bibtex-export.png) |
-
-| Word Parser | Passage Lexical Profile |
-|:---:|:---:|
-| ![Word Parser](docs/screenshots/word_parser.png) | ![Passage Profile](docs/screenshots/passage-lexical-profile-1.png) |
-
-![Passage Lexical Profile — Top Roots & Verse Density](docs/screenshots/passage-lexical-profile-2.png)
-
-### Exploration & Reading
-
-| Verse Reader | Constellation | Root Visualizer |
-|:---:|:---:|:---:|
-| ![Reader](docs/screenshots/reader.png) | ![Constellation](docs/screenshots/constellation.png) | ![Visualizer](docs/screenshots/visualizer.png) |
-
-| Parallel Viewer | Heat Map |
-|:---:|:---:|
-| ![Parallel](docs/screenshots/parallel.png) | ![Heatmap](docs/screenshots/heatmap.png) |
+> See the full UI live at **[aramaic-root-atlas.onrender.com](https://aramaic-root-atlas.onrender.com)** or watch the in-app video walkthrough on the [Guide page](https://aramaic-root-atlas.onrender.com/about).
 
 ## Quick Start
 
