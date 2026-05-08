@@ -23,6 +23,34 @@
   </div>
 </div>
 
+<!-- Methodological caveat: visible disclosure that diachronic comparisons
+     confound genre/register/translation-source with chronology, and that
+     the chronological ordering itself is editorial. Don't bury this. -->
+<details class="diac-caveat" style="margin:0 0 20px;padding:12px 16px;background:var(--surface-2);border-left:3px solid var(--gold-mark);border-radius:4px;font-size:.92em;line-height:1.5">
+  <summary style="cursor:pointer;font-family:var(--sans);font-weight:600;color:var(--ink-2)">
+    {% if lang == 'es' %}⚠ Limitaciones del análisis diacrónico — léase antes de citar{% elif lang == 'he' %}⚠ מגבלות הניתוח הדיאכרוני — קראו לפני ציטוט{% elif lang == 'ar' %}⚠ حدود التحليل الزمني — اقرأ قبل الاستشهاد{% else %}⚠ Diachronic-analysis caveats — read before citing{% endif %}
+  </summary>
+  <div style="margin-top:10px;color:var(--ink-2)">
+  {% if lang == 'es' %}
+    <p>El gráfico compara la frecuencia normalizada de una raíz a través de cinco corpus en orden cronológico. <strong>Esto no aísla el cambio diacrónico</strong> porque los corpus difieren simultáneamente en género (narrativa, traducción literal, poesía litúrgica), registro, dialecto y fuente de traducción. Una frecuencia que parece "subir" o "bajar" puede reflejar cualquiera de estos factores, no necesariamente cambio histórico.</p>
+    <p>El orden cronológico (Arameo bíblico → Targum → Efrén → Peshitta NT → AT) es una decisión editorial. La datación de Targum Onkelos en particular es debatida (algunos especialistas lo sitúan tan tarde como el siglo V).</p>
+    <p>Use estos gráficos como puntos de partida sugestivos, no como evidencia para reclamaciones diacrónicas. Vea <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md#3-diachronic-comparisons-confound-genre-with-chronology" target="_blank" rel="noopener">docs/VALIDATION.md §3-4</a> para detalles.</p>
+  {% elif lang == 'he' %}
+    <p>הגרף משווה את התדירות המנורמלת של שורש לאורך חמישה קורפוסים בסדר כרונולוגי. <strong>זה אינו מבודד שינוי דיאכרוני</strong> מכיוון שהקורפוסים נבדלים בו-זמנית בז'אנר (סיפור, תרגום מילולי, שירה ליטורגית), במשלב, בניב ובמקור התרגום. תדירות שנראית "עולה" או "יורדת" עשויה לשקף כל אחד מהגורמים הללו, ולא בהכרח שינוי היסטורי.</p>
+    <p>הסדר הכרונולוגי (ארמית מקראית → תרגום → אפרם → פשיטתא NT → ת"נ) הוא בחירה עריכתית. תיארוך תרגום אונקלוס בפרט שנוי במחלוקת (חוקרים מסוימים מתארכים אותו עד המאה ה-5).</p>
+    <p>השתמשו בגרפים כנקודת מוצא מעוררת מחשבה, לא כראיה לטענות דיאכרוניות. ראו <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md#3-diachronic-comparisons-confound-genre-with-chronology" target="_blank" rel="noopener">docs/VALIDATION.md §3-4</a> לפרטים.</p>
+  {% elif lang == 'ar' %}
+    <p>يقارن الرسم البياني التواتر المُطبَّع لجذرٍ ما عبر خمس مدوّنات بترتيب زمني. <strong>هذا لا يعزل التغيّر الزمني</strong> لأن المدوّنات تختلف في الوقت ذاته في الجنس الأدبي (سرد، ترجمة حرفية، شعر ليتورجي)، والمستوى، واللهجة، ومصدر الترجمة. التواتر الذي يبدو "صاعداً" أو "هابطاً" قد يعكس أيّاً من هذه العوامل، لا تغيّراً تاريخياً بالضرورة.</p>
+    <p>الترتيب الزمني (الآرامية التوراتية ← الترجوم ← أفرام ← الپشيطتا ع.ج. ← ع.ق.) خيار تحريري. تأريخ ترجوم أونكيلوس على وجه الخصوص محلّ خلاف (يضعه بعض الباحثين في القرن الخامس).</p>
+    <p>استخدم هذه الرسوم كنقاط انطلاق مُحفِّزة، لا أدلّة على ادعاءات زمنية. انظر <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md#3-diachronic-comparisons-confound-genre-with-chronology" target="_blank" rel="noopener">docs/VALIDATION.md §3-4</a> للتفاصيل.</p>
+  {% else %}
+    <p>The chart compares normalised frequency of a root across five corpora in chronological order. <strong>This does not isolate diachronic change</strong> because the corpora differ simultaneously on genre (narrative, literal translation, liturgical poetry), register, dialect, and translation source. A frequency that appears to "rise" or "fall" may reflect any of these factors, not necessarily historical change.</p>
+    <p>The chronological ordering (Biblical Aramaic → Targum → Ephrem → Peshitta NT → OT) is an editorial choice. Targum Onkelos's date in particular is debated (some scholars place it as late as the 5th c. CE, later than the Peshitta NT).</p>
+    <p>Use these charts as suggestive starting points, not as evidence for diachronic claims. See <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md#3-diachronic-comparisons-confound-genre-with-chronology" target="_blank" rel="noopener">docs/VALIDATION.md §3-4</a> for full caveats.</p>
+  {% endif %}
+  </div>
+</details>
+
 <!-- Sub-view tabs -->
 <div class="subnav" style="margin:0 0 24px" data-tabs="diac">
   <button class="tab active" data-tab="root" onclick="switchTab('diac','root')"><span class="ec">A</span>{{ t('diac_tab_root', lang) if t else 'Root view' }}</button>
