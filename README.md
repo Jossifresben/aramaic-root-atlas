@@ -154,17 +154,34 @@ aramaic-root-atlas/
 
 ## Data Sources
 
-- **Peshitta NT** -- BFBS Peshitta (public domain)
+- **Peshitta NT** -- BFBS Peshitta (public domain), digitized via [dukhrana.com](https://dukhrana.com) (Stephen Silver) and the SEDRA project (Beth Mardutho)
 - **Peshitta OT** -- ETCBC/peshitta, Leiden Peshitta Institute (CC-BY-NC)
 - **Biblical Aramaic** -- Westminster Leningrad Codex via Sefaria API (CC-BY-SA)
 - **Targum Onkelos** -- Sefaria API (CC-BY-SA)
-- **Ephrem Nisibis** -- Digital Syriac Corpus (srophe/syriac-corpus, CC-BY), TEI XML
+- **Ephrem Nisibis** -- *Hymns on Nisibis (Carmina Nisibena)* via Digital Syriac Corpus (srophe/syriac-corpus, CC-BY), TEI XML — note: this is one collection (~5%) of Ephrem's surviving works
 - **SEDRA Lexicon** -- Beth Mardutho Syriac Institute, via public API (https://sedra.bethmardutho.org)
-- **Translations** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek) via [bible.helloao.org](https://bible.helloao.org)
-- **Cognates** -- 1,127+ entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates, generated and curated with the Claude API; semantic field classifications for all roots via Claude Haiku
+- **Translations** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek, Holmes 2010, CC-BY-SA) via [bible.helloao.org](https://bible.helloao.org)
+- **Cognates** -- 1,127 entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates; **LLM-generated and not yet validated against authoritative lexicons** (HALOT, BDB, Sokoloff, Brockelmann, Lane, Wehr) — see [Limitations](#limitations--caveats); semantic field classifications via Claude Haiku
 - **Peshitta Constellations** -- companion project (https://peshitta.onrender.com, DOI [10.5281/zenodo.19358529](https://doi.org/10.5281/zenodo.19358529)) that supplied curated root-card seed data — paradigmatic verse citations, sister-root and semantic-bridge relationships used to populate the root family visualizer
 
-See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details.
+See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details and [LICENSE-DATA.md](LICENSE-DATA.md) for per-corpus data licensing.
+
+## Limitations & Caveats
+
+This is a research-aid prototype. Final scholarly conclusions should be checked against authoritative sources. Specific limitations:
+
+- **Root extraction is heuristic.** A rule-based pipeline emits a confidence score (High / Medium / Low) that is *not* a calibrated probability. Precision/recall against a hand-annotated gold standard is **not yet measured**. See `docs/ROADMAP-v3.1.md` Phase 2.
+- **Cognates are LLM-generated.** The 1,127 Hebrew/Arabic cognate entries and 2,192 Greek NT cognates were initially generated via the Claude API and have *not* been systematically validated against authoritative lexicons. Treat as suggestions for further verification, not as authoritative cognate claims.
+- **Confidence scores are heuristic, not empirical.** A "0.84" score reflects the rubric, not measured accuracy. Do not cite individual scores as probabilities until calibration is published.
+- **The triliteral framing forces non-CCC roots into a CCC mold.** Geminate, hollow, weak, and quadriliteral roots are currently scored low-confidence rather than represented in their proper morphological class. Phase 2 will add explicit non-triliteral pattern classes.
+- **Diachronic comparisons confound genre with chronology.** Frequency of a root in liturgical poetry (Ephrem) vs. translation literature (Peshitta) reflects style, register, and translation source as much as historical change. Chronological ordering of corpora is editorial; some dates (esp. Targum Onkelos) are scholarly debated.
+- **Translation tracks are public-domain, not best-of-class.** WEB (English), Reina-Valera 1909 (Spanish), Van Dyck (Arabic, 1865), and SBLGNT (Greek, not NA28) introduce translator bias. Reverse-search by meaning depends on these glosses.
+- **Greek "cognates" are translation equivalents, not strict cognates.** The Peshitta NT translates *from* Greek, so Aramaic-to-Greek mappings are direction-aware: many-to-many, context-dependent, and sometimes Aramaisms in Greek (ραββί, ταλιθα κουμ) rather than cognate roots.
+- **Researcher annotations and bookmarks live in browser localStorage.** Clearing your browser cache or switching devices erases them. Export regularly. A real persistence layer is on the roadmap.
+- **Stem (binyan) classification from unvocalized text is genuinely ambiguous** in many cases. Badges represent best-effort guesses; treat as priors, not ground truth.
+- **Corpus coverage is a thin slice of "Aramaic literature."** The Babylonian Talmud, Jerusalem Talmud, Targum Pseudo-Jonathan, Targum Neofiti, Targum Jonathan to the Prophets, Qumran Aramaic, Imperial Aramaic, Mandaic, Christian Palestinian Aramaic, and ~95% of Ephrem's surviving works are not yet indexed.
+
+See `docs/ROADMAP-v3.1.md` for the post-v3.0 plan addressing each item above.
 
 ## Citation
 
@@ -188,6 +205,20 @@ If you find this project useful, consider supporting its development via [TipTop
 
 Created by [Jose Fresco Benaim](https://jossifresco.com)
 
+## Hosting
+
+Production deployment runs on Render (Pro tier, always-on — no cold starts). API and reader pages typically respond in <1 s.
+
 ## License
 
-Apache License 2.0. See [LICENSE](LICENSE) for details.
+The **source code** is licensed under the **Apache License 2.0** — see [LICENSE](LICENSE).
+
+The **bundled corpus data** under `data/corpora/` is licensed separately, per upstream provider:
+
+- **Peshitta NT** — public domain (BFBS edition, via dukhrana.com)
+- **Peshitta OT** — **CC-BY-NC** (ETCBC / Leiden Peshitta Institute) — non-commercial use only
+- **Biblical Aramaic** — **CC-BY-SA** (Sefaria / WLC) — share-alike attribution required
+- **Targum Onkelos** — **CC-BY-SA** (Sefaria) — share-alike attribution required
+- **Ephrem — Hymns on Nisibis** — **CC-BY** (Digital Syriac Corpus) — attribution required
+
+See [LICENSE-DATA.md](LICENSE-DATA.md) for full per-file attribution and use restrictions. Mixing the Apache-2.0 source code with CC-BY-NC and CC-BY-SA data means downstream users must respect the most-restrictive license that applies to each file they reuse.

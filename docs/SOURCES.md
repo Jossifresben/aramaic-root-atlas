@@ -9,10 +9,20 @@ This document lists all data sources, licenses, and third-party resources used b
 ### Peshitta New Testament
 
 - **Content:** 22 books, 7,440 verses, 101,469 words
-- **Source:** Syriac Peshitta text in Unicode
+- **Underlying text:** BFBS Peshitta edition (public domain) — the British
+  and Foreign Bible Society edition of the Syriac NT. The exact BFBS edition
+  in the digitization lineage is the **Pusey-Gwilliam-Mosul** family.
+- **Digitization lineage:** [dukhrana.com](https://dukhrana.com) (Stephen
+  Silver) and the [SEDRA project](https://sedra.bethmardutho.org)
+  (Beth Mardutho Syriac Institute).
+- **License:** Public domain (text); attribution requested for the
+  digitization providers per their site terms.
 - **Script:** Syriac (Unicode block U+0710--U+074F)
 - **Corpus ID:** `peshitta_nt`
 - **File:** `data/corpora/peshitta_nt.csv`
+- **Attribution string:** "Peshitta NT text from the BFBS edition
+  (public domain), digitized via dukhrana.com (Stephen Silver) and the
+  SEDRA project (Beth Mardutho Syriac Institute)."
 
 ### Peshitta Old Testament
 
@@ -45,7 +55,27 @@ This document lists all data sources, licenses, and third-party resources used b
 - **Corpus ID:** `targum_onkelos`
 - **File:** `data/corpora/targum_onkelos.csv`
 - **Fetch script:** `scripts/fetch_targum_onkelos.py`
-- **Notes:** Targum Onkelos is the authoritative Jewish Aramaic translation of the Torah, produced in the 2nd century CE. It is the most literal of the major Targumim. The text was fetched from the Sefaria API and stored in Syriac script.
+- **Notes:** Targum Onkelos is the authoritative Jewish Aramaic translation of the Torah. Dating is debated: traditional dates place it in the 1st-3rd c. CE, but some scholars place the final redaction as late as the 5th c. CE. The text was fetched from the Sefaria API; the underlying critical edition basis is *not* fully documented by Sefaria, and this should be regularized in a future release (target: replace with Sperber's critical edition). Stored in Hebrew square script.
+
+### Ephrem of Nisibis -- Hymns on Nisibis (Carmina Nisibena)
+
+- **Content:** 1,435 verses, 29,477 words. **Important caveat:** this is *one
+  collection* of Ephrem the Syrian's surviving works (~5% of the total
+  corpus). Other major Ephrem collections (Hymns on Faith, on Heresies, on
+  Paradise, on the Nativity, against Julian, on Virginity, the Letters, and
+  the Commentaries on Genesis, Exodus, and the Diatessaron) are **not**
+  currently indexed.
+- **Source:** [Digital Syriac Corpus](https://syriaccorpus.org)
+  (`srophe/syriac-corpus` repository), TEI XML.
+- **License:** CC-BY 4.0 (Creative Commons Attribution).
+- **Script:** Syriac (Unicode block U+0710--U+074F)
+- **Corpus ID:** `ephrem_nisibis`
+- **File:** `data/corpora/ephrem_nisibis.csv`
+- **Fetch script:** `scripts/fetch_ephrem_nisibis.py`
+- **Period:** ~4th c. CE (Ephrem ca. 306-373 CE), Patristic Syriac.
+- **Notes:** The TEI source includes textual apparatus (variant readings)
+  that is *not* preserved in the CSV; only the main reading is loaded. For
+  text-critical work, consult the upstream Digital Syriac Corpus directly.
 
 ---
 

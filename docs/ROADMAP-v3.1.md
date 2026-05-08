@@ -24,7 +24,7 @@ or (b) unblock everything else. Nothing else in the roadmap should ship before
 | 0.5 | **Credit dukhrana.com** in `README.md` § Data Sources and `docs/SOURCES.md` § Peshitta NT for the lineage of the NT digitization. | C2.2 | S |
 | 0.6 | **Cite-modal URL fix.** `ctx.url` should default to the canonical deposit URL (`https://aramaic-root-atlas.onrender.com`), not `window.location.href`. Citations should reference the work, not the page the user happened to be on. | C2.23 | S |
 | 0.7 | **Per-page `<title>` tags.** Replace generic `Aramaic Root Atlas` with `<Tool name> | Aramaic Root Atlas` for each page. Improves bookmarking, SEO, screen readers. | C2.24 | S |
-| 0.8 | **Render hosting upgrade.** Move from free tier ($0, sleeps after 15 min idle) to Hobby tier (~$7/month, always-on). Document this in `README.md` § Hosting. | C2.22 | S, **D** |
+| 0.8 | ~~Render hosting upgrade.~~ **N/A — already on Render Pro.** No cold starts. Document this in `README.md` so reviewers don't repeat the assumption. | C2.22 | S |
 | 0.9 | **Audit the guided Tour against v3.0 in all four languages.** The Tour was originally built for the old horizontal nav. Walk through every step in EN/ES/HE/AR; fix selectors that point at gone elements; verify RTL placement of Driver.js popovers. | C2.8 | S |
 
 **Deliverable:** v3.0.1 patch release with legal compliance, honesty
@@ -167,7 +167,6 @@ These are points where I won't act without your input.
 
 | ID | Question |
 |---|---|
-| 0.8 | Pay $7/mo for Render Hobby? (Easy yes, but technically a budget decision.) |
 | 1.4 | Keep "Atlas" framing and add real geographic data, or rebrand? |
 | 1.9 | Tip jar: keep visible, demote to footer, or remove entirely? |
 | 3.1 | Which institutional partner to approach first? Email pitch ready? |
