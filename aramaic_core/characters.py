@@ -361,20 +361,65 @@ def translit_word_to_syriac(text: str) -> str | None:
 
 
 def parse_root_input(user_input: str) -> str | None:
-    """Parse user input like 'K-T-B' or 'k t b' into Syriac root string.
+    """Parse user input into a canonical Syriac root string.
 
     Accepts:
-      - Dash-separated: K-T-B (triliteral) or G-SH (biliteral)
-      - Space-separated: K T B or G SH
+      - Dash-separated Latin: K-T-B (triliteral) or G-SH (biliteral)
+      - Space-separated Latin: K T B or G SH
       - Digraphs: SH-L-M, KH-T-B, TH-Q-N, TS-L-M
       - Case-insensitive (except T for Teth)
+      - Direct Syriac Unicode: ܟܬܒ (returns as-is, normalized)
+      - Hebrew square script: כתב (mapped consonant-by-consonant to Syriac)
+      - Arabic: كتب (mapped consonant-by-consonant to Syriac)
 
-    Returns Syriac root string (2 or 3 chars) or None if invalid.
+    Returns Syriac root string (2 or 4 chars) or None if invalid.
     """
     user_input = user_input.strip()
     if not user_input:
         return None
 
+    # --- Non-Latin script: direct or transliterate-to-Syriac path ---
+    script = detect_script(user_input)
+    if script == 'syriac':
+        # Already Syriac; strip any non-letter chars and validate length
+        cleaned = ''.join(ch for ch in user_input if 0x0710 <= ord(ch) <= 0x074F)
+        if 2 <= len(cleaned) <= 4:
+            return cleaned
+        return None
+
+    if script == 'hebrew':
+        # Map Hebrew letters to Syriac equivalents
+        cleaned = ''.join(ch for ch in user_input if 0x05D0 <= ord(ch) <= 0x05EA)
+        if not (2 <= len(cleaned) <= 4):
+            return None
+        syr_chars = []
+        for ch in cleaned:
+            mapped = HEBREW_TO_SYRIAC.get(ch)
+            if not mapped:
+                return None
+            syr_chars.append(mapped)
+        return ''.join(syr_chars)
+
+    if script == 'arabic':
+        # Chain: Arabic → Latin (via ARABIC_TO_LATIN) → Syriac (via LATIN_TO_SYRIAC)
+        cleaned = ''.join(ch for ch in user_input if 0x0621 <= ord(ch) <= 0x064A)
+        if not (2 <= len(cleaned) <= 4):
+            return None
+        latin_parts = []
+        for ch in cleaned:
+            latin_part = ARABIC_TO_LATIN.get(ch)
+            if not latin_part:
+                return None
+            latin_parts.append(latin_part)
+        syr_chars = []
+        for part in latin_parts:
+            syr = LATIN_TO_SYRIAC.get(part.lower()) or LATIN_TO_SYRIAC.get(part)
+            if not syr:
+                return None
+            syr_chars.append(syr)
+        return ''.join(syr_chars)
+
+    # --- Latin (default) path ---
     # Split by dash or space
     if '-' in user_input:
         parts = [p.strip() for p in user_input.split('-') if p.strip()]
