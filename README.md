@@ -162,6 +162,7 @@ aramaic-root-atlas/
 - **SEDRA Lexicon** -- Beth Mardutho Syriac Institute, via public API (https://sedra.bethmardutho.org)
 - **Translations** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek) via [bible.helloao.org](https://bible.helloao.org)
 - **Cognates** -- 1,127+ entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates, generated and curated with the Claude API; semantic field classifications for all roots via Claude Haiku
+- **Peshitta Constellations** -- companion project (https://peshitta.onrender.com, DOI [10.5281/zenodo.19358529](https://doi.org/10.5281/zenodo.19358529)) that supplied curated root-card seed data — paradigmatic verse citations, sister-root and semantic-bridge relationships used to populate the root family visualizer
 
 See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details.
 
@@ -181,7 +182,7 @@ If you find this project useful, consider supporting its development via [TipTop
 
 ## Related
 
-- [Peshitta Root Finder](https://peshitta.onrender.com) -- the predecessor project focused on the Peshitta NT
+- [Peshitta Constellations](https://peshitta.onrender.com) -- companion project focused on the Peshitta NT (DOI [10.5281/zenodo.19358529](https://doi.org/10.5281/zenodo.19358529))
 
 ## Author
 

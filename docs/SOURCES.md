@@ -102,6 +102,13 @@ All translations were fetched from the **bible.helloao.org** API and are stored 
   - Semantic bridges linking related roots
   - Outlier flags for cognates with divergent meanings
 
+### Peshitta Constellations (companion project)
+
+- **URL:** https://peshitta.onrender.com
+- **DOI:** [10.5281/zenodo.19358529](https://doi.org/10.5281/zenodo.19358529)
+- **Author:** Jose Fresco Benaim (same author as the Aramaic Root Atlas)
+- **Contribution:** Supplied curated root-card seed data used to populate the root family visualizer -- paradigmatic verse citations, sister-root and semantic-bridge relationships, and root-flavor descriptions. The Aramaic Root Atlas extends and generalizes this material across all five corpora.
+
 ### Known Roots
 
 - **File:** `data/roots/known_roots.json`
