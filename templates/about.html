@@ -383,6 +383,65 @@
         </table>
         </div>
 
+        {# ── 2.5  LIMITATIONS & CAVEATS — read before citing ── #}
+
+        <h2 id="limitations" style="border-left:3px solid var(--gold-mark);padding-left:12px">
+        {% if lang == 'es' %}Limitaciones y advertencias &mdash; lea antes de citar{% elif lang == 'he' %}מגבלות ואזהרות &mdash; קראו לפני ציטוט{% elif lang == 'ar' %}الحدود والتحفّظات &mdash; اقرأ قبل الاستشهاد{% else %}Limitations &amp; caveats &mdash; read before citing{% endif %}
+        </h2>
+
+        {% if lang == 'es' %}
+        <p>El Aramaic Root Atlas es un <strong>prototipo de herramienta de investigaci&oacute;n</strong>. Las conclusiones acad&eacute;micas finales deben verificarse contra fuentes autorizadas (HALOT, BDB, Sokoloff, Brockelmann, Lane, Wehr). Limitaciones espec&iacute;ficas:</p>
+        <ul>
+          <li><strong>No se ha publicado un estudio de precisi&oacute;n/recall.</strong> La extracci&oacute;n de ra&iacute;ces es heur&iacute;stica; la puntuaci&oacute;n de confianza (Alta/Media/Baja) refleja la <em>v&iacute;a</em> de extracci&oacute;n, no la correcci&oacute;n medida.</li>
+          <li><strong>Los cognados son generados por IA</strong> y no han sido validados sistem&aacute;ticamente contra l&eacute;xicos autorizados. Las 1.127 entradas son <em>sugerencias para verificar</em>, no reclamaciones autorizadas.</li>
+          <li><strong>El marco triliteral falla en ra&iacute;ces no-CCC.</strong> Las ra&iacute;ces geminadas, huecas, d&eacute;biles y cuadriliterales actualmente reciben puntuaci&oacute;n baja en lugar de representarse en su clase morfol&oacute;gica adecuada.</li>
+          <li><strong>El an&aacute;lisis diacr&oacute;nico confunde g&eacute;nero con cronolog&iacute;a.</strong> Los corpus difieren simult&aacute;neamente en g&eacute;nero, registro, dialecto y fuente de traducci&oacute;n. El orden cronol&oacute;gico es editorial; la datac&iacute;n del T&aacute;rgum Onkelos es debatida.</li>
+          <li><strong>Las pistas de traducci&oacute;n introducen sesgo.</strong> WEB (ingl&eacute;s), Reina-Valera 1909, Van Dyck (1865), SBLGNT (no NA28). La b&uacute;squeda &laquo;por significado&raquo; refleja decisiones de traducci&oacute;n, no el rango sem&aacute;ntico arameo.</li>
+          <li><strong>Las anotaciones del investigador y los marcadores son ef&iacute;meros.</strong> Almacenados en localStorage del navegador; se pierden al limpiar la cach&eacute;. Exporte regularmente.</li>
+          <li><strong>La cobertura de corpus es limitada.</strong> El Talmud babil&oacute;nico, los t&aacute;rgums palestinos, el arameo de Qumr&aacute;n, el mandeo, el arameo imperial y ~95% de la obra de Efr&eacute;n no est&aacute;n indexados.</li>
+        </ul>
+        <p>Para divulgaci&oacute;n completa de las 12 advertencias metodol&oacute;gicas, consulte <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md" target="_blank" rel="noopener">docs/VALIDATION.md</a>. Para el plan de validaci&oacute;n y mitigaci&oacute;n, vea <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/ROADMAP-v3.1.md" target="_blank" rel="noopener">docs/ROADMAP-v3.1.md</a>.</p>
+
+        {% elif lang == 'he' %}
+        <p>Aramaic Root Atlas הוא <strong>אב-טיפוס של כלי מחקר</strong>. מסקנות אקדמיות סופיות יש לאמת מול מקורות סמכותיים (HALOT, BDB, Sokoloff, Brockelmann, Lane, Wehr). מגבלות ספציפיות:</p>
+        <ul>
+          <li><strong>לא פורסם מחקר דיוק/אחזור.</strong> חילוץ השורשים הוא היוריסטי; ציון הביטחון (גבוה/בינוני/נמוך) משקף את <em>נתיב</em> החילוץ, לא נכונות נמדדת.</li>
+          <li><strong>הקוגנטים נוצרו על-ידי בינה מלאכותית</strong> ולא אומתו באופן שיטתי מול לקסיקונים סמכותיים. 1,127 הערכים הם <em>הצעות לאימות</em>, לא טענות סמכותיות.</li>
+          <li><strong>המסגרת התלת-עיצורית כושלת בשורשים שאינם CCC.</strong> שורשים כפולים, חלולים, חלשים ורבועניים מקבלים כיום ציון נמוך במקום להיות מיוצגים במחלקה המורפולוגית המתאימה.</li>
+          <li><strong>הניתוח הדיאכרוני מערבב ז'אנר עם כרונולוגיה.</strong> הקורפוסים נבדלים בו-זמנית בז'אנר, במשלב, בניב ובמקור התרגום. הסדר הכרונולוגי הוא עריכתי; תיארוך תרגום אונקלוס שנוי במחלוקת.</li>
+          <li><strong>מסלולי התרגום מציגים הטיה.</strong> WEB (אנגלית), Reina-Valera 1909, Van Dyck (1865), SBLGNT (לא NA28). חיפוש &laquo;לפי משמעות&raquo; משקף החלטות מתרגם, לא את הטווח הסמנטי הארמי.</li>
+          <li><strong>הערות החוקר והסימניות אינן יציבות.</strong> מאוחסנות ב-localStorage של הדפדפן; אובדות כאשר מנקים מטמון. ייצאו בקביעות.</li>
+          <li><strong>כיסוי הקורפוסים מוגבל.</strong> התלמוד הבבלי, התרגומים הארץ-ישראליים, ארמית קומראן, מנדאית, ארמית קיסרית ו-~95% מיצירת אפרם אינם מאונדקסים.</li>
+        </ul>
+        <p>לחשיפה מלאה של 12 ההסתייגויות המתודולוגיות, ראו <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md" target="_blank" rel="noopener">docs/VALIDATION.md</a>. לתוכנית האימות וההפחתה, ראו <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/ROADMAP-v3.1.md" target="_blank" rel="noopener">docs/ROADMAP-v3.1.md</a>.</p>
+
+        {% elif lang == 'ar' %}
+        <p>الأطلس الآرامي للجذور <strong>نموذج أولي لأداة بحثية</strong>. ينبغي التحقّق من الاستنتاجات الأكاديمية النهائية مقابل المصادر المعتمدة (HALOT، BDB، سوكولوف، بروكلمان، لين، فِير). حدود محدّدة:</p>
+        <ul>
+          <li><strong>لم تُنشر دراسة دقّة/استرجاع.</strong> استخراج الجذور إرشادي؛ تعكس درجة الثقة (عالية/متوسطة/منخفضة) <em>مسار</em> الاستخراج، لا الصحّة المقاسة.</li>
+          <li><strong>المُشتركات مولّدة بالذكاء الاصطناعي</strong> ولم تُتحقَّق منهجياً مقابل المعاجم المعتمدة. المداخل الـ1,127 <em>اقتراحات للتحقّق</em>، لا ادعاءات سلطوية.</li>
+          <li><strong>الإطار الثلاثي يفشل مع الجذور غير-CCC.</strong> الجذور المضعّفة والمعتلّة والرباعية تتلقى حالياً درجة ثقة منخفضة بدلاً من تمثيلها في صنفها الصرفي الصحيح.</li>
+          <li><strong>التحليل الزمني يخلط الجنس الأدبي بالتسلسل الزمني.</strong> تختلف المدوّنات في الوقت ذاته في الجنس والمستوى واللهجة ومصدر الترجمة. الترتيب الزمني خيار تحريري؛ تأريخ ترجوم أونكيلوس محلّ خلاف.</li>
+          <li><strong>مسارات الترجمة تُدخل تحيّزاً.</strong> WEB (إنجليزية)، Reina-Valera 1909، فان دايك (1865)، SBLGNT (وليس NA28). البحث &laquo;حسب المعنى&raquo; يعكس قرارات المترجم، لا المدى الدلالي الآرامي.</li>
+          <li><strong>ملاحظات الباحث والإشارات المرجعية زائلة.</strong> مخزّنة في localStorage للمتصفح؛ تُفقَد عند مسح الذاكرة المؤقّتة. صدِّر بانتظام.</li>
+          <li><strong>تغطية المدوّنات محدودة.</strong> التلمود البابلي، التراجم الفلسطينية، آرامية قمران، المندائية، الآرامية الإمبراطورية و~95% من أعمال أفرام غير مفهرسة.</li>
+        </ul>
+        <p>للإفصاح الكامل عن التحفّظات المنهجية الـ12، انظر <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md" target="_blank" rel="noopener">docs/VALIDATION.md</a>. ولخطة التحقق والمعالجة، راجع <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/ROADMAP-v3.1.md" target="_blank" rel="noopener">docs/ROADMAP-v3.1.md</a>.</p>
+
+        {% else %}
+        <p>The Aramaic Root Atlas is a <strong>research-aid prototype</strong>. Final scholarly conclusions should be checked against authoritative sources (HALOT, BDB, Sokoloff, Brockelmann, Lane, Wehr). Specific limitations:</p>
+        <ul>
+          <li><strong>No precision/recall study has been published.</strong> Root extraction is heuristic; the confidence indicator (High/Medium/Low) reflects the extraction <em>path</em>, not measured correctness.</li>
+          <li><strong>Cognates are LLM-generated</strong> and have not been systematically validated against authoritative lexicons. The 1,127 entries are <em>suggestions for verification</em>, not authoritative claims.</li>
+          <li><strong>The triliteral framing fails on non-CCC roots.</strong> Geminate, hollow, weak, and quadriliteral roots currently receive Low confidence rather than being represented in their proper morphological class.</li>
+          <li><strong>Diachronic analysis confounds genre with chronology.</strong> The corpora differ simultaneously on genre, register, dialect, and translation source. The chronological ordering is editorial; Targum Onkelos's date is scholarly debated.</li>
+          <li><strong>Translation tracks introduce bias.</strong> WEB (English), Reina-Valera 1909, Van Dyck (1865), SBLGNT (not NA28). "Search by meaning" reflects translator choices, not the underlying Aramaic semantic range.</li>
+          <li><strong>Researcher annotations and bookmarks are ephemeral.</strong> Stored in browser localStorage; lost when the cache is cleared. Export regularly.</li>
+          <li><strong>Corpus coverage is a thin slice.</strong> The Babylonian Talmud, Palestinian Targums, Qumran Aramaic, Mandaic, Imperial Aramaic, and ~95% of Ephrem's surviving works are not indexed.</li>
+        </ul>
+        <p>For the full disclosure of all 12 methodological caveats, see <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md" target="_blank" rel="noopener">docs/VALIDATION.md</a>. For the validation roadmap, see <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/ROADMAP-v3.1.md" target="_blank" rel="noopener">docs/ROADMAP-v3.1.md</a>.</p>
+        {% endif %}
+
         {# ── 3. METHODOLOGY ── #}
 
         <h2>{% if lang == 'es' %}Metodolog&iacute;a{% elif lang == 'he' %}מתודולוגיה{% elif lang == 'ar' %}المنهجية{% else %}Methodology{% endif %}</h2>
