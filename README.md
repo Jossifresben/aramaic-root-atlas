@@ -164,7 +164,7 @@ aramaic-root-atlas/
 - **Cognates** -- 1,127 entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates; **LLM-generated and not yet validated against authoritative lexicons** (HALOT, BDB, Sokoloff, Brockelmann, Lane, Wehr) — see [Limitations](#limitations--caveats); semantic field classifications via Claude Haiku
 - **Peshitta Constellations** -- companion project (https://peshitta.onrender.com, DOI [10.5281/zenodo.19358529](https://doi.org/10.5281/zenodo.19358529)) that supplied curated root-card seed data — paradigmatic verse citations, sister-root and semantic-bridge relationships used to populate the root family visualizer
 
-See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details and [LICENSE-DATA.md](LICENSE-DATA.md) for per-corpus data licensing.
+See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details, [LICENSE-DATA.md](LICENSE-DATA.md) for per-corpus data licensing, [docs/SEARCH-ALGORITHMS.md](docs/SEARCH-ALGORITHMS.md) for how each search mode ranks results, and [CHANGELOG.md](CHANGELOG.md) for release-by-release data and feature history.
 
 ## Limitations & Caveats
 
