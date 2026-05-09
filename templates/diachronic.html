@@ -71,7 +71,7 @@
       </div>
     </div>
     <div class="s-field">
-      <label class="s-label">{{ t('diac_normalisation', lang) if t else 'Normalisation' }}</label>
+      <label class="s-label" for="diac-norm">{{ t('diac_normalisation', lang) if t else 'Normalisation' }}</label>
       <select class="s-select" id="diac-norm">
         <option value="per_1k">{{ t('diac_per_1k', lang) if t else 'Per 1,000 words' }}</option>
         <option value="raw">{{ t('diac_raw', lang) if t else 'Raw count' }}</option>
@@ -125,7 +125,7 @@
   <!-- Shifts controls -->
   <div style="display:flex;gap:14px;align-items:end;padding:8px 0 28px">
     <div class="s-field">
-      <label class="s-label">{{ t('diac_direction_label', lang) if t else 'Direction' }}</label>
+      <label class="s-label" for="shifts-direction">{{ t('diac_direction_label', lang) if t else 'Direction' }}</label>
       <select class="s-select" id="shifts-direction">
         <option value="all">{{ t('diachronic_direction_all', lang) if t else 'All' }}</option>
         <option value="emerging">{{ t('diachronic_emerging', lang) if t else 'Emerging' }}</option>

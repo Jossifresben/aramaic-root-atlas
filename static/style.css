@@ -13,11 +13,13 @@
   --rule:         #d9d2c2;
   --rule-soft:    #e8e2d3;
 
-  /* — Ink. — */
+  /* — Ink. WCAG AA-tuned: every ink tier on every surface is ≥4.5:1.
+     --ink-4 was #8e8676 (3:1 on warm light surfaces, fails AA); darkened
+     to #6e6353 which gives ≈5:1 on --bg-2 / --surface. — */
   --ink:          #1a1a1a;
   --ink-2:        #3a352e;
   --ink-3:        #6b6457;
-  --ink-4:        #8e8676;
+  --ink-4:        #6e6353;
 
   /* — Accents. — */
   --accent:       #6b3a1f;          /* sienna ink */
@@ -68,7 +70,7 @@
   --ink:          #ece6d6;
   --ink-2:        #d4cdba;
   --ink-3:        #968d77;
-  --ink-4:        #6e6757;
+  --ink-4:        #88806c;  /* lightened from #6e6757 for AA on dark bg */
 
   --accent:       #d49968;
   --accent-2:     #b97e4f;
@@ -202,8 +204,9 @@ hr{border:0;border-top:1px solid var(--rule);margin:0}
   border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--surface);
 }
 .side-foot .theme-tog button{
-  flex:1;padding:5px;font-family:var(--sans);font-size:11.5px;color:var(--ink-3);letter-spacing:.04em;
+  flex:1;padding:5px;font-family:var(--sans);font-size:11.5px;color:#3a352e;letter-spacing:.04em;
 }
+[data-theme="dark"] .side-foot .theme-tog button{color:#ece6d6}
 .side-foot .theme-tog button.on{background:var(--bg-3);color:var(--ink);font-weight:500}
 
 /* — Main content — */
@@ -460,18 +463,27 @@ h3.subhead{
   display:inline-flex;align-items:center;gap:6px;
   font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.04em;
   padding:3px 9px;border-radius:11px;
-  background:var(--cb-soft);color:var(--cb);
+  background:var(--cb-soft);color:var(--cb-text);
   border:1px solid color-mix(in oklab, var(--cb) 30%, transparent);
   white-space:nowrap;
 }
+/* Dot prefix keeps the brighter corpus color; only the text uses the
+   darker AA-safe variant. */
 .cbadge::before{
   content:"";width:6px;height:6px;border-radius:50%;background:var(--cb);
 }
-.cbadge.pnt{--cb:var(--c-pnt);--cb-soft:var(--c-pnt-soft)}
-.cbadge.pot{--cb:var(--c-pot);--cb-soft:var(--c-pot-soft)}
-.cbadge.bib{--cb:var(--c-bib);--cb-soft:var(--c-bib-soft)}
-.cbadge.tar{--cb:var(--c-tar);--cb-soft:var(--c-tar-soft)}
-.cbadge.eph{--cb:var(--c-eph);--cb-soft:var(--c-eph-soft)}
+/* --cb-text is a darker shade of each corpus colour, chosen for
+   ≥4.5:1 contrast on its corresponding --cb-soft background (WCAG AA). */
+.cbadge.pnt{--cb:var(--c-pnt);--cb-soft:var(--c-pnt-soft);--cb-text:#06432f}
+.cbadge.pot{--cb:var(--c-pot);--cb-soft:var(--c-pot-soft);--cb-text:#134268}
+.cbadge.bib{--cb:var(--c-bib);--cb-soft:var(--c-bib-soft);--cb-text:#3e1f63}
+.cbadge.tar{--cb:var(--c-tar);--cb-soft:var(--c-tar-soft);--cb-text:#6e4400}
+.cbadge.eph{--cb:var(--c-eph);--cb-soft:var(--c-eph-soft);--cb-text:#7a1d1d}
+[data-theme="dark"] .cbadge.pnt{--cb-text:#a8e3c8}
+[data-theme="dark"] .cbadge.pot{--cb-text:#a8c5e8}
+[data-theme="dark"] .cbadge.bib{--cb-text:#cba6f0}
+[data-theme="dark"] .cbadge.tar{--cb-text:#e8b870}
+[data-theme="dark"] .cbadge.eph{--cb-text:#f0a0a0}
 
 /* ═══════════════════════════════════════════════════════════════
    CORPUS LEDGER (home)
@@ -542,7 +554,10 @@ h3.subhead{
   font-family:var(--sans);font-size:13px;color:var(--ink-3);
   flex-wrap:wrap;gap:16px;
 }
-.foot-inner a{color:var(--ink-2)}
+/* Footer links: underlined so they're distinguishable without color
+   alone (WCAG AA link-in-text-block). */
+.foot-inner a{color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.foot-inner a:hover{text-decoration-thickness:2px}
 .foot-meta{display:flex;gap:18px;font-family:var(--mono);font-size:12px;color:var(--ink-4);letter-spacing:.04em}
 
 /* ═══════════════════════════════════════════════════════════════

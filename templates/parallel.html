@@ -178,7 +178,7 @@
 
 <div class="interlinear-controls">
     <div class="s-field wide">
-        <label class="s-label">{{ t('book', lang) }}</label>
+        <label class="s-label" for="par-book">{{ t('book', lang) }}</label>
         <select class="s-select" id="par-book">
             {% for b_name, b_ch in books %}
             <option value="{{ b_name }}" data-chapters="{{ b_ch }}"{% if b_name == book %} selected{% endif %}>{{ bn(b_name, lang) }}</option>
@@ -186,7 +186,7 @@
         </select>
     </div>
     <div class="s-field narrow">
-        <label class="s-label">{{ t('chapter', lang) }}</label>
+        <label class="s-label" for="par-chapter">{{ t('chapter', lang) }}</label>
         <select class="s-select" id="par-chapter">
             {# Populated dynamically on load from data-chapters of the selected book #}
         </select>

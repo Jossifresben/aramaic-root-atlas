@@ -24,7 +24,7 @@
   <div class="interlinear-controls" id="il-controls">
 
     <div class="s-field">
-      <label class="s-label">{{ t('il_corpus_label', lang) if t else 'Corpus' }}</label>
+      <label class="s-label" for="il-corpus">{{ t('il_corpus_label', lang) if t else 'Corpus' }}</label>
       <select class="s-select" id="il-corpus">
         <option value="">{{ t('all_corpora', lang) if t else 'All Corpora' }}</option>
         <option value="biblical_aramaic">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</option>
@@ -36,14 +36,14 @@
     </div>
 
     <div class="s-field wide">
-      <label class="s-label">{{ t('read_book', lang) if t else 'Book' }}</label>
+      <label class="s-label" for="il-book">{{ t('read_book', lang) if t else 'Book' }}</label>
       <select class="s-select" id="il-book">
         <option value="">— select —</option>
       </select>
     </div>
 
     <div class="s-field narrow">
-      <label class="s-label">{{ t('il_from', lang) }}</label>
+      <label class="s-label" for="il-ch-start">{{ t('il_from', lang) }}</label>
       <select class="s-select" id="il-ch-start">
         <option value="">Ch</option>
       </select>
@@ -52,14 +52,14 @@
     <span class="il-range-sep">—</span>
 
     <div class="s-field narrow">
-      <label class="s-label">{{ t('il_to', lang) }}</label>
+      <label class="s-label" for="il-ch-end">{{ t('il_to', lang) }}</label>
       <select class="s-select" id="il-ch-end">
         <option value="">Ch</option>
       </select>
     </div>
 
     <div class="s-field">
-      <label class="s-label">{{ t('settings_script', lang) if t else 'Transliteration' }}</label>
+      <label class="s-label" for="il-script">{{ t('settings_script', lang) if t else 'Transliteration' }}</label>
       <select class="s-select" id="il-script">
         <option value="latin"{% if script == 'latin' %} selected{% endif %}>Latin</option>
         <option value="syriac"{% if script == 'syriac' %} selected{% endif %}>Syriac</option>
@@ -69,7 +69,7 @@
     </div>
 
     <div class="s-field">
-      <label class="s-label">{{ t('settings_syriac_font', lang) if t else 'Script style' }}</label>
+      <label class="s-label" for="il-font">{{ t('settings_syriac_font', lang) if t else 'Script style' }}</label>
       <select class="s-select" id="il-font">
         <option value="estrangela">Estrangela</option>
         <option value="eastern">Eastern</option>

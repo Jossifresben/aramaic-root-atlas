@@ -34,7 +34,7 @@
     </div>
   </div>
   <div class="s-field">
-    <label class="s-label">{{ t('hapax_corpus_label', lang) if t else 'Corpus' }}</label>
+    <label class="s-label" for="corpus-filter">{{ t('hapax_corpus_label', lang) if t else 'Corpus' }}</label>
     <select class="s-select" id="corpus-filter">
       <option value="">{{ t('hapax_all_corpora', lang) }}</option>
       <option value="biblical_aramaic">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</option>
@@ -45,14 +45,14 @@
     </select>
   </div>
   <div class="s-field">
-    <label class="s-label">{{ t('hapax_scope_label', lang) if t else 'Scope' }}</label>
+    <label class="s-label" for="scope-filter">{{ t('hapax_scope_label', lang) if t else 'Scope' }}</label>
     <select class="s-select" id="scope-filter">
       <option value="root">{{ t('hapax_scope_root', lang) }}</option>
       <option value="form">{{ t('hapax_scope_form', lang) }}</option>
     </select>
   </div>
   <div class="s-field">
-    <label class="s-label">{{ t('hapax_sort_label', lang) if t else 'Sort' }}</label>
+    <label class="s-label" for="sort-filter">{{ t('hapax_sort_label', lang) if t else 'Sort' }}</label>
     <select class="s-select" id="sort-filter">
       <option value="alpha">{{ t('hapax_sort_alpha', lang) if t else 'A–Z' }}</option>
       <option value="confidence">{{ t('hapax_sort_confidence', lang) if t else 'Confidence' }}</option>

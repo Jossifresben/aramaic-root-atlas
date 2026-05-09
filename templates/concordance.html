@@ -35,7 +35,7 @@
     </div>
   </div>
   <div class="s-field">
-    <label class="s-label">{{ t('conc_sort_label', lang) if t else 'Sort' }}</label>
+    <label class="s-label" for="conc-sort">{{ t('conc_sort_label', lang) if t else 'Sort' }}</label>
     <select class="s-select" id="conc-sort">
       <option value="book">{{ t('conc_sort_book', lang) if t else 'Book order' }}</option>
       <option value="frequency">{{ t('conc_sort_freq', lang) if t else 'By frequency' }}</option>
@@ -43,7 +43,7 @@
     </select>
   </div>
   <div class="s-field">
-    <label class="s-label">{{ t('conc_group_label', lang) if t else 'Group by' }}</label>
+    <label class="s-label" for="conc-group">{{ t('conc_group_label', lang) if t else 'Group by' }}</label>
     <select class="s-select" id="conc-group">
       <option value="none">{{ t('conc_group_none', lang) if t else 'None' }}</option>
       <option value="form">{{ t('conc_group_form', lang) if t else 'By form' }}</option>

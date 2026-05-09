@@ -34,8 +34,8 @@
           <div id="autocomplete-list" class="autocomplete-list"></div>
         </div>
       </div>
-      <div class="s-field"><label class="s-label">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
-        <select class="s-select" id="corpusFilter">
+      <div class="s-field"><label class="s-label" for="corpusFilter">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
+        <select class="s-select" id="corpusFilter" aria-label="{{ t('label_corpus', lang) if t else 'Corpus' }}">
           <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
           {% for c in corpora %}
           <option value="{{ c.id }}">{{ c.label }}</option>
@@ -102,13 +102,13 @@
           <div id="prox-ac-list2" class="autocomplete-list"></div>
         </div>
       </div>
-      <div class="s-field"><label class="s-label">{{ t('label_scope', lang) if t else 'Scope' }}</label>
+      <div class="s-field"><label class="s-label" for="proxScope">{{ t('label_scope', lang) if t else 'Scope' }}</label>
         <select class="s-select" id="proxScope">
           <option value="verse">{{ t('opt_verse', lang) if t else 'Verse' }}</option>
           <option value="chapter">{{ t('opt_chapter', lang) if t else 'Chapter' }}</option>
         </select>
       </div>
-      <div class="s-field"><label class="s-label">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
+      <div class="s-field"><label class="s-label" for="proxCorpusFilter">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
         <select class="s-select" id="proxCorpusFilter">
           <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
           {% for c in corpora %}
@@ -127,7 +127,7 @@
       <div class="s-field"><label class="s-label">{{ t('label_search_text', lang) if t else 'Search text' }}</label>
         <input class="s-input" id="textInput" placeholder="{{ t('text_search_placeholder', lang) if t else 'Enter word or phrase in English, Hebrew, Aramaic...' }}" autocomplete="off">
       </div>
-      <div class="s-field"><label class="s-label">{{ t('label_language', lang) if t else 'Language' }}</label>
+      <div class="s-field"><label class="s-label" for="textLangSelect">{{ t('label_language', lang) if t else 'Language' }}</label>
         <select class="s-select" id="textLangSelect">
           <option value="en">English</option>
           <option value="es">Español</option>
@@ -135,7 +135,7 @@
           <option value="ar">العربية</option>
         </select>
       </div>
-      <div class="s-field"><label class="s-label">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
+      <div class="s-field"><label class="s-label" for="textCorpusFilter">{{ t('label_corpus', lang) if t else 'Corpus' }}</label>
         <select class="s-select" id="textCorpusFilter">
           <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
           {% for c in corpora %}

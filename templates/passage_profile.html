@@ -22,7 +22,7 @@
     <!-- Controls -->
     <div class="interlinear-controls" style="margin-bottom:20px;">
         <div class="s-field wide">
-            <label class="s-label">{{ t('pp_book_label', lang) }}</label>
+            <label class="s-label" for="pp-book">{{ t('pp_book_label', lang) }}</label>
             <select class="s-select" id="pp-book" onchange="onBookChange()">
                 <option value="">— select book —</option>
                 {% for b_name, b_ch in books %}
@@ -34,14 +34,14 @@
             </select>
         </div>
         <div class="s-field narrow">
-            <label class="s-label">{{ t('pp_chapter_from', lang) }}</label>
+            <label class="s-label" for="pp-ch-start">{{ t('pp_chapter_from', lang) }}</label>
             <select class="s-select" id="pp-ch-start">
                 <option value="">Ch</option>
             </select>
         </div>
         <span class="il-range-sep">—</span>
         <div class="s-field narrow">
-            <label class="s-label">{{ t('pp_chapter_to', lang) }}</label>
+            <label class="s-label" for="pp-ch-end">{{ t('pp_chapter_to', lang) }}</label>
             <select class="s-select" id="pp-ch-end">
                 <option value="">Ch</option>
             </select>
