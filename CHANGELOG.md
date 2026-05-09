@@ -10,49 +10,94 @@ indexed corpora, glosses, cognates, or extraction outputs (information
 researchers need when deciding whether re-runs of cited analyses are
 reproducible).
 
-## [Unreleased]
+## [v3.0.3] — 2026-05-09
 
-Reconciliation pass: **stale headline numbers across the docs** corrected
-against the live data. No code or data change — only documentation.
+Infrastructure & accessibility release. Closes 3 more critique items
+(C1.16, C2.25, plus an a11y floor across all 19 pages) and corrects
+3 stale headline numbers that had drifted from the live data.
+
+### Added
+- **Accessibility floor: every page scores 100/100 on Lighthouse**
+  (audited 19 pages). Fixes:
+  - `--ink-4` darkened from #8e8676 → #6e6353 in light mode and
+    lightened from #6e6757 → #88806c in dark mode (≥4.5:1 on warm
+    surfaces; was 3:1)
+  - Corpus badges now use a darker `--cb-text` per corpus (Peshitta
+    NT/OT, BA, Targum, Ephrem) so badge text passes 4.5:1 against the
+    soft-tinted background; dot prefix keeps the brighter colour
+  - Footer + cookie banner + privacy-page links now have explicit
+    underline + 2px offset (link-in-text-block)
+  - About-page feature-card headings: `<h4>` → `<h3>` (heading order)
+  - 22 `<label for=X>` ↔ `<select id=X>` pairings wired across 7
+    templates; `aria-label` on every floating select
+  - Range sliders (hapax frequency, concordance context width) now
+    have proper labels + `aria-valuemin/max/now` + `aria-controls`
+  - Heatmap colour scale: heat-4/heat-5 opacity bumped from 0.45/0.65
+    → 0.85/0.95 so white text actually clears 4.5:1
+  - Swagger UI (third-party): CSS overrides on `.info a` + HTTP
+    method badges; JS injects `aria-label` on `#servers` and promotes
+    Swagger's `<h3>` tag headings to `<h2>` for proper hierarchy
+- **API versioning** — every `/api/X` endpoint is also reachable at
+  `/api/v1/X`. Single source of truth via a post-registration loop
+  that walks the URL map after all routes register and adds a v1
+  alias for each `/api/` rule. 29 endpoints aliased.
+- **Rate limiting** (Flask-Limiter) — 600 req/min and 60 req/sec per
+  IP. Every API response now includes `X-RateLimit-Limit`,
+  `X-RateLimit-Remaining`, `X-RateLimit-Reset`, and `Retry-After`
+  headers. Excess requests get HTTP 429.
+- `docs/API-STABILITY.md` — versioning + 12-month deprecation policy
+  for breaking changes; what counts as breaking vs non-breaking;
+  rate limits + headers; CORS posture; cite-the-version-DOI guidance
+- `docs/SUCCESSION.md` — per-asset access documentation (GitHub,
+  Render, Zenodo, GA, Anthropic API), recommended institutional
+  anchors, minimum survival kit, "how to keep healthy as a successor"
+  runbook
+- Test suite expanded **150 → 197 tests**. New file
+  `tests/test_api_versioning.py` (47 tests): byte-identical legacy↔v1
+  parity for representative endpoints, regression guard against new
+  routes landing without an alias, count-match sanity check, limiter
+  is wired
+- Swagger spec (`static/swagger.json`) bumped to 3.0.3 with API
+  versioning + rate-limiting sections in the description
 
 ### Changed
-- **Root count: 5,039 → 5,249** in current-state docs. Live `/api/stats`
-  has reported `root_count: 5249` since cognate-generation work landed
-  earlier; README and docs hadn't caught up. Historical counts in
-  CHANGELOG and Phase notes preserved as snapshots of their respective
-  release states.
-- **Cognate root entries: 1,127 → 1,584** in current-state docs. Live
-  `data/roots/cognates.json` has 1,584 entries (1,577 with Hebrew or
-  Arabic cognates; 405 with a Greek NT parallel; 1,584 with at least
-  one cognate). 4,599 individual Hebrew cognate words and 4,633 Arabic
-  cognate words across all entries.
-- **Greek NT cognates: 2,192 → 405** in current-state docs. The 2,192
-  number was an overcount from an earlier release (origin unclear,
-  possibly counting SBLGNT verses with Aramaic parallels rather than
-  distinct cognate links). Real count: 405 roots have a single
-  `greek_parallel` entry in the cognates file (one Greek word per root
-  at most).
+- **Root count: 5,039 → 5,249** in current-state docs. Live
+  `/api/stats` had been reporting `root_count: 5249` since cognate-
+  generation work landed earlier; README and docs hadn't caught up.
+- **Cognate root entries: 1,127 → 1,584** in current-state docs.
+  Live `data/roots/cognates.json` has 1,584 entries (1,577 with
+  Hebrew and/or Arabic cognates; 405 with a Greek NT parallel;
+  1,584 with at least one cognate). 4,599 individual Hebrew + 4,633
+  Arabic cognate words across all entries.
+- **Greek NT cognates: 2,192 → 405** — the 2,192 number was an
+  overcount of unclear origin (possibly counting SBLGNT verses with
+  Aramaic parallels rather than distinct cognate links). Actual
+  count from the data: 405 roots have a single `greek_parallel`
+  entry (one Greek word per root at most).
+- UI version refs synced to v3.0.3 (cite-modal, sidebar foot, About
+  page citation, README cite line, CITATION.cff)
+- Footer + cookie-banner + privacy-page links now explicitly underline
+  (was relying on color alone — failed AA link-in-text-block)
 
-### Files reconciled
-- `README.md` — front-page sticker, lede paragraph, Greek-cognates
-  feature bullet, cognate-source bullet, Limitations bullet
-- `CITATION.cff` — abstract
-- `paper.md` — Summary section
-- `LICENSE-DATA.md` — cognates section
-- `CLAUDE.md` — Current State summary
-- `docs/SOURCES.md` — Cognates section
-- `docs/VALIDATION.md` — §2 (recall floor), §5 (LLM-generated
-  cognates), §10 (Greek "cognates"), §12 (the "5,249 roots" headline);
-  added explicit reconciliation note
-- `docs/SUCCESSION.md` — Phase 2.4 cognate-audit estimate
-- `templates/about.html` — stat block (5,249 roots, 1,584 cognates),
-  Limitations sections in 4 languages, Cognates & Semantic Structure
-  section in 4 languages
-- `templates/base.html` — meta description
+### Fixed
+- A11y regressions across 19 pages now closed (see Added above)
+- Historical mentions in CHANGELOG and Phase 1 notes preserved as
+  snapshots of their respective release states; only current-state
+  references corrected
 
 ### Data Changes
-- None. The underlying CSVs, cognates.json, and extraction outputs are
-  unchanged. Only the documentation describing them was wrong.
+- None. The underlying CSVs, cognates.json, and extraction outputs
+  are unchanged. The 5,249 / 1,584 / 405 figures reflect the live
+  state at v3.0.3 — what changed is that the docs now reflect it.
+
+### Disclosed
+- API stability contract: `/api/v1/` is the recommended base; legacy
+  `/api/` URLs continue to work but have no contract. Breaking
+  changes require major version bump + 12-month deprecation per
+  `docs/API-STABILITY.md`.
+- Succession plan published: `docs/SUCCESSION.md` documents what a
+  successor needs (GitHub admin / Render team membership / Zenodo
+  GitHub-integration link) to keep the project alive.
 
 ---
 
@@ -324,6 +369,7 @@ Corpus expansion: Targum Onkelos.
 
 ---
 
+[v3.0.3]: https://github.com/Jossifresben/aramaic-root-atlas/releases/tag/v3.0.3
 [v3.0.2]: https://github.com/Jossifresben/aramaic-root-atlas/releases/tag/v3.0.2
 [v3.0.1]: https://github.com/Jossifresben/aramaic-root-atlas/releases/tag/v3.0.1
 [v3.0]: https://github.com/Jossifresben/aramaic-root-atlas/releases/tag/v3.0

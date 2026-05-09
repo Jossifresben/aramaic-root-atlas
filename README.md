@@ -191,7 +191,7 @@ See `docs/ROADMAP-v3.1.md` for the post-v3.0 plan addressing each item above.
 
 If you use this software, please cite it as:
 
-> Fresco Benaim, Jose. (2026). *Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer* (v3.0.2). Zenodo. https://doi.org/10.5281/zenodo.19358625
+> Fresco Benaim, Jose. (2026). *Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer* (v3.0.3). Zenodo. https://doi.org/10.5281/zenodo.19358625
 
 Or use the metadata in [CITATION.cff](CITATION.cff).
 
