@@ -2,11 +2,11 @@
 
 **[Live App](https://aramaic-root-atlas.onrender.com)** &nbsp; [![DOI](https://zenodo.org/badge/1190998648.svg)](https://doi.org/10.5281/zenodo.19358625)
 
-The Aramaic Root Atlas is an open-access tool for exploring triliteral roots across the major corpora of Aramaic literature. It spans approximately 1,500 years of literary history — from the Biblical Aramaic passages of Daniel and Ezra (~6th–2nd c. BCE) through Targum Onkelos (~1st–3rd c. CE) to the Peshitta Old and New Testaments (~2nd–5th c. CE) and the Hymns of Ephrem the Syrian (~4th c. CE) — indexing 5,039 roots across 38,062 verses and 528,399 words.
+The Aramaic Root Atlas is an open-access tool for exploring triliteral roots across the major corpora of Aramaic literature. It spans approximately 1,500 years of literary history — from the Biblical Aramaic passages of Daniel and Ezra (~6th–2nd c. BCE) through Targum Onkelos (~1st–3rd c. CE) to the Peshitta Old and New Testaments (~2nd–5th c. CE) and the Hymns of Ephrem the Syrian (~4th c. CE) — indexing 5,249 roots across 38,062 verses and 528,399 words.
 
 The tool is designed for scholars, students, and linguists who want to study Aramaic vocabulary across time and tradition: tracing how a root is used in different dialects and genres, finding rare or unique attestations, comparing parallel passages, or analyzing verb stem distributions. Every word form in the corpus is linked to its extracted root, gloss, confidence score, and verb stem, accessible directly from the verse reader.
 
-**38,062 verses** · **528,399 words** · **5,039 roots** · **1,127+ cognate families** · **5 corpora**
+**38,062 verses** · **528,399 words** · **5,249 roots** · **1,584 cognate root entries** · **5 corpora**
 
 ---
 
@@ -39,7 +39,7 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 ### Interface
 - **Sidebar navigation** -- persistent left rail groups every tool by purpose (Explore, Analyze, Workspace), keeping the active page highlighted; sticky topbar with breadcrumb, ⌘K quick-search across all roots, and shortcut menus for language, settings, share, tour, and Swagger
 - **Quadrilingual UI** -- full interface in English, Spanish, Hebrew, and Arabic with RTL support
-- **Greek cognates** -- 2,192 Greek NT equivalents linked to Aramaic roots in the visualizer (e.g., SH-L-M -> eirene "peace")
+- **Greek cognates** -- 405 Greek NT parallels linked to Aramaic roots in the visualizer (e.g., SH-L-M -> eirene "peace")
 - **Five translation tracks** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek)
 - **Three Syriac font styles** -- Estrangela, Eastern (Madnhaya), Western (Serto)
 - **Dark mode** and QR sharing
@@ -163,7 +163,7 @@ aramaic-root-atlas/
 - **Ephrem Nisibis** -- *Hymns on Nisibis (Carmina Nisibena)* via Digital Syriac Corpus (srophe/syriac-corpus, CC-BY), TEI XML — note: this is one collection (~5%) of Ephrem's surviving works
 - **SEDRA Lexicon** -- Beth Mardutho Syriac Institute, via public API (https://sedra.bethmardutho.org)
 - **Translations** -- WEB (EN), Reina-Valera 1909 (ES), WLC (HE), Van Dyck (AR), SBLGNT (Greek, Holmes 2010, CC-BY-SA) via [bible.helloao.org](https://bible.helloao.org)
-- **Cognates** -- 1,127 entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates; **LLM-generated and not yet validated against authoritative lexicons** (HALOT, BDB, Sokoloff, Brockelmann, Lane, Wehr) — see [Limitations](#limitations--caveats); semantic field classifications via Claude Haiku
+- **Cognates** -- 1,584 root entries with Hebrew and/or Arabic cognates (4,599 Hebrew + 4,633 Arabic individual cognate words) + 405 Greek NT parallels; **LLM-generated and not yet validated against authoritative lexicons** (HALOT, BDB, Sokoloff, Brockelmann, Lane, Wehr) — see [Limitations](#limitations--caveats); semantic field classifications via Claude Haiku
 - **Peshitta Constellations** -- companion project (https://peshitta.onrender.com, DOI [10.5281/zenodo.19358529](https://doi.org/10.5281/zenodo.19358529)) that supplied curated root-card seed data — paradigmatic verse citations, sister-root and semantic-bridge relationships used to populate the root family visualizer
 
 See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details, [LICENSE-DATA.md](LICENSE-DATA.md) for per-corpus data licensing, [docs/SEARCH-ALGORITHMS.md](docs/SEARCH-ALGORITHMS.md) for how each search mode ranks results, [docs/VALIDATION.md](docs/VALIDATION.md) for quantitative coverage and methodological caveats, [docs/API-STABILITY.md](docs/API-STABILITY.md) for the API versioning + rate-limit + deprecation policy, and [CHANGELOG.md](CHANGELOG.md) for release-by-release data and feature history.
@@ -173,7 +173,7 @@ See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details, [LICENSE-DA
 This is a research-aid prototype. Final scholarly conclusions should be checked against authoritative sources. Specific limitations:
 
 - **Root extraction is heuristic.** A rule-based pipeline emits a confidence score (High / Medium / Low) that is *not* a calibrated probability. Precision/recall against a hand-annotated gold standard is **not yet measured**. See `docs/ROADMAP-v3.1.md` Phase 2.
-- **Cognates are LLM-generated.** The 1,127 Hebrew/Arabic cognate entries and 2,192 Greek NT cognates were initially generated via the Claude API and have *not* been systematically validated against authoritative lexicons. Treat as suggestions for further verification, not as authoritative cognate claims.
+- **Cognates are LLM-generated.** The 1,584 Hebrew/Arabic cognate root entries and 405 Greek NT parallels were initially generated via the Claude API and have *not* been systematically validated against authoritative lexicons. Treat as suggestions for further verification, not as authoritative cognate claims.
 - **Confidence scores are heuristic, not empirical.** A "0.84" score reflects the rubric, not measured accuracy. Do not cite individual scores as probabilities until calibration is published.
 - **The triliteral framing forces non-CCC roots into a CCC mold.** Geminate, hollow, weak, and quadriliteral roots are currently scored low-confidence rather than represented in their proper morphological class. Phase 2 will add explicit non-triliteral pattern classes.
 - **Diachronic comparisons confound genre with chronology.** Frequency of a root in liturgical poetry (Ephrem) vs. translation literature (Peshitta) reflects style, register, and translation source as much as historical change. Chronological ordering of corpora is editorial; some dates (esp. Targum Onkelos) are scholarly debated.

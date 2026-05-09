@@ -82,8 +82,9 @@ directory from your copy.
 
 ## `data/roots/cognates.json`
 
-- **Content:** 1,127 Hebrew/Arabic cognate entries and 2,192 Greek NT cognate
-  entries.
+- **Content:** 1,584 cognate root entries (Hebrew and/or Arabic — 4,599
+  Hebrew cognate words, 4,633 Arabic cognate words across the entries)
+  and 405 Greek NT parallel entries.
 - **Provenance:** Initial set extracted from scholarly sources; **493 additional
   entries generated via the Anthropic Claude API and partially curated.** Not
   yet systematically validated against authoritative lexicons (HALOT, BDB,

@@ -32,9 +32,9 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 ## Current State (All Phases Complete)
 - **5 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v), Ephrem Nisibis (1,435v)
 - **Total**: 38,062 verses, 528,399 words, 72,566 unique forms
-- **5,039 roots** indexed across all corpora
-- **1,127 cognate entries** with Hebrew/Arabic cognates, semantic bridges
-- **2,192 Greek NT cognates** linking Aramaic roots to Greek equivalents in the visualizer
+- **5,249 roots** indexed across all corpora (was reported as 5,039 in earlier docs; verified against `/api/stats` 2026-05-09)
+- **1,584 cognate root entries** with Hebrew and/or Arabic cognates (4,599 Hebrew + 4,633 Arabic individual cognate words)
+- **405 Greek NT parallels** linking Aramaic roots to single Greek equivalents in the visualizer (NOT 2,192 — earlier docs overcounted)
 - Greek NT translation track (SBLGNT) — 7,939 verses from bible.helloao.org (grc_sbl)
 - SEDRA lexicon cache (12,534 entries) boosts root confidence for Syriac tokens
 - Quadrilingual UI (EN/ES/HE/AR) with 5 translation tracks

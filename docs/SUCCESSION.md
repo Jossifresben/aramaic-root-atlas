@@ -190,7 +190,7 @@ long-term credibility:
 - **Phase 2.1**: gold-standard test set (300 hand-annotated verses,
   60 per corpus). Without this, no published precision/recall numbers
   exist.
-- **Phase 2.4**: cognate audit against authoritative lexicons. ~1,127
+- **Phase 2.4**: cognate audit against authoritative lexicons. ~1,584
   entries × 6 lexicons (HALOT, BDB, Sokoloff, Brockelmann, Lane,
   Wehr).
 - **Phase 3.1**: institutional partner adoption (see above).

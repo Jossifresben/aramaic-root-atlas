@@ -120,7 +120,7 @@ All translations were fetched from the **bible.helloao.org** API and are stored 
 ### Cognates
 
 - **File:** `data/roots/cognates.json`
-- **Entries:** 1,127 root entries with Hebrew and Arabic cognates
+- **Entries:** 1,584 cognate root entries (1,577 with Hebrew and/or Arabic; 405 with a Greek NT parallel; some with both); 4,599 individual Hebrew cognate words and 4,633 Arabic cognate words across all entries
 - **Generation:** Initial set extracted from scholarly sources; 493 additional entries generated via the Claude API (Anthropic) and manually curated.
 - **Script:** `scripts/generate_new_cognates.py`
 - **Structure:** Each entry contains:

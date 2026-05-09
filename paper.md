@@ -21,7 +21,7 @@ bibliography: paper.bib
 
 # Summary
 
-The Aramaic Root Atlas is an open-access web application for cross-corpus analysis of triliteral roots across approximately 1,500 years of Aramaic literary history. It indexes 5,039 roots across five corpora — Biblical Aramaic (~6th–2nd c. BCE), Targum Onkelos (~1st–3rd c. CE), the Peshitta Old Testament (~2nd–4th c. CE), the Peshitta New Testament (~3rd–5th c. CE), and the Hymns of Ephrem the Syrian (~4th c. CE) — totalling 38,062 passages and 528,399 words in Syriac and Hebrew square script. Each word form is linked to its extracted triliteral root, gloss, confidence score, and verb stem (binyan), accessible directly from a verse reader. The tool is designed for scholars, students, and linguists studying Aramaic vocabulary across dialects and genres, and is freely available at https://aramaic-root-atlas.onrender.com.
+The Aramaic Root Atlas is an open-access web application for cross-corpus analysis of triliteral roots across approximately 1,500 years of Aramaic literary history. It indexes 5,249 roots across five corpora — Biblical Aramaic (~6th–2nd c. BCE), Targum Onkelos (~1st–3rd c. CE), the Peshitta Old Testament (~2nd–4th c. CE), the Peshitta New Testament (~3rd–5th c. CE), and the Hymns of Ephrem the Syrian (~4th c. CE) — totalling 38,062 passages and 528,399 words in Syriac and Hebrew square script. Each word form is linked to its extracted triliteral root, gloss, confidence score, and verb stem (binyan), accessible directly from a verse reader. The tool is designed for scholars, students, and linguists studying Aramaic vocabulary across dialects and genres, and is freely available at https://aramaic-root-atlas.onrender.com.
 
 # Statement of Need
 

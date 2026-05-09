@@ -10,6 +10,52 @@ indexed corpora, glosses, cognates, or extraction outputs (information
 researchers need when deciding whether re-runs of cited analyses are
 reproducible).
 
+## [Unreleased]
+
+Reconciliation pass: **stale headline numbers across the docs** corrected
+against the live data. No code or data change — only documentation.
+
+### Changed
+- **Root count: 5,039 → 5,249** in current-state docs. Live `/api/stats`
+  has reported `root_count: 5249` since cognate-generation work landed
+  earlier; README and docs hadn't caught up. Historical counts in
+  CHANGELOG and Phase notes preserved as snapshots of their respective
+  release states.
+- **Cognate root entries: 1,127 → 1,584** in current-state docs. Live
+  `data/roots/cognates.json` has 1,584 entries (1,577 with Hebrew or
+  Arabic cognates; 405 with a Greek NT parallel; 1,584 with at least
+  one cognate). 4,599 individual Hebrew cognate words and 4,633 Arabic
+  cognate words across all entries.
+- **Greek NT cognates: 2,192 → 405** in current-state docs. The 2,192
+  number was an overcount from an earlier release (origin unclear,
+  possibly counting SBLGNT verses with Aramaic parallels rather than
+  distinct cognate links). Real count: 405 roots have a single
+  `greek_parallel` entry in the cognates file (one Greek word per root
+  at most).
+
+### Files reconciled
+- `README.md` — front-page sticker, lede paragraph, Greek-cognates
+  feature bullet, cognate-source bullet, Limitations bullet
+- `CITATION.cff` — abstract
+- `paper.md` — Summary section
+- `LICENSE-DATA.md` — cognates section
+- `CLAUDE.md` — Current State summary
+- `docs/SOURCES.md` — Cognates section
+- `docs/VALIDATION.md` — §2 (recall floor), §5 (LLM-generated
+  cognates), §10 (Greek "cognates"), §12 (the "5,249 roots" headline);
+  added explicit reconciliation note
+- `docs/SUCCESSION.md` — Phase 2.4 cognate-audit estimate
+- `templates/about.html` — stat block (5,249 roots, 1,584 cognates),
+  Limitations sections in 4 languages, Cognates & Semantic Structure
+  section in 4 languages
+- `templates/base.html` — meta description
+
+### Data Changes
+- None. The underlying CSVs, cognates.json, and extraction outputs are
+  unchanged. Only the documentation describing them was wrong.
+
+---
+
 ## [v3.0.2] — 2026-05-09
 
 Transparency, discoverability, and validation-foundations release.

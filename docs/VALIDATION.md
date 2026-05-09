@@ -35,9 +35,9 @@ then publish per-corpus precision, recall, and F1.
 
 ---
 
-## 2. Recall floor: 5,039 roots vs. published lexicons
+## 2. Recall floor: 5,249 roots vs. published lexicons
 
-The Atlas indexes **5,039 root types** attested across its 5 corpora
+The Atlas indexes **5,249 root types** attested across its 5 corpora
 (roughly 528,399 words). For comparison, published Aramaic lexicons
 contain substantially more entries:
 
@@ -48,9 +48,9 @@ contain substantially more entries:
 | Sokoloff, *Dictionary of Jewish Palestinian Aramaic* (DJPA) | ~3,500 | Palestinian Aramaic |
 | Costaz, *Dictionnaire syriaque-français* | ~5,500 | Classical Syriac |
 | CAL (Comprehensive Aramaic Lexicon) | tens of thousands across all dialects | All Aramaic dialects |
-| **Aramaic Root Atlas v3.0** | **5,039** | 5 specific corpora |
+| **Aramaic Root Atlas v3.0+** | **5,249** | 5 specific corpora |
 
-The Atlas's 5,039 reflects roots **attested in its specific 5 corpora**,
+The Atlas's 5,249 reflects roots **attested in its specific 5 corpora**,
 not a coverage ceiling for Aramaic generally. Roots present in the
 Babylonian Talmud, Palestinian Targums, Mandaic, Christian Palestinian
 Aramaic, the rest of Ephrem's surviving works, or Old/Imperial Aramaic
@@ -121,7 +121,7 @@ on the about page.
 
 ## 5. Cognates are LLM-generated and unvalidated
 
-The 1,127 Hebrew/Arabic cognate entries and the 2,192 Greek NT
+The 1,584 Hebrew/Arabic cognate root entries and the 405 Greek NT
 cognate entries in `data/roots/cognates.json` were generated using
 the Anthropic Claude API and have **not been systematically validated**
 against authoritative lexicons:
@@ -146,7 +146,7 @@ authoritative claims.**
 **Planned remediation:** Phase 2.4 of the roadmap is to systematically
 audit each entry against the relevant lexicon, marking each with a
 `verified_in: <citation>` field or `unverified: true` flag. Target:
-≥80% verification before claiming "1,127 cognates" without caveat.
+≥80% verification before claiming "1,584 cognate root entries" without caveat.
 
 ---
 
@@ -233,8 +233,9 @@ roadmap (Phase 4.1).
 
 ## 10. Greek "cognates" are direction-aware
 
-The 2,192 Greek NT cognate entries link Aramaic roots to Greek
-equivalents. Two distinct relationships are conflated under "cognate":
+The 405 Greek NT parallel entries link Aramaic roots to single Greek
+equivalents (one Greek word per root max). Two distinct relationships
+are conflated under "cognate":
 
 1. **Translation equivalents** — the Peshitta NT translates *from*
    Greek, so an Aramaic word like *šlm* corresponds to *eirēnē* in
@@ -284,24 +285,32 @@ rest of Ephrem, and the Babylonian Talmud.
 
 ---
 
-## 12. The number "5,039 roots" — what to make of it
+## 12. The number "5,249 roots" — what to make of it
 
-The README front-page sticker "5,039 roots" is a count of distinct root
+The README front-page sticker "5,249 roots" is a count of distinct root
 keys that survived extraction across the 5 corpora. It is:
 
 - **Lower-bound, not authoritative.** Real roots may be missing if
   every attestation in the indexed corpora was mis-extracted
   (false negatives are not measured — see §1).
 - **Inflated by extraction errors.** A 65% false-positive rate on
-  candidate root patterns was reported in Phase 1 generation
-  (1,127 cognates from 3,212 candidate patterns; 2,085 candidates
-  rejected as non-roots). The 5,039 number includes some surviving
-  noise that hasn't been pruned.
+  candidate root patterns was reported in the original cognate-
+  generation pass (1,127 cognates from 3,212 candidate patterns;
+  2,085 candidates rejected as non-roots). The current 5,249 number
+  includes some surviving noise that hasn't been pruned.
 - **Not a coverage claim.** Compare to ~7,000 in Brockelmann's
   Syriac-only lexicon (§2).
 
 The number is a **fact about the index**, not a claim about Aramaic.
 Treat as such.
+
+> **Note (2026-05-09 reconciliation):** earlier release docs cited
+> "5,039 roots" — that number was from the v3.0 release and stale by
+> v3.0.3. Live `/api/stats` returns 5,249. The increase reflects new
+> cognate generation that surfaced additional roots without changing
+> the underlying corpus. Earlier docs also overcounted Greek NT
+> cognates as "2,192" — actual count is 405 (one Greek word per root
+> at most). All current-state references have been corrected.
 
 ---
 
