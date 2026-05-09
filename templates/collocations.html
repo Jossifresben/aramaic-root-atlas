@@ -25,11 +25,12 @@
         <div class="autocomplete-wrapper coll-input-wrap">
             <input type="text" id="coll-root-input" class="coll-input"
                    placeholder="{{ t('coll_root_label', lang) if t else 'Root (e.g. SH-L-M)' }}"
+                   aria-label="{{ t('coll_root_label', lang) if t else 'Root (e.g. SH-L-M)' }}"
                    value="{{ initial_root }}" autocomplete="off">
             <div id="coll-ac-list" class="autocomplete-list"></div>
         </div>
 
-        <select id="coll-corpus" class="coll-select">
+        <select id="coll-corpus" class="coll-select" aria-label="{{ t('label_corpus', lang) if t else 'Corpus' }}">
             <option value="">{{ t('all_corpora', lang) if t else 'All corpora' }}</option>
             <option value="biblical_aramaic">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</option>
             <option value="targum_onkelos">{{ t('corpus_targum_onkelos', lang) if t else 'Targum Onkelos' }}</option>
@@ -38,7 +39,7 @@
             <option value="ephrem_nisibis">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</option>
         </select>
 
-        <select id="coll-scope" class="coll-select">
+        <select id="coll-scope" class="coll-select" aria-label="{{ t('label_scope', lang) if t else 'Co-occurrence scope' }}">
             <option value="verse">{{ t('coll_scope_verse', lang) if t else 'Verse scope' }}</option>
             <option value="chapter">{{ t('coll_scope_chapter', lang) if t else 'Chapter scope' }}</option>
         </select>
@@ -49,7 +50,7 @@
             <span id="coll-min-count-val" class="coll-slider-val">3</span>
         </label>
 
-        <select id="coll-sort" class="coll-select">
+        <select id="coll-sort" class="coll-select" aria-label="{{ t('coll_sort_label', lang) if t else 'Sort' }}">
             <option value="pmi">{{ t('coll_sort_pmi', lang) if t else 'Sort by PMI' }}</option>
             <option value="count">{{ t('coll_sort_count', lang) if t else 'Sort by count' }}</option>
         </select>

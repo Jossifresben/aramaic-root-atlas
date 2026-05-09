@@ -27,10 +27,10 @@
 <!-- Controls -->
 <div style="display:flex;gap:14px;align-items:end;flex-wrap:wrap;padding:8px 0 28px">
   <div class="s-field">
-    <label class="s-label">{{ t('hapax_threshold', lang) }}</label>
+    <label class="s-label" for="freq-slider">{{ t('hapax_threshold', lang) }}</label>
     <div style="display:flex;align-items:center;gap:8px">
-      <input type="range" class="s-input" id="freq-slider" min="1" max="10" value="1" style="width:100px;padding:0">
-      <span id="freq-val" style="font-weight:700;color:var(--accent);min-width:1.5rem;font-family:var(--mono)">1</span>
+      <input type="range" class="s-input" id="freq-slider" min="1" max="10" value="1" style="width:100px;padding:0" aria-label="{{ t('hapax_threshold', lang) }}" aria-valuemin="1" aria-valuemax="10" aria-valuenow="1" aria-controls="hapax-table">
+      <span id="freq-val" style="font-weight:700;color:var(--accent);min-width:1.5rem;font-family:var(--mono)" aria-live="polite">1</span>
     </div>
   </div>
   <div class="s-field">

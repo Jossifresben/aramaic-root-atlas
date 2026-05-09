@@ -51,8 +51,8 @@
     </select>
   </div>
   <div class="s-field">
-    <label class="s-label">{{ t('conc_context_label', lang) if t else 'Context:' }} <span id="conc-ctx-val">5</span> {{ t('conc_context_words', lang) if t else 'words' }}</label>
-    <input type="range" id="conc-ctx" min="2" max="12" value="5" style="width:100px">
+    <label class="s-label" for="conc-ctx">{{ t('conc_context_label', lang) if t else 'Context:' }} <span id="conc-ctx-val" aria-live="polite">5</span> {{ t('conc_context_words', lang) if t else 'words' }}</label>
+    <input type="range" id="conc-ctx" min="2" max="12" value="5" style="width:100px" aria-label="{{ t('conc_context_label', lang) if t else 'Context width in words' }}" aria-valuemin="2" aria-valuemax="12" aria-valuenow="5">
   </div>
   <button class="btn" onclick="loadConcordance()">Search
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M3 8h10M9 4l4 4-4 4"/></svg>

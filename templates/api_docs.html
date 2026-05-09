@@ -33,6 +33,23 @@
   .swagger-ui .opblock-tag { font-size: 1rem; font-weight: 600; }
   .swagger-ui .opblock .opblock-summary-path { font-family: var(--mono, monospace); }
 
+  /* WCAG AA contrast overrides — Swagger UI's defaults fail axe-core
+     audits on warm light backgrounds. */
+  .swagger-ui .info a.link,
+  .swagger-ui .info .url,
+  .swagger-ui a.link { color: #1c5fa3 !important; text-decoration: underline; }
+  /* HTTP method badges: darken to clear 4.5:1 with white text */
+  .swagger-ui .opblock.opblock-get .opblock-summary-method,
+  .swagger-ui .opblock-get .opblock-summary-method { background: #1c5fa3 !important; }
+  .swagger-ui .opblock.opblock-post .opblock-summary-method,
+  .swagger-ui .opblock-post .opblock-summary-method { background: #1f7d52 !important; }
+  .swagger-ui .opblock.opblock-put .opblock-summary-method,
+  .swagger-ui .opblock-put .opblock-summary-method { background: #b46100 !important; }
+  .swagger-ui .opblock.opblock-delete .opblock-summary-method,
+  .swagger-ui .opblock-delete .opblock-summary-method { background: #b32525 !important; }
+  .swagger-ui .opblock.opblock-patch .opblock-summary-method,
+  .swagger-ui .opblock-patch .opblock-summary-method { background: #2a8473 !important; }
+
   /* Match dark mode */
   [data-theme="dark"] .swagger-ui .opblock-tag,
   [data-theme="dark"] .swagger-ui .opblock-summary-path,
@@ -90,6 +107,28 @@
       if (!url.searchParams.has('trans'))  url.searchParams.set('trans',  trans);
       req.url = url.toString();
       return req;
+    },
+    onComplete: function () {
+      // Patch Swagger UI a11y issues that we can't reach via CSS:
+      //  - #servers select has no aria-label
+      //  - tag headings render as <h3> directly under the page <h1>,
+      //    skipping <h2> (axe heading-order rule)
+      try {
+        var srv = document.getElementById('servers');
+        if (srv && !srv.hasAttribute('aria-label')) {
+          srv.setAttribute('aria-label', 'API server');
+        }
+        // Promote <h3> tag headings to <h2> for proper hierarchy after our <h1>
+        document.querySelectorAll('.swagger-ui .opblock-tag-section h3').forEach(function (h) {
+          // Replace tag <h3> with <h2> while preserving content + attrs
+          var h2 = document.createElement('h2');
+          for (var i = 0; i < h.attributes.length; i++) {
+            h2.setAttribute(h.attributes[i].name, h.attributes[i].value);
+          }
+          h2.innerHTML = h.innerHTML;
+          h.parentNode.replaceChild(h2, h);
+        });
+      } catch (e) { /* non-fatal */ }
     }
   });
 })();

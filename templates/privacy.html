@@ -13,7 +13,9 @@
   .privacy-wrap h1 { font-family: var(--serif); font-weight: 600; margin-bottom: .25rem; }
   .privacy-wrap h2 { font-family: var(--serif); font-weight: 600; margin-top: 2rem; padding-bottom: .35rem; border-bottom: 1px solid var(--rule-soft); }
   .privacy-wrap p, .privacy-wrap li { color: var(--ink-2); }
-  .privacy-wrap a { color: var(--link); }
+  /* Underlined so links are distinguishable without color alone (WCAG AA). */
+  .privacy-wrap a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  .privacy-wrap a:hover { text-decoration-thickness: 2px; }
   .privacy-wrap code { font-family: var(--mono); font-size: .92em; background: var(--surface-2); padding: 1px 5px; border-radius: 3px; }
   .privacy-wrap .updated { color: var(--ink-3); font-style: italic; font-size: .92em; margin-top: .25rem; }
   .privacy-wrap .opt-out-row { display: flex; gap: 12px; align-items: center; margin: 1rem 0; padding: .9rem 1rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; }
