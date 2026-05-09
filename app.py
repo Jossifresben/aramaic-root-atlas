@@ -5,6 +5,8 @@ import os
 import threading
 
 from flask import Flask, render_template, request, jsonify
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from aramaic_core.corpus import AramaicCorpus
 from aramaic_core.extractor import RootExtractor
@@ -18,6 +20,22 @@ from aramaic_core.characters import (
 )
 
 app = Flask(__name__)
+
+# --- Rate limiter ---
+# Generous global limits — protects against DoS / runaway scripts without
+# bothering normal browsing or moderate API usage. In-memory storage is
+# adequate for single-instance Render Pro; switch to Redis if we ever
+# scale to multiple workers behind a load balancer.
+# Tests bypass via the API_RATE_LIMIT_DISABLED env var.
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=[] if os.environ.get('API_RATE_LIMIT_DISABLED') else ['600 per minute', '60 per second'],
+    application_limits=[],
+    storage_uri='memory://',
+    headers_enabled=True,  # adds X-RateLimit-* headers to responses
+    strategy='fixed-window',
+)
+limiter.init_app(app)
 
 # --- Globals ---
 _corpus: AramaicCorpus | None = None
@@ -2897,5 +2915,30 @@ def semantic_fields_page():
                            has_data=has_data, page_id='semantic-fields')
 
 
+# --- /api/v1/ aliases ---
+# Phase 4.2 of the post-v3.0 roadmap: every /api/X is also reachable
+# at /api/v1/X. The legacy /api/X URLs remain for backwards compatibility
+# with existing consumers; new integrations should use /api/v1/. A future
+# v2 (e.g. /api/v2/) can introduce breaking changes without affecting v1.
+def _register_api_v1_aliases():
+    rules_to_add = []
+    for rule in list(app.url_map.iter_rules()):
+        path = rule.rule
+        if path.startswith('/api/') and not path.startswith('/api/v1/') and path != '/api-docs':
+            v1_path = '/api/v1/' + path[len('/api/'):]
+            view_func = app.view_functions.get(rule.endpoint)
+            if not view_func:
+                continue
+            new_endpoint = rule.endpoint + '__v1'
+            methods = sorted(m for m in (rule.methods or set()) if m in {'GET', 'POST', 'PUT', 'DELETE', 'PATCH'})
+            rules_to_add.append((v1_path, new_endpoint, view_func, methods))
+    for path, endpoint, view, methods in rules_to_add:
+        app.add_url_rule(path, endpoint=endpoint, view_func=view, methods=methods or ['GET'])
+
+
+_register_api_v1_aliases()
+
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5002)
+    port = int(os.environ.get('PORT', 5002))
+    app.run(debug=True, port=port)

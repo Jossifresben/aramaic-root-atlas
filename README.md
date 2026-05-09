@@ -123,6 +123,8 @@ The Atlas exposes a full JSON API for programmatic access. All endpoints support
 | `GET /api/word-parse?word=ܫܠܡ` | Full morphological parse: prefixes, root, suffixes, stem, gloss, cognates, corpus attestation |
 | `GET /api/passage-profile?book=Matthew&ch_start=5&ch_end=7` | Lexical profile for a passage: word count, unique roots, density, stem distribution, top roots, hapax count |
 
+> **API versioning:** every endpoint above is also reachable under `/api/v1/X` (e.g. `GET /api/v1/roots?q=SH-L-M`). New integrations should use `/api/v1/`. The legacy `/api/X` URLs remain for backwards compatibility but have no stability contract — see [docs/API-STABILITY.md](docs/API-STABILITY.md). All responses include `X-RateLimit-*` headers; current limits are 600 req/min and 60 req/sec per IP.
+
 **Root input formats:** Dash-separated Latin (`SH-L-M`), Syriac Unicode (`ܫܠܡ`), Hebrew (`שלם`), or Arabic (`سلم`). The API auto-detects and normalizes.
 
 > **Interactive API documentation** (Swagger UI) with try-it-out, parameter examples, and response schemas: **[/api-docs](https://aramaic-root-atlas.onrender.com/api-docs)**
@@ -164,7 +166,7 @@ aramaic-root-atlas/
 - **Cognates** -- 1,127 entries with Hebrew/Arabic cognates + 2,192 Greek NT cognates; **LLM-generated and not yet validated against authoritative lexicons** (HALOT, BDB, Sokoloff, Brockelmann, Lane, Wehr) — see [Limitations](#limitations--caveats); semantic field classifications via Claude Haiku
 - **Peshitta Constellations** -- companion project (https://peshitta.onrender.com, DOI [10.5281/zenodo.19358529](https://doi.org/10.5281/zenodo.19358529)) that supplied curated root-card seed data — paradigmatic verse citations, sister-root and semantic-bridge relationships used to populate the root family visualizer
 
-See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details, [LICENSE-DATA.md](LICENSE-DATA.md) for per-corpus data licensing, [docs/SEARCH-ALGORITHMS.md](docs/SEARCH-ALGORITHMS.md) for how each search mode ranks results, [docs/VALIDATION.md](docs/VALIDATION.md) for quantitative coverage and methodological caveats, and [CHANGELOG.md](CHANGELOG.md) for release-by-release data and feature history.
+See [docs/SOURCES.md](docs/SOURCES.md) for full attribution details, [LICENSE-DATA.md](LICENSE-DATA.md) for per-corpus data licensing, [docs/SEARCH-ALGORITHMS.md](docs/SEARCH-ALGORITHMS.md) for how each search mode ranks results, [docs/VALIDATION.md](docs/VALIDATION.md) for quantitative coverage and methodological caveats, [docs/API-STABILITY.md](docs/API-STABILITY.md) for the API versioning + rate-limit + deprecation policy, and [CHANGELOG.md](CHANGELOG.md) for release-by-release data and feature history.
 
 ## Limitations & Caveats
 
