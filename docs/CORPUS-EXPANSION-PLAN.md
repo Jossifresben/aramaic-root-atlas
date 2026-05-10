@@ -134,6 +134,29 @@ performance + storage planning.
 Three categories: LLM API (Anthropic), engineering session time, and
 infrastructure (Render). Hosting is already paid; the new spend is API.
 
+### Pricing assumptions
+
+All cost estimates below assume:
+
+- **Prompt caching is enabled.** Every cognate-generation call shares
+  ~1,700 tokens of preamble (system prompt + format spec + few-shot
+  examples + HALOT/Wehr/Sokoloff lexicon snippets). Cached read is
+  ~10× cheaper than fresh input on Sonnet, ~10× cheaper on Opus.
+- Sonnet 4.6 for standard work; Opus 4.7 only where genuinely needed
+  (under-documented dialects, affix-rule design, lexicon validation,
+  non-triliteral disambiguation); Haiku 4.5 for bulk classification.
+- "Engineering API" = my own session-time cost during integration
+  (also Anthropic; mostly Sonnet). Heavily reduced by prompt caching
+  across sessions.
+
+Pricing (as of v4.7 release):
+
+| Model | Input (regular) | Input (cached read) | Output |
+|---|---:|---:|---:|
+| **Opus 4.7** | $15/M | $1.50/M | $75/M |
+| **Sonnet 4.6** | $3/M | $0.30/M | $15/M |
+| **Haiku 4.5** | $1/M | $0.10/M | $5/M |
+
 ### Per-task LLM tier guidance
 
 | Task | Recommended model | Why |
@@ -147,42 +170,48 @@ infrastructure (Render). Hosting is already paid; the new spend is API.
 | **Gloss generation, fetch-script code, doc/CHANGELOG writing** | Sonnet 4.6 | Routine engineering |
 | **Bulk yes/no validation** ("does this gloss match the Aramaic?") | Haiku 4.5 | Cheapest; high-volume |
 
-Pricing (as of v4.7 release):
-- **Opus 4.7:** $15/M input, $75/M output
-- **Sonnet 4.6:** $3/M input, $15/M output
-- **Haiku 4.5:** ~$1/M input, $5/M output
+### Per-cognate cost (with prompt caching)
 
-Per-cognate cost estimate (assume ~2,000 input + 500 output tokens):
+Assumes ~1,700 tokens cached preamble + ~300 tokens fresh input per
+call + ~500 tokens output:
 
-| Model | Per cognate |
-|---|---:|
-| Opus 4.7 | ~$0.067 |
-| Sonnet 4.6 | ~$0.014 |
-| Haiku 4.5 | ~$0.005 |
+| Model | Per cognate (no cache) | Per cognate (cached) | Savings |
+|---|---:|---:|---:|
+| Opus 4.7 | ~$0.067 | **~$0.045** | 33% |
+| Sonnet 4.6 | ~$0.014 | **~$0.009** | 36% |
+| Haiku 4.5 | ~$0.005 | **~$0.003** | 40% |
 
 ### Per-phase budget
 
-| Phase | Words added | New roots est. | Cognate API spend | Engineering API | **Total** |
-|---|---:|---:|---:|---:|---:|
-| **6A** Tg Jonathan + rest of Ephrem | ~790,000 | ~1,800 | $35 (90% Sonnet, 10% Opus) | $50–100 | **$85–135** |
-| **6B** TgPJ + Neofiti + Qumran + Geniza | ~410,000 | ~700 (high overlap with TgO) | $10 (Sonnet) | $200–400 | **$210–410** |
-| **6C** CPA + Imperial + Old Aramaic | ~255,000 | ~2,000 | $54 (75% Sonnet, 25% Opus) | $500–1,500 | **$554–1,554** |
-| **6D** Babylonian Talmud + Yerushalmi | ~3,250,000 | ~6,000 | $135 (~83% Sonnet, ~17% Opus) | $1,500–3,000 | **$1,635–3,135** |
-| **6E** Samaritan + Mandaic | ~350,000 | ~2,500 | $167 (mostly Opus — sparse lexicon) | $1,500–3,000 | **$1,667–3,167** |
+Two columns: **Expected** is the realistic number with caching enabled
+and everything working. **Risk-adjusted** adds ~50–100% buffer for
+retries, dead-end debugging, regenerating one corpus, etc. Use
+Risk-adjusted for budgeting; Expected for what you'll likely actually
+spend.
+
+| Phase | Words added | New roots est. | Cognate API (cached) | Engineering API (cached) | **Expected** | **Risk-adj.** |
+|---|---:|---:|---:|---:|---:|---:|
+| **6A** Tg Jonathan + rest of Ephrem | ~790,000 | ~1,800 | ~$25 | $10–25 | **$35–50** | **$85–135** |
+| **6B** TgPJ + Neofiti + Qumran + Geniza | ~410,000 | ~700 (high TgO overlap) | ~$7 | $30–80 | **$40–90** | **$210–410** |
+| **6C** CPA + Imperial + Old Aramaic | ~255,000 | ~2,000 | ~$36 | $100–300 | **$140–340** | **$554–1,554** |
+| **6D** Babylonian Talmud + Yerushalmi | ~3,250,000 | ~6,000 | ~$90 | $200–600 (perf refactor included) | **$300–700** | **$1,635–3,135** |
+| **6E** Samaritan + Mandaic | ~350,000 | ~2,500 | ~$113 (mostly Opus — sparse lexicon) | $300–800 | **$420–920** | **$1,667–3,167** |
 
 ### Cumulative scenarios
 
-| Strategy | What you get | One-time API | Recurring hosting delta |
-|---|---|---:|---:|
-| **6A only** (v3.1) | Closes loudest "thin slice" critique; doubles Targum coverage | **~$110** | $0 |
-| **6A + 6B** (v3.2) | Full Targumic family + Qumran baseline | **~$415** | $0 |
-| **6A → 6C** (v3.3) | Full Aramaic timeline 9th BCE → 4th CE; "Atlas" framing earned | **~$1,415** | $0 |
-| **6A → 6D** (v3.4) | + Talmuds — most comprehensive Aramaic index outside CAL | **~$4,000** | +$18/mo (Pro → Pro Plus) |
-| **6A → 6E** (v4.0) | + Mandaic + Samaritan; all major Aramaic literary traditions | **~$6,400** | +$18/mo |
+| Strategy | What you get | Expected (cached) | Risk-adjusted | Recurring hosting delta |
+|---|---|---:|---:|---:|
+| **6A only** (v3.1) | Closes loudest "thin slice" critique; doubles Targum coverage | **~$45** | ~$110 | $0 |
+| **6A + 6B** (v3.2) | Full Targumic family + Qumran baseline | **~$110** | ~$415 | $0 |
+| **6A → 6C** (v3.3) | Full Aramaic timeline 9th BCE → 4th CE; "Atlas" framing earned | **~$340** | ~$1,415 | $0 |
+| **6A → 6D** (v3.4) | + Talmuds — most comprehensive Aramaic index outside CAL | **~$840** | ~$4,000 | +$18/mo (Pro → Pro Plus) |
+| **6A → 6E** (v4.0) | + Mandaic + Samaritan; all major Aramaic literary traditions | **~$1,650** | ~$6,400 | +$18/mo |
 
-> >90% of the spend is engineering session time, not raw cognate
-> generation. The cognate API cost itself is small ($35–$400 per phase);
-> the bulk is iterative integration / debugging / doc writing.
+> **Why expected ≪ risk-adjusted:** the original plan padded for the
+> case where prompt caching is off, retries happen, and a full corpus
+> needs regenerating. With caching enabled and clean execution, real
+> spend is roughly **1/3** of the risk-adjusted figure. Budget at
+> risk-adjusted; report actuals in CHANGELOG once each phase ships.
 
 ### Optional add-ons
 
@@ -241,7 +270,9 @@ starting at Phase 6D.
 
 **Ship Phase 6A as v3.1.** Two corpora (Targum Jonathan + rest of
 Ephrem) added by reusing existing fetch + parse infrastructure.
-Roughly **a week of focused work** at **~$110 in API cost**.
+Roughly **a week of focused work** at **~$45 expected (~$110
+risk-adjusted) in API cost**, assuming prompt caching is enabled
+on the cognate-generation pipeline.
 Talking points for the announcement:
 
 - "Doubled Targum coverage with Targum Jonathan to the Prophets (~290k words)"
@@ -253,4 +284,6 @@ minimal risk and forms the template for 6B–6E.
 
 ---
 
-*Living document. Update as phases ship. Last reviewed 2026-05-10.*
+*Living document. Update as phases ship. Last reviewed 2026-05-10
+(cost section revised: prompt caching now an explicit assumption,
+Expected vs Risk-adjusted columns added).*
