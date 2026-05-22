@@ -563,6 +563,24 @@ h3.subhead{
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════════════════ */
+
+/* Hamburger button: hidden on desktop, shown on mobile */
+.side-toggle{
+  display:none;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:6px;
+  background:transparent;border:1px solid transparent;color:var(--ink-2);
+  cursor:pointer;flex-shrink:0;
+  margin-right:4px;
+}
+.side-toggle:hover{background:var(--surface-2);border-color:var(--rule)}
+
+/* Scrim behind off-canvas sidebar (hidden on desktop) */
+.side-scrim{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.45);z-index:99;
+  opacity:0;transition:opacity .2s ease;
+}
+
 @media (max-width:1100px){
   .corpora-grid{grid-template-columns:repeat(2,1fr)}
   .corpus-cell{border-bottom:1px solid var(--rule-soft)}
@@ -571,20 +589,132 @@ h3.subhead{
   .quick-list{grid-template-columns:1fr;gap:0}
 }
 @media (max-width:760px){
+  /* Defense-in-depth: lock layout chain to viewport width with explicit
+     width:100% on each ancestor of .content. Without explicit widths,
+     grid items can size to their intrinsic content width and bypass
+     max-width constraints. */
+  html,body{overflow-x:hidden;margin:0;width:100%;max-width:100%}
+  .app{width:100%;max-width:100vw;overflow-x:hidden;min-width:0}
+  .main{width:100%;max-width:100%;min-width:0;overflow-x:hidden}
+  .content{width:100%;max-width:100%;min-width:0;overflow-x:hidden;box-sizing:border-box}
+
+  /* Layout: single column; sidebar lives outside normal flow */
   .app{grid-template-columns:1fr}
-  .side{position:static;height:auto}
-  .content{padding:32px 22px 60px}
-  h1.display{font-size:38px}
+  .side{
+    position:fixed;top:0;left:0;
+    width:min(280px, 84vw);height:100vh;
+    z-index:100;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    box-shadow:0 0 24px rgba(0,0,0,.18);
+  }
+  [dir="rtl"] .side{left:auto;right:0;transform:translateX(100%)}
+  body.side-open .side{transform:translateX(0)}
+  body.side-open .side-scrim{display:block;opacity:1}
+  /* Prevent body scroll when sidebar is open */
+  body.side-open{overflow:hidden}
+
+  /* Show hamburger; hide ⌘K quick-search */
+  .side-toggle{display:inline-flex}
   .topbar .quick-search{display:none}
-  /* topbar: tighten padding and prevent crumb from overflowing */
-  .topbar{padding:10px 14px;gap:8px}
-  .topbar .crumb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-  /* KWIC concordance table: relax fixed widths */
+
+  /* Topbar: tighten padding, prevent crumb overflow */
+  .topbar{padding:10px 12px;gap:8px}
+  .topbar .crumb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:12.5px}
+  .topbar-tools{gap:4px}
+  .topbar-tools .nav-btn{width:34px;height:34px;padding:0}
+
+  /* Content: tighter horizontal padding on small screens.
+     Note: explicit width is set in the layout-chain block above.
+     This rule only handles padding adjustments. */
+  .content{padding:24px 16px 48px}
+  h1.display{font-size:28px;line-height:1.18;max-width:100%;width:100%;word-wrap:break-word;overflow-wrap:break-word}
+  .lede{font-size:1rem;max-width:100%;width:100%;word-wrap:break-word;overflow-wrap:break-word}
+  /* .eyebrow is display:flex on desktop, but text inside a flex item
+     doesn't wrap. Switch to block on mobile and put the decorative
+     mark inline so the whole thing flows naturally. */
+  .eyebrow{display:block;max-width:100%;width:100%;word-wrap:break-word;overflow-wrap:break-word}
+  .eyebrow::before{display:inline-block;margin-right:10px;vertical-align:middle}
+
+  /* Corpora-grid: stack to 1 column on phones */
+  .corpora-grid{grid-template-columns:1fr}
+
+  /* Page-head: stack the title and action buttons */
+  .page-head{flex-direction:column;align-items:flex-start;gap:14px;margin-bottom:22px}
+  .ph-title{font-size:1.5rem}
+  .ph-actions{width:100%;flex-wrap:wrap}
+
+  /* Search section: single-column, full-width Analyze button */
+  .s-tabs{flex-wrap:wrap;gap:4px}
+  .s-tab{font-size:.86rem;padding:6px 10px}
+  .s-panel .s-body{grid-template-columns:1fr;gap:12px}
+  .s-panel .btn{width:100%;justify-content:center}
+
+  /* Root card (visualize page) — most-broken on mobile */
+  .root-card{padding:18px 14px;border-radius:6px}
+  .root-syriac-lg{font-size:2.2rem}
+  .root-latin-lg{font-size:1rem}
+  .root-meaning{font-size:.95rem}
+  .corpus-attestation{flex-wrap:wrap;gap:6px}
+  .corpus-attestation .cbadge{font-size:11px;padding:2px 7px}
+  /* Tab strip becomes horizontally scrollable instead of clipped */
+  .root-header-nav{
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    scrollbar-width:thin;
+    -webkit-overflow-scrolling:touch;
+  }
+  .root-header-nav .root-tab{flex-shrink:0;padding:8px 12px;font-size:.9rem}
+  /* Result panel + occurrence tables: horizontal scroll wrapper */
+  .panel-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .peshitta-table,.cognate-table{font-size:.86rem}
+  .peshitta-table th,.peshitta-table td{padding:8px 10px}
+  .peshitta-table .refs{min-width:220px}
+
+  /* Generic data tables: horizontal scroll instead of clipping */
+  .dtable,.heatmap-table,.coll-table{font-size:.86rem}
+
+  /* KWIC concordance table */
   .kwic-table .left,.kwic-table .right{width:auto;font-size:14px}
   .kwic-table .ref{width:80px;font-size:11px}
-  /* diachronic bar chart: collapse 4-col grid to 2-col, hide rate column */
+
+  /* Diachronic bar chart: 2-col, hide rate column */
   .dia-row{grid-template-columns:1fr 60px;gap:8px}
   .dia-row .dia-rate{display:none}
+
+  /* Stat block on about page: stacks cleanly */
+  .about-stats{gap:.5rem}
+  .about-stat{min-width:0;flex:1 1 calc(50% - .5rem);padding:.6rem .8rem}
+  .about-stat .stat-num{font-size:1.3rem}
+
+  /* Cookie banner: full-width on small screens */
+  #cookie-consent{left:8px;right:8px;bottom:8px;font-size:13px}
+
+  /* Modal overlays: fill more of the viewport */
+  .modal-content{max-width:96vw;max-height:88vh}
+  .cite-modal-content{padding:18px 16px}
+  .cite-tabs{flex-wrap:wrap;gap:2px}
+  .cite-tab{font-size:.82rem;padding:5px 9px}
+  .cite-code{font-size:.78rem}
+
+  /* Visualizer (D3 root family) — legend wraps; SVG can't push wider
+     than the viewport. */
+  .viz-controls{gap:8px;padding:8px 0 6px;padding-left:0}
+  .viz-check{font-size:.78rem;flex:0 0 auto}
+  .viz-fullscreen-btn{margin-left:auto}
+  .viz-svg-wrap{max-width:100%;overflow:hidden}
+  /* Make the view-tabs wrap if needed */
+  .viz-view-tabs{flex-wrap:wrap;gap:4px}
+
+  /* Verse-modal navigation arrows — keep tappable on mobile */
+  .modal-nav-arrow{font-size:24px}
+
+  /* Heatmap on mobile: horizontally scroll the table */
+  .heatmap-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .heatmap-table{font-size:.8rem;min-width:520px}
+
+  /* Constellation D3 graph: contain within viewport, scroll within */
+  #constellation-svg-wrap{max-width:100%;overflow:hidden}
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1836,4 +1966,73 @@ h3.subhead{
 .bm-card-actions{
   display:flex;gap:6px;align-items:center;margin-top:10px;
   padding-top:10px;border-top:1px solid var(--rule-soft);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE OVERRIDES — late-cascade block.
+   Rules in here override desktop rules with equal or higher
+   specificity, since they come last in the file. Add new mobile
+   overrides here when an earlier @media rule loses a specificity
+   tie to a later desktop rule.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width:760px){
+  /* Lock content + page-head width so child overflow (D3 SVG, tables)
+     can't make their parents wider than viewport, which would prevent
+     headings from wrapping. */
+  .main{width:100vw;max-width:100vw;min-width:0;overflow-x:hidden}
+  .content{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+
+  /* page-head sizing on internal pages */
+  .page-head{display:block;margin-bottom:22px;padding-bottom:14px;width:100%;max-width:100%;box-sizing:border-box;min-width:0}
+  .page-head > h1,
+  .page-head > div{width:100%;max-width:100%;min-width:0}
+  .page-head .ph-title{
+    font-size:1.25rem !important;line-height:1.25;
+    overflow-wrap:break-word;word-wrap:break-word;
+    white-space:normal !important;
+    hyphens:auto;
+  }
+  /* Break the em onto its own block so it doesn't push the line wider */
+  .page-head .ph-title em{display:inline-block;max-width:100%}
+  .page-head .ph-sub{font-size:.95rem}
+  .page-head .ph-actions{width:100%;flex-wrap:wrap;gap:6px;margin-top:12px}
+
+  /* Visualizer top tabs (Graph / Root Card) — match specificity */
+  .viz-view-tabs{flex-wrap:wrap;gap:4px}
+
+  /* Visualizer legend controls — match specificity of .viz-controls */
+  .viz-controls{flex-wrap:wrap;gap:8px;padding:8px 0 6px;padding-left:0}
+  .viz-controls .viz-check{font-size:.78rem;flex:0 0 auto;white-space:nowrap}
+  .viz-controls .viz-fullscreen-btn{margin-left:auto;flex-shrink:0}
+
+  /* Constrain the visualizer SVG so it can't push horizontal scroll */
+  .viz-svg-wrap{max-width:100%;width:100%;overflow:hidden}
+
+  /* Root card on /api/roots results page — match specificity of
+     .root-card, .root-header-banner, etc. (descendants of .root-card) */
+  .root-card{padding:16px 12px;border-radius:6px}
+  .root-card .root-syriac-lg{font-size:2.1rem}
+  .root-card .root-latin-lg{font-size:1rem}
+  .root-card .root-meaning{font-size:.95rem}
+  .root-card .corpus-attestation{flex-wrap:wrap;gap:6px}
+  .root-card .root-header-nav{
+    overflow-x:auto;flex-wrap:nowrap;
+    scrollbar-width:thin;-webkit-overflow-scrolling:touch;
+  }
+  .root-card .root-header-nav .root-tab{flex-shrink:0;padding:8px 12px;font-size:.9rem}
+  .root-card .panel-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .root-card .peshitta-table,.root-card .cognate-table{font-size:.86rem;min-width:520px}
+
+  /* Search-section tabs (homepage) — match specificity */
+  .s-section .s-tabs{flex-wrap:wrap;gap:4px}
+  .s-section .s-tab{font-size:.82rem;padding:6px 10px}
+  .s-panel .s-body{grid-template-columns:1fr;gap:12px}
+  .s-panel .btn{width:100%;justify-content:center}
+
+  /* Topbar tools spacing tweak */
+  .topbar .topbar-tools{gap:2px}
+  .topbar .topbar-tools .nav-btn{width:34px;height:34px;padding:0}
+
+  /* Sidebar nav: tap targets generous */
+  .side .side-link{padding:10px 12px;font-size:14.5px}
 }
