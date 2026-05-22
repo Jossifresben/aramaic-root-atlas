@@ -2015,13 +2015,30 @@ h3.subhead{
   .root-card .root-latin-lg{font-size:1rem}
   .root-card .root-meaning{font-size:.95rem}
   .root-card .corpus-attestation{flex-wrap:wrap;gap:6px}
+  /* Tabs WRAP to multiple rows on phones (was horizontal scroll, which
+     wasn't discoverable). 4 tabs fit naturally in a 2x2 grid. */
   .root-card .root-header-nav{
-    overflow-x:auto;flex-wrap:nowrap;
-    scrollbar-width:thin;-webkit-overflow-scrolling:touch;
+    flex-wrap:wrap;gap:2px;
+    border-bottom:1px solid var(--rule-soft);
   }
-  .root-card .root-header-nav .root-tab{flex-shrink:0;padding:8px 12px;font-size:.9rem}
-  .root-card .panel-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .root-card .peshitta-table,.root-card .cognate-table{font-size:.86rem;min-width:520px}
+  .root-card .root-header-nav .root-tab{
+    padding:8px 10px;font-size:.86rem;
+    flex:1 1 auto;text-align:center;min-width:0;
+  }
+  /* Table: horizontal scroll with a right-edge fade so users know to
+     swipe. min-width forces overflow so the scroll affordance fires. */
+  .root-card .panel-body{
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    position:relative;
+    background:
+      linear-gradient(to right, var(--surface), var(--surface)) left center / 20px 100% no-repeat,
+      linear-gradient(to right, rgba(0,0,0,0), var(--surface)) right center / 20px 100% no-repeat,
+      linear-gradient(to right, rgba(0,0,0,.08), rgba(0,0,0,0)) left center / 8px 100% no-repeat,
+      linear-gradient(to left,  rgba(0,0,0,.08), rgba(0,0,0,0)) right center / 8px 100% no-repeat;
+    background-attachment:local, local, scroll, scroll;
+  }
+  .root-card .peshitta-table,.root-card .cognate-table{font-size:.86rem;min-width:540px}
+  .root-card .peshitta-table th,.root-card .peshitta-table td{padding:8px 10px}
 
   /* Search-section tabs (homepage) — match specificity */
   .s-section .s-tabs{flex-wrap:wrap;gap:4px}
