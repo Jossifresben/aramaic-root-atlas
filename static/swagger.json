@@ -175,10 +175,10 @@
                       "words": 101469
                     }
                   ],
-                  "total_verses": 38062,
-                  "total_words": 528399,
-                  "total_unique": 72566,
-                  "root_count": 5039
+                  "total_verses": 47358,
+                  "total_words": 685848,
+                  "total_unique": 105237,
+                  "root_count": 5666
                 }
               }
             }
@@ -862,11 +862,12 @@
                   "roots": [
                     {
                       "root": "SH-L-M",
-                      "total": 412,
+                      "total": 507,
                       "peshitta_nt": 87,
                       "peshitta_ot": 210,
                       "biblical_aramaic": 5,
                       "targum_onkelos": 90,
+                      "targum_jonathan": 95,
                       "ephrem_nisibis": 20
                     }
                   ]
