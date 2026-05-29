@@ -29,6 +29,28 @@ def test_api_stats(client):
     assert data['root_count'] > 4000     # ~5,000
 
 
+def test_targum_jonathan_corpus_present(client):
+    """Targum Jonathan (Phase 6A) must load as a distinct corpus with the
+    expected scale, be filterable, and cross-script-normalize its Hebrew
+    roots into the shared root index."""
+    # Present in /api/stats with plausible scale (~9,296 verses)
+    stats = client.get('/api/stats').get_json()
+    by_id = {c['id']: c for c in stats['corpora']}
+    assert 'targum_jonathan' in by_id, 'targum_jonathan missing from /api/stats'
+    tj = by_id['targum_jonathan']
+    assert tj['verses'] > 9000
+    assert tj['words'] > 150000
+
+    # SH-L-M (peace) cross-script normalizes from Hebrew שלם and is attested
+    root = client.get('/api/roots?q=SH-L-M').get_json()
+    attest = root.get('corpus_attestation', {})
+    assert attest.get('targum_jonathan', 0) > 0, \
+        'SH-L-M not attested in targum_jonathan (cross-script normalization broken)'
+
+    # Filterable
+    assert client.get('/browse?corpus=targum_jonathan').status_code == 200
+
+
 def test_api_books_no_filter(client):
     r = client.get('/api/books')
     assert r.status_code == 200

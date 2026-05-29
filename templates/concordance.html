@@ -89,6 +89,7 @@
       <button class="chip on" data-c="pot" onclick="toggleChip(this);reloadConc()">{{ t('corpus_peshitta_ot', lang) if t else 'Peshitta OT' }}</button>
       <button class="chip on" data-c="bib" onclick="toggleChip(this);reloadConc()">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</button>
       <button class="chip on" data-c="tar" onclick="toggleChip(this);reloadConc()">{{ t('corpus_targum_onkelos', lang) if t else 'Targum Onkelos' }}</button>
+      <button class="chip on" data-c="tgj" onclick="toggleChip(this);reloadConc()">{{ t('corpus_targum_jonathan', lang) if t else 'Targum Jonathan' }}</button>
       <button class="chip on" data-c="eph" onclick="toggleChip(this);reloadConc()">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</button>
     </div>
 
@@ -150,7 +151,7 @@
     };
 
     // Map chip data-c values to corpus IDs
-    var CHIP_TO_CORPUS = {pnt:'peshitta_nt', pot:'peshitta_ot', bib:'biblical_aramaic', tar:'targum_onkelos', eph:'ephrem_nisibis'};
+    var CHIP_TO_CORPUS = {pnt:'peshitta_nt', pot:'peshitta_ot', bib:'biblical_aramaic', tar:'targum_onkelos', tgj:'targum_jonathan', eph:'ephrem_nisibis'};
 
     function getActiveCorpora() {
         var chips = document.querySelectorAll('#conc-filters .chip.on');
@@ -164,9 +165,9 @@
         return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', targum_jonathan:'tgj', ephrem_nisibis:'eph'};
     function corpusLabel(cid) {
-        var m = {'peshitta_nt':'NT','peshitta_ot':'OT','biblical_aramaic':'BA','targum_onkelos':'Tg','ephrem_nisibis':'Eph'};
+        var m = {'peshitta_nt':'NT','peshitta_ot':'OT','biblical_aramaic':'BA','targum_onkelos':'TgO','targum_jonathan':'TgJ','ephrem_nisibis':'Eph'};
         return m[cid] || cid;
     }
 
@@ -294,7 +295,7 @@
         var att = data.corpus_attestation || {};
         var total = 0;
         Object.keys(att).forEach(function(k) { total += att[k]; });
-        var CORP_NAMES = {peshitta_nt:'Peshitta NT', peshitta_ot:'Peshitta OT', biblical_aramaic:'Biblical Aramaic', targum_onkelos:'Targum Onkelos', ephrem_nisibis:'Ephrem Nisibis'};
+        var CORP_NAMES = {peshitta_nt:'Peshitta NT', peshitta_ot:'Peshitta OT', biblical_aramaic:'Biblical Aramaic', targum_onkelos:'Targum Onkelos', targum_jonathan:'Targum Jonathan', ephrem_nisibis:'Ephrem Nisibis'};
         Object.keys(att).sort(function(a,b){return att[b]-att[a];}).forEach(function(cid) {
             var pct = total > 0 ? Math.round(att[cid] / total * 100) : 0;
             var abbr = CORPUS_ABBR[cid] || cid;

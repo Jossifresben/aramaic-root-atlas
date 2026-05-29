@@ -98,6 +98,10 @@ def _init():
         if os.path.exists(to_path):
             _corpus.add_corpus('targum_onkelos', 'Targum Onkelos', to_path)
 
+        tj_path = os.path.join(CORPORA_DIR, 'targum_jonathan.csv')
+        if os.path.exists(tj_path):
+            _corpus.add_corpus('targum_jonathan', 'Targum Jonathan', tj_path)
+
         en_path = os.path.join(CORPORA_DIR, 'ephrem_nisibis.csv')
         if os.path.exists(en_path):
             _corpus.add_corpus('ephrem_nisibis', 'Ephrem — Nisibis', en_path)
@@ -475,6 +479,7 @@ def browse():
         'peshitta_ot': 'pot',
         'biblical_aramaic': 'bib',
         'targum_onkelos': 'tar',
+        'targum_jonathan': 'tgj',
         'ephrem_nisibis': 'eph',
     }
 
@@ -577,8 +582,8 @@ def read(book, chapter):
         if b_name == book:
             max_ch = b_ch
             break
-    CORPUS_ABBR = {'peshitta_nt':'pnt','peshitta_ot':'pot','biblical_aramaic':'bib','targum_onkelos':'tar','ephrem_nisibis':'eph'}
-    CORPUS_LABELS = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos','ephrem_nisibis':'Ephrem Nisibis'}
+    CORPUS_ABBR = {'peshitta_nt':'pnt','peshitta_ot':'pot','biblical_aramaic':'bib','targum_onkelos':'tar','targum_jonathan':'tgj','ephrem_nisibis':'eph'}
+    CORPUS_LABELS = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos','targum_jonathan':'Targum Jonathan','ephrem_nisibis':'Ephrem Nisibis'}
     cid = verse_data[0]['corpus_id'] if verse_data else ''
     return render_template('read.html', lang=lang, script=_get_script(), trans=trans,
                            t=_t_proxy, bn=_bn, book=book, chapter=chapter,
@@ -2257,6 +2262,7 @@ def api_concordance_export():
 CORPUS_CHRONOLOGY = [
     ('biblical_aramaic', 'Biblical Aramaic', '~6th–2nd c. BCE'),
     ('targum_onkelos',   'Targum Onkelos',   '~1st–3rd c. CE'),
+    ('targum_jonathan',  'Targum Jonathan',  '~1st–4th c. CE'),
     ('peshitta_nt',      'Peshitta NT',      '~2nd–5th c. CE'),
     ('peshitta_ot',      'Peshitta OT',      '~2nd–5th c. CE'),
     ('ephrem_nisibis',   'Ephrem — Nisibis', '~350–363 CE'),

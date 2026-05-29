@@ -18,7 +18,7 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - **static/style.css** — CSS with corpus-coded color variables and stem-badge palette
 - **static/autocomplete.js** — Shared root autocomplete widget (`initRootAutocomplete`)
 - **data/** — Organized subdirectories:
-  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv, targum_onkelos.csv, ephrem_nisibis.csv)
+  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv, targum_onkelos.csv, targum_jonathan.csv, ephrem_nisibis.csv)
   - `roots/` — cognates.json, known_roots.json, stopwords.json, word_glosses_override.json, sedra_cache.json
   - `translations/` — translations_{en,es,he,ar}.json
 - **scripts/** — Data pipeline scripts
@@ -30,15 +30,15 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - **docs/PRD.md** — Full product requirements document with 4-phase roadmap
 
 ## Current State (All Phases Complete)
-- **5 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v), Ephrem Nisibis (1,435v)
-- **Total**: 38,062 verses, 528,399 words, 72,566 unique forms
-- **5,249 roots** indexed across all corpora (was reported as 5,039 in earlier docs; verified against `/api/stats` 2026-05-09)
+- **6 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v), Targum Jonathan (9,296v), Ephrem Nisibis (1,435v)
+- **Total**: 47,358 verses, 685,848 words, 105,237 unique forms
+- **5,666 roots** indexed across all corpora (5,249 before Targum Jonathan was added 2026-05-29; verified against `/api/stats`)
 - **1,584 cognate root entries** with Hebrew and/or Arabic cognates (4,599 Hebrew + 4,633 Arabic individual cognate words)
 - **405 Greek NT parallels** linking Aramaic roots to single Greek equivalents in the visualizer (NOT 2,192 — earlier docs overcounted)
 - Greek NT translation track (SBLGNT) — 7,939 verses from bible.helloao.org (grc_sbl)
 - SEDRA lexicon cache (12,534 entries) boosts root confidence for Syriac tokens
 - Quadrilingual UI (EN/ES/HE/AR) with 5 translation tracks
-- Corpus filtering on all API endpoints (?corpus=peshitta_nt|peshitta_ot|biblical_aramaic|targum_onkelos|ephrem_nisibis)
+- Corpus filtering on all API endpoints (?corpus=peshitta_nt|peshitta_ot|biblical_aramaic|targum_onkelos|targum_jonathan|ephrem_nisibis)
 - Root family visualizer (D3.js force graph + root card)
 - Parallel viewer (Peshitta OT ↔ Targum Onkelos / Biblical Aramaic)
 - Root frequency heat map with filter and CSV/JSON export
@@ -165,6 +165,16 @@ python3 app.py  # starts on port 5001
 - ✅ **Type scale lift** — html root font-size 16px→18px (+12.5% on rem-based content); chrome floor sweep on the smallest px values (10/11/12/13px → 11/12/13/14px) for ~8.6% on small UI text
 - ✅ **Corpus color palette overhaul** — distinct emerald/blue/purple/amber/crimson hues with soft variants for backgrounds, applied consistently across stat cards, badges, and the corpora table
 - ✅ **Quality polish** — sticky-topbar-aware scroll helper, lang param preserved across nav, RTL alignment fixes, ref-sep dot visibility, dropdown active-state checkmarks, mobile overflow patches, semantic-domain links from passage profile, dynamic chapter dropdowns
+
+## Phase 6A (in progress) — Corpus Expansion: Targum Jonathan
+- ✅ **Targum Jonathan to the Prophets** added (9,296 verses, 157,449 words across 21 books: Joshua–II Kings, Isaiah, Jeremiah, Ezekiel, and the Twelve)
+- ✅ Fetched from Sefaria API (CC-BY-SA) via `scripts/fetch_targum_jonathan.py` (fetch-until-empty per book; consonantal text, diacritics stripped)
+- ✅ Hebrew square script — reuses the existing `affixes_hebrew.py` stripper; roots cross-script normalize (Hebrew שלם ↔ Syriac ܫܠܡ → SH-L-M). Affix routing is by per-word `detect_script()`, so no core changes needed.
+- ✅ Doubles Targum coverage; unlocks Peshitta OT ↔ Targum Jonathan synoptic comparison in the parallel viewer for the Prophets
+- ✅ Distinct rose-magenta corpus color (`--c-tgj #b32a78`); abbr `tgj`; wired into all templates, i18n (EN/ES/HE/AR), and Swagger
+- ✅ Roots 5,249 → 5,666 (+417); corpora 5 → 6; all 197 tests pass
+- ⏳ **Pending (optional, needs spend approval):** generate cognates for newly-attested roots that lack entries (corpus is fully functional without this; cognates only enrich)
+- ⏳ **Not yet done:** rest-of-Ephrem (the other half of Phase 6A per docs/CORPUS-EXPANSION-PLAN.md)
 
 ## Conventions
 - Syriac text uses Unicode (U+0710-U+074F), stored as-is in CSV

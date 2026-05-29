@@ -158,6 +158,7 @@
   {'id':'pot','name':'Peshitta OT','corpus_key':'peshitta_ot','period':'~ 2nd–5th c. CE · Classical Syriac'},
   {'id':'bib','name':'Biblical Aramaic','corpus_key':'biblical_aramaic','period':'~ 6th–2nd c. BCE · Imperial'},
   {'id':'tar','name':'Targum Onkelos','corpus_key':'targum_onkelos','period':'~ 1st–3rd c. CE · Jewish Aramaic'},
+  {'id':'tgj','name':'Targum Jonathan','corpus_key':'targum_jonathan','period':'~ 1st–4th c. CE · Jewish Aramaic'},
   {'id':'eph','name':'Ephrem — Nisibis','corpus_key':'ephrem_nisibis','period':'~ 350–363 CE · Patristic Syriac'},
 ] %}
 <div class="corpora-grid">
@@ -322,8 +323,8 @@ async function doRootSearch(noScroll) {
     if (gloss) html += `<div class="root-meaning">${gloss}</div>`;
 
     // Cross-corpus attestation badges
-    const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'ephrem_nisibis': 'Ephrem Nisibis'};
-    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
+    const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'targum_jonathan': 'Targum Jonathan', 'ephrem_nisibis': 'Ephrem Nisibis'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',targum_jonathan:'tgj',ephrem_nisibis:'eph'};
     const corpusKeys = Object.keys(att);
     if (corpusKeys.length > 0) {
         html += `<div class="corpus-attestation">`;
@@ -808,8 +809,8 @@ document.getElementById('prox-search-btn').addEventListener('click', async funct
     }
     var html = '<div class="proximity-results">';
     html += '<h3>' + data.count + ' co-occurrences: <span class="prox-hl1">' + (data.root1 || r1) + '</span> + <span class="prox-hl2">' + (data.root2 || r2) + '</span> (' + scope + ')</h3>';
-    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'ephrem_nisibis': 'Ephrem Nisibis'};
-    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
+    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'targum_jonathan': 'Targum Jonathan', 'ephrem_nisibis': 'Ephrem Nisibis'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',targum_jonathan:'tgj',ephrem_nisibis:'eph'};
     data.results.forEach(function(r) {
         var ref = r.ref || r.reference || '';
         var refParts = ref.match(/^(.+?)\s+(\d+):(\d+)/);
@@ -950,8 +951,8 @@ document.getElementById('text-search-btn').addEventListener('click', async funct
     var html = '<div class="text-search-results">';
     html += '<h3 class="text-search-header">' + data.count + ' results for "' + q.replace(/</g, '&lt;') + '"</h3>';
 
-    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'ephrem_nisibis': 'Ephrem Nisibis'};
-    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',ephrem_nisibis:'eph'};
+    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'targum_jonathan': 'Targum Jonathan', 'ephrem_nisibis': 'Ephrem Nisibis'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',targum_jonathan:'tgj',ephrem_nisibis:'eph'};
 
     for (var i = 0; i < data.results.length; i++) {
         var r = data.results[i];

@@ -164,7 +164,7 @@
         var LANG = {{ lang|tojson }};
         var SCRIPT = {{ script|tojson }};
         var TRANS = {{ trans|tojson }};
-        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
+        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', targum_jonathan:'tgj', ephrem_nisibis:'eph'};
 
         // Colors
         var COLOR_CENTER = '#8B4513';
@@ -287,6 +287,7 @@
             if (data.corpus_attestation) {
                 var labels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT',
                               'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos',
+                              'targum_jonathan': 'Targum Jonathan',
                               'ephrem_nisibis': 'Ephrem Nisibis'};
                 for (var cid in data.corpus_attestation) {
                     var badge = document.createElement('span');

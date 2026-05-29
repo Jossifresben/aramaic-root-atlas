@@ -10,6 +10,37 @@ indexed corpora, glosses, cognates, or extraction outputs (information
 researchers need when deciding whether re-runs of cited analyses are
 reproducible).
 
+## [Unreleased] — Phase 6A (Targum Jonathan)
+
+First half of the Phase 6A corpus expansion (see `docs/CORPUS-EXPANSION-PLAN.md`).
+Adds Targum Jonathan to the Prophets, doubling Targumic coverage and
+unlocking Peshitta OT ↔ Targum Jonathan synoptic comparison for the
+Prophets in the parallel viewer.
+
+### Added
+- **Targum Jonathan to the Prophets** — sixth corpus. 9,296 verses,
+  157,449 words across 21 books (Joshua–II Kings, Isaiah, Jeremiah,
+  Ezekiel, and the Twelve). Hebrew square script; cross-script root
+  normalization (Hebrew שלם ↔ Syriac ܫܠܡ → `SH-L-M`).
+- `scripts/fetch_targum_jonathan.py` — Sefaria fetch script
+  (fetch-until-empty per book; consonantal text, diacritics stripped).
+- Distinct rose-magenta corpus color (`--c-tgj #b32a78`, abbr `tgj`);
+  wired into all templates, i18n (EN/ES/HE/AR), and the Swagger spec.
+
+### Fixed
+- README corpus table listed Targum Onkelos as "Syriac"; corrected to
+  "Hebrew square" (it is Hebrew square script, like Biblical Aramaic).
+
+### Data Changes
+- **Corpora 5 → 6.** Totals: 38,062 → 47,358 verses; 528,399 → 685,848
+  words; 72,566 → 105,237 unique forms.
+- **Roots 5,249 → 5,666** (+417 newly attested). Re-runs of cited
+  cross-corpus or diachronic analyses that omit Targum Jonathan will
+  differ from analyses run after this change.
+- Source: Sefaria API (Targum Jonathan, CC-BY-SA), fetched 2026-05-29.
+- Cognate entries unchanged (1,584); generating cognates for the new
+  roots is a pending optional step.
+
 ## [v3.0.3] — 2026-05-09
 
 Infrastructure & accessibility release. Closes 3 more critique items

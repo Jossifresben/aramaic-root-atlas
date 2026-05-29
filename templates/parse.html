@@ -216,11 +216,12 @@
         }
 
         // Corpus attestations — use .cbadge classes
-        var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos', 'ephrem_nisibis'];
+        var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos', 'targum_jonathan', 'ephrem_nisibis'];
         var CORPUS_LABELS = {peshitta_nt: 'Pesh. NT', peshitta_ot: 'Pesh. OT',
                              biblical_aramaic: 'Bibl. Aram.', targum_onkelos: 'Targ. Onk.',
+                             targum_jonathan: 'Targ. Jon.',
                              ephrem_nisibis: 'Ephrem Nis.'};
-        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', ephrem_nisibis:'eph'};
+        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', targum_jonathan:'tgj', ephrem_nisibis:'eph'};
         var corpEl = document.getElementById('parse-corpus');
         corpEl.innerHTML = '';
         var hasCorpus = false;

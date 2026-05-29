@@ -56,6 +56,16 @@ directory from your copy.
   CC-BY-SA.
 - **Attribution required:** "Targum Onkelos via Sefaria (CC-BY-SA)."
 
+## `data/corpora/targum_jonathan.csv`
+
+- **Content:** Targum Jonathan to the Prophets (Former and Latter Prophets,
+  21 books), 9,296 verses, 157,449 words.
+- **Upstream source:** [Sefaria API](https://www.sefaria.org).
+- **License:** **CC-BY-SA 4.0**.
+- **Use restriction:** Same as Biblical Aramaic and Targum Onkelos —
+  derivative works must be CC-BY-SA.
+- **Attribution required:** "Targum Jonathan via Sefaria (CC-BY-SA)."
+
 ## `data/corpora/ephrem_nisibis.csv`
 
 - **Content:** Ephrem the Syrian, *Hymns on Nisibis* (*Carmina Nisibena*),
@@ -118,6 +128,7 @@ directory from your copy.
 | `peshitta_ot.csv` | CC-BY-NC 4.0 | ❌ No | n/a | required |
 | `biblical_aramaic.csv` | CC-BY-SA 4.0 | ✅ Yes | required | required |
 | `targum_onkelos.csv` | CC-BY-SA 4.0 | ✅ Yes | required | required |
+| `targum_jonathan.csv` | CC-BY-SA 4.0 | ✅ Yes | required | required |
 | `ephrem_nisibis.csv` | CC-BY 4.0 | ✅ Yes | n/a | required |
 | `translations_*.json` (mixed) | mostly PD; SBLGNT is CC-BY-SA | ✅ mostly | mixed | mixed |
 | `cognates.json` | Apache-2.0 | ✅ Yes | n/a | requested |
@@ -133,8 +144,8 @@ directory from your copy.
    without separately licensing it from ETCBC. Consider replacing it with
    another Peshitta OT source.
 3. **If you redistribute modified versions of the Sefaria-derived data**
-   (`biblical_aramaic.csv`, `targum_onkelos.csv`), your derivatives must be
-   CC-BY-SA-licensed.
+   (`biblical_aramaic.csv`, `targum_onkelos.csv`, `targum_jonathan.csv`), your
+   derivatives must be CC-BY-SA-licensed.
 4. **If you use the API only** (no data redistribution), the per-corpus
    licenses don't bind you — but you should still attribute the underlying
    sources in any publication that draws on the data.

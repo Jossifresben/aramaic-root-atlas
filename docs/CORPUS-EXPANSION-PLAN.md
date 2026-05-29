@@ -21,7 +21,7 @@ the Imperial / Old Aramaic inscriptional record.
 
 | Corpus | Period | Approx. words | Script | Best digital source | License | Friction |
 |---|---|---:|---|---|---|---|
-| **Targum Jonathan to the Prophets** | 2nd–4th c. CE | ~290,000 | Hebrew square | Sefaria API | CC-BY-SA | Low |
+| **Targum Jonathan to the Prophets** ✅ *added 2026-05-29* | 2nd–4th c. CE | 157,449 (actual; earlier ~290k estimate was high) | Hebrew square | Sefaria API | CC-BY-SA | Low |
 | **Targum Pseudo-Jonathan** (Pentateuch) | 4th–8th c. CE | ~200,000 | Hebrew square | Sefaria API | CC-BY-SA | Low |
 | **Targum Neofiti** (Pentateuch) | 1st–4th c. CE | ~180,000 | Hebrew square | Sefaria / CAL | mixed | Medium |
 | **Cairo Geniza Targum fragments** | 9th–13th c. CE (mss) | ~30,000 | Hebrew square | Klein editions / CAL | varies | Medium |
@@ -52,7 +52,7 @@ affix module, DSC TEI parser. No new alphabet, no new dialect module.
 
 | # | Add | Source | Why first |
 |---|---|---|---|
-| 6A.1 | **Targum Jonathan to the Prophets** | Sefaria API | Doubles Targum coverage; closes the most obvious gap |
+| 6A.1 ✅ | **Targum Jonathan to the Prophets** *(done 2026-05-29: 9,296v / 157,449w; roots 5,249→5,666)* | Sefaria API | Doubles Targum coverage; closes the most obvious gap |
 | 6A.2 | **Rest of Ephrem** (~95% of his surviving works) | Digital Syriac Corpus | Removes the "Ephrem ≈ Carmina Nisibena" misnomer |
 
 **Outcome:** 5 → 6 corpora (or 7 if we keep Ephrem-rest separate from
