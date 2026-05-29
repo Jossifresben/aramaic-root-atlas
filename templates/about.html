@@ -259,25 +259,25 @@
 
         <h1>{{ t('about_atlas_title', lang) }}</h1>
 
-        <p>El Atlas de Ra&iacute;ces Arameas es un explorador de ra&iacute;ces tril&iacute;teras que abarca unos 1.500 a&ntilde;os de historia literaria aramea. Re&uacute;ne cinco corpus &mdash; la Peshitta (NT y AT), el arameo b&iacute;blico, el T&aacute;rgum Onkelos y los Himnos de Efrén de N&iacute;sibis &mdash; bajo un &uacute;nico &iacute;ndice de ra&iacute;ces consonant&iacute;cas, permitiendo rastrear una misma ra&iacute;z sem&iacute;tica a trav&eacute;s de tradiciones textuales, escrituras y siglos, con cognados hebreos y &aacute;rabes visibles en cada capa.</p>
+        <p>El Atlas de Ra&iacute;ces Arameas es un explorador de ra&iacute;ces tril&iacute;teras que abarca unos 1.500 a&ntilde;os de historia literaria aramea. Re&uacute;ne seis corpus &mdash; la Peshitta (NT y AT), el arameo b&iacute;blico, el T&aacute;rgum Onkelos, el T&aacute;rgum Jonat&aacute;n y los Himnos de Efrén de N&iacute;sibis &mdash; bajo un &uacute;nico &iacute;ndice de ra&iacute;ces consonant&iacute;cas, permitiendo rastrear una misma ra&iacute;z sem&iacute;tica a trav&eacute;s de tradiciones textuales, escrituras y siglos, con cognados hebreos y &aacute;rabes visibles en cada capa.</p>
 
         {% elif lang == 'he' %}
 
         <h1>{{ t('about_atlas_title', lang) }}</h1>
 
-        <p>אטלס השורשים הארמיים הוא כלי לחקירת שורשים תלת-עיצוריים המקיף כ-1,500 שנות היסטוריה ספרותית ארמית. הוא מאגד חמישה קורפוסים &mdash; הפשיטתא (הברית החדשה והתנ"ך), הארמית המקראית, התרגום אונקלוס והמזמורים של אפרם ניסיביס &mdash; תחת אינדקס שורשים עיצוריים אחד, ומאפשר לעקוב אחר שורש שמי יחיד דרך מסורות טקסטואליות, כתבים ותקופות, עם קוגנטים בעברית ובערבית בכל שכבה.</p>
+        <p>אטלס השורשים הארמיים הוא כלי לחקירת שורשים תלת-עיצוריים המקיף כ-1,500 שנות היסטוריה ספרותית ארמית. הוא מאגד שישה קורפוסים &mdash; הפשיטתא (הברית החדשה והתנ"ך), הארמית המקראית, התרגום אונקלוס, תרגום יונתן והמזמורים של אפרם ניסיביס &mdash; תחת אינדקס שורשים עיצוריים אחד, ומאפשר לעקוב אחר שורש שמי יחיד דרך מסורות טקסטואליות, כתבים ותקופות, עם קוגנטים בעברית ובערבית בכל שכבה.</p>
 
         {% elif lang == 'ar' %}
 
         <h1>{{ t('about_atlas_title', lang) }}</h1>
 
-        <p>أطلس الجذور الآرامية هو أداة لاستكشاف الجذور الثلاثية تغطي نحو 1,500 عام من التاريخ الأدبي الآرامي. يجمع خمس مدوّنات نصية &mdash; الپشيطتا (العهد الجديد والقديم)، والآرامية التوراتية، وترجوم أونكيلوس، وأناشيد أفرام النصيبيني &mdash; تحت فهرس جذور صوامتي واحد، ممّا يتيح تتبّع جذر سامي واحد عبر التقاليد النصية والخطوط والقرون، مع عرض المُشتركات العبرية والعربية في كل طبقة.</p>
+        <p>أطلس الجذور الآرامية هو أداة لاستكشاف الجذور الثلاثية تغطي نحو 1,500 عام من التاريخ الأدبي الآرامي. يجمع ست مدوّنات نصية &mdash; الپشيطتا (العهد الجديد والقديم)، والآرامية التوراتية، وترجوم أونكيلوس، وترجوم يوناثان، وأناشيد أفرام النصيبيني &mdash; تحت فهرس جذور صوامتي واحد، ممّا يتيح تتبّع جذر سامي واحد عبر التقاليد النصية والخطوط والقرون، مع عرض المُشتركات العبرية والعربية في كل طبقة.</p>
 
         {% else %}
 
         <h1>{{ t('about_atlas_title', lang) }}</h1>
 
-        <p>The Aramaic Root Atlas is a cross-corpus triliteral root explorer spanning roughly 1,500 years of Aramaic literary history. It brings five corpora &mdash; the Peshitta (NT and OT), Biblical Aramaic, Targum Onkelos, and the Hymns of Ephrem of Nisibis &mdash; under a single consonantal root index, enabling scholars to trace a single Semitic root across textual traditions, scripts, and centuries, with Hebrew and Arabic cognates visible at every layer.</p>
+        <p>The Aramaic Root Atlas is a cross-corpus triliteral root explorer spanning roughly 1,500 years of Aramaic literary history. It brings six corpora &mdash; the Peshitta (NT and OT), Biblical Aramaic, Targum Onkelos, Targum Jonathan, and the Hymns of Ephrem of Nisibis &mdash; under a single consonantal root index, enabling scholars to trace a single Semitic root across textual traditions, scripts, and centuries, with Hebrew and Arabic cognates visible at every layer.</p>
 
         {% endif %}
 
@@ -317,13 +317,13 @@
         <h2>{% if lang == 'es' %}Corpus{% elif lang == 'he' %}קורפוסים{% elif lang == 'ar' %}المدوّنات النصية{% else %}Corpora{% endif %}</h2>
 
         {% if lang == 'es' %}
-        <p>El Atlas indexa cinco corpus de texto aram&eacute;o, que representan dos escrituras y m&aacute;s de un milenio y medio de producci&oacute;n literaria:</p>
+        <p>El Atlas indexa seis corpus de texto aram&eacute;o, que representan dos escrituras y m&aacute;s de un milenio y medio de producci&oacute;n literaria:</p>
         {% elif lang == 'he' %}
-        <p>האטלס מאנדקס חמישה קורפוסים של טקסט ארמי, המייצגים שני כתבים ומעל אלף וחמש מאות שנות יצירה ספרותית:</p>
+        <p>האטלס מאנדקס שישה קורפוסים של טקסט ארמי, המייצגים שני כתבים ומעל אלף וחמש מאות שנות יצירה ספרותית:</p>
         {% elif lang == 'ar' %}
-        <p>يفهرس الأطلس خمس مدوّنات من النصوص الآرامية، تمثّل خطّين كتابيين وأكثر من ألف وخمسمائة عام من الإنتاج الأدبي:</p>
+        <p>يفهرس الأطلس ست مدوّنات من النصوص الآرامية، تمثّل خطّين كتابيين وأكثر من ألف وخمسمائة عام من الإنتاج الأدبي:</p>
         {% else %}
-        <p>The Atlas indexes five corpora of Aramaic text, representing two scripts and over 1,500 years of literary production:</p>
+        <p>The Atlas indexes six corpora of Aramaic text, representing two scripts and over 1,500 years of literary production:</p>
         {% endif %}
 
         <div class="about-table-wrap">

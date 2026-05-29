@@ -1127,7 +1127,7 @@
           "Analysis"
         ],
         "summary": "Diachronic root frequency",
-        "description": "Returns normalized frequency (per 1,000 words) of a root across all five corpora in chronological order.",
+        "description": "Returns normalized frequency (per 1,000 words) of a root across all six corpora in chronological order.",
         "operationId": "getDiachronicRoot",
         "parameters": [
           {
