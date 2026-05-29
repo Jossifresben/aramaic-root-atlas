@@ -24,6 +24,9 @@ Prophets in the parallel viewer.
   normalization (Hebrew שלם ↔ Syriac ܫܠܡ → `SH-L-M`).
 - `scripts/fetch_targum_jonathan.py` — Sefaria fetch script
   (fetch-until-empty per book; consonantal text, diacritics stripped).
+- `scripts/generate_cognates_targum_jonathan.py` — Opus 4.8 cognate
+  generator scoped to Jonathan-exclusive roots, with prompt caching and
+  crash-safe incremental writes.
 - Distinct rose-magenta corpus color (`--c-tgj #b32a78`, abbr `tgj`);
   wired into all templates, i18n (EN/ES/HE/AR), and the Swagger spec.
 
@@ -38,8 +41,15 @@ Prophets in the parallel viewer.
   cross-corpus or diachronic analyses that omit Targum Jonathan will
   differ from analyses run after this change.
 - Source: Sefaria API (Targum Jonathan, CC-BY-SA), fetched 2026-05-29.
-- Cognate entries unchanged (1,584); generating cognates for the new
-  roots is a pending optional step.
+- **Cognates 1,584 → 1,655** (+71 entries; 4,647 Hebrew + 4,634 Arabic
+  cognate words). Generated with Opus 4.8 via
+  `scripts/generate_cognates_targum_jonathan.py`, scoped to roots
+  attested only in Targum Jonathan (≥2 occurrences): 84 genuine roots
+  identified, ≈200 proclitic/particle false-positives filtered. A few
+  cognates also gap-filled common roots that previously lacked entries
+  (e.g. ܩܒܪ "bury"). All entries carry a Syriac `root_syriac` for
+  lookup. Cost ≈ $2. Cognates remain `unverified` pending lexicographer
+  review per `docs/VALIDATION.md`.
 
 ## [v3.0.3] — 2026-05-09
 

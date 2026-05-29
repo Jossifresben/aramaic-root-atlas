@@ -52,7 +52,7 @@ affix module, DSC TEI parser. No new alphabet, no new dialect module.
 
 | # | Add | Source | Why first |
 |---|---|---|---|
-| 6A.1 ✅ | **Targum Jonathan to the Prophets** *(done 2026-05-29: 9,296v / 157,449w; roots 5,249→5,666)* | Sefaria API | Doubles Targum coverage; closes the most obvious gap |
+| 6A.1 ✅ | **Targum Jonathan to the Prophets** *(done 2026-05-29: 9,296v / 157,449w; roots 5,249→5,666; cognates 1,584→1,655 via Opus 4.8, ~$2)* | Sefaria API | Doubles Targum coverage; closes the most obvious gap |
 | 6A.2 | **Rest of Ephrem** (~95% of his surviving works) | Digital Syriac Corpus | Removes the "Ephrem ≈ Carmina Nisibena" misnomer |
 
 **Outcome:** 5 → 6 corpora (or 7 if we keep Ephrem-rest separate from

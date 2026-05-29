@@ -33,7 +33,7 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - **6 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v), Targum Jonathan (9,296v), Ephrem Nisibis (1,435v)
 - **Total**: 47,358 verses, 685,848 words, 105,237 unique forms
 - **5,666 roots** indexed across all corpora (5,249 before Targum Jonathan was added 2026-05-29; verified against `/api/stats`)
-- **1,584 cognate root entries** with Hebrew and/or Arabic cognates (4,599 Hebrew + 4,633 Arabic individual cognate words)
+- **1,655 cognate root entries** with Hebrew and/or Arabic cognates (4,647 Hebrew + 4,634 Arabic individual cognate words)
 - **405 Greek NT parallels** linking Aramaic roots to single Greek equivalents in the visualizer (NOT 2,192 — earlier docs overcounted)
 - Greek NT translation track (SBLGNT) — 7,939 verses from bible.helloao.org (grc_sbl)
 - SEDRA lexicon cache (12,534 entries) boosts root confidence for Syriac tokens
@@ -173,7 +173,7 @@ python3 app.py  # starts on port 5001
 - ✅ Doubles Targum coverage; unlocks Peshitta OT ↔ Targum Jonathan synoptic comparison in the parallel viewer for the Prophets
 - ✅ Distinct rose-magenta corpus color (`--c-tgj #b32a78`); abbr `tgj`; wired into all templates, i18n (EN/ES/HE/AR), and Swagger
 - ✅ Roots 5,249 → 5,666 (+417); corpora 5 → 6; all 197 tests pass
-- ⏳ **Pending (optional, needs spend approval):** generate cognates for newly-attested roots that lack entries (corpus is fully functional without this; cognates only enrich)
+- ✅ **Cognates generated** for the newly-attested vocabulary via Opus 4.8 (`scripts/generate_cognates_targum_jonathan.py`, scoped to Jonathan-exclusive roots ≥2 occ): 84 genuine roots identified (≈200 proclitic/particle false-positives filtered), +71 net cognate entries → 1,655 total. Cost ~$2. Some cognates also gap-filled common roots (e.g. ܩܒܪ "bury") that previously lacked entries.
 - ⏳ **Not yet done:** rest-of-Ephrem (the other half of Phase 6A per docs/CORPUS-EXPANSION-PLAN.md)
 
 ## Conventions

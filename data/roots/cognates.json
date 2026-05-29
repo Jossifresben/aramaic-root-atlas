@@ -1038,87 +1038,24 @@
     },
     "s-b-r": {
       "root_syriac": "ܣܒܪ",
-      "gloss_es": "esperar, predicar",
-      "gloss_en": "hope, preach",
+      "gloss_en": "good tidings",
+      "gloss_es": "buena nueva",
       "hebrew": [
         {
-          "word": "סָבַר",
-          "transliteration": "savar",
-          "meaning_es": "pensar/suponer",
-          "meaning_en": "to think/suppose",
-          "outlier": true
-        },
-        {
-          "word": "סִבֵּר",
-          "transliteration": "sibber",
-          "meaning_es": "explicar, exponer",
-          "meaning_en": "to explain, expound"
-        },
-        {
-          "word": "סְבָרָה",
-          "transliteration": "sevarah",
-          "meaning_es": "suposición, concepto",
-          "meaning_en": "supposition, concept"
+          "word": "בָּשַׂר",
+          "transliteration": "bāśar",
+          "meaning_en": "to bring news",
+          "meaning_es": "anunciar"
         }
       ],
       "arabic": [
         {
-          "word": "صَبَرَ",
-          "transliteration": "sabara",
-          "meaning_es": "tener paciencia",
-          "meaning_en": "to be patient"
-        },
-        {
-          "word": "صَبْر",
-          "transliteration": "sabr",
-          "meaning_es": "paciencia",
-          "meaning_en": "patience"
-        },
-        {
-          "word": "صَابِر",
-          "transliteration": "sabir",
-          "meaning_es": "paciente",
-          "meaning_en": "patient (adj)"
-        },
-        {
-          "word": "مَسْبُور",
-          "transliteration": "maṣbūr",
-          "meaning_es": "esperanzado, con esperanza",
-          "meaning_en": "hopeful, with hope"
-        },
-        {
-          "word": "إِسْتِبْصَار",
-          "transliteration": "istibṣār",
-          "meaning_es": "perspicacia, discernimiento",
-          "meaning_en": "insight, discernment"
+          "word": "بَشَّرَ",
+          "transliteration": "bashshara",
+          "meaning_en": "to announce good news",
+          "meaning_es": "dar buenas nuevas"
         }
-      ],
-      "sabor_raiz_es": "paciencia, espera, discernimiento",
-      "sabor_raiz_en": "patience, waiting, discernment",
-      "greek_parallel": {
-        "word": "ἐλπίς",
-        "transliteration": "elpis",
-        "meaning_es": "esperanza",
-        "meaning_en": "hope",
-        "aramaic_range_es": "esperar con paciencia, aguantar, predicar, explicar, discernir, suponer, confiar",
-        "aramaic_range_en": "to wait patiently, endure, preach, explain, discern, suppose, trust",
-        "greek_range_es": "esperanza, expectativa, anticipación — influida por la concepción platónica de la esperanza como proyección del alma hacia un bien futuro incierto",
-        "greek_range_en": "hope, expectation, anticipation — shaped by Platonic conception of hope as the soul's projection toward an uncertain future good",
-        "lost_es": "En arameo, ܣܒܪ (sbar) es una raíz extraordinariamente densa que entrelaza la paciencia con la predicación y el discernimiento. Esperar no es un anhelo pasivo: es aguantar con fortaleza interior (como el árabe ṣabr, la paciencia estoica del desierto), pero también es explicar y exponer una verdad (como el hebreo sibber, 'explicar'), porque quien tiene verdadera esperanza ha discernido algo que puede proclamar. Cuando el griego adoptó ἐλπίς, redujo esta constelación a una emoción orientada al futuro — una expectativa, coloreada por la filosofía platónica donde la esperanza es proyección del alma hacia un bien todavía no alcanzado. Se perdió por completo el vínculo entre esperar y predicar: en arameo, el que espera es el que ha comprendido algo y lo anuncia; en griego, el que espera simplemente anhela. Al llegar al español como 'esperanza' o al inglés como 'hope', queda solo un sentimiento interior despojado de su dimensión activa: ya no hay paciencia corporal, ni esfuerzo de discernimiento, ni el acto público de proclamar aquello que se ha comprendido con claridad.",
-        "lost_en": "In Aramaic, ܣܒܪ (sbar) is an extraordinarily dense root that braids together patience, preaching, and discernment. To hope is not a passive wish: it is to endure with inner fortitude (like Arabic ṣabr, the desert's stoic patience), but it is also to explain and expound a truth (like Hebrew sibber, 'to explain'), because the one who truly hopes has discerned something worth proclaiming. When Greek adopted ἐλπίς, it reduced this constellation to a future-oriented emotion — an expectation, colored by Platonic philosophy where hope is the soul's projection toward a good not yet attained. The link between hoping and preaching was entirely severed: in Aramaic, the one who hopes is the one who has understood something and announces it; in Greek, the one who hopes simply longs. By the time it reaches English as 'hope' or Spanish as 'esperanza,' only an interior feeling remains, stripped of its active dimension: no bodily patience, no labor of discernment, and no public act of proclaiming what has been clearly understood."
-      },
-      "sabor_raiz_he": "סבלנות, המתנה, הבחנה",
-      "sabor_raiz_ar": "صبر, انتظار, تمييز",
-      "semantic_bridges": {
-        "ar:sabr": {
-          "target_root": "q-w-y",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Hope/patience connects to Q-W-Y (to endure, wait)",
-          "bridge_concept_es": "Esperanza/paciencia conecta con Q-W-Y (resistir, esperar)"
-        }
-      },
-      "gloss_he": "קיווה, הטיף",
-      "gloss_ar": "رجا، وعظ"
+      ]
     },
     "b-r-k": {
       "root_syriac": "ܒܪܟ",
@@ -1205,90 +1142,24 @@
     },
     "p-r-q": {
       "root_syriac": "ܦܪܩ",
-      "gloss_es": "salvar, redimir",
-      "gloss_en": "save, redeem",
+      "gloss_en": "redeem, save",
+      "gloss_es": "redimir, salvar",
       "hebrew": [
         {
           "word": "פָּרַק",
-          "transliteration": "paraq",
-          "meaning_es": "romper/desmontar",
-          "meaning_en": "to break apart/disassemble"
-        },
-        {
-          "word": "פָּרוֹק",
-          "transliteration": "parok",
-          "meaning_es": "liberar, salvar",
-          "meaning_en": "to liberate, to save"
+          "transliteration": "pāraq",
+          "meaning_en": "to tear away, redeem",
+          "meaning_es": "arrancar, redimir"
         }
       ],
       "arabic": [
         {
           "word": "فَرَقَ",
           "transliteration": "faraqa",
-          "meaning_es": "separar/distinguir",
-          "meaning_en": "to separate/distinguish"
-        },
-        {
-          "word": "فَرْق",
-          "transliteration": "farq",
-          "meaning_es": "diferencia",
-          "meaning_en": "difference"
-        },
-        {
-          "word": "فِرْقَة",
-          "transliteration": "firqa",
-          "meaning_es": "grupo/secta",
-          "meaning_en": "group/sect",
-          "outlier": true
-        },
-        {
-          "word": "فَارِق",
-          "transliteration": "fariq",
-          "meaning_es": "diferente, distinto",
-          "meaning_en": "different, distinct",
-          "outlier": true
-        },
-        {
-          "word": "فُرْقَان",
-          "transliteration": "furqan",
-          "meaning_es": "diferencia, separación",
-          "meaning_en": "difference, separation",
-          "outlier": true
-        },
-        {
-          "word": "اِفْتَرَقَ",
-          "transliteration": "iftaraqa",
-          "meaning_es": "separarse, dividirse",
-          "meaning_en": "to separate, to divide",
-          "outlier": true
+          "meaning_en": "to separate, divide",
+          "meaning_es": "separar, dividir"
         }
-      ],
-      "semantic_bridges": {
-        "ar:iftaraqa": {
-          "target_root": "p-l-g",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "To divide, separate is core to the meaning of P-L-G",
-          "bridge_concept_es": "Dividir, separar es central al significado de P-L-G"
-        }
-      },
-      "sabor_raiz_es": "separación, liberación, distinción",
-      "sabor_raiz_en": "separation, liberation, distinction",
-      "greek_parallel": {
-        "word": "σῴζω",
-        "transliteration": "sōzō",
-        "meaning_es": "salvar",
-        "meaning_en": "to save",
-        "aramaic_range_es": "separar, arrancar, liberar, rescatar, distinguir, desmontar",
-        "aramaic_range_en": "to separate, tear away, liberate, rescue, distinguish, disassemble",
-        "greek_range_es": "salvar, preservar, curar, mantener a salvo — influido por la noción helenística de salvación como preservación del alma o restauración de la integridad",
-        "greek_range_en": "to save, preserve, heal, keep safe — shaped by Hellenistic notion of salvation as preservation of the soul or restoration of wholeness",
-        "lost_es": "En arameo, ܦܪܩ (praq) es ante todo un acto físico y violento: separar algo de aquello que lo aprisiona, arrancar al cautivo de sus cadenas, desmontar una estructura para liberar lo que está atrapado dentro. La raíz conserva el sabor del desgarro — hay fuerza, hay ruptura, hay una distinción clara entre lo que se rescata y lo que se deja atrás, tal como en el árabe faraqa, donde separar es también discernir y distinguir. Cuando se tradujo al griego como σῴζω, el acto se transformó: ya no se trata de arrancar ni de romper, sino de preservar, mantener intacto, curar — una acción suave, médica, filosófica, alineada con la idea helenística de que salvar es restaurar la integridad del ser. Al llegar al español como 'salvar' o al inglés como 'to save', se perdió por completo la violencia liberadora del original: no queda la imagen de alguien que separa por la fuerza al oprimido de su opresor, ni la noción de que redimir implica deshacer, desmontar, romper las estructuras que encadenan. 'Salvar' suena pasivo, casi burocrático; ܦܪܩ era un acto de desgarro sagrado.",
-        "lost_en": "In Aramaic, ܦܪܩ (praq) is first and foremost a physical, forceful act: to separate something from what imprisons it, to tear the captive away from chains, to disassemble a structure in order to free what is trapped inside. The root carries the taste of rupture — there is force, there is breaking apart, there is a sharp distinction between what is rescued and what is left behind, much like Arabic faraqa, where to separate is also to discern and distinguish. When translated into Greek as σῴζω, the act was transformed: it was no longer about tearing away or breaking apart, but about preserving, keeping intact, healing — a gentler, more medical, more philosophical action aligned with the Hellenistic idea that saving means restoring the wholeness of a being. By the time it reached English as 'to save', the liberating violence of the original was entirely lost: gone is the image of someone forcibly separating the oppressed from the oppressor, gone is the notion that redemption means undoing, dismantling, breaking the very structures that bind. 'To save' sounds passive, almost bureaucratic; ܦܪܩ was an act of sacred tearing apart."
-      },
-      "sabor_raiz_he": "הפרדה, שחרור, הבחנה",
-      "sabor_raiz_ar": "فصل, تحرير, تمييز",
-      "gloss_he": "פדה, הציל",
-      "gloss_ar": "أنقذ، فدى"
+      ]
     },
     "r-kh-m": {
       "root_syriac": "ܪܚܡ",
@@ -3627,106 +3498,36 @@
     },
     "k-n-sh": {
       "root_syriac": "ܟܢܫ",
-      "gloss_es": "reunir, congregar",
-      "gloss_en": "gather, assemble",
+      "gloss_en": "gather",
+      "gloss_es": "reunir",
       "hebrew": [
         {
           "word": "כָּנַס",
           "transliteration": "kanas",
-          "meaning_es": "reunir",
-          "meaning_en": "to gather"
+          "meaning_en": "to gather",
+          "meaning_es": "reunir"
         },
         {
           "word": "כְּנֶסֶת",
-          "transliteration": "kneset",
-          "meaning_es": "asamblea/sinagoga",
-          "meaning_en": "assembly/synagogue"
-        },
-        {
-          "word": "כְּנֵסִיָּה",
-          "transliteration": "knesiya",
-          "meaning_es": "iglesia",
-          "meaning_en": "church"
-        },
-        {
-          "word": "קֹנֵס",
-          "transliteration": "konés",
-          "meaning_es": "multa, sanción",
-          "meaning_en": "fine, penalty",
-          "outlier": true
-        },
-        {
-          "word": "הִתְקַנְּשׁוּת",
-          "transliteration": "hitkanneshut",
-          "meaning_es": "congregación, reunión",
-          "meaning_en": "congregation, assembly"
-        },
-        {
-          "word": "מִכְנֶסֶת",
-          "transliteration": "mikhéneséth",
-          "meaning_es": "colección, aglomeración",
-          "meaning_en": "collection, accumulation"
+          "transliteration": "keneset",
+          "meaning_en": "assembly",
+          "meaning_es": "asamblea"
         }
       ],
       "arabic": [
         {
           "word": "كَنَسَ",
           "transliteration": "kanasa",
-          "meaning_es": "barrer",
-          "meaning_en": "to sweep"
+          "meaning_en": "to sweep",
+          "meaning_es": "barrer"
         },
         {
           "word": "كَنِيسَة",
-          "transliteration": "kanisa",
-          "meaning_es": "iglesia",
-          "meaning_en": "church"
-        },
-        {
-          "word": "كَنْز",
-          "transliteration": "kanz",
-          "meaning_es": "tesoro, acumulación",
-          "meaning_en": "treasure, hoard",
-          "outlier": true
-        },
-        {
-          "word": "كِنْسُ",
-          "transliteration": "kinsu",
-          "meaning_es": "escoba, trapeador",
-          "meaning_en": "broom, mop"
-        },
-        {
-          "word": "كَانِش",
-          "transliteration": "kánish",
-          "meaning_es": "recopilador, recaudador",
-          "meaning_en": "collector, gatherer"
+          "transliteration": "kanīsa",
+          "meaning_en": "church/synagogue",
+          "meaning_es": "iglesia/sinagoga"
         }
-      ],
-      "semantic_bridges": {
-        "ar:kanz": {
-          "target_root": "g-n-z",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Treasure/hoard connects to G-N-Z (to store, treasure, hide away)",
-          "bridge_concept_es": "Tesoro/acumular conecta con G-N-Z (almacenar, atesorar, ocultar)"
-        }
-      },
-      "sabor_raiz_es": "reunión, congregación, recolección",
-      "sabor_raiz_en": "gathering, congregation, collection",
-      "greek_parallel": {
-        "word": "συνάγω",
-        "transliteration": "synagō",
-        "meaning_es": "reunir, congregar",
-        "meaning_en": "to gather, to assemble",
-        "aramaic_range_es": "reunir, congregar, recoger, barrer, acumular, cosechar",
-        "aramaic_range_en": "to gather, assemble, collect, sweep together, accumulate, harvest",
-        "greek_range_es": "reunir, juntar, recoger, llevar consigo — influenciado por la polis griega donde la asamblea (συναγωγή) es acto político-cívico más que orgánico",
-        "greek_range_en": "to gather, bring together, collect, lead together — shaped by Greek polis culture where assembly (synagōgē) is a civic-political act rather than an organic one",
-        "lost_es": "En arameo, ܟܢܫ (knash) evoca un gesto físico total: barrer las migas hacia un centro, recoger la cosecha del campo, juntar a las personas en un solo cuerpo vivo. La raíz conecta el acto más humilde — barrer el suelo con una escoba (árabe kanasa, kinsu) — con el más elevado: formar una congregación sagrada (knesiya, kneset). No hay separación entre lo doméstico y lo litúrgico; quien barre y quien convoca la asamblea realizan el mismo movimiento centrípeto. Cuando el griego adopta συνάγω, retiene la idea de 'llevar juntos', pero la filtra por la experiencia helenística de la asamblea cívica deliberativa, donde reunirse es un acto institucional, no un gesto corporal de recoger lo disperso. Al llegar al español como 'reunir' o 'congregar', se pierde por completo la imagen física del barrido, la cosecha, la acumulación paciente de lo esparcido. Ya no se siente el brazo que arrastra hacia el centro, ni el campo que entrega sus frutos, ni la escoba que junta el polvo: queda solo la abstracción administrativa de poner personas en un mismo lugar.",
-        "lost_en": "In Aramaic, ܟܢܫ (knash) evokes a total physical gesture: sweeping crumbs toward a center, gathering the harvest from the field, drawing people into a single living body. The root connects the humblest act — sweeping the floor with a broom (Arabic kanasa, kinsu) — with the most exalted: forming a sacred congregation (knesiya, kneset). There is no separation between the domestic and the liturgical; the one who sweeps and the one who convenes the assembly perform the same centripetal motion. When Greek adopts συνάγω, it retains the idea of 'leading together,' but filters it through the Hellenistic experience of the civic deliberative assembly, where gathering is an institutional act rather than a bodily gesture of collecting what is scattered. By the time it reaches English as 'to gather' or 'to assemble,' the physical image of sweeping, harvesting, and patient accumulation of the dispersed is entirely lost. You no longer feel the arm dragging everything toward the center, nor the field yielding its fruit, nor the broom collecting dust — only the administrative abstraction of putting people in the same place remains."
-      },
-      "sabor_raiz_he": "כינוס, congregation, collection",
-      "sabor_raiz_ar": "تجمع, congregation, collection",
-      "gloss_he": "קבץ",
-      "gloss_ar": "جمع"
+      ]
     },
     "e-m-d": {
       "root_syriac": "ܥܡܕ",
@@ -4781,184 +4582,57 @@
     },
     "kh-sh-b": {
       "root_syriac": "ܚܫܒ",
-      "gloss_es": "pensar, calcular",
-      "gloss_en": "think, reckon",
+      "gloss_en": "thought, plan",
+      "gloss_es": "pensamiento, plan",
       "hebrew": [
         {
-          "word": "מַחֲשָׁבָה",
-          "transliteration": "makhshava",
-          "meaning_es": "pensamiento",
-          "meaning_en": "thought"
-        },
-        {
           "word": "חָשַׁב",
-          "transliteration": "ḥāšav",
-          "meaning_es": "pensar, calcular",
-          "meaning_en": "to think, reckon"
-        },
-        {
-          "word": "חֶשְׁבּוֹן",
-          "transliteration": "ḥešbōn",
-          "meaning_es": "cuenta, cálculo",
-          "meaning_en": "account, calculation"
-        },
-        {
-          "word": "מַחֲשָׁבָה",
-          "transliteration": "maḥăšāvāh",
-          "meaning_es": "pensamiento, idea",
-          "meaning_en": "thought, idea"
+          "transliteration": "ḥāšaḇ",
+          "meaning_en": "to think, reckon",
+          "meaning_es": "pensar, calcular"
         }
       ],
       "arabic": [
         {
           "word": "حَسَبَ",
-          "transliteration": "hasaba",
-          "meaning_es": "calcular/considerar",
-          "meaning_en": "to calculate/consider"
-        },
-        {
-          "word": "حِسَاب",
-          "transliteration": "hisab",
-          "meaning_es": "cuenta/cálculo",
-          "meaning_en": "account/calculation"
-        },
-        {
-          "word": "حَسِبَ",
-          "transliteration": "ḥasiba",
-          "meaning_es": "considerar, calcular",
-          "meaning_en": "to consider, calculate"
-        },
-        {
-          "word": "حُسْبَان",
-          "transliteration": "ḥusbān",
-          "meaning_es": "consideración, cálculo",
-          "meaning_en": "consideration, calculation"
-        },
-        {
-          "word": "مَحْسُوب",
-          "transliteration": "maḥsūb",
-          "meaning_es": "considerado, computado",
-          "meaning_en": "considered, computed"
-        },
-        {
-          "word": "حَسَابِيّ",
-          "transliteration": "ḥisābiyy",
-          "meaning_es": "aritmético, matemático",
-          "meaning_en": "arithmetic, mathematical"
+          "transliteration": "ḥasaba",
+          "meaning_en": "to count, reckon",
+          "meaning_es": "contar, calcular"
         }
-      ],
-      "sabor_raiz_es": "cálculo, pensamiento, cuenta",
-      "sabor_raiz_en": "reckoning, thought, computation",
-      "greek_parallel": {
-        "word": "λογίζομαι",
-        "transliteration": "logizomai",
-        "meaning_es": "pensar, considerar",
-        "meaning_en": "to think, to reckon",
-        "aramaic_range_es": "pensar, calcular, estimar, tramar, tejer (un plan), considerar el peso o valor de algo",
-        "aramaic_range_en": "to think, calculate, reckon, devise, weave (a plan), consider the weight or value of something",
-        "greek_range_es": "calcular, razonar, considerar, imputar — profundamente moldeado por la tradición aristotélica y estoica del logos como razón discursiva y cálculo lógico",
-        "greek_range_en": "to calculate, reason, consider, impute — deeply shaped by the Aristotelian and Stoic tradition of logos as discursive reason and logical reckoning",
-        "lost_es": "En arameo, ܚܫܒ (ḥashab) es un verbo que entrelaza el pensar con el pesar: calcular no es solo una operación mental abstracta, sino un acto de sopesar valor, importancia y consecuencia, como quien pone algo en la balanza. La raíz conecta el pensamiento con la artesanía — en hebreo, khashav puede significar 'tramar' o 'tejer' un diseño, como el tejedor que entrelaza hilos para formar un patrón complejo; pensar es fabricar algo con las manos de la mente. También lleva una dimensión contable y jurídica: el ḥeshbon (cuenta, rendición de cuentas) implica que todo pensamiento tiene peso moral y será medido. Al pasar al griego como λογίζομαι, el verbo se insertó en el campo semántico del logos: la razón discursiva, el silogismo, el cálculo lógico — un acto cerebral y frío, despojado de la textura táctil del tejedor y del peso moral de la balanza. En español, 'pensar' o 'considerar' son actos puramente intelectuales y desencarnados: se ha perdido la imagen del artesano que trama un diseño, la del comerciante que rinde cuentas, y la gravedad existencial de que cada pensamiento tiene un precio que se registra.",
-        "lost_en": "In Aramaic, ܚܫܒ (ḥashab) is a verb that interweaves thinking with weighing: to calculate is not merely an abstract mental operation but an act of assessing value, importance, and consequence, like placing something on a scale. The root connects thought to craftsmanship — in Hebrew, khashav can mean 'to devise' or 'to weave' a design, as a weaver interlaces threads into a complex pattern; to think is to fabricate something with the hands of the mind. It also carries an accounting and juridical dimension: ḥeshbon (account, reckoning) implies that every thought has moral weight and will be measured. When it passed into Greek as λογίζομαι, the verb was absorbed into the semantic field of logos: discursive reason, syllogistic logic, rational calculation — a cerebral and cool act, stripped of the tactile texture of the weaver and the moral gravity of the balance scale. In English, 'to think' or 'to consider' are purely intellectual and disembodied acts: lost is the image of the craftsman devising a design, the merchant rendering accounts, and the existential gravity that every thought carries a price that is recorded."
-      },
-      "sabor_raiz_he": "חשבון, מחשבה, computation",
-      "sabor_raiz_ar": "حساب, فكر, computation",
-      "semantic_bridges": {
-        "heb:khashav": {
-          "target_root": "d-r-sh",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Thinking connects to D-R-SH (seeking, interpreting)",
-          "bridge_concept_es": "Pensar conecta con D-R-SH (buscar, interpretar)"
-        }
-      },
-      "gloss_he": "חשב, חשבון",
-      "gloss_ar": "يحسب، يفكر"
+      ]
     },
     "p-l-kh": {
       "root_syriac": "ܦܠܚ",
+      "gloss_en": "to work, serve",
       "gloss_es": "trabajar, servir",
-      "gloss_en": "work, serve",
       "hebrew": [
         {
           "word": "פָּלַח",
-          "transliteration": "palakh",
-          "meaning_es": "cortar/labrar",
-          "meaning_en": "to cut/plow"
+          "transliteration": "pālaḥ",
+          "meaning_en": "to cleave, till",
+          "meaning_es": "hender, labrar"
         },
         {
-          "word": "פְּלָח",
-          "transliteration": "p'lakh",
-          "meaning_es": "sirviente, trabajador",
-          "meaning_en": "servant, worker",
-          "period": "biblical_aramaic"
-        },
-        {
-          "word": "פִּלּוֹחַ",
-          "transliteration": "pilloakh",
-          "meaning_es": "agricultura, cultivo",
-          "meaning_en": "agriculture, cultivation",
-          "period": "biblical_aramaic"
+          "word": "פֶּלַח",
+          "transliteration": "pelaḥ",
+          "meaning_en": "slice, millstone",
+          "meaning_es": "rebanada, muela"
         }
       ],
       "arabic": [
         {
           "word": "فَلَحَ",
-          "transliteration": "falaha",
-          "meaning_es": "cultivar/prosperar",
-          "meaning_en": "to cultivate/prosper"
+          "transliteration": "falaḥa",
+          "meaning_en": "to till, plow",
+          "meaning_es": "labrar, arar"
         },
         {
           "word": "فَلَّاح",
-          "transliteration": "fallah",
-          "meaning_es": "campesino",
-          "meaning_en": "farmer"
-        },
-        {
-          "word": "فَلَاح",
-          "transliteration": "falah",
-          "meaning_es": "éxito/prosperidad",
-          "meaning_en": "success/prosperity"
-        },
-        {
-          "word": "فَلاَّح",
-          "transliteration": "fallākh",
-          "meaning_es": "campesino, granjero",
-          "meaning_en": "peasant, farmer"
-        },
-        {
-          "word": "فَلاَحَة",
-          "transliteration": "falāḥah",
-          "meaning_es": "agricultura, labranza",
-          "meaning_en": "agriculture, plowing",
-          "outlier": true
+          "transliteration": "fallāḥ",
+          "meaning_en": "farmer",
+          "meaning_es": "labrador"
         }
-      ],
-      "semantic_bridges": {
-        "ar:falāḥah": {
-          "target_root": "p-r-sh",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Agriculture/plowing connects to P-R-SH (to plow, cultivate)",
-          "bridge_concept_es": "Agricultura/labranza conecta con P-R-SH (arar, cultivar)"
-        }
-      },
-      "sabor_raiz_es": "cultivo, labor, prosperidad",
-      "sabor_raiz_en": "cultivation, labor, prosperity",
-      "greek_parallel": {
-        "word": "ἐργάζομαι",
-        "transliteration": "ergazomai",
-        "meaning_es": "trabajar",
-        "meaning_en": "to work",
-        "aramaic_range_es": "labrar la tierra, cultivar, servir, adorar, trabajar con esfuerzo físico, prosperar",
-        "aramaic_range_en": "to till the soil, cultivate, serve, worship, labor physically, prosper",
-        "greek_range_es": "trabajar, realizar, producir, comerciar — influenciado por la concepción aristotélica de ἔργον como función propia o producto acabado",
-        "greek_range_en": "to work, perform, produce, trade — shaped by the Aristotelian concept of ergon as proper function or finished product",
-        "lost_es": "En arameo, ܦܠܚ (plakh) es un verbo que hunde sus raíces en la tierra misma: su sentido primario es abrir surcos, arar, cultivar el suelo. De ahí brota un campo semántico donde trabajar, servir y adorar son una sola cosa — el campesino que labra la tierra está sirviendo a la vida y rindiendo culto a lo sagrado simultáneamente. El cognado árabe falaḥ (éxito, prosperidad) revela que en la mente semítica, cultivar la tierra y prosperar no son causa y efecto sino aspectos de un mismo acto. Cuando se tradujo al griego como ἐργάζομαι, el término se desplazó hacia la producción genérica y el rendimiento, perdiendo la conexión orgánica con la tierra y con el servicio-adoración. En español, 'trabajar' es un concepto abstracto y desencarnado: no huele a tierra arada, no implica servicio sagrado, y ha divorciado por completo el esfuerzo de la prosperidad que el arameo veía como su fruto natural.",
-        "lost_en": "In Aramaic, ܦܠܚ (plakh) is a verb rooted literally in the earth: its primary sense is to cut furrows, to plow, to cultivate the soil. From this grows a semantic field where working, serving, and worshipping are a single unified act — the farmer tilling the ground is simultaneously serving life and rendering worship to the sacred. The Arabic cognate falaḥ (success, prosperity) reveals that in the Semitic mind, cultivating the earth and flourishing are not cause and effect but facets of one act. When translated into Greek as ἐργάζομαι, the word shifted toward generic production and output, shaped by the Aristotelian notion of ergon as a thing's proper function or finished product — severing the organic bond with soil and with service-as-worship. In English, 'to work' is abstract and disembodied: it carries no scent of plowed earth, implies no sacred service, and has completely divorced effort from the prosperity that Aramaic saw as its natural fruit."
-      },
-      "sabor_raiz_he": "עיבוד, עמל, שגשוג",
-      "sabor_raiz_ar": "زراعة, عمل, ازدهار",
-      "gloss_he": "פעל, עבד",
-      "gloss_ar": "يعمل، يخدم"
+      ]
     },
     "sh-r-r": {
       "root_syriac": "ܫܪܪ",
@@ -6292,108 +5966,24 @@
     },
     "m-l-l": {
       "root_syriac": "ܡܠܠ",
-      "gloss_es": "hablar, palabra",
-      "gloss_en": "speak, word",
-      "paradigmatic_ref": "John 1:1",
+      "gloss_en": "speak, utter",
+      "gloss_es": "hablar",
       "hebrew": [
         {
-          "word": "מִלָּה",
-          "transliteration": "milah",
-          "meaning_es": "palabra",
-          "meaning_en": "word"
-        },
-        {
-          "word": "מִלֵּל",
-          "transliteration": "millel",
-          "meaning_es": "hablar",
-          "meaning_en": "to speak"
-        },
-        {
-          "word": "מְלִיצָה",
-          "transliteration": "melitza",
-          "meaning_es": "discurso elegante",
-          "meaning_en": "eloquent speech"
-        },
-        {
-          "word": "מִלִּין",
-          "transliteration": "millin",
-          "meaning_es": "palabras",
-          "meaning_en": "words"
-        },
-        {
-          "word": "מִלְּלָה",
-          "transliteration": "millela",
-          "meaning_es": "habla, discurso",
-          "meaning_en": "speech, discourse"
-        },
-        {
-          "word": "מָלִיץ",
-          "transliteration": "malitz",
-          "meaning_es": "intérprete, mediador",
-          "meaning_en": "interpreter, mediator"
+          "word": "מָלַל",
+          "transliteration": "mālal",
+          "meaning_en": "to speak, utter",
+          "meaning_es": "hablar, decir"
         }
       ],
       "arabic": [
         {
-          "word": "مَلَّ",
-          "transliteration": "malla",
-          "meaning_es": "aburrirse/dictar",
-          "meaning_en": "to be bored/dictate",
-          "outlier": true
-        },
-        {
-          "word": "إِمْلَاء",
-          "transliteration": "imla'",
-          "meaning_es": "dictado",
-          "meaning_en": "dictation"
-        },
-        {
-          "word": "مِلَّة",
-          "transliteration": "milla",
-          "meaning_es": "religión/comunidad",
-          "meaning_en": "religion/community"
-        },
-        {
-          "word": "مُتَمَلِّل",
-          "transliteration": "mutamallil",
-          "meaning_es": "aburrido, hastiado",
-          "meaning_en": "bored, weary",
-          "outlier": true
-        },
-        {
-          "word": "تَمَلُّل",
-          "transliteration": "tamallu",
-          "meaning_es": "aburrimiento, hastío",
-          "meaning_en": "boredom, weariness",
-          "outlier": true
+          "word": "أَمَلَّ",
+          "transliteration": "ʾamalla",
+          "meaning_en": "to dictate",
+          "meaning_es": "dictar"
         }
-      ],
-      "sabor_raiz_es": "palabra, expresión, mediación",
-      "sabor_raiz_en": "speech, utterance, mediation",
-      "greek_parallel": {
-        "word": "λόγος",
-        "transliteration": "logos",
-        "meaning_es": "palabra, verbo",
-        "meaning_en": "word, the Word",
-        "aramaic_range_es": "hablar, pronunciar, mediar, interpretar, discursar, dictar",
-        "aramaic_range_en": "to speak, utter, mediate, interpret, discourse, dictate",
-        "greek_range_es": "palabra, razón, discurso, proporción, principio cósmico — profundamente reconfigurado por la filosofía platónica y estoica como principio racional ordenador del universo",
-        "greek_range_en": "word, reason, discourse, proportion, cosmic principle — profoundly reshaped by Platonic and Stoic philosophy as the rational ordering principle of the universe",
-        "lost_es": "Cuando Juan escribe ܒܪܫܝܬ ܐܝܬܘܗܝ ܗܘܐ ܡܠܬܐ (breshith ithawhy hwa meltha), la palabra que elige es ܡܠܬܐ (meltha), de la raíz ܡܠܠ (M-L-L): hablar, pronunciar, mediar. Meltha no es un concepto abstracto — es la palabra en cuanto dicha, el acto de alguien que abre la boca y se dirige a otro. En la tradición aramea, millin son las palabras pronunciadas en comunidad, con peso relacional y social; el malitz es el intérprete, el que hace puente entre dos partes con la voz. Pero Juan no escribe en el vacío. En los Targumim — las paráfrasis arameas de la Torá que circulaban en sinagogas antes y durante su época — ya existía un término técnico para la Palabra divina como principio intermediario: memrā (מֵימְרָא). En los Targums de Onkelos y Pseudo-Jonatán, donde el texto hebreo dice «el Señor hizo» o «el Señor habló», frecuentemente aparece «el memrā del Señor». Es decir: dentro de la propia tradición aramea ya existía un concepto casi hipostático de la Palabra divina — no solo el acto oral relacional, sino una agencia mediadora a través de la cual Dios actúa sobre el mundo sin contacto directo. La meltha de Juan resuena con esta tradición: la Palabra que estaba «en el principio» lleva tanto la intimidad de alguien que habla cara a cara como el peso teológico de un intermediario divino ya familiar para su audiencia arameoparlante. Mientras tanto, el cognado hebreo davar (דָּבָר) añade otra dimensión enteramente perdida en la traducción: en hebreo bíblico, davar significa simultáneamente palabra, cosa y evento. La misma raíz que produce «hablar» produce «la cosa que ocurre». Un davar no es un signo que apunta a la realidad — es la realidad ocurriendo. Cuando Dios habla, las cosas llegan a ser; la pronunciación y el acontecimiento son uno. El griego λόγος no absorbe nada de esto. Para Heráclito era el principio cósmico, para los estoicos la razón universal, para Platón la estructura inteligible del ser — siempre un orden racional impersonal, nunca alguien dirigiéndose a alguien, nunca la palabra que es en sí misma el evento que nombra. Al llegar al español como «el Verbo» o «la Palabra», tres capas colapsan en un término plano: la voz relacional aramea (meltha), el intermediario divino targúmico (memrā) y la unidad palabra-evento del hebreo (davar) quedan reducidos a una unidad lingüística — un sonido que refiere a otra cosa, en lugar del acto vivo que trae esa cosa a la existencia.",
-        "lost_en": "When John writes ܒܪܫܝܬ ܐܝܬܘܗܝ ܗܘܐ ܡܠܬܐ (breshith ithawhy hwa meltha), the word he chooses is ܡܠܬܐ (meltha), from the root ܡܠܠ (M-L-L): to speak, to utter, to mediate. Meltha is not an abstract concept — it is the word as spoken, the act of someone opening their mouth and addressing another. In the Aramaic tradition, millin are words uttered in community, carrying relational and social weight; the malitz is the interpreter, the one who bridges two parties through speech. But John is not writing in a vacuum. In the Targumim — the Aramaic paraphrases of the Torah that circulated in synagogues before and during his time — there already existed a technical term for the divine Word as intermediary principle: memrā (מֵימְרָא). In the Targums of Onkelos and Pseudo-Jonathan, where the Hebrew text says 'the Lord made' or 'the Lord spoke,' what frequently appears is 'the memrā of the Lord.' That is: within the Aramaic tradition itself there was already a quasi-hypostatic concept of the divine Word — not merely the relational oral act, but a mediating agency through which God acts upon the world without direct contact. John's meltha resonates with this tradition: the Word that was 'in the beginning' carries both the intimacy of someone speaking face to face and the theological weight of a divine intermediary already familiar to his Aramaic-speaking audience. Meanwhile, the Hebrew cognate davar (דָּבָר) adds another dimension entirely lost in translation: in biblical Hebrew, davar means simultaneously word, thing, and event. The same root that produces 'to speak' produces 'the thing that happens.' A davar is not a sign pointing to reality — it is reality occurring. When God speaks, things come into being; the utterance and the event are one. Greek λόγος absorbs none of this. For Heraclitus it was the cosmic principle, for the Stoics the universal reason, for Plato the intelligible structure of being — always an impersonal rational order, never someone addressing someone, never the word that is itself the event it names. By the time it reaches English as 'the Word,' three layers have collapsed into one flat term: the Aramaic relational voice (meltha), the targumic divine intermediary (memrā), and the Hebrew word-event unity (davar) are all reduced to a linguistic unit — a sound that refers to something else, rather than the living act that brings that something into existence."
-      },
-      "sabor_raiz_he": "דיבור, אמירה, תיווך",
-      "sabor_raiz_ar": "كلام, نطق, وساطة",
-      "semantic_bridges": {
-        "heb:milel": {
-          "target_root": "a-m-r",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Speaking/word connects to A-M-R (to say)",
-          "bridge_concept_es": "Hablar/palabra conecta con A-M-R (decir)"
-        }
-      },
-      "gloss_he": "דבר, מילה",
-      "gloss_ar": "يتكلم، كلمة"
+      ]
     },
     "y-w-m": {
       "root_syriac": "ܝܘܡ",
@@ -6959,100 +6549,30 @@
     },
     "z-b-n": {
       "root_syriac": "ܙܒܢ",
-      "gloss_es": "tiempo, comprar",
-      "gloss_en": "time, buy",
+      "gloss_en": "time; to buy/sell",
+      "gloss_es": "tiempo; comprar",
       "hebrew": [
         {
-          "word": "זִמֵּן",
-          "transliteration": "zimmen",
-          "meaning_es": "invitar/preparar",
-          "meaning_en": "to invite/prepare",
-          "outlier": true
-        },
-        {
-          "word": "זִמּוֹן",
-          "transliteration": "zīmūn",
-          "meaning_es": "preparación, cita",
-          "meaning_en": "preparation, appointment",
-          "outlier": true
-        },
-        {
-          "word": "זוֹמֵן",
-          "transliteration": "zōmēn",
-          "meaning_es": "invitar, organizar",
-          "meaning_en": "to invite, arrange",
-          "outlier": true
-        },
-        {
-          "word": "זִמְנוּת",
-          "transliteration": "zimnūt",
-          "meaning_es": "temporalidad, carácter temporal",
-          "meaning_en": "temporality, transient nature",
-          "outlier": true
+          "word": "זְמַן",
+          "transliteration": "zəman",
+          "meaning_en": "time, appointed time",
+          "meaning_es": "tiempo"
         }
       ],
       "arabic": [
         {
           "word": "زَمَن",
           "transliteration": "zaman",
-          "meaning_es": "tiempo",
-          "meaning_en": "time"
+          "meaning_en": "time, era",
+          "meaning_es": "tiempo"
         },
         {
-          "word": "زَبُون",
-          "transliteration": "zabun",
-          "meaning_es": "cliente",
-          "meaning_en": "customer",
-          "outlier": true
-        },
-        {
-          "word": "زَمَّنَ",
-          "transliteration": "zamman-a",
-          "meaning_es": "programar, fijar una fecha",
-          "meaning_en": "to schedule, set a date"
-        },
-        {
-          "word": "زَبَائِن",
-          "transliteration": "zabā'in",
-          "meaning_es": "clientes, compradores",
-          "meaning_en": "customers, buyers",
-          "outlier": true
-        },
-        {
-          "word": "زَبِين",
-          "transliteration": "zabīn",
-          "meaning_es": "cliente, comprador",
-          "meaning_en": "customer, buyer",
-          "outlier": true
+          "word": "زَبَنَ",
+          "transliteration": "zabana",
+          "meaning_en": "to barter, sell",
+          "meaning_es": "comerciar"
         }
-      ],
-      "semantic_bridges": {
-        "ar:zabun": {
-          "target_root": "a-b-d",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Customer/client as a core meaning of A-B-D (to worship, serve)",
-          "bridge_concept_es": "Cliente/cliente como significado central de A-B-D (adorar, servir)"
-        }
-      },
-      "sabor_raiz_es": "tiempo, ordenamiento, disposición",
-      "sabor_raiz_en": "time, ordering, arrangement",
-      "greek_parallel": {
-        "word": "καιρός",
-        "transliteration": "kairos",
-        "meaning_es": "tiempo",
-        "meaning_en": "time",
-        "aramaic_range_es": "tiempo, comprar, vender, ocasión, estación, transacción, preparar, disponer, momento oportuno",
-        "aramaic_range_en": "time, to buy, to sell, occasion, season, transaction, to prepare, to arrange, opportune moment",
-        "greek_range_es": "momento oportuno, tiempo decisivo, ocasión propicia — influido por la retórica aristotélica del momento justo para actuar y la noción estoica de sincronía cósmica",
-        "greek_range_en": "opportune moment, decisive time, fitting occasion — shaped by Aristotelian rhetoric of the right moment to act and Stoic notions of cosmic synchronicity",
-        "lost_es": "En arameo, ܙܒܢ (zban) entrelaza de forma inseparable el tiempo con el intercambio comercial: el mismo verbo que significa 'comprar' y 'vender' significa también 'tiempo' y 'estación'. Esto revela una cosmovisión donde el tiempo no es abstracto sino transaccional — cada momento es una oportunidad que se adquiere o se pierde, como una mercancía en el mercado. El tiempo se 'compra' porque exige preparación, disposición y arreglo previo, como lo muestran los cognados hebreos zimmen ('preparar, invitar') y zīmūn ('cita, preparación'). Al traducirse al griego como καιρός, se preservó la noción de 'momento oportuno', pero filtrada por la filosofía aristotélica y estoica, donde kairos es un concepto retórico y cósmico, despojado de su raíz mercantil y corporal. Al llegar al español como 'tiempo' o al inglés como 'time', se aplana por completo: queda una abstracción cronológica vacía, sin rastro del bazar donde cada instante se negocia, se prepara, se dispone y se intercambia como algo de valor tangible.",
-        "lost_en": "In Aramaic, ܙܒܢ (zban) inextricably weaves together time and commercial exchange: the very same root that means 'to buy' and 'to sell' also means 'time' and 'season.' This reveals a worldview where time is not abstract but transactional — every moment is an opportunity that is acquired or lost, like goods in a marketplace. Time is 'bought' because it demands preparation, arrangement, and intentional disposition, as the Hebrew cognates zimmen ('to prepare, to invite') and zīmūn ('appointment, preparation') make clear. When translated into Greek as καιρός, the notion of 'opportune moment' survived, but filtered through Aristotelian rhetoric and Stoic philosophy, where kairos became a conceptual tool for right timing in speech and cosmic order, stripped of its mercantile and bodily root. By the time it reaches English as 'time,' the flattening is total: what remains is an empty chronological abstraction, with no trace of the bazaar where every instant is negotiated, prepared, arranged, and exchanged as something of tangible value."
-      },
-      "cognate_note": "No common Hebrew cognate from Z-B-N. Previously listed Z-M-N forms are from a different root.",
-      "sabor_raiz_he": "זמן, סדר, סידור",
-      "sabor_raiz_ar": "زمن, ترتيب, ترتيب",
-      "gloss_he": "זמן, קנה",
-      "gloss_ar": "وقت، يشتري"
+      ]
     },
     "sh-a-l": {
       "root_syriac": "ܫܐܠ",
@@ -11339,105 +10859,36 @@
     },
     "p-l-g": {
       "root_syriac": "ܦܠܓ",
-      "gloss_es": "dividir, mitad",
       "gloss_en": "divide, half",
+      "gloss_es": "dividir, mitad",
       "hebrew": [
         {
           "word": "פָּלַג",
           "transliteration": "palag",
-          "meaning_es": "dividir",
-          "meaning_en": "to divide"
+          "meaning_en": "to divide, split",
+          "meaning_es": "dividir, partir"
         },
         {
           "word": "פֶּלֶג",
           "transliteration": "peleg",
-          "meaning_es": "arroyo/división",
-          "meaning_en": "stream/division"
-        },
-        {
-          "word": "פֹּלַג",
-          "transliteration": "pōlag",
-          "meaning_es": "rama, facción",
-          "meaning_en": "branch, faction"
-        },
-        {
-          "word": "פְּלִיגָה",
-          "transliteration": "pəlīgāh",
-          "meaning_es": "escisión, disensión",
-          "meaning_en": "schism, dissension",
-          "outlier": true
+          "meaning_en": "stream, channel",
+          "meaning_es": "arroyo, canal"
         }
       ],
       "arabic": [
         {
           "word": "فَلَجَ",
           "transliteration": "falaja",
-          "meaning_es": "dividir/vencer",
-          "meaning_en": "to divide/prevail"
+          "meaning_en": "to split, cleave",
+          "meaning_es": "hender, partir"
         },
         {
-          "word": "فَلَج",
-          "transliteration": "falaj",
-          "meaning_es": "canal de irrigación",
-          "meaning_en": "irrigation channel"
-        },
-        {
-          "word": "فَلَق",
-          "transliteration": "falaq",
-          "meaning_es": "división, mitad",
-          "meaning_en": "division, half"
-        },
-        {
-          "word": "فَلِيج",
-          "transliteration": "falīj",
-          "meaning_es": "canal de riego",
-          "meaning_en": "irrigation channel"
-        },
-        {
-          "word": "انْفَلَق",
-          "transliteration": "infalaq",
-          "meaning_es": "dividirse, partirse",
-          "meaning_en": "to split, divide"
+          "word": "فَلْج",
+          "transliteration": "falj",
+          "meaning_en": "irrigation channel",
+          "meaning_es": "canal de riego"
         }
-      ],
-      "semantic_bridges": {
-        "heb:miflaga": {
-          "target_root": "m-l-k",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Political party relates to the core meaning of M-L-K (kingdom, rule)",
-          "bridge_concept_es": "Partido político se relaciona con el significado principal de M-L-K (reino, gobernar)"
-        },
-        "heb:palganut": {
-          "target_root": "n-kh-sh",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Factionalism connects to N-KH-SH (divide, split)",
-          "bridge_concept_es": "Faccionalismo se conecta con N-KH-SH (dividir, separar)"
-        },
-        "heb:pəlīgāh": {
-          "target_root": "r-kh-q",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Schism, dissension connects to R-KH-Q (to be distant, to separate)",
-          "bridge_concept_es": "Cisma, disensión se conecta con R-KH-Q (estar distante, separarse)"
-        }
-      },
-      "sabor_raiz_es": "división, separación, flujo",
-      "sabor_raiz_en": "division, separation, flow",
-      "greek_parallel": {
-        "word": "μερίζω",
-        "transliteration": "merizō",
-        "meaning_es": "dividir",
-        "meaning_en": "to divide",
-        "aramaic_range_es": "dividir, partir en mitades, separar, fluir (como agua que se bifurca), repartir, ramificar",
-        "aramaic_range_en": "to divide, halve, separate, flow (as water branching), distribute, split into branches",
-        "greek_range_es": "dividir, repartir, distribuir porciones — influido por el pensamiento aristotélico de partición lógica y clasificación de partes",
-        "greek_range_en": "to divide, distribute, apportion — shaped by Aristotelian thinking on logical partition and classification of parts",
-        "lost_es": "En arameo, ܦܠܓ (plag) es inseparable de la imagen del agua que se bifurca: un río que se divide en canales, una corriente que al partirse crea vida a través del riego. El hebreo peleg (arroyo, canal) y el árabe falaj (canal de irrigación) revelan que 'dividir' no era destrucción, sino distribución fértil — partir algo para que fluya hacia más lugares. Cuando el griego lo tradujo como μερίζω, el concepto se intelectualizó: dividir se convirtió en repartir porciones, calcular partes, un acto administrativo o lógico influido por la tradición aristotélica de análisis por categorías. Al llegar al español como 'dividir', lo que queda es un acto abstracto y frecuentemente negativo — separar, fragmentar — sin rastro del río que se abre en brazos para alimentar la tierra, sin la generosidad vital del flujo que se reparte.",
-        "lost_en": "In Aramaic, ܦܠܓ (plag) is inseparable from the image of water branching: a river dividing into channels, a current that by splitting creates life through irrigation. Hebrew peleg (stream, channel) and Arabic falaj (irrigation canal) reveal that 'to divide' was not destruction but fertile distribution — splitting something so it flows to more places. When Greek rendered it as μερίζω, the concept became intellectualized: dividing turned into apportioning shares, calculating parts, an administrative or logical act shaped by the Aristotelian tradition of analysis by categories. By the time it reached English as 'to divide', what remains is an abstract and frequently negative act — to separate, to fragment — with no trace of the river opening into arms to nourish the land, no sense of the life-giving generosity of a flow that distributes itself."
-      },
-      "sabor_raiz_he": "חלוקה, הפרדה, זרימה",
-      "sabor_raiz_ar": "انقسام, فصل, تدفق",
-      "gloss_he": "פלג",
-      "gloss_ar": "قسم"
+      ]
     },
     "th-q-n": {
       "root_syriac": "ܬܩܢ",
@@ -16413,68 +15864,24 @@
     },
     "r-m-y": {
       "root_syriac": "ܪܡܝ",
-      "gloss_es": "lanzar, arrojar",
       "gloss_en": "throw, cast",
+      "gloss_es": "arrojar, echar",
       "hebrew": [
         {
-          "word": "רְמִיָּה",
-          "transliteration": "remiyá",
-          "meaning_es": "engaño, pereza",
-          "meaning_en": "deceit, slackness"
+          "word": "רָמָה",
+          "transliteration": "rāmāh",
+          "meaning_en": "to throw, cast",
+          "meaning_es": "arrojar, echar"
         }
       ],
       "arabic": [
         {
           "word": "رَمَى",
           "transliteration": "ramā",
-          "meaning_es": "lanzar",
-          "meaning_en": "to throw"
-        },
-        {
-          "word": "رَامٍ",
-          "transliteration": "ramin",
-          "meaning_es": "tirador, lanzador",
-          "meaning_en": "shooter, thrower"
-        },
-        {
-          "word": "رَمْيَة",
-          "transliteration": "ramyah",
-          "meaning_es": "un tiro, lanzamiento",
-          "meaning_en": "a throw, cast"
-        },
-        {
-          "word": "رَمَّاء",
-          "transliteration": "rammā'",
-          "meaning_es": "arquero, tirador",
-          "meaning_en": "archer, shooter"
+          "meaning_en": "to throw, cast",
+          "meaning_es": "arrojar, lanzar"
         }
-      ],
-      "semantic_bridges": {
-        "heb:rámot": {
-          "target_root": "r-y-m",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "High places connects to R-Y-M (be high, exalt)",
-          "bridge_concept_es": "Lugares altos conecta con R-Y-M (ser alto, exaltar)"
-        }
-      },
-      "sabor_raiz_es": "proyección, lanzamiento, distancia",
-      "sabor_raiz_en": "projection, casting, distance",
-      "greek_parallel": {
-        "word": "βάλλω",
-        "transliteration": "ballō",
-        "meaning_es": "lanzar, echar",
-        "meaning_en": "to throw, to cast",
-        "aramaic_range_es": "lanzar, arrojar, proyectar, elevar, colocar a distancia, derribar",
-        "aramaic_range_en": "to throw, cast, project, elevate, place at a distance, cast down",
-        "greek_range_es": "lanzar, arrojar, poner, echar, depositar — influenciado por el uso aristotélico de βάλλω en contextos de movimiento y proyección cinética",
-        "greek_range_en": "to throw, cast, put, place, deposit — influenced by Aristotelian usage in contexts of motion and kinetic projection",
-        "lost_es": "En arameo, ܪܡܝ (rmy) contiene una tensión extraordinaria entre direcciones opuestas: lanzar algo hacia abajo (arrojar, derribar) y lanzar algo hacia arriba (elevar, exaltar), como revela el cognado ramá ('altura, elevación'). La raíz evoca la totalidad del arco de una proyección: el impulso del arquero (rammā'), la trayectoria del objeto lanzado (ramyah), y el punto elevado donde llega o desde donde cae. Cuando se tradujo al griego como βάλλω, se retuvo con fuerza el acto de lanzar y depositar, pero se perdió la dimensión vertical ascendente — la elevación implícita en la raíz semítica. El griego βάλλω tiende hacia lo horizontal o descendente: echar fuera, arrojar al suelo, depositar en un lugar. Al llegar al español como 'lanzar' o 'echar', se aplana completamente: queda un gesto mecánico sin la grandeza del arco completo — ni la altura del arquero que apunta al cielo, ni la gravedad del objeto que cae desde lo alto, ni la distancia cósmica que la raíz aramea sugería entre el que lanza y el destino de lo lanzado.",
-        "lost_en": "In Aramaic, ܪܡܝ (rmy) holds an extraordinary tension between opposite directions: to cast something down (to throw, to topple) and to cast something upward (to elevate, to exalt), as the cognate ramá ('height, elevation') reveals. The root evokes the entirety of a projectile's arc: the archer's impulse (rammā'), the trajectory of the cast object (ramyah), and the elevated point where it arrives or from which it falls. When translated into Greek as βάλλω, the act of throwing and depositing was strongly retained, but the ascending vertical dimension — the elevation implicit in the Semitic root — was lost. Greek βάλλω tends toward the horizontal or descending: to cast out, throw to the ground, deposit in a place. By the time it reaches English as 'to throw' or 'to cast,' the meaning is completely flattened: what remains is a mechanical gesture without the grandeur of the full arc — neither the height of the archer aiming skyward, nor the gravity of an object falling from on high, nor the cosmic distance the Aramaic root suggested between the one who throws and the destiny of what is thrown."
-      },
-      "sabor_raiz_he": "הקרנה, השלכה, מרחק",
-      "sabor_raiz_ar": "إسقاط, إلقاء, مسافة",
-      "gloss_he": "רמה, זרק",
-      "gloss_ar": "رمى، طرح"
+      ]
     },
     "T-w-b": {
       "root_syriac": "ܛܘܒ",
@@ -17190,88 +16597,25 @@
       "gloss_ar": "خف، لعن"
     },
     "kh-T-y": {
-      "root_syriac": "ܚܛܝ",
-      "gloss_es": "pecar",
+      "root_syriac": "ܚܛܐ",
       "gloss_en": "sin",
+      "gloss_es": "pecado",
       "hebrew": [
         {
           "word": "חָטָא",
-          "transliteration": "khata",
-          "meaning_es": "pecar",
-          "meaning_en": "to sin"
-        },
-        {
-          "word": "חֲטָאָה",
-          "transliteration": "ḥaṭā'āh",
-          "meaning_es": "pecado",
-          "meaning_en": "sin"
-        },
-        {
-          "word": "חַטָּא",
-          "transliteration": "ḥaṭṭā'",
-          "meaning_es": "pecador",
-          "meaning_en": "sinner"
-        },
-        {
-          "word": "חֵטְא",
-          "transliteration": "ḥēṭ'",
-          "meaning_es": "culpa",
-          "meaning_en": "guilt"
+          "transliteration": "ḥāṭāʾ",
+          "meaning_en": "to sin, miss",
+          "meaning_es": "pecar, errar"
         }
       ],
       "arabic": [
         {
-          "word": "خَطَأ",
-          "transliteration": "khaṭaʾ",
-          "meaning_es": "error",
-          "meaning_en": "mistake"
-        },
-        {
-          "word": "خَطِيْئَة",
-          "transliteration": "khaṭī'ah",
-          "meaning_es": "pecado",
-          "meaning_en": "sin"
-        },
-        {
-          "word": "خَاطِئ",
-          "transliteration": "khāṭi'",
-          "meaning_es": "pecador",
-          "meaning_en": "sinner"
-        },
-        {
-          "word": "مَخْطُوْء",
-          "transliteration": "makhṭū'",
-          "meaning_es": "erróneo",
-          "meaning_en": "erroneous",
-          "outlier": true
+          "word": "خَطِئَ",
+          "transliteration": "khaṭiʾa",
+          "meaning_en": "to err, sin",
+          "meaning_es": "errar, pecar"
         }
-      ],
-      "sabor_raiz_es": "transgresión, error moral, culpa",
-      "sabor_raiz_en": "transgression, moral error, guilt",
-      "greek_parallel": {
-        "word": "ἁμαρτία",
-        "transliteration": "hamartia",
-        "meaning_es": "pecado",
-        "meaning_en": "sin",
-        "aramaic_range_es": "errar el blanco, desviarse del camino, fallar, tropezar, cometer una falta, quedar en deuda",
-        "aramaic_range_en": "to miss the mark, to stray from the path, to fail, to stumble, to commit a fault, to incur a debt",
-        "greek_range_es": "errar el blanco, fallo, error trágico — moldeado por la tradición aristotélica de hamartia como defecto trágico del héroe y por la ética griega centrada en el error intelectual más que en la relación rota",
-        "greek_range_en": "missing the mark, failure, tragic error — shaped by Aristotelian tradition of hamartia as the hero's tragic flaw and by Greek ethics focused on intellectual error rather than broken relationship",
-        "lost_es": "En arameo, ܚܛܝ (ḥṭy) es ante todo un verbo de movimiento fallido: errar el blanco, desviarse del sendero, tropezar en el camino. Evoca una imagen concreta y corporal — el arquero cuya flecha se desvía, el caminante que pierde la senda, el deudor que no puede pagar. Hay en la raíz una dimensión relacional profunda: no se trata solo de violar una norma abstracta, sino de fallar ante alguien, de romper un vínculo, de quedar en deuda con Dios o con el prójimo. El griego ἁμαρτία conservó la metáfora de 'errar el blanco', pero la tradición aristotélica la intelectualizó como defecto trágico (hamartia en la Poética), un error de juicio más que una desviación del camino vivido. La dimensión de deuda relacional y de tropiezo físico se diluyó en una categoría más abstracta de fallo moral. Al llegar al español como 'pecado' — término filtrado por siglos de teología latina (peccatum) y derecho canónico — se solidificó en una categoría jurídica y dogmática: una infracción contra la ley divina que merece castigo. Se perdió el cuerpo del caminante extraviado, la flecha que no alcanza su destino, y sobre todo la intimidad de una relación dañada que pide restauración, no solo absolución.",
-        "lost_en": "In Aramaic, ܚܛܝ (ḥṭy) is fundamentally a verb of failed movement: missing the target, straying from the path, stumbling on the road. It evokes a concrete, embodied image — the archer whose arrow veers off, the traveler who loses the trail, the debtor who cannot repay. The root carries a deep relational dimension: it is not merely violating an abstract norm but failing someone, breaking a bond, falling into debt before God or neighbor. Greek ἁμαρτία preserved the 'missing the mark' metaphor, but the Aristotelian tradition intellectualized it as a tragic flaw (hamartia in the Poetics), an error of judgment rather than a lived deviation from the path. The relational debt and physical stumbling faded into a more abstract category of moral failure. By the time it reached English as 'sin' — a word hardened through centuries of Latin theology (peccatum) and canon law — it solidified into a juridical and dogmatic category: a transgression against divine law deserving punishment. Lost is the body of the wandering traveler, the arrow that never reaches its destination, and above all the intimacy of a damaged relationship that calls for restoration, not merely absolution."
-      },
-      "sabor_raiz_he": "עבירה, מוסרי טעות, אשמה",
-      "sabor_raiz_ar": "معصية, أخلاقي خطأ, ذنب",
-      "semantic_bridges": {
-        "heb:khata": {
-          "target_root": "z-d-q",
-          "relationship": "antonym",
-          "bridge_concept_en": "Sin is the opposite of Z-D-Q (righteousness)",
-          "bridge_concept_es": "Pecado es lo opuesto de Z-D-Q (justicia)"
-        }
-      },
-      "gloss_he": "חטא, עברה",
-      "gloss_ar": "خطئ، ذنب"
+      ]
     },
     "T-l-y": {
       "root_syriac": "ܛܠܝ",
@@ -18389,58 +17733,17 @@
     },
     "d-n-kh": {
       "root_syriac": "ܕܢܚ",
-      "gloss_es": "brillar, amanecer",
-      "gloss_en": "shine, dawn",
-      "hebrew": [],
-      "arabic": [
+      "gloss_en": "rise (sun), east",
+      "gloss_es": "salir (sol), este",
+      "hebrew": [
         {
-          "word": "دَنَا",
-          "transliteration": "danā",
-          "meaning_es": "acercarse, aproximarse",
-          "meaning_en": "to approach, draw near"
-        },
-        {
-          "word": "نَاحَ",
-          "transliteration": "nāḥa",
-          "meaning_es": "lamentarse, quejarse",
-          "meaning_en": "to lament, complain",
-          "outlier": true
-        },
-        {
-          "word": "نَدَى",
-          "transliteration": "nadā",
-          "meaning_es": "rocío, humedad",
-          "meaning_en": "dew, moisture",
-          "outlier": true
+          "word": "זָרַח",
+          "transliteration": "zāraḥ",
+          "meaning_en": "to shine, rise",
+          "meaning_es": "brillar, salir"
         }
       ],
-      "semantic_bridges": {
-        "ar:nāḥa": {
-          "target_root": "d-m-n",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "To lament, complain connects to D-M-N (to come, arrive)",
-          "bridge_concept_es": "Lamentarse, quejarse conecta con D-M-N (venir, llegar)"
-        }
-      },
-      "sabor_raiz_es": "luminosidad, aproximación, claridad",
-      "sabor_raiz_en": "luminescence, approach, clarity",
-      "greek_parallel": {
-        "word": "ἀνατέλλω",
-        "transliteration": "anatellō",
-        "meaning_es": "salir (el sol), nacer",
-        "meaning_en": "to rise (of the sun), to spring up",
-        "aramaic_range_es": "brillar, amanecer, irradiar, aproximarse luminosamente, manifestarse, clarear",
-        "aramaic_range_en": "to shine, to dawn, to radiate, to draw near luminously, to manifest, to grow clear",
-        "greek_range_es": "salir, brotar, levantarse (del sol o de una planta) — influenciado por la cosmología helenística que enfatiza el movimiento ascendente mecánico de los astros",
-        "greek_range_en": "to rise, to spring up, to come up (of sun or plant) — shaped by Hellenistic cosmology emphasizing the mechanical upward movement of celestial bodies",
-        "lost_es": "En arameo, ܕܢܚ (dnaḥ) no describe simplemente la salida del sol como evento astronómico, sino una irradiación que se acerca al observador: la luz avanza hacia ti, se manifiesta, se hace presente. La raíz entrelaza el brillo con la proximidad — algo luminoso que viene, que se aproxima como quien desciende para encontrarte. Esta convergencia entre luz, cercanía y manifestación hizo de ܕܢܚܐ (denḥa) el término técnico siríaco para la Epifanía, la manifestación divina en carne. Cuando el griego eligió ἀνατέλλω, redujo todo a un vector ascendente: algo que sube desde el horizonte, un movimiento geométrico hacia arriba, coherente con la astronomía helenística pero despojado de intimidad. Ya no es la luz que viene hacia ti; es la luz que sube lejos de ti. Al llegar al español como 'salir el sol' o 'amanecer', se pierde completamente la dimensión teofánica: no queda rastro de la manifestación personal, ni del acercamiento luminoso, ni de la claridad que se dona al que espera en la oscuridad.",
-        "lost_en": "In Aramaic, ܕܢܚ (dnaḥ) does not simply describe the sun rising as an astronomical event but an irradiation that draws near to the observer: the light advances toward you, manifests itself, becomes present. The root interweaves shining with proximity — something luminous that comes, that approaches as one descends to meet you. This convergence of light, nearness, and manifestation made ܕܢܚܐ (denḥa) the technical Syriac term for Epiphany, the divine manifestation in flesh. When Greek chose ἀνατέλλω, everything was reduced to an upward vector: something ascending from the horizon, a geometric movement away from the viewer, consistent with Hellenistic astronomy but stripped of intimacy. The light no longer comes toward you; it rises away from you. By the time it reaches English as 'to rise' or 'to dawn,' the theophanic dimension is entirely gone: no trace remains of the personal manifestation, the luminous approach, or the clarity that gives itself to the one waiting in darkness."
-      },
-      "cognate_note": "No direct Hebrew cognate for D-N-KH ('to dawn/shine').",
-      "sabor_raiz_he": "luminescence, גישה, בהירות",
-      "sabor_raiz_ar": "luminescence, اقتراب, وضوح",
-      "gloss_he": "דנח, זרח",
-      "gloss_ar": "دنح، أضاء"
+      "arabic": []
     },
     "k-r-k": {
       "root_syriac": "ܟܪܟ",
@@ -19712,63 +19015,25 @@
       "gloss_ar": "تساوى، استحق"
     },
     "ts-b-y": {
-      "root_syriac": "ܨܒܝ",
-      "gloss_es": "desear, querer",
-      "gloss_en": "wish, desire",
+      "root_syriac": "ܨܒܐ",
+      "gloss_en": "will, desire",
+      "gloss_es": "voluntad, deseo",
       "hebrew": [
         {
           "word": "צָבָה",
-          "transliteration": "tsava",
-          "meaning_es": "desear",
-          "meaning_en": "to desire"
-        },
-        {
-          "word": "צָבוּי",
-          "transliteration": "tsavui",
-          "meaning_es": "deseado, anhelado",
-          "meaning_en": "desired, longed for"
+          "transliteration": "ṣāḇāh",
+          "meaning_en": "to desire, will",
+          "meaning_es": "desear"
         }
       ],
       "arabic": [
         {
-          "word": "طَلَبَ",
-          "transliteration": "ṭalaba",
-          "meaning_es": "pedir, solicitar",
-          "meaning_en": "to request, demand"
-        },
-        {
-          "word": "مَطْلُوْب",
-          "transliteration": "maṭlūb",
-          "meaning_es": "requerido, deseado",
-          "meaning_en": "required, desired"
+          "word": "صَبَا",
+          "transliteration": "ṣabā",
+          "meaning_en": "to incline, yearn",
+          "meaning_es": "inclinarse, anhelar"
         }
-      ],
-      "sabor_raiz_es": "anhelo, demanda, apetencia",
-      "sabor_raiz_en": "longing, demand, appetite",
-      "greek_parallel": {
-        "word": "θέλω",
-        "transliteration": "thelō",
-        "meaning_es": "querer",
-        "meaning_en": "to will / to want",
-        "aramaic_range_es": "desear, anhelar, deleitarse en, complacerse, apetecer, inclinar la voluntad hacia",
-        "aramaic_range_en": "to desire, long for, delight in, take pleasure, crave, incline one's will toward",
-        "greek_range_es": "querer, desear, decidir, estar dispuesto — matizado por la noción aristotélica de βούλησις (volición racional) y la distinción estoica entre deseo y asentimiento racional",
-        "greek_range_en": "to will, wish, desire, intend, be disposed — shaped by Aristotelian βούλησις (rational volition) and the Stoic distinction between desire and rational assent",
-        "lost_es": "En arameo, ܨܒܝ (tsḇā) es un verbo que nace del cuerpo antes de llegar al intelecto: expresa un anhelo profundo, un apetito que inclina al ser entero hacia algo deseado, un deleite anticipado. Cuando Jesús dice en la Peshitta ܐܢ ܨܒܝܬ ('si deseas'), resuena un campo de atracción casi gravitacional — el ser completo inclinándose hacia su objeto. El griego θέλω conserva la noción de deseo y voluntad, pero bajo la influencia de la filosofía helenística se desplaza hacia la decisión deliberada, el acto racional de la voluntad: querer ya no es ser atraído sino elegir. En español, 'querer' retiene algo de la tensión entre deseo y voluntad, pero ha perdido el registro corporal del anhelo, la dimensión de deleite y complacencia que el arameo portaba. Y en inglés, 'to will' se ha intelectualizado por completo — evoca determinación y resolución, no el hambre interior ni el placer anticipado del que se inclina hacia lo que ama. Lo que en arameo era un apetito del alma entera se convirtió en una operación de la mente.",
-        "lost_en": "In Aramaic, ܨܒܝ (tsḇā) is a verb that begins in the body before reaching the intellect: it expresses a deep longing, an appetite that inclines the whole being toward something desired, an anticipated delight. When Jesus says in the Peshitta ܐܢ ܨܒܝܬ ('if you desire'), what resonates is a field of almost gravitational attraction — the entire self leaning toward its object. Greek θέλω retains the notion of desire and will, but under Hellenistic philosophical influence it shifts toward deliberate decision, the rational act of volition: to want is no longer to be drawn but to choose. In modern English, 'to will' has become fully intellectualized — it evokes determination and resolution, not the inner hunger or the anticipated pleasure of one who leans toward what they love. What in Aramaic was an appetite of the whole soul became an operation of the mind. The bodily register of craving and the dimension of delight and self-giving pleasure that the Aramaic root carried have both evaporated."
-      },
-      "sabor_raiz_he": "כמיהה, דרישה, appetite",
-      "sabor_raiz_ar": "شوق, مطالبة, appetite",
-      "semantic_bridges": {
-        "syr:tsebya": {
-          "target_root": "r-e-a",
-          "relationship": "functional_drift",
-          "bridge_concept_en": "Desire connects to R-E-A (to shepherd, tend) — desire directs the will",
-          "bridge_concept_es": "Deseo conecta con R-E-A (pastorear) — el deseo dirige la voluntad"
-        }
-      },
-      "gloss_he": "רצה, חפץ",
-      "gloss_ar": "رغب، اشتهى"
+      ]
     },
     "g-b-y": {
       "root_syriac": "ܓܒܝ",
@@ -24027,92 +23292,36 @@
     },
     "q-b-r": {
       "root_syriac": "ܩܒܪ",
-      "gloss_es": "enterrar, sepulcro",
       "gloss_en": "bury, grave",
+      "gloss_es": "enterrar, tumba",
       "hebrew": [
         {
           "word": "קָבַר",
           "transliteration": "qavar",
-          "meaning_es": "enterrar",
-          "meaning_en": "to bury"
+          "meaning_en": "to bury",
+          "meaning_es": "enterrar"
         },
         {
           "word": "קֶבֶר",
           "transliteration": "qever",
-          "meaning_es": "tumba",
-          "meaning_en": "grave"
-        },
-        {
-          "word": "קֻבְּרָה",
-          "transliteration": "qubbérah",
-          "meaning_es": "tumba, sepultura",
-          "meaning_en": "tomb, sepulchre"
-        },
-        {
-          "word": "קָבוּר",
-          "transliteration": "qavúr",
-          "meaning_es": "enterrado, sepultado",
-          "meaning_en": "buried, interred"
-        },
-        {
-          "word": "קְבוּרָה",
-          "transliteration": "qevuráh",
-          "meaning_es": "entierro, sepultura",
-          "meaning_en": "burial, interment"
+          "meaning_en": "grave, tomb",
+          "meaning_es": "tumba, sepulcro"
         }
       ],
       "arabic": [
         {
+          "word": "قَبَرَ",
+          "transliteration": "qabara",
+          "meaning_en": "to bury",
+          "meaning_es": "enterrar"
+        },
+        {
           "word": "قَبْر",
           "transliteration": "qabr",
-          "meaning_es": "tumba",
-          "meaning_en": "grave"
-        },
-        {
-          "word": "قَابُور",
-          "transliteration": "qābūr",
-          "meaning_es": "nicho sepulcral",
-          "meaning_en": "burial niche"
-        },
-        {
-          "word": "قَبَّر",
-          "transliteration": "qabbara",
-          "meaning_es": "enterrar, sepultar",
-          "meaning_en": "to bury, inter"
-        },
-        {
-          "word": "قَابُورِيَّة",
-          "transliteration": "qābūriyyah",
-          "meaning_es": "cementerio",
-          "meaning_en": "cemetery"
+          "meaning_en": "grave, tomb",
+          "meaning_es": "tumba"
         }
-      ],
-      "sabor_raiz_es": "tierra, entierro, lo subterráneo",
-      "sabor_raiz_en": "earth, burial, the underground",
-      "greek_parallel": {
-        "word": "θάπτω",
-        "transliteration": "thaptō",
-        "meaning_es": "enterrar",
-        "meaning_en": "to bury",
-        "aramaic_range_es": "enterrar, sepultar, depositar en la tierra, cavar una tumba, cubrir con tierra, confiar al suelo",
-        "aramaic_range_en": "to bury, entomb, deposit in the earth, dig a grave, cover with soil, commit to the ground",
-        "greek_range_es": "enterrar, celebrar ritos funerarios, honrar a un muerto — influido por la cultura helenística donde el entierro es ante todo un acto ritual y cívico de honor póstumo",
-        "greek_range_en": "to bury, perform funeral rites, honor the dead — shaped by Hellenistic culture where burial is primarily a ritual and civic act of posthumous honor",
-        "lost_es": "En arameo, ܩܒܪ (qbar) es un acto visceralmente telúrico: la raíz evoca la tierra que se abre, la fosa que se cava, el cuerpo que se deposita en el suelo y se cubre de polvo. El sustantivo ܩܒܪܐ (qabrā) no es un monumento ni una estructura, sino el hueco en la tierra misma — la intimidad entre el cuerpo muerto y el suelo que lo recibe, como en el árabe qabr, que designa la fosa cruda, el nicho excavado. Cuando el griego adopta θάπτω, el centro de gravedad se desplaza: lo que importa ya no es la tierra que envuelve al muerto, sino el rito funerario que honra al difunto — en la cultura griega, dejar un cuerpo sin θάψις es una ofensa cívica y religiosa (piénsese en Antígona). El acto se vuelve ceremonial y social. Al llegar al español como 'enterrar' o al inglés como 'to bury', queda un verbo funcional y neutro: se ha perdido tanto la carnalidad terrosa del arameo — ese sentido de devolver un cuerpo a la tierra como a un vientre oscuro — como la solemnidad ritual del griego. 'Enterrar' es simplemente disponer de un cadáver.",
-        "lost_en": "In Aramaic, ܩܒܪ (qbar) is a viscerally earthy act: the root evokes the ground splitting open, the pit being dug, the body being laid into the soil and covered with dust. The noun ܩܒܪܐ (qabrā) is not a monument or a structure but the hollow in the earth itself — the intimacy between the dead body and the ground that receives it, as in Arabic qabr, which denotes the raw pit, the excavated niche. When Greek adopts θάπτω, the center of gravity shifts: what matters is no longer the earth enveloping the dead but the funeral rite that honors the departed — in Greek culture, leaving a body without θάψις is a civic and religious offense (think of Antigone). The act becomes ceremonial and social. By the time it reaches English as 'to bury' or Spanish as 'enterrar', what remains is a functional, neutral verb: lost is both the fleshy earthiness of the Aramaic — that sense of returning a body to the ground as to a dark womb — and the ritual solemnity of the Greek. 'To bury' is simply to dispose of a corpse."
-      },
-      "sabor_raiz_he": "אדמה, קבורה, underground",
-      "sabor_raiz_ar": "أرض, دفن, underground",
-      "semantic_bridges": {
-        "heb:qavar": {
-          "target_root": "m-w-th",
-          "relationship": "part_whole",
-          "bridge_concept_en": "Burial follows M-W-TH (death)",
-          "bridge_concept_es": "Entierro sigue a M-W-TH (muerte)"
-        }
-      },
-      "gloss_he": "קבר, כפן",
-      "gloss_ar": "قبر، دفن"
+      ]
     },
     "sh-q-y": {
       "root_syriac": "ܫܩܝ",
@@ -25400,74 +24609,24 @@
     },
     "m-th-l": {
       "root_syriac": "ܡܬܠ",
-      "gloss_es": "parábola, comparar",
-      "gloss_en": "parable, compare",
+      "gloss_en": "parable, proverb",
+      "gloss_es": "parábola, proverbio",
       "hebrew": [
         {
           "word": "מָשָׁל",
-          "transliteration": "mashal",
-          "meaning_es": "parábola, proverbio",
-          "meaning_en": "parable, proverb"
-        },
-        {
-          "word": "מְשָׁלִים",
-          "transliteration": "meshalim",
-          "meaning_es": "proverbios",
-          "meaning_en": "proverbs"
+          "transliteration": "māšāl",
+          "meaning_en": "proverb, parable",
+          "meaning_es": "proverbio, parábola"
         }
       ],
       "arabic": [
         {
           "word": "مَثَل",
-          "transliteration": "mathal",
-          "meaning_es": "ejemplo, parábola",
-          "meaning_en": "example, parable"
-        },
-        {
-          "word": "مِثْل",
-          "transliteration": "mithl",
-          "meaning_es": "como, semejante a",
-          "meaning_en": "like, similar to"
-        },
-        {
-          "word": "تَمَاثَلَ",
-          "transliteration": "tamāthala",
-          "meaning_es": "ser similar, asemejarse",
-          "meaning_en": "to be similar, to resemble"
-        },
-        {
-          "word": "مُتَمَاثِل",
-          "transliteration": "mutamāthil",
-          "meaning_es": "similar, semejante",
-          "meaning_en": "similar, resembling"
+          "transliteration": "maṯal",
+          "meaning_en": "example, proverb",
+          "meaning_es": "ejemplo, proverbio"
         }
-      ],
-      "sabor_raiz_es": "similitud, comparación, ejemplo",
-      "sabor_raiz_en": "likeness, comparison, exemplar",
-      "greek_parallel": {
-        "word": "παραβολή",
-        "transliteration": "parabolē",
-        "meaning_es": "parábola",
-        "meaning_en": "parable",
-        "aramaic_range_es": "comparación, semejanza, proverbio, enigma, ejemplo modelo, figura representativa",
-        "aramaic_range_en": "comparison, likeness, proverb, riddle, exemplar model, representative figure",
-        "greek_range_es": "comparación, ilustración, analogía colocada al lado — moldeada por la retórica aristotélica como recurso argumentativo de yuxtaposición",
-        "greek_range_en": "comparison, illustration, analogy placed alongside — shaped by Aristotelian rhetoric as an argumentative device of juxtaposition",
-        "lost_es": "En arameo, ܡܬܠܐ (mathla) no es simplemente un relato ilustrativo: es un acto de hacer visible lo invisible mediante semejanza. La raíz M-TH-L abarca desde el proverbio condensado y críptico (como los meshalim de Salomón, que incluyen enigmas y sentencias oscuras) hasta el modelo arquetípico que revela la estructura oculta de la realidad — lo que algo 'es como' a nivel profundo. El hebreo mashal puede ser un acertijo, un oráculo, una burla, un canto de lamento; su campo semántico es vastísimo y siempre implica que la superficie del lenguaje esconde un significado más denso. Al pasar al griego como παραβολή, el término se domesticó dentro de la retórica helenística: para-bolē significa literalmente 'lanzar al lado de', es decir, colocar dos cosas en paralelo para compararlas, un recurso técnico de argumentación. Se conservó la idea de comparación, pero se perdió la dimensión de enigma sagrado, de proverbio que desafía al oyente y de modelo cósmico que revela correspondencias ocultas. En español, 'parábola' se ha reducido aún más: evoca casi exclusivamente un relato breve con moraleja contado por Jesús, un género literario didáctico y amable. Se ha evaporado el filo cortante del mashal — su capacidad de ser oscuro, provocador, oracular — y con él, la noción de que comparar es un acto revelador que conecta lo visible con lo invisible.",
-        "lost_en": "In Aramaic, ܡܬܠܐ (mathla) is not simply an illustrative story: it is an act of making the invisible visible through likeness. The root M-TH-L spans from the condensed, cryptic proverb (like Solomon's meshalim, which include riddles and dark sayings) to the archetypal model that reveals the hidden structure of reality — what something 'is like' at a deep level. Hebrew mashal can be a riddle, an oracle, a taunt, a lament-song; its semantic field is vast and always implies that the surface of language conceals a denser meaning. When it passed into Greek as παραβολή, the term was domesticated within Hellenistic rhetoric: para-bolē literally means 'to throw alongside,' that is, to place two things in parallel for comparison — a technical argumentative device. The idea of comparison was preserved, but the dimension of sacred enigma, of a proverb that challenges the hearer, and of a cosmic model revealing hidden correspondences was lost. In English, 'parable' has narrowed even further: it evokes almost exclusively a short morality tale told by Jesus, a didactic and gentle literary genre. The sharp edge of the mashal has evaporated — its capacity to be obscure, provocative, oracular — and with it, the notion that to compare is a revelatory act connecting the visible to the invisible."
-      },
-      "sabor_raiz_he": "דמיון, השוואה, דוגמה",
-      "sabor_raiz_ar": "شبه, مقارنة, نموذج",
-      "semantic_bridges": {
-        "heb:mashal": {
-          "target_root": "d-m-a",
-          "relationship": "semantic_neighbor",
-          "bridge_concept_en": "Parable connects to D-M-A (to resemble) — comparison",
-          "bridge_concept_es": "Parábola conecta con D-M-A (asemejarse) — comparación"
-        }
-      },
-      "gloss_he": "משל, השוה",
-      "gloss_ar": "مثل، شبّه"
+      ]
     },
     "m-l-th": {
       "root_syriac": "ܡܠܬ",
@@ -46421,50 +45580,24 @@
     },
     "r-'-y": {
       "root_syriac": "ܪܥܝ",
-      "gloss_es": "pastorear",
-      "gloss_en": "shepherd",
+      "gloss_en": "tend, pasture",
+      "gloss_es": "apacentar",
       "hebrew": [
         {
           "word": "רָעָה",
-          "transliteration": "rā'āh",
-          "meaning_es": "pastorear",
-          "meaning_en": "to shepherd"
-        },
-        {
-          "word": "רֹעֶה",
-          "transliteration": "rō'eh",
-          "meaning_es": "pastor",
-          "meaning_en": "shepherd"
-        },
-        {
-          "word": "רְעִי",
-          "transliteration": "rə'ī",
-          "meaning_es": "mi pastor",
-          "meaning_en": "my shepherd"
+          "transliteration": "rāʿāh",
+          "meaning_en": "to pasture, tend",
+          "meaning_es": "apacentar"
         }
       ],
       "arabic": [
         {
           "word": "رَعَى",
-          "transliteration": "ra'ā",
-          "meaning_es": "pastorear",
-          "meaning_en": "to graze"
-        },
-        {
-          "word": "رَاعٍ",
-          "transliteration": "rā'in",
-          "meaning_es": "pastor",
-          "meaning_en": "shepherd"
-        },
-        {
-          "word": "رِعَايَة",
-          "transliteration": "ri'āya",
-          "meaning_es": "cuidado",
-          "meaning_en": "care"
+          "transliteration": "raʿā",
+          "meaning_en": "to pasture, tend",
+          "meaning_es": "apacentar, cuidar"
         }
-      ],
-      "gloss_he": "רועה",
-      "gloss_ar": "راعي"
+      ]
     },
     "q-n-n": {
       "root_syriac": "ܩܢܢ",
@@ -47054,44 +46187,24 @@
     },
     "b-T-n": {
       "root_syriac": "ܒܛܢ",
-      "gloss_es": "vientre, interior",
-      "gloss_en": "belly, womb",
+      "gloss_en": "conceive, womb",
+      "gloss_es": "concebir, vientre",
       "hebrew": [
         {
           "word": "בֶּטֶן",
           "transliteration": "beṭen",
-          "meaning_es": "vientre",
-          "meaning_en": "belly"
-        },
-        {
-          "word": "בִּטְנָה",
-          "transliteration": "biṭnā",
-          "meaning_es": "su vientre",
-          "meaning_en": "her belly"
+          "meaning_en": "belly, womb",
+          "meaning_es": "vientre"
         }
       ],
       "arabic": [
         {
           "word": "بَطْن",
           "transliteration": "baṭn",
-          "meaning_es": "vientre",
-          "meaning_en": "belly"
-        },
-        {
-          "word": "بَطِين",
-          "transliteration": "baṭīn",
-          "meaning_es": "gordo",
-          "meaning_en": "fat"
-        },
-        {
-          "word": "أَبْطَن",
-          "transliteration": "abṭan",
-          "meaning_es": "más gordo",
-          "meaning_en": "fatter"
+          "meaning_en": "belly",
+          "meaning_es": "vientre"
         }
-      ],
-      "gloss_he": "בטן",
-      "gloss_ar": "بطن"
+      ]
     },
     "r-y-kh": {
       "root_syriac": "ܪܝܚ",
@@ -48872,44 +47985,24 @@
     },
     "y-t-b": {
       "root_syriac": "ܝܬܒ",
-      "gloss_es": "sentarse",
-      "gloss_en": "to sit",
+      "gloss_en": "sit, dwell",
+      "gloss_es": "sentarse, habitar",
       "hebrew": [
         {
           "word": "יָשַׁב",
-          "transliteration": "yāšab",
-          "meaning_es": "sentarse, habitar",
-          "meaning_en": "to sit, dwell"
-        },
-        {
-          "word": "מוֹשָׁב",
-          "transliteration": "môšāb",
-          "meaning_es": "asiento, morada",
-          "meaning_en": "seat, dwelling"
-        },
-        {
-          "word": "יְשִׁיבָה",
-          "transliteration": "yəšîbā",
-          "meaning_es": "sesión",
-          "meaning_en": "sitting, session"
+          "transliteration": "yāšaḇ",
+          "meaning_en": "to sit, dwell",
+          "meaning_es": "sentarse, habitar"
         }
       ],
       "arabic": [
         {
           "word": "وَثَبَ",
-          "transliteration": "waṯaba",
-          "meaning_es": "saltar",
-          "meaning_en": "to jump"
-        },
-        {
-          "word": "مَوْثِب",
-          "transliteration": "mawṯib",
-          "meaning_es": "lugar de salto",
-          "meaning_en": "jumping place"
+          "transliteration": "wathaba",
+          "meaning_en": "to leap (in dialect 'to sit')",
+          "meaning_es": "saltar"
         }
-      ],
-      "gloss_he": "ישב",
-      "gloss_ar": "جلس"
+      ]
     },
     "r-k-n": {
       "root_syriac": "ܪܟܢ",
@@ -83996,6 +83089,1408 @@
       ],
       "gloss_he": "חסם, עצר",
       "gloss_ar": "سد، منع"
+    },
+    "ܓܕܥ": {
+      "root_syriac": "ܓܕܥ",
+      "gloss_en": "cut off, lop",
+      "gloss_es": "cortar, talar",
+      "hebrew": [
+        {
+          "word": "גָּדַע",
+          "transliteration": "gādaʿ",
+          "meaning_en": "to cut down, hew off",
+          "meaning_es": "cortar, derribar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "جَدَعَ",
+          "transliteration": "jadaʿa",
+          "meaning_en": "to cut off, mutilate",
+          "meaning_es": "cortar, mutilar"
+        }
+      ]
+    },
+    "ܚܙܠ": {
+      "root_syriac": "ܚܙܠ",
+      "gloss_en": "twist, spin",
+      "gloss_es": "torcer, hilar",
+      "hebrew": [],
+      "arabic": [
+        {
+          "word": "حَزَلَ",
+          "transliteration": "ḥazala",
+          "meaning_en": "to twist, bend",
+          "meaning_es": "torcer, doblar"
+        }
+      ]
+    },
+    "ܪܛܫ": {
+      "root_syriac": "ܪܛܫ",
+      "gloss_en": "dash, smash",
+      "gloss_es": "estrellar, golpear",
+      "hebrew": [
+        {
+          "word": "רָטַשׁ",
+          "transliteration": "rāṭaš",
+          "meaning_en": "to dash to pieces",
+          "meaning_es": "destrozar"
+        }
+      ],
+      "arabic": []
+    },
+    "ܛܦܚ": {
+      "root_syriac": "ܛܦܚ",
+      "gloss_en": "slap, span",
+      "gloss_es": "abofetear, palmo",
+      "hebrew": [
+        {
+          "word": "טֶפַח",
+          "transliteration": "ṭepaḥ",
+          "meaning_en": "handbreadth, span",
+          "meaning_es": "palmo"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "طَفَحَ",
+          "transliteration": "ṭafaḥa",
+          "meaning_en": "to overflow, brim",
+          "meaning_es": "rebosar"
+        }
+      ]
+    },
+    "ܠܫܟ": {
+      "root_syriac": "ܠܫܟ",
+      "gloss_en": "chamber, hall",
+      "gloss_es": "cámara, sala",
+      "hebrew": [
+        {
+          "word": "לִשְׁכָּה",
+          "transliteration": "liškāh",
+          "meaning_en": "chamber, hall",
+          "meaning_es": "cámara, sala"
+        }
+      ],
+      "arabic": []
+    },
+    "y-r-w": {
+      "root_syriac": "ܝܪܐ",
+      "gloss_en": "throw, shoot",
+      "gloss_es": "arrojar, disparar",
+      "hebrew": [
+        {
+          "word": "יָרָה",
+          "transliteration": "yārâ",
+          "meaning_en": "to throw, shoot",
+          "meaning_es": "arrojar, disparar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "وَرَى",
+          "transliteration": "warā",
+          "meaning_en": "to kindle (fire)",
+          "meaning_es": "encender (fuego)"
+        }
+      ]
+    },
+    "d-kh-l-th": {
+      "root_syriac": "ܕܚܠ",
+      "gloss_en": "fear, fearfulness",
+      "gloss_es": "temor",
+      "hebrew": [
+        {
+          "word": "דְּחַל",
+          "transliteration": "dəḥal",
+          "meaning_en": "to fear (Aramaic)",
+          "meaning_es": "temer (arameo)"
+        }
+      ],
+      "arabic": []
+    },
+    "e-th-y-d": {
+      "root_syriac": "ܥܬܕ",
+      "gloss_en": "ready, prepared",
+      "gloss_es": "listo, preparado",
+      "hebrew": [
+        {
+          "word": "עָתִיד",
+          "transliteration": "ʿātîd",
+          "meaning_en": "ready, future",
+          "meaning_es": "listo, futuro"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "عَتَدَ",
+          "transliteration": "ʿatada",
+          "meaning_en": "to be ready, prepared",
+          "meaning_es": "estar listo"
+        }
+      ]
+    },
+    "r-w-T": {
+      "root_syriac": "ܪܗܛ",
+      "gloss_en": "run",
+      "gloss_es": "correr",
+      "hebrew": [
+        {
+          "word": "רוּץ",
+          "transliteration": "rûṣ",
+          "meaning_en": "to run",
+          "meaning_es": "correr"
+        }
+      ],
+      "arabic": []
+    },
+    "ts-r-e": {
+      "root_syriac": "ܨܪܥ",
+      "gloss_en": "leprosy",
+      "gloss_es": "lepra",
+      "hebrew": [
+        {
+          "word": "צָרַע",
+          "transliteration": "ṣāraʿ",
+          "meaning_en": "to be leprous",
+          "meaning_es": "ser leproso"
+        },
+        {
+          "word": "צָרַעַת",
+          "transliteration": "ṣāraʿat",
+          "meaning_en": "leprosy",
+          "meaning_es": "lepra"
+        }
+      ],
+      "arabic": []
+    },
+    "r-ts-y": {
+      "root_syriac": "ܪܨܐ",
+      "gloss_en": "favor, please",
+      "gloss_es": "favorecer, complacer",
+      "hebrew": [
+        {
+          "word": "רָצָה",
+          "transliteration": "rāṣâ",
+          "meaning_en": "to be pleased, accept",
+          "meaning_es": "complacerse, aceptar"
+        },
+        {
+          "word": "רָצוֹן",
+          "transliteration": "rāṣôn",
+          "meaning_en": "favor, will",
+          "meaning_es": "favor, voluntad"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "رَضِيَ",
+          "transliteration": "raḍiya",
+          "meaning_en": "to be content, approve",
+          "meaning_es": "estar contento, aprobar"
+        }
+      ]
+    },
+    "n-y-q": {
+      "root_syriac": "ܝܢܩ",
+      "gloss_en": "suckle, nurse",
+      "gloss_es": "amamantar",
+      "hebrew": [
+        {
+          "word": "יָנַק",
+          "transliteration": "yānaq",
+          "meaning_en": "to suck, nurse",
+          "meaning_es": "mamar, amamantar"
+        }
+      ],
+      "arabic": []
+    },
+    "sh-q-T": {
+      "root_syriac": "ܫܩܛ",
+      "gloss_en": "be quiet, calm",
+      "gloss_es": "estar tranquilo",
+      "hebrew": [
+        {
+          "word": "שָׁקַט",
+          "transliteration": "shaqaT",
+          "meaning_en": "be quiet, at rest",
+          "meaning_es": "estar tranquilo"
+        }
+      ],
+      "arabic": []
+    },
+    "n-sh-k": {
+      "root_syriac": "ܢܫܟ",
+      "gloss_en": "bite",
+      "gloss_es": "morder",
+      "hebrew": [
+        {
+          "word": "נָשַׁךְ",
+          "transliteration": "nashakh",
+          "meaning_en": "to bite",
+          "meaning_es": "morder"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "نَهَسَ",
+          "transliteration": "nahasa",
+          "meaning_en": "to bite, snatch",
+          "meaning_es": "morder"
+        }
+      ]
+    },
+    "ts-b-r": {
+      "root_syriac": "ܨܒܪ",
+      "gloss_en": "heap, gather",
+      "gloss_es": "amontonar",
+      "hebrew": [
+        {
+          "word": "צָבַר",
+          "transliteration": "tsavar",
+          "meaning_en": "to heap up",
+          "meaning_es": "amontonar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "صَبَرَ",
+          "transliteration": "sabara",
+          "meaning_en": "to bind, be patient",
+          "meaning_es": "atar, ser paciente"
+        }
+      ]
+    },
+    "m-kh-ts": {
+      "root_syriac": "ܡܚܨ",
+      "gloss_en": "strike, wound",
+      "gloss_es": "golpear, herir",
+      "hebrew": [
+        {
+          "word": "מָחַץ",
+          "transliteration": "machats",
+          "meaning_en": "to smite, shatter",
+          "meaning_es": "golpear, destrozar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "مَخَضَ",
+          "transliteration": "makhada",
+          "meaning_en": "to churn, agitate",
+          "meaning_es": "batir, agitar"
+        }
+      ]
+    },
+    "z-r-m": {
+      "root_syriac": "ܙܪܡ",
+      "gloss_en": "flow, pour",
+      "gloss_es": "fluir, derramar",
+      "hebrew": [
+        {
+          "word": "זָרַם",
+          "transliteration": "zaram",
+          "meaning_en": "to pour, flood",
+          "meaning_es": "derramar, inundar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "زَرِمَ",
+          "transliteration": "zarima",
+          "meaning_en": "to be cut off (flow)",
+          "meaning_es": "interrumpirse"
+        }
+      ]
+    },
+    "sh-'-n": {
+      "root_syriac": "ܫܐܢ",
+      "gloss_en": "be tranquil",
+      "gloss_es": "estar tranquilo",
+      "hebrew": [
+        {
+          "word": "שַׁאֲנָן",
+          "transliteration": "šaʾănān",
+          "meaning_en": "at ease, tranquil",
+          "meaning_es": "tranquilo, sosegado"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "سَكَنَ",
+          "transliteration": "sakana",
+          "meaning_en": "to be calm, dwell",
+          "meaning_es": "estar calmo, morar"
+        }
+      ]
+    },
+    "s-w-d": {
+      "root_syriac": "ܣܘܕ",
+      "gloss_en": "converse, talk",
+      "gloss_es": "conversar, hablar",
+      "hebrew": [
+        {
+          "word": "סוֹד",
+          "transliteration": "sôd",
+          "meaning_en": "counsel, secret",
+          "meaning_es": "consejo, secreto"
+        }
+      ],
+      "arabic": []
+    },
+    "z-'-b": {
+      "root_syriac": "ܙܐܒ",
+      "gloss_en": "wolf",
+      "gloss_es": "lobo",
+      "hebrew": [
+        {
+          "word": "זְאֵב",
+          "transliteration": "zəʾēḇ",
+          "meaning_en": "wolf",
+          "meaning_es": "lobo"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "ذِئْب",
+          "transliteration": "ḏiʾb",
+          "meaning_en": "wolf",
+          "meaning_es": "lobo"
+        }
+      ]
+    },
+    "kh-q-r": {
+      "root_syriac": "ܚܩܪ",
+      "gloss_en": "despise, hold cheap",
+      "gloss_es": "despreciar",
+      "hebrew": [],
+      "arabic": [
+        {
+          "word": "حَقَرَ",
+          "transliteration": "ḥaqara",
+          "meaning_en": "to despise, deem contemptible",
+          "meaning_es": "despreciar, menospreciar"
+        }
+      ]
+    },
+    "dgr": {
+      "root_syriac": "ܕܓܪ",
+      "gloss_en": "heap, pile",
+      "gloss_es": "amontonar, pila",
+      "hebrew": [
+        {
+          "word": "מְדוּרָה",
+          "transliteration": "mĕḏûrāh",
+          "meaning_en": "pile, pyre",
+          "meaning_es": "pira, montón"
+        }
+      ],
+      "arabic": []
+    },
+    "khshq": {
+      "root_syriac": "ܚܫܩ",
+      "gloss_en": "desire, love",
+      "gloss_es": "desear, amar",
+      "hebrew": [
+        {
+          "word": "חָשַׁק",
+          "transliteration": "ḥāšaq",
+          "meaning_en": "to desire",
+          "meaning_es": "desear"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "عَشِقَ",
+          "transliteration": "ʿašiqa",
+          "meaning_en": "to love passionately",
+          "meaning_es": "amar apasionadamente"
+        }
+      ]
+    },
+    "rkhm'": {
+      "root_syriac": "ܪܚܡ",
+      "gloss_en": "mercy, love",
+      "gloss_es": "misericordia, amor",
+      "hebrew": [
+        {
+          "word": "רַחֲמִים",
+          "transliteration": "raḥămîm",
+          "meaning_en": "mercy, compassion",
+          "meaning_es": "misericordia, compasión"
+        },
+        {
+          "word": "רֶחֶם",
+          "transliteration": "reḥem",
+          "meaning_en": "womb",
+          "meaning_es": "matriz"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "رَحْمَة",
+          "transliteration": "raḥma",
+          "meaning_en": "mercy",
+          "meaning_es": "misericordia"
+        },
+        {
+          "word": "رَحِمَ",
+          "transliteration": "raḥima",
+          "meaning_en": "to have mercy",
+          "meaning_es": "tener misericordia"
+        }
+      ]
+    },
+    "mrsh": {
+      "root_syriac": "ܡܪܫ",
+      "gloss_en": "rub, stir",
+      "gloss_es": "frotar, revolver",
+      "hebrew": [],
+      "arabic": [
+        {
+          "word": "مَرَسَ",
+          "transliteration": "marasa",
+          "meaning_en": "to soak, knead",
+          "meaning_es": "remojar, amasar"
+        }
+      ]
+    },
+    "kh-ts-b": {
+      "root_syriac": "ܚܨܒ",
+      "gloss_en": "hew, cut",
+      "gloss_es": "tallar, cortar",
+      "hebrew": [
+        {
+          "word": "חָצַב",
+          "transliteration": "ḥaṣav",
+          "meaning_en": "to hew, quarry",
+          "meaning_es": "tallar, cantear"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "حَصَبَ",
+          "transliteration": "ḥaṣaba",
+          "meaning_en": "to throw stones",
+          "meaning_es": "arrojar piedras"
+        }
+      ]
+    },
+    "p-t-kh": {
+      "root_syriac": "ܦܬܚ",
+      "gloss_en": "open",
+      "gloss_es": "abrir",
+      "hebrew": [
+        {
+          "word": "פָּתַח",
+          "transliteration": "pataḥ",
+          "meaning_en": "to open",
+          "meaning_es": "abrir"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "فَتَحَ",
+          "transliteration": "fataḥa",
+          "meaning_en": "to open",
+          "meaning_es": "abrir"
+        }
+      ]
+    },
+    "z-b-b": {
+      "root_syriac": "ܙܒܒ",
+      "gloss_en": "fly (insect)",
+      "gloss_es": "mosca",
+      "hebrew": [
+        {
+          "word": "זְבוּב",
+          "transliteration": "zevuv",
+          "meaning_en": "fly",
+          "meaning_es": "mosca"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "ذُبَاب",
+          "transliteration": "ḏubāb",
+          "meaning_en": "flies",
+          "meaning_es": "moscas"
+        }
+      ]
+    },
+    "n-d-n": {
+      "root_syriac": "ܢܕܢ",
+      "gloss_en": "sheath",
+      "gloss_es": "vaina",
+      "hebrew": [
+        {
+          "word": "נָדָן",
+          "transliteration": "nadan",
+          "meaning_en": "sheath",
+          "meaning_es": "vaina"
+        }
+      ],
+      "arabic": []
+    },
+    "k-m-ts": {
+      "root_syriac": "ܟܡܨ",
+      "gloss_en": "grasp, handful",
+      "gloss_es": "puñado",
+      "hebrew": [
+        {
+          "word": "קָמַץ",
+          "transliteration": "qamaṣ",
+          "meaning_en": "to take a handful",
+          "meaning_es": "tomar un puñado"
+        },
+        {
+          "word": "קֹמֶץ",
+          "transliteration": "qomeṣ",
+          "meaning_en": "handful",
+          "meaning_es": "puñado"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "قَمَصَ",
+          "transliteration": "qamaṣa",
+          "meaning_en": "to leap",
+          "meaning_es": "saltar"
+        }
+      ]
+    },
+    "s-w-m": {
+      "root_syriac": "ܣܘܡ",
+      "gloss_en": "to place, put",
+      "gloss_es": "poner, colocar",
+      "hebrew": [
+        {
+          "word": "שׂוּם",
+          "transliteration": "śûm",
+          "meaning_en": "to put, place",
+          "meaning_es": "poner, colocar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "وَسَمَ",
+          "transliteration": "wasama",
+          "meaning_en": "to mark, brand",
+          "meaning_es": "marcar"
+        }
+      ]
+    },
+    "s-'-g": {
+      "root_syriac": "ܣܐܓ",
+      "gloss_en": "to fence, hedge",
+      "gloss_es": "cercar, vallar",
+      "hebrew": [
+        {
+          "word": "סוּג",
+          "transliteration": "sûg",
+          "meaning_en": "to fence in",
+          "meaning_es": "cercar"
+        },
+        {
+          "word": "מְשׂוּכָה",
+          "transliteration": "məśûkâ",
+          "meaning_en": "hedge",
+          "meaning_es": "seto"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "سِيَاج",
+          "transliteration": "siyāj",
+          "meaning_en": "fence, hedge",
+          "meaning_es": "cerca, valla"
+        }
+      ]
+    },
+    "ts-l-e": {
+      "root_syriac": "ܨܠܥ",
+      "gloss_en": "rib, side",
+      "gloss_es": "costilla, lado",
+      "hebrew": [
+        {
+          "word": "צֵלָע",
+          "transliteration": "ṣēlāʿ",
+          "meaning_en": "rib, side",
+          "meaning_es": "costilla, lado"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "ضِلْع",
+          "transliteration": "ḍilʿ",
+          "meaning_en": "rib",
+          "meaning_es": "costilla"
+        }
+      ]
+    },
+    "ts-r-kh": {
+      "root_syriac": "ܨܪܚ",
+      "gloss_en": "to cry out",
+      "gloss_es": "gritar, clamar",
+      "hebrew": [
+        {
+          "word": "צָרַח",
+          "transliteration": "ṣāraḥ",
+          "meaning_en": "to cry aloud",
+          "meaning_es": "gritar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "صَرَخَ",
+          "transliteration": "ṣarakha",
+          "meaning_en": "to cry out, scream",
+          "meaning_es": "gritar, chillar"
+        }
+      ]
+    },
+    "k-T-l": {
+      "root_syriac": "ܩܛܠ",
+      "gloss_en": "to kill",
+      "gloss_es": "matar",
+      "hebrew": [
+        {
+          "word": "קָטַל",
+          "transliteration": "qāṭal",
+          "meaning_en": "to slay, kill",
+          "meaning_es": "matar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "قَتَلَ",
+          "transliteration": "qatala",
+          "meaning_en": "to kill",
+          "meaning_es": "matar"
+        }
+      ]
+    },
+    "kh-y-sh": {
+      "root_syriac": "ܚܝܫ",
+      "gloss_en": "to suffer, feel",
+      "gloss_es": "sufrir, sentir",
+      "hebrew": [
+        {
+          "word": "חוּשׁ",
+          "transliteration": "ḥûš",
+          "meaning_en": "to feel, hasten",
+          "meaning_es": "sentir, apresurar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "حَسَّ",
+          "transliteration": "ḥassa",
+          "meaning_en": "to feel, sense",
+          "meaning_es": "sentir"
+        }
+      ]
+    },
+    "h-b-r": {
+      "root_syriac": "ܚܒܪ",
+      "gloss_en": "join, associate",
+      "gloss_es": "unir, asociar",
+      "hebrew": [
+        {
+          "word": "חָבַר",
+          "transliteration": "ḥāḇar",
+          "meaning_en": "to join",
+          "meaning_es": "unir"
+        },
+        {
+          "word": "חָבֵר",
+          "transliteration": "ḥāḇēr",
+          "meaning_en": "companion",
+          "meaning_es": "compañero"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "حَبْر",
+          "transliteration": "ḥabr",
+          "meaning_en": "scholar, ink",
+          "meaning_es": "sabio, tinta"
+        }
+      ]
+    },
+    "z-m-m": {
+      "root_syriac": "ܙܡܡ",
+      "gloss_en": "plot, intend",
+      "gloss_es": "tramar, intentar",
+      "hebrew": [
+        {
+          "word": "זָמַם",
+          "transliteration": "zāmam",
+          "meaning_en": "to plot, devise",
+          "meaning_es": "tramar"
+        },
+        {
+          "word": "מְזִמָּה",
+          "transliteration": "məzimmā",
+          "meaning_en": "scheme, plan",
+          "meaning_es": "plan"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "زَمَّ",
+          "transliteration": "zamma",
+          "meaning_en": "to bridle, tie",
+          "meaning_es": "embridar"
+        }
+      ]
+    },
+    "p-r-r": {
+      "root_syriac": "ܦܪܪ",
+      "gloss_en": "break, annul",
+      "gloss_es": "romper, anular",
+      "hebrew": [
+        {
+          "word": "פָּרַר",
+          "transliteration": "pārar",
+          "meaning_en": "to break, annul",
+          "meaning_es": "romper, anular"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "فَرَّ",
+          "transliteration": "farra",
+          "meaning_en": "to flee",
+          "meaning_es": "huir"
+        }
+      ]
+    },
+    "z-y-m": {
+      "root_syriac": "ܙܝܡ",
+      "gloss_en": "plot, intend",
+      "gloss_es": "tramar, intentar",
+      "hebrew": [
+        {
+          "word": "זָמַם",
+          "transliteration": "zāmam",
+          "meaning_en": "to plot",
+          "meaning_es": "tramar"
+        }
+      ],
+      "arabic": []
+    },
+    "n-s-s": {
+      "root_syriac": "ܢܣܣ",
+      "gloss_en": "lift, set up",
+      "gloss_es": "alzar, erigir",
+      "hebrew": [
+        {
+          "word": "נֵס",
+          "transliteration": "nēs",
+          "meaning_en": "standard, banner",
+          "meaning_es": "estandarte"
+        },
+        {
+          "word": "נָסַס",
+          "transliteration": "nāsas",
+          "meaning_en": "to be raised",
+          "meaning_es": "ser alzado"
+        }
+      ],
+      "arabic": []
+    },
+    "ܫܗܐ": {
+      "root_syriac": "ܫܗܐ",
+      "gloss_en": "delay, tarry",
+      "gloss_es": "demorar, tardar",
+      "hebrew": [
+        {
+          "word": "שָׁהָה",
+          "transliteration": "šāhāh",
+          "meaning_en": "to tarry, delay",
+          "meaning_es": "demorar, tardar"
+        }
+      ],
+      "arabic": []
+    },
+    "ܐܝܩܪ": {
+      "root_syriac": "ܝܩܪ",
+      "gloss_en": "be heavy, honor",
+      "gloss_es": "ser pesado, honrar",
+      "hebrew": [
+        {
+          "word": "יָקַר",
+          "transliteration": "yāqar",
+          "meaning_en": "be precious, heavy",
+          "meaning_es": "ser precioso, pesado"
+        },
+        {
+          "word": "כָּבֵד",
+          "transliteration": "kāḇēḏ",
+          "meaning_en": "be heavy, honored",
+          "meaning_es": "ser pesado, honrado"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "وَقَرَ",
+          "transliteration": "waqara",
+          "meaning_en": "be dignified, heavy",
+          "meaning_es": "ser digno, pesado"
+        },
+        {
+          "word": "وَقَار",
+          "transliteration": "waqār",
+          "meaning_en": "dignity, gravity",
+          "meaning_es": "dignidad, gravedad"
+        }
+      ]
+    },
+    "ܫܡܡ": {
+      "root_syriac": "ܫܡܡ",
+      "gloss_en": "be desolate",
+      "gloss_es": "estar desolado",
+      "hebrew": [
+        {
+          "word": "שָׁמֵם",
+          "transliteration": "šāmēm",
+          "meaning_en": "be desolate, appalled",
+          "meaning_es": "estar desolado, atónito"
+        },
+        {
+          "word": "שְׁמָמָה",
+          "transliteration": "šəmāmāh",
+          "meaning_en": "desolation",
+          "meaning_es": "desolación"
+        }
+      ],
+      "arabic": []
+    },
+    "ܥܢܦ": {
+      "root_syriac": "ܥܢܦ",
+      "gloss_en": "branch, bough",
+      "gloss_es": "rama",
+      "hebrew": [
+        {
+          "word": "עָנָף",
+          "transliteration": "ʿānāp̄",
+          "meaning_en": "branch, bough",
+          "meaning_es": "rama"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "عُنْفُوَان",
+          "transliteration": "ʿunfuwān",
+          "meaning_en": "prime, vigor",
+          "meaning_es": "vigor, plenitud"
+        }
+      ]
+    },
+    "y-ts": {
+      "root_syriac": "ܝܥܨ",
+      "gloss_en": "advise, counsel",
+      "gloss_es": "aconsejar",
+      "hebrew": [
+        {
+          "word": "יָעַץ",
+          "transliteration": "yāʿaṣ",
+          "meaning_en": "to advise",
+          "meaning_es": "aconsejar"
+        }
+      ],
+      "arabic": []
+    },
+    "ts-p-'": {
+      "root_syriac": "ܨܦܐ",
+      "gloss_en": "look out, watch",
+      "gloss_es": "observar",
+      "hebrew": [
+        {
+          "word": "צָפָה",
+          "transliteration": "ṣāfâ",
+          "meaning_en": "to watch, observe",
+          "meaning_es": "vigilar"
+        }
+      ],
+      "arabic": []
+    },
+    "k-s-l": {
+      "root_syriac": "ܟܣܠ",
+      "gloss_en": "loins, folly",
+      "gloss_es": "lomos, necedad",
+      "hebrew": [
+        {
+          "word": "כֶּסֶל",
+          "transliteration": "kesel",
+          "meaning_en": "loins, confidence",
+          "meaning_es": "lomos"
+        },
+        {
+          "word": "כְּסִיל",
+          "transliteration": "kᵉsîl",
+          "meaning_en": "fool",
+          "meaning_es": "necio"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "كَسِلَ",
+          "transliteration": "kasila",
+          "meaning_en": "to be lazy",
+          "meaning_es": "ser perezoso"
+        }
+      ]
+    },
+    "ts-r-b": {
+      "root_syriac": "ܨܪܒ",
+      "gloss_en": "scorch, burn",
+      "gloss_es": "chamuscar",
+      "hebrew": [
+        {
+          "word": "צָרַב",
+          "transliteration": "ṣārav",
+          "meaning_en": "to scorch, burn",
+          "meaning_es": "quemar"
+        }
+      ],
+      "arabic": []
+    },
+    "t-p-kh": {
+      "root_syriac": "ܬܦܚ",
+      "gloss_en": "swell, apple",
+      "gloss_es": "hinchar, manzana",
+      "hebrew": [
+        {
+          "word": "תַּפּוּחַ",
+          "transliteration": "tappûaḥ",
+          "meaning_en": "apple",
+          "meaning_es": "manzana"
+        },
+        {
+          "word": "נָפַח",
+          "transliteration": "nāfaḥ",
+          "meaning_en": "to blow, swell",
+          "meaning_es": "soplar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "تُفَّاح",
+          "transliteration": "tuffāḥ",
+          "meaning_en": "apple",
+          "meaning_es": "manzana"
+        }
+      ]
+    },
+    "ܓܙܥ": {
+      "root_syriac": "ܓܙܥ",
+      "gloss_en": "stump, trunk",
+      "gloss_es": "tronco, cepa",
+      "hebrew": [
+        {
+          "word": "גֶּזַע",
+          "transliteration": "gezaʿ",
+          "meaning_en": "stem, stump",
+          "meaning_es": "tronco, cepa"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "جِذْع",
+          "transliteration": "jiḏʿ",
+          "meaning_en": "trunk, stem",
+          "meaning_es": "tronco"
+        }
+      ]
+    },
+    "ܡܫܪܐ": {
+      "root_syriac": "ܫܪܐ",
+      "gloss_en": "loosen, dwell",
+      "gloss_es": "soltar, habitar",
+      "hebrew": [
+        {
+          "word": "שָׁרָה",
+          "transliteration": "šārāh",
+          "meaning_en": "to loose, abide",
+          "meaning_es": "soltar, morar"
+        }
+      ],
+      "arabic": []
+    },
+    "ܕܪܨ": {
+      "root_syriac": "ܕܪܨ",
+      "gloss_en": "instruct, level",
+      "gloss_es": "instruir, allanar",
+      "hebrew": [],
+      "arabic": [
+        {
+          "word": "دَرَسَ",
+          "transliteration": "darasa",
+          "meaning_en": "to study, learn",
+          "meaning_es": "estudiar"
+        }
+      ]
+    },
+    "ܛܝܛ": {
+      "root_syriac": "ܛܝܛ",
+      "gloss_en": "mud, clay",
+      "gloss_es": "barro, lodo",
+      "hebrew": [
+        {
+          "word": "טִיט",
+          "transliteration": "ṭiṭ",
+          "meaning_en": "mud, clay",
+          "meaning_es": "barro, lodo"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "طِين",
+          "transliteration": "ṭīn",
+          "meaning_en": "clay, mud",
+          "meaning_es": "arcilla, barro"
+        }
+      ]
+    },
+    "m-w-g": {
+      "root_syriac": "ܡܘܓ",
+      "gloss_en": "to melt, totter",
+      "gloss_es": "derretirse, tambalear",
+      "hebrew": [
+        {
+          "word": "מוּג",
+          "transliteration": "mûg",
+          "meaning_en": "to melt, dissolve",
+          "meaning_es": "derretirse"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "مَاجَ",
+          "transliteration": "māja",
+          "meaning_en": "to surge, be agitated",
+          "meaning_es": "agitarse, ondular"
+        }
+      ]
+    },
+    "n-sh-l": {
+      "root_syriac": "ܢܫܠ",
+      "gloss_en": "to draw out, slip",
+      "gloss_es": "extraer, deslizar",
+      "hebrew": [
+        {
+          "word": "נָשַׁל",
+          "transliteration": "nāšal",
+          "meaning_en": "to slip off, draw off",
+          "meaning_es": "soltarse, quitarse"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "نَسَلَ",
+          "transliteration": "nasala",
+          "meaning_en": "to molt, shed",
+          "meaning_es": "mudar, soltar"
+        }
+      ]
+    },
+    "y-r-h": {
+      "root_syriac": "ܝܪܗ",
+      "gloss_en": "to throw, teach",
+      "gloss_es": "arrojar, enseñar",
+      "hebrew": [
+        {
+          "word": "יָרָה",
+          "transliteration": "yārâ",
+          "meaning_en": "to throw, instruct",
+          "meaning_es": "arrojar, instruir"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "وَرَى",
+          "transliteration": "warā",
+          "meaning_en": "to kindle (fire), strike fire",
+          "meaning_es": "encender (fuego)"
+        }
+      ]
+    },
+    "h-d-b": {
+      "root_syriac": "ܗܕܒ",
+      "gloss_en": "fringe, eyelash",
+      "gloss_es": "fleco, pestaña",
+      "hebrew": [],
+      "arabic": [
+        {
+          "word": "هُدْب",
+          "transliteration": "hudb",
+          "meaning_en": "eyelashes, fringe",
+          "meaning_es": "pestañas, fleco"
+        }
+      ]
+    },
+    "kh-y-p": {
+      "root_syriac": "ܚܝܦ",
+      "gloss_en": "to wash, rub",
+      "gloss_es": "lavar, frotar",
+      "hebrew": [
+        {
+          "word": "חוּף",
+          "transliteration": "ḥûp",
+          "meaning_en": "to wash, rub",
+          "meaning_es": "lavar, frotar"
+        }
+      ],
+      "arabic": []
+    },
+    "p-ts-r": {
+      "root_syriac": "ܦܨܪ",
+      "gloss_en": "to press, urge",
+      "gloss_es": "presionar, insistir",
+      "hebrew": [
+        {
+          "word": "פָּצַר",
+          "transliteration": "pāṣar",
+          "meaning_en": "to press, urge",
+          "meaning_es": "presionar, insistir"
+        }
+      ],
+      "arabic": []
+    },
+    "s-k-k": {
+      "root_syriac": "ܣܟܟ",
+      "gloss_en": "to cover, screen",
+      "gloss_es": "cubrir, proteger",
+      "hebrew": [
+        {
+          "word": "סָכַךְ",
+          "transliteration": "sākak",
+          "meaning_en": "to cover, screen",
+          "meaning_es": "cubrir, cercar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "سَكَّ",
+          "transliteration": "sakka",
+          "meaning_en": "to shut, bolt",
+          "meaning_es": "cerrar, atrancar"
+        }
+      ]
+    },
+    "h-r-b": {
+      "root_syriac": "ܗܪܒ",
+      "gloss_en": "to flee, hasten",
+      "gloss_es": "huir, apresurarse",
+      "hebrew": [],
+      "arabic": [
+        {
+          "word": "هَرَبَ",
+          "transliteration": "haraba",
+          "meaning_en": "to flee",
+          "meaning_es": "huir"
+        }
+      ]
+    },
+    "ts-ʿ-q": {
+      "root_syriac": "ܨܥܩ",
+      "gloss_en": "to cry out",
+      "gloss_es": "gritar",
+      "hebrew": [
+        {
+          "word": "צָעַק",
+          "transliteration": "ṣāʿaq",
+          "meaning_en": "to cry out",
+          "meaning_es": "gritar"
+        },
+        {
+          "word": "זָעַק",
+          "transliteration": "zāʿaq",
+          "meaning_en": "to cry out",
+          "meaning_es": "clamar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "صَعِقَ",
+          "transliteration": "ṣaʿiqa",
+          "meaning_en": "to be thunderstruck",
+          "meaning_es": "ser fulminado"
+        }
+      ]
+    },
+    "l-ch-ts": {
+      "root_syriac": "ܠܚܨ",
+      "gloss_en": "to press, oppress",
+      "gloss_es": "oprimir",
+      "hebrew": [
+        {
+          "word": "לָחַץ",
+          "transliteration": "lāḥaṣ",
+          "meaning_en": "to press, oppress",
+          "meaning_es": "oprimir"
+        }
+      ],
+      "arabic": []
+    },
+    "b-ʿ-y": {
+      "root_syriac": "ܒܥܐ",
+      "gloss_en": "to seek, ask",
+      "gloss_es": "buscar, pedir",
+      "hebrew": [
+        {
+          "word": "בָּעָה",
+          "transliteration": "bāʿāh",
+          "meaning_en": "to seek, inquire",
+          "meaning_es": "buscar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "بَغَى",
+          "transliteration": "baghā",
+          "meaning_en": "to seek, desire",
+          "meaning_es": "desear"
+        }
+      ]
+    },
+    "q-y-ts": {
+      "root_syriac": "ܩܝܨ",
+      "gloss_en": "summer, harvest",
+      "gloss_es": "verano",
+      "hebrew": [
+        {
+          "word": "קַיִץ",
+          "transliteration": "qayiṣ",
+          "meaning_en": "summer, fruit",
+          "meaning_es": "verano, fruta"
+        },
+        {
+          "word": "קוּץ",
+          "transliteration": "qûṣ",
+          "meaning_en": "to awake",
+          "meaning_es": "despertar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "قَيْظ",
+          "transliteration": "qayẓ",
+          "meaning_en": "intense summer heat",
+          "meaning_es": "calor estival"
+        }
+      ]
+    },
+    "ṭ-ʿ-n": {
+      "root_syriac": "ܛܥܢ",
+      "gloss_en": "to load, carry",
+      "gloss_es": "cargar",
+      "hebrew": [
+        {
+          "word": "טָעַן",
+          "transliteration": "ṭāʿan",
+          "meaning_en": "to load",
+          "meaning_es": "cargar"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "طَعَنَ",
+          "transliteration": "ṭaʿana",
+          "meaning_en": "to pierce, stab",
+          "meaning_es": "atravesar"
+        }
+      ]
+    },
+    "ch-q-q": {
+      "root_syriac": "ܚܩܩ",
+      "gloss_en": "to engrave, decree",
+      "gloss_es": "grabar, decretar",
+      "hebrew": [
+        {
+          "word": "חָקַק",
+          "transliteration": "ḥāqaq",
+          "meaning_en": "to engrave, decree",
+          "meaning_es": "grabar"
+        },
+        {
+          "word": "חֹק",
+          "transliteration": "ḥōq",
+          "meaning_en": "statute",
+          "meaning_es": "estatuto"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "حَقَّ",
+          "transliteration": "ḥaqqa",
+          "meaning_en": "to be true, right",
+          "meaning_es": "ser verdadero"
+        }
+      ]
+    },
+    "sh-ṭ-ṭ": {
+      "root_syriac": "ܫܛܛ",
+      "gloss_en": "to despise, roam",
+      "gloss_es": "despreciar, vagar",
+      "hebrew": [
+        {
+          "word": "שׁוּט",
+          "transliteration": "šûṭ",
+          "meaning_en": "to roam, rove",
+          "meaning_es": "vagar"
+        },
+        {
+          "word": "שׁוֹט",
+          "transliteration": "šôṭ",
+          "meaning_en": "whip",
+          "meaning_es": "látigo"
+        }
+      ],
+      "arabic": [
+        {
+          "word": "سَاطَ",
+          "transliteration": "sāṭa",
+          "meaning_en": "to mix, stir",
+          "meaning_es": "mezclar"
+        }
+      ]
+    },
+    "g-m-d": {
+      "root_syriac": "ܓܡܕ",
+      "gloss_en": "congeal, freeze",
+      "gloss_es": "congelar",
+      "hebrew": [],
+      "arabic": [
+        {
+          "word": "جَمَدَ",
+          "transliteration": "jamada",
+          "meaning_en": "to freeze, congeal",
+          "meaning_es": "congelar, helar"
+        }
+      ]
+    },
+    "r-k-l": {
+      "root_syriac": "ܪܟܠ",
+      "gloss_en": "trade, peddle",
+      "gloss_es": "comerciar",
+      "hebrew": [
+        {
+          "word": "רָכַל",
+          "transliteration": "rakhal",
+          "meaning_en": "to trade, traffic",
+          "meaning_es": "comerciar"
+        },
+        {
+          "word": "רֹכֵל",
+          "transliteration": "rokhel",
+          "meaning_en": "merchant, peddler",
+          "meaning_es": "mercader"
+        }
+      ],
+      "arabic": []
     }
   },
   "hw'": {

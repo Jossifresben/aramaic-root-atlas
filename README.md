@@ -6,7 +6,7 @@ The Aramaic Root Atlas is an open-access tool for exploring triliteral roots acr
 
 The tool is designed for scholars, students, and linguists who want to study Aramaic vocabulary across time and tradition: tracing how a root is used in different dialects and genres, finding rare or unique attestations, comparing parallel passages, or analyzing verb stem distributions. Every word form in the corpus is linked to its extracted root, gloss, confidence score, and verb stem, accessible directly from the verse reader.
 
-**47,358 verses** · **685,848 words** · **5,666 roots** · **1,584 cognate root entries** · **6 corpora**
+**47,358 verses** · **685,848 words** · **5,666 roots** · **1,655 cognate root entries** · **6 corpora**
 
 ---
 
