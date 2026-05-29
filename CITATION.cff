@@ -4,11 +4,11 @@ type: software
 title: "Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer"
 abstract: >-
   A cross-corpus triliteral root explorer for Aramaic literature,
-  indexing 5,249 roots across 38,062 verses and 528,399 words from
-  five corpora spanning ~1,500 years: Peshitta NT, Peshitta OT,
-  Biblical Aramaic (Daniel, Ezra), Targum Onkelos, and the Hymns
-  of Ephrem of Nisibis. Features cross-script root normalization,
-  1,584 cognate root entries (Hebrew and/or Arabic) plus 405 Greek
+  indexing 5,666 roots across 47,358 verses and 685,848 words from
+  six corpora spanning ~1,500 years: Peshitta NT, Peshitta OT,
+  Biblical Aramaic (Daniel, Ezra), Targum Onkelos, Targum Jonathan,
+  and the Hymns of Ephrem of Nisibis. Features cross-script root
+  normalization, 1,655 cognate root entries (Hebrew and/or Arabic) plus 405 Greek
   NT parallels, root family visualization, KWIC concordance,
   diachronic analysis, collocations, semantic fields (15 domains),
   word parser, passage lexical profiles, parallel viewer, frequency
@@ -22,8 +22,8 @@ authors:
     given-names: Jose
     website: https://jossifresco.com
     orcid: https://orcid.org/0009-0000-2026-0836
-version: "3.0.3"
-date-released: "2026-05-09"
+version: "3.1.0"
+date-released: "2026-05-29"
 doi: 10.5281/zenodo.19358625
 license: Apache-2.0
 url: https://aramaic-root-atlas.onrender.com
@@ -34,6 +34,7 @@ keywords:
   - Peshitta
   - Biblical Aramaic
   - Targum Onkelos
+  - Targum Jonathan
   - triliteral roots
   - Semitic linguistics
   - computational linguistics

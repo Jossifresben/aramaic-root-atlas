@@ -1,0 +1,46 @@
+{
+  "title": "Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "Apache-2.0",
+  "version": "3.1.0",
+  "language": "eng",
+  "creators": [
+    {
+      "name": "Fresco Benaim, Jose",
+      "orcid": "0009-0000-2026-0836"
+    }
+  ],
+  "keywords": [
+    "Aramaic",
+    "Syriac",
+    "Peshitta",
+    "Biblical Aramaic",
+    "Targum Onkelos",
+    "Targum Jonathan",
+    "triliteral roots",
+    "Semitic linguistics",
+    "computational linguistics",
+    "digital humanities",
+    "corpus linguistics",
+    "cognates"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.19358625",
+      "relation": "isVersionOf",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://github.com/Jossifresben/aramaic-root-atlas",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://aramaic-root-atlas.onrender.com",
+      "relation": "isIdenticalTo",
+      "scheme": "url"
+    }
+  ],
+  "description": "<p><strong>The Aramaic Root Atlas</strong> is an open-access, cross-corpus triliteral root explorer for Aramaic literature. It indexes <strong>5,666 roots</strong> across <strong>47,358 verses</strong> and <strong>685,848 words</strong> drawn from <strong>six corpora</strong> spanning roughly 1,500 years of literary history, bringing them under a single consonantal root index so a single Semitic root can be traced across textual traditions, scripts, and centuries.</p>\n\n<p><strong>Corpora indexed</strong></p>\n<ul>\n<li>Peshitta New Testament (Syriac)</li>\n<li>Peshitta Old Testament (Syriac)</li>\n<li>Biblical Aramaic &mdash; Daniel, Ezra, and related passages (Hebrew square script)</li>\n<li>Targum Onkelos to the Torah (Hebrew square script)</li>\n<li>Targum Jonathan to the Prophets (Hebrew square script)</li>\n<li>Hymns of Ephrem of Nisibis &mdash; <em>Carmina Nisibena</em> (Syriac)</li>\n</ul>\n\n<p>Cross-script normalization resolves Syriac and Hebrew square forms to a shared key (e.g. Syriac ܟܬܒ and Hebrew כתב both resolve to K-T-B), enabling unified search across scripts. The Atlas includes <strong>1,655 cognate root entries</strong> with Hebrew and/or Arabic cognates and 405 Greek New Testament parallels.</p>\n\n<p><strong>Features:</strong> root-family visualization (force-directed graph + root card), KWIC concordance with TEI/CSV export, diachronic analysis, collocations, semantic-field classification (15 domains), morphological word parser, passage lexical profiles, a synoptic parallel viewer, root-frequency heat maps, researcher annotations and bookmarks, multi-format citation export (BibTeX, Chicago, MLA, APA, SBL), a guided tour, and an interactive Swagger/OpenAPI reference. The interface is quadrilingual (English, Spanish, Hebrew, Arabic) with full right-to-left support and a dark mode.</p>\n\n<p><strong>What's new in v3.1</strong></p>\n<ul>\n<li><strong>New corpus &mdash; Targum Jonathan to the Prophets</strong> (Sefaria, CC-BY-SA): 9,296 verses and 157,449 words across 21 books (Joshua–II Kings, Isaiah, Jeremiah, Ezekiel, and the Twelve), doubling Targumic coverage.</li>\n<li>Unlocks <strong>synoptic comparison of the Peshitta Old Testament with Targum Jonathan</strong> for the Prophets in the parallel viewer.</li>\n<li>Root index grows from 5,249 to <strong>5,666</strong> roots; cognate entries from 1,584 to <strong>1,655</strong> (newly attested Targum-Jonathan vocabulary enriched with Hebrew and Arabic cognates).</li>\n<li>A distinct corpus color, full UI/i18n integration across all four languages, and Swagger coverage for the new corpus.</li>\n<li>Numerous fixes surfaced during integration: cross-corpus book-name alignment (Samuel/Kings), root-card layout, diachronic label rendering, and corrected page titles and breadcrumbs.</li>\n</ul>\n\n<p><strong>How to cite</strong></p>\n<p>Fresco Benaim, Jose. (2026). <em>Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer</em> (v3.1.0). Zenodo. <a href=\"https://doi.org/10.5281/zenodo.19358625\">https://doi.org/10.5281/zenodo.19358625</a></p>\n<p>The concept DOI <a href=\"https://doi.org/10.5281/zenodo.19358625\">10.5281/zenodo.19358625</a> always resolves to the latest version; cite a specific version DOI when reproducibility matters. A <code>CITATION.cff</code> with machine-readable metadata and BibTeX/Chicago/MLA/APA/SBL exports are available in-app and in the repository.</p>\n\n<p><strong>License:</strong> Apache-2.0 (source code). Bundled corpus data is licensed per upstream provider &mdash; see <code>LICENSE-DATA.md</code> in the repository.</p>"
+}

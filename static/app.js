@@ -111,7 +111,7 @@
       +'<div class="side-foot">'
         +'<div>By <a href="https://jossifresco.com">Jossi Fresco</a> · '
           +'<a href="https://github.com/Jossifresben/aramaic-root-atlas">GitHub</a></div>'
-        +'<div class="v">v 3.0.3 · DOI 10.5281/zenodo.19358625</div>'
+        +'<div class="v">v 3.1.0 · DOI 10.5281/zenodo.19358625</div>'
         +'<div class="theme-tog" role="group" aria-label="Theme">'
           +'<button data-theme="light" onclick="setTheme(\'light\')">Light</button>'
           +'<button data-theme="dark"  onclick="setTheme(\'dark\')">Dark</button>'

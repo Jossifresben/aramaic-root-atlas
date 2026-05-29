@@ -10,7 +10,7 @@ indexed corpora, glosses, cognates, or extraction outputs (information
 researchers need when deciding whether re-runs of cited analyses are
 reproducible).
 
-## [Unreleased] — Phase 6A (Targum Jonathan)
+## [v3.1.0] — 2026-05-29
 
 First half of the Phase 6A corpus expansion (see `docs/CORPUS-EXPANSION-PLAN.md`).
 Adds Targum Jonathan to the Prophets, doubling Targumic coverage and
@@ -33,6 +33,27 @@ Prophets in the parallel viewer.
 ### Fixed
 - README corpus table listed Targum Onkelos as "Syriac"; corrected to
   "Hebrew square" (it is Hebrew square script, like Biblical Aramaic).
+- **Cross-corpus book-name alignment:** Targum Jonathan's Samuel/Kings
+  used Roman numerals ("I Samuel") while the rest of the Atlas uses
+  Arabic ("1 Samuel"). Mismatched names hid those four books from the
+  parallel viewer and broke alignment; normalized to Arabic numerals.
+- **Root Card visualizer was clipped** to the graph's fixed 540px height,
+  hiding the diachronic bars, sister roots, and the cognate/derivatives
+  table below the fold. The card now grows to fit its content.
+- Diachronic-bar corpus labels overflowed their pills in the visualizer.
+- Corrected redundant page titles ("Visualize root family Root
+  Visualizer", "Parallel Viewer viewer", "Diachronic Analysis Diachronic
+  Analysis") and the visualizer breadcrumb ("Browse corpora" → "Root
+  Visualizer").
+- **Reconciled stale "five corpora" copy → "six"** across all four UI
+  languages (browse, concordance, tour, diachronic caveat, About page,
+  Swagger); the About corpus list now includes Targum Jonathan. Refreshed
+  Swagger example totals to the six-corpus state.
+
+### `.zenodo.json`
+- Added a `.zenodo.json` deposit record with a full tool description,
+  a "what's new in v3.1" section, citation guidance, keywords, and the
+  concept-DOI relationship.
 
 ### Data Changes
 - **Corpora 5 → 6.** Totals: 38,062 → 47,358 verses; 528,399 → 685,848
