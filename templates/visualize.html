@@ -252,16 +252,19 @@
             var fichaView = document.getElementById('view-ficha');
             var tabGraph = document.getElementById('tab-graph');
             var tabFicha = document.getElementById('tab-ficha');
+            var container = document.getElementById('viz-container');
             if (tab === 'ficha') {
                 graphView.style.display = 'none';
                 fichaView.style.display = '';
                 tabGraph.classList.remove('active');
                 tabFicha.classList.add('active');
+                if (container) container.classList.add('showing-ficha');
             } else {
                 graphView.style.display = '';
                 fichaView.style.display = 'none';
                 tabGraph.classList.add('active');
                 tabFicha.classList.remove('active');
+                if (container) container.classList.remove('showing-ficha');
             }
             if (updateUrl !== false) {
                 var url = new URL(window.location);
