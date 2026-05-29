@@ -31,10 +31,13 @@ SEFARIA_API = "https://www.sefaria.org/api/texts"
 PROPHETS = [
     ("Joshua",       "Targum_Jonathan_on_Joshua",       1),
     ("Judges",       "Targum_Jonathan_on_Judges",       2),
-    ("I Samuel",     "Targum_Jonathan_on_I_Samuel",     3),
-    ("II Samuel",    "Targum_Jonathan_on_II_Samuel",    4),
-    ("I Kings",      "Targum_Jonathan_on_I_Kings",      5),
-    ("II Kings",     "Targum_Jonathan_on_II_Kings",     6),
+    # Display names use Arabic numerals to match Peshitta OT ("1 Samuel"),
+    # so books align cross-corpus in the parallel viewer / diachronic views.
+    # Sefaria index names keep Roman numerals.
+    ("1 Samuel",     "Targum_Jonathan_on_I_Samuel",     3),
+    ("2 Samuel",     "Targum_Jonathan_on_II_Samuel",    4),
+    ("1 Kings",      "Targum_Jonathan_on_I_Kings",      5),
+    ("2 Kings",      "Targum_Jonathan_on_II_Kings",     6),
     ("Isaiah",       "Targum_Jonathan_on_Isaiah",       7),
     ("Jeremiah",     "Targum_Jonathan_on_Jeremiah",     8),
     ("Ezekiel",      "Targum_Jonathan_on_Ezekiel",      9),
