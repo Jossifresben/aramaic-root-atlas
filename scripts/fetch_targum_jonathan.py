@@ -64,8 +64,12 @@ def clean_text(text):
         return ""
     text = re.sub(r'<[^>]+>', '', text)
     text = text.replace('&nbsp;', ' ').replace('&amp;', '&')
-    text = re.sub(r'\([^)]+\)', '', text)  # Remove ketiv
-    text = re.sub(r'[\[\]]', '', text)  # Remove qere brackets
+    text = re.sub(r'\([^)]+\)', '', text)  # Remove ketiv (balanced, same verse)
+    # Strip any orphan brackets/parens left over — e.g. a Sefaria parenthetical
+    # that opens in one verse and closes in the next is never balanced within a
+    # single verse string, so a lone '(' or ')' would otherwise stay glued to a
+    # real word token and corrupt its root extraction.
+    text = re.sub(r'[()\[\]]', '', text)  # Remove qere brackets + orphan parens
     return re.sub(r'\s+', ' ', text).strip()
 
 

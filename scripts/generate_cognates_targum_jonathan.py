@@ -213,6 +213,23 @@ def main():
             continue
         new_roots = result.get('roots', {})
         skipped = result.get('skipped', [])
+        # Collision guard: never add an entry whose key OR root_syriac already
+        # exists. CognateLookup indexes by root_syriac (last-write-wins), so a
+        # duplicate root_syriac would silently shadow an existing (often richer)
+        # curated entry. Skip duplicates rather than clobber them.
+        existing_keys = set(cognates['roots'].keys())
+        existing_rs = {e.get('root_syriac', '') for e in cognates['roots'].values()
+                       if e.get('root_syriac')}
+        deduped = {}
+        for k, v in new_roots.items():
+            rs = v.get('root_syriac', '')
+            if k in existing_keys or (rs and rs in existing_rs):
+                total_skipped += 1
+                print(f"    ~ skip {k} ({rs}): root_syriac already covered")
+                continue
+            deduped[k] = v
+            existing_rs.add(rs)
+        new_roots = deduped
         if new_roots:
             cognates['roots'].update(new_roots)
             total_new += len(new_roots)
