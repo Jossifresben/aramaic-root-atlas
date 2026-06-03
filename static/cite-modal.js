@@ -26,7 +26,7 @@
     var AUTHOR_FULL = 'Fresco Benaim, Jose';
     var AUTHOR_APA  = 'Fresco Benaim, J.';
     var YEAR        = '2026';
-    var VERSION     = '3.1.0';
+    var VERSION     = '3.1.1';
     var DOI         = '10.5281/zenodo.19358625';
     var ORCID       = '0009-0000-2026-0836';
     /* Canonical project URL — used as default citation URL when no

@@ -8,7 +8,7 @@ abstract: >-
   six corpora spanning ~1,500 years: Peshitta NT, Peshitta OT,
   Biblical Aramaic (Daniel, Ezra), Targum Onkelos, Targum Jonathan,
   and the Hymns of Ephrem of Nisibis. Features cross-script root
-  normalization, 1,655 cognate root entries (Hebrew and/or Arabic) plus 405 Greek
+  normalization, 1,604 cognate root entries (Hebrew and/or Arabic) plus 405 Greek
   NT parallels, root family visualization, KWIC concordance,
   diachronic analysis, collocations, semantic fields (15 domains),
   word parser, passage lexical profiles, parallel viewer, frequency
@@ -22,8 +22,8 @@ authors:
     given-names: Jose
     website: https://jossifresco.com
     orcid: https://orcid.org/0009-0000-2026-0836
-version: "3.1.0"
-date-released: "2026-05-29"
+version: "3.1.1"
+date-released: "2026-06-03"
 doi: 10.5281/zenodo.19358625
 license: Apache-2.0
 url: https://aramaic-root-atlas.onrender.com

@@ -10,6 +10,31 @@ indexed corpora, glosses, cognates, or extraction outputs (information
 researchers need when deciding whether re-runs of cited analyses are
 reproducible).
 
+## [v3.1.1] — 2026-06-03
+
+Patch release. Fixes two bugs surfaced by an adversarial multi-agent
+bug-review of the v3.1.0 work.
+
+### Fixed
+- **Cognate `root_syriac` collisions (regression).** The Targum Jonathan
+  cognate generation appended entries whose `root_syriac` duplicated an
+  existing curated entry. `CognateLookup` indexes by `root_syriac`
+  (last-write-wins), so the thinner generated entries shadowed richer
+  curated ones in the visualizer and word parser (e.g. ܦܬܚ "open"
+  effectively dropped from 7+7 to 1+1 Hebrew/Arabic cognates). Deduped
+  `cognates.json` keeping the richest entry per `root_syriac` and merging
+  in unique cognate words; added a collision guard to the generator so a
+  duplicate key/`root_syriac` is skipped rather than clobbering.
+- **Orphan parentheses across a verse boundary.** A Sefaria parenthetical
+  spanning Joshua 21:36→37 left a lone `(`/`)` glued to two word tokens,
+  corrupting their root extraction. `clean_text()` now strips orphan
+  brackets; the two affected cells were cleaned.
+
+### Data Changes
+- **Cognate entries 1,655 → 1,604** (removed 51 duplicate `root_syriac`
+  keys; 0 collisions remain). Cognate words: 4,572 Hebrew + 4,580 Arabic.
+  Verse/word/root totals unchanged (47,358 / 685,848 / 5,666).
+
 ## [v3.1.0] — 2026-05-29
 
 First half of the Phase 6A corpus expansion (see `docs/CORPUS-EXPANSION-PLAN.md`).
