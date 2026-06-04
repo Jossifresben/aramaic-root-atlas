@@ -2106,7 +2106,8 @@ h3.subhead{
 .journey-disclaimer { font-size: .82rem; font-style: italic; color: var(--muted, #6b7280); }
 .journey-verse blockquote { font-size: 1.4rem; margin: 0 0 .4rem; }
 .journey-more { display: flex; gap: .6rem; margin-top: 2rem; }
-.journey-more .btn { padding: .5rem 1rem; border: 1px solid var(--border, #d1d5db); border-radius: 8px; text-decoration: none; color: inherit; }
+.journey-more .btn { padding: .5rem 1rem; border: 1px solid var(--border, #d1d5db); border-radius: 8px; text-decoration: none; background: transparent; color: var(--ink); }
+.journey-more .btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 .discover-shelf { display: grid; gap: 1.2rem; }
 .discover-journey { border: 1px solid var(--border, #e5e7eb); border-radius: 10px; padding: 1.1rem 1.3rem; }
