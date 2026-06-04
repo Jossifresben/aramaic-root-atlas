@@ -161,6 +161,31 @@ def _root_of_the_day():
     return pool[idx]
 
 
+def _root_card(root_input):
+    """Build a compact display card for a root, or None if not attested.
+
+    Uses only existing engine calls; no extraction logic added.
+    """
+    root_syriac = parse_root_input(root_input)
+    if not root_syriac:
+        return None
+    entry = _extractor.lookup_root(root_syriac)
+    if not entry:
+        return None
+    display = _extractor.get_root_display(root_syriac)
+    gloss = _extractor.get_root_gloss(root_syriac)
+    cog = _cognate_lookup.lookup(root_syriac)
+    if cog and not gloss:
+        gloss = cog.gloss_en
+    return {
+        'key': _translit_to_dash(root_syriac),
+        'syriac': display.get('syriac', root_syriac),
+        'hebrew': display.get('hebrew', ''),
+        'gloss': gloss or '',
+        'total': entry.total_occurrences,
+    }
+
+
 def _get_script() -> str:
     s = request.args.get('script', 'latin')
     return s if s in VALID_SCRIPTS else 'latin'

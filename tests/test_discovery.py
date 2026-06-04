@@ -19,3 +19,18 @@ def test_root_of_the_day_is_deterministic():
     a = flask_app._root_of_the_day()
     b = flask_app._root_of_the_day()
     assert a == b and a in flask_app._featured['root_of_day']
+
+
+def test_root_card_known_root():
+    flask_app._init()
+    card = flask_app._root_card('SH-L-M')
+    assert card is not None
+    assert card['syriac'] == 'ܫܠܡ'
+    assert card['gloss']           # non-empty gloss
+    assert card['total'] > 0
+    assert card['key']             # round-trippable key for URLs
+
+
+def test_root_card_unknown_returns_none():
+    flask_app._init()
+    assert flask_app._root_card('ZZZZ') is None
