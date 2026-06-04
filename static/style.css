@@ -2127,3 +2127,15 @@ h3.subhead{
 .side-caret{ width:13px; height:13px; stroke-width:2; transition:transform .15s ease; flex-shrink:0; }
 .side-group.collapsed > .side-label .side-caret{ transform:rotate(-90deg); }
 .side-group.collapsed > .side-link{ display:none; }
+
+/* ── Exploratory-tool caveat banner ──────────────────────────── */
+.caveat-banner{
+  display:flex; align-items:flex-start; gap:8px;
+  margin:0 0 18px; padding:9px 13px;
+  font-family:var(--sans); font-size:12.5px; line-height:1.5;
+  color:var(--ink-2);
+  background:var(--bg-3); border:1px solid var(--rule);
+  border-radius:6px;
+}
+.caveat-banner .caveat-ic{ width:15px; height:15px; flex-shrink:0; margin-top:1px; color:var(--gold-mark, var(--accent)); }
+.caveat-banner .caveat-link{ color:var(--link); white-space:nowrap; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:2px; margin-inline-start:4px; }
