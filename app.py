@@ -244,7 +244,7 @@ def ensure_initialized():
     _init()
 
 
-@app.route('/')
+@app.route('/search')
 def index():
     lang = _get_lang()
     corpora_info = []
