@@ -559,6 +559,19 @@ def browse():
                            page_id='browse')
 
 
+@app.route('/journey/<path:root_key>')
+def journey(root_key):
+    _init()
+    lang = _get_lang()
+    card = _root_card(root_key)
+    if card is None:
+        from flask import abort
+        abort(404)
+    return render_template('journey.html',
+                           lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t_proxy, bn=_bn, card=card, page_id='discover')
+
+
 @app.route('/read/<path:book>/<int:chapter>')
 def read(book, chapter):
     lang = _get_lang()

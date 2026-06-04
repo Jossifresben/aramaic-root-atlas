@@ -34,3 +34,17 @@ def test_root_card_known_root():
 def test_root_card_unknown_returns_none():
     flask_app._init()
     assert flask_app._root_card('ZZZZ') is None
+
+
+def test_journey_known_root_renders(client):
+    r = client.get('/journey/SH-L-M')
+    assert r.status_code == 200
+    body = r.data.decode('utf-8')
+    assert 'ܫܠܡ' in body                     # Syriac form, SSR
+    assert 'one skeleton' in body.lower()    # homograph teaching panel present
+    assert '/api/diachronic/root?root=' in body  # JS enrichment wired
+
+
+def test_journey_unknown_root_404(client):
+    r = client.get('/journey/ZZZZ')
+    assert r.status_code == 404

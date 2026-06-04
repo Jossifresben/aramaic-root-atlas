@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ card.key }} — Root Journey{% endblock %}
+{% block content %}
+<div class="journey-wrap" data-root="{{ card.key }}">
+
+  <!-- 1. The root, big -->
+  <header class="journey-head">
+    <div class="journey-scripts">
+      <span class="jr-syriac">{{ card.syriac }}</span>
+      {% if card.hebrew %}<span class="jr-sep">·</span><span class="jr-hebrew">{{ card.hebrew }}</span>{% endif %}
+      <span class="jr-sep">·</span><span class="jr-key">{{ card.key }}</span>
+    </div>
+    <p class="journey-gloss">{{ card.gloss }}</p>
+    {% if card.hebrew %}<p class="journey-note">Two scripts, one root — Syriac and Hebrew square resolve to the same three-letter skeleton.</p>{% endif %}
+  </header>
+
+  <!-- 2. Timeline strip (filled by JS from /api/diachronic/root) -->
+  <section class="journey-timeline">
+    <h2>Across 1,500 years</h2>
+    <div id="jr-timeline" class="jr-timeline">Loading the journey…</div>
+  </section>
+
+  <!-- 3. One skeleton, several meanings (homograph lesson) -->
+  <section class="journey-panel">
+    <h2>One skeleton, several meanings</h2>
+    <p>A three-letter root is a <em>skeleton</em>, not a single word. The same consonants can carry
+    related — sometimes quite different — senses. This atlas groups words by their skeleton; a
+    dictionary separates the individual senses. Treat what you see here as a starting point for
+    exploration, not a final definition.</p>
+  </section>
+
+  <!-- 4. Cousins across languages (filled by JS from /api/root-family) -->
+  <section class="journey-cousins">
+    <h2>Cousins in sister languages</h2>
+    <div id="jr-cousins" class="jr-cousins"></div>
+    <p class="journey-disclaimer">Fascinating connections — explorers' leads, not dictionary-grade etymology.</p>
+  </section>
+
+  <!-- 5. One real verse, decoded (filled by JS) -->
+  <section class="journey-verse">
+    <h2>Seen in the wild</h2>
+    <div id="jr-verse" class="jr-verse"></div>
+  </section>
+
+  <!-- 6. Keep exploring -->
+  <nav class="journey-more">
+    <a class="btn" href="/visualize/{{ card.key }}?lang={{ lang }}">Full visualizer</a>
+    <a class="btn" href="/discover?lang={{ lang }}">More journeys</a>
+  </nav>
+</div>
+
+<script>
+(function(){
+  var wrap = document.querySelector('.journey-wrap');
+  var root = wrap && wrap.dataset.root;
+  if(!root) return;
+  var q = encodeURIComponent(root);
+
+  // Timeline from existing diachronic endpoint
+  // API returns: { corpora: [{label, raw_count, ...}, ...] }
+  fetch('/api/diachronic/root?root=' + q).then(function(r){return r.json();}).then(function(d){
+    var el = document.getElementById('jr-timeline');
+    if(!d.corpora){ el.textContent = 'No timeline data.'; return; }
+    var max = Math.max.apply(null, d.corpora.map(function(c){return c.raw_count;}).concat([1]));
+    el.innerHTML = d.corpora.map(function(c){
+      var pct = Math.round((c.raw_count / max) * 100);
+      return '<div class="jr-bar-row"><span class="jr-bar-label">' + c.label + '</span>'
+        + '<span class="jr-bar"><span class="jr-bar-fill" style="width:' + pct + '%"></span></span>'
+        + '<span class="jr-bar-count">' + c.raw_count + '</span></div>';
+    }).join('');
+  }).catch(function(){ document.getElementById('jr-timeline').textContent = 'Timeline unavailable.'; });
+
+  // Cousins + key verse from existing root-family endpoint
+  // API returns: { hebrew: [{word, translit, meaning}, ...], arabic: [...],
+  //               paradigmatic_ref, paradigmatic_verse (translation), paradigmatic_syriac }
+  fetch('/api/root-family?root=' + q).then(function(r){return r.json();}).then(function(d){
+    var cousins = document.getElementById('jr-cousins');
+    var heb = d.hebrew || [];
+    var ar  = d.arabic || [];
+    function pills(list, langLabel){
+      if(!list.length) return '';
+      return '<div class="jr-cousin-group"><span class="jr-cousin-lang">' + langLabel + '</span>'
+        + list.slice(0,5).map(function(c){
+            return '<span class="jr-pill">' + (c.word||'') + ' <em>' + (c.meaning||'') + '</em></span>';
+          }).join('') + '</div>';
+    }
+    cousins.innerHTML = pills(heb, 'Hebrew') + pills(ar, 'Arabic') || '<p>No cousins recorded yet.</p>';
+
+    var verse = document.getElementById('jr-verse');
+    if(d.paradigmatic_ref){
+      verse.innerHTML = '<blockquote>' + (d.paradigmatic_syriac || '') + '</blockquote>'
+        + (d.paradigmatic_verse ? '<p class="jr-verse-tr">' + d.paradigmatic_verse + '</p>' : '')
+        + '<cite>' + d.paradigmatic_ref + '</cite>';
+    } else { verse.parentNode.style.display = 'none'; }
+  }).catch(function(){});
+})();
+</script>
+{% endblock %}
