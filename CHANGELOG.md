@@ -10,6 +10,46 @@ indexed corpora, glosses, cognates, or extraction outputs (information
 researchers need when deciding whether re-runs of cited analyses are
 reproducible).
 
+## [v3.2.0] — 2026-06-04
+
+Feature release. Repositions the Atlas as a **discovery tool for students and
+curious minds** with a new "Discover" front door, alongside the existing
+scholarly tools. The linguistic engine, data, and corpora are unchanged from
+v3.1.1 — this is a front-end and positioning reframe.
+
+### Added
+- **Discover home (`/`).** Curated famous-root grid, a deterministic daily
+  "root of the day," and a plain-language "search by a word you know" that
+  routes to the closest root. The previous search page moved to `/search`.
+- **Root Journey (`/journey/<root>`).** A guided, scroll-through view of one
+  root: a time-travel frequency timeline across all six corpora, a "one
+  skeleton, several meanings" homograph explainer, comparative Hebrew/Arabic
+  cognate "cousins," and a real attested verse. Reuses existing APIs only.
+- **Discovery journeys (`/discover`).** Eight curated multi-root walks (Words
+  of the Covenant, Kings & Kingdoms, Death and Rising, Priests and Prophets,
+  Heaven/Mountain/Wind, Joy/Love/Fear, Speaking and Knowing, Everyday Aramaic),
+  data-driven from `data/journeys/*.json`.
+- **"Exploratory, not citable" caveat banners** on every analytical tool
+  (concordance, diachronic, hapax, heatmap, parser, collocations, semantic
+  fields, passage profile, visualizer, parallel), linking to the Limitations
+  section on the About page.
+- **Collapsible sidebar** grouped Discover / Explore / Analyze / Workspace;
+  Explore, Analyze, and Workspace collapse by default (Discover stays open),
+  the active page's group auto-expands, and the choice persists.
+
+### Changed
+- About page: the "Research Applications" section reframed as **"Ways to
+  Explore"** around discovery and learning, with a "discovery, not citation"
+  caveat; corrected stat cards (47,358 verses / 685,848 words / 5,666 roots /
+  6 corpora / 1,604 cognate entries) and a stale `1,584 → 1,604` cognate-count
+  fix page-wide.
+- Full EN/ES/HE/AR localization of the new Discover surfaces and sidebar group.
+
+### Data Changes
+- None. Corpora, extraction outputs, and cognate data are identical to v3.1.1
+  (six corpora; 5,666 roots; 1,604 cognate entries). Journey/curation content
+  files are new but do not alter any indexed text or analysis.
+
 ## [v3.1.1] — 2026-06-03
 
 Patch release. Fixes two bugs surfaced by an adversarial multi-agent

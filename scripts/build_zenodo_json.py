@@ -9,10 +9,10 @@ Zenodo's description sanitizer strips h1–h6, so section headings use
 """
 import json, os
 
-VERSION = "3.1.1"
+VERSION = "3.2.0"
 
 description = """
-<p><strong>Aramaic Root Atlas</strong> is an open-access web application for cross-corpus analysis of triliteral roots across approximately 1,500 years of Aramaic literary history. Version 3.1 indexes <strong>5,666 roots</strong> across <strong>47,358 verses</strong> and <strong>685,848 words</strong> from <strong>six corpora</strong> spanning the Achaemenid, Roman, and Late Antique periods, unified under a single consonantal root index with cross-script (Syriac &harr; Hebrew square) normalization.</p>
+<p><strong>Aramaic Root Atlas</strong> is an open-access web application for cross-corpus analysis of triliteral roots across approximately 1,500 years of Aramaic literary history. Version 3.2 indexes <strong>5,666 roots</strong> across <strong>47,358 verses</strong> and <strong>685,848 words</strong> from <strong>six corpora</strong> spanning the Achaemenid, Roman, and Late Antique periods, unified under a single consonantal root index with cross-script (Syriac &harr; Hebrew square) normalization. With v3.2 the Atlas adds a <strong>discovery-first front door</strong> aimed at students and curious minds, alongside the existing scholarly tools.</p>
 
 <p>The Atlas addresses a structural gap in computational Aramaic studies: existing philological tools provide deep analysis within a single corpus or dialect, but no unified resource lets researchers trace a Semitic root across the major Aramaic literary traditions in a single interface, with diachronic frequency normalization, comparative cognate visualization, and programmatic access. The tool is freely available at <a href="https://aramaic-root-atlas.onrender.com">aramaic-root-atlas.onrender.com</a> and licensed Apache-2.0.</p>
 
@@ -55,6 +55,16 @@ description = """
 <p><strong>Methodology</strong></p>
 <p>Triliteral roots are extracted via a rule-based morphological pipeline applied to each corpus's native script, with corpus-specific affix sets for Syriac and Hebrew square script; routing is by per-word script detection, so Hebrew-square corpora share one stripper. Each extraction receives a three-tier confidence score (High &ge; 0.8, Medium 0.5&ndash;0.8, Low &lt; 0.5) based on stem-pattern conformity, prefix/suffix legitimacy, and SEDRA lexicon corroboration where applicable. Cross-script root normalization ensures that Hebrew &#1499;&#1514;&#1489;, Syriac &#1827;&#1817;&#1810;, and Arabic &#1603;&#1578;&#1576; resolve to the same root key, enabling transparent cross-corpus comparison.</p>
 
+<p><strong>What's New in v3.2.0</strong></p>
+<ul>
+<li><strong>A new "Discover" front door</strong> &mdash; a curated home page (a famous-root grid, a rotating root of the day, and a plain-language "search by a word you know") replaces the bare search box as the default entrance, so a newcomer who knows no roots can start exploring immediately.</li>
+<li><strong>Root Journey</strong> &mdash; a guided, scroll-through view of a single root: a time-travel frequency timeline across all six corpora, a "one skeleton, several meanings" explainer that names the homograph caveat, comparative Hebrew/Arabic cognate "cousins," and a real attested verse.</li>
+<li><strong>Discovery journeys</strong> &mdash; eight short, curated multi-root walks (Words of the Covenant, Kings &amp; Kingdoms, Death and Rising, Priests and Prophets, and more).</li>
+<li><strong>Repositioned as a discovery tool, honestly</strong> &mdash; every analytical surface now carries an "exploratory, not citable" notice linking to the limitations; the About page's applications section is reframed around exploration; root extraction and cognates are openly flagged as heuristic, not validated findings.</li>
+<li><strong>UI</strong> &mdash; a collapsible sidebar (Explore/Analyze/Workspace collapse by default; Discover stays open), full English/Spanish/Hebrew/Arabic localization of the new surfaces, and corrected on-page statistics.</li>
+<li>The linguistic engine, data, and corpora are <strong>unchanged</strong> from v3.1.1 (six corpora; 5,666 roots; 1,604 cognate entries) &mdash; this release is a front-end and positioning reframe.</li>
+</ul>
+
 <p><strong>What's New in v3.1.0</strong></p>
 <ul>
 <li><strong>New corpus &mdash; Targum Jonathan to the Prophets</strong> (Sefaria, CC-BY-SA): 9,296 verses and 157,449 words across 21 books, doubling Targumic coverage.</li>
@@ -72,7 +82,7 @@ description = """
 <p>Corpus data is drawn from the ETCBC Peshitta corpus (Eep Talstra Centre for Bible and Computer, Vrije Universiteit Amsterdam), the Westminster Leningrad Codex, Targum Onkelos, and Targum Jonathan via Sefaria, and the Digital Syriac Corpus for Ephrem's Hymns of Nisibis. Translations are sourced from bible.helloao.org. The SEDRA lexicon is provided by the Beth Mardutho Syriac Institute. Cognate data was generated and curated with the Anthropic Claude API. Curated root-card seed data is drawn from the companion project Peshitta Constellations.</p>
 
 <p><strong>How to Cite</strong></p>
-<p>Fresco Benaim, Jose. (2026). <em>Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer</em> (v3.1.1). Zenodo. <a href="https://doi.org/10.5281/zenodo.19358625">https://doi.org/10.5281/zenodo.19358625</a></p>
+<p>Fresco Benaim, Jose. (2026). <em>Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer</em> (v3.2.0). Zenodo. <a href="https://doi.org/10.5281/zenodo.19358625">https://doi.org/10.5281/zenodo.19358625</a></p>
 <p>The concept DOI <a href="https://doi.org/10.5281/zenodo.19358625">10.5281/zenodo.19358625</a> always resolves to the latest version. BibTeX, Chicago, MLA, APA, and SBL formats are available with one click on every analysis page in the live application and via the <code>CITATION.cff</code> in the repository.</p>
 
 <p><strong>License and Source</strong></p>
