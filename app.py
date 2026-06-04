@@ -268,6 +268,16 @@ def home():
                            t=_t_proxy, bn=_bn, rotd=rotd, hero=hero, page_id='discover-home')
 
 
+@app.route('/discover')
+def discover():
+    _init()
+    lang = _get_lang()
+    journeys = _load_journeys()
+    return render_template('discovery.html',
+                           lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t_proxy, bn=_bn, journeys=journeys, page_id='discover')
+
+
 @app.route('/search')
 def index():
     lang = _get_lang()

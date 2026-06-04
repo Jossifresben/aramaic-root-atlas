@@ -68,3 +68,11 @@ def test_journeys_load_and_resolve():
             syriac = flask_app.parse_root_input(stop['root'])
             assert syriac and flask_app._extractor.lookup_root(syriac), \
                 f"journey {j['id']} stop {stop['root']} unresolved"
+
+
+def test_discover_page_lists_journeys(client):
+    r = client.get('/discover')
+    assert r.status_code == 200
+    body = r.data.decode('utf-8')
+    assert 'Words of the Covenant' in body
+    assert '/journey/' in body

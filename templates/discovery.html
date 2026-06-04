@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Discovery Journeys — Triliteral Aramaic Atlas{% endblock %}
+{% block content %}
+<div class="discover-wrap">
+  <header class="discover-head">
+    <h1>Discovery Journeys</h1>
+    <p>Short, guided walks through related roots. Pick a path and follow the words.</p>
+  </header>
+  <div class="discover-shelf">
+    {% for j in journeys %}
+    <article class="discover-journey">
+      <h2>{{ j.title }}</h2>
+      <p class="discover-blurb">{{ j.blurb }}</p>
+      <ol class="discover-stops">
+        {% for stop in j.stops %}
+        <li>
+          <a href="/journey/{{ stop.root }}?lang={{ lang }}" class="discover-stop-root">{{ stop.root }}</a>
+          <span class="discover-stop-note">{{ stop.note }}</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </article>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
