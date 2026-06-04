@@ -100,7 +100,7 @@
     function isCollapsed(id, items){
       if(items.some(function(it){ return it.id === active; })) return false;
       var s = collapseState();
-      return id in s ? !!s[id] : (id === 'analyze' || id === 'workspace');
+      return id in s ? !!s[id] : (id === 'explore' || id === 'analyze' || id === 'workspace');
     }
     function group(id, label, items, collapsible){
       var collapsed = collapsible && isCollapsed(id, items);
