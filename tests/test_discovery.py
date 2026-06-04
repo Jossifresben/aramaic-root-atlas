@@ -56,3 +56,15 @@ def test_home_renders_with_featured(client):
     body = r.data.decode('utf-8')
     assert '/journey/' in body          # at least one journey link (hero grid)
     assert 'root of the day' in body.lower()
+
+
+def test_journeys_load_and_resolve():
+    flask_app._init()
+    journeys = flask_app._load_journeys()
+    assert len(journeys) >= 3
+    for j in journeys:
+        assert j['title'] and j['stops']
+        for stop in j['stops']:
+            syriac = flask_app.parse_root_input(stop['root'])
+            assert syriac and flask_app._extractor.lookup_root(syriac), \
+                f"journey {j['id']} stop {stop['root']} unresolved"

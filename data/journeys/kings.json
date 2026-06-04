@@ -1,0 +1,9 @@
+{
+  "id": "kings",
+  "title": "Kings & Kingdoms",
+  "blurb": "The language of rule, reign, and authority from Daniel to the Peshitta.",
+  "stops": [
+    { "root": "M-L-K", "note": "King, reign, kingdom — one root behind a whole political world." },
+    { "root": "A-M-R", "note": "To say, to command — the speech of those in charge." }
+  ]
+}

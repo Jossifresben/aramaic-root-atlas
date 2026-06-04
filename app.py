@@ -186,6 +186,19 @@ def _root_card(root_input):
     }
 
 
+def _load_journeys():
+    """Load guided-journey definitions from data/journeys/*.json, sorted by title."""
+    out = []
+    jdir = os.path.join(DATA_DIR, 'journeys')
+    if os.path.isdir(jdir):
+        for fn in sorted(os.listdir(jdir)):
+            if fn.endswith('.json'):
+                with open(os.path.join(jdir, fn), 'r', encoding='utf-8') as f:
+                    out.append(json.load(f))
+    out.sort(key=lambda j: j.get('title', ''))
+    return out
+
+
 def _get_script() -> str:
     s = request.args.get('script', 'latin')
     return s if s in VALID_SCRIPTS else 'latin'
