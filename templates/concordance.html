@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block content %}
+{% include '_caveat.html' %}
 <div class="page-head">
   <div>
     <h1 class="ph-title">KWIC <em>{{ t('nav_concordance', lang) if t else 'concordance' }}</em></h1>

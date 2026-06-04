@@ -28,8 +28,14 @@
   // ── Sidebar nav data — Flask URL routing ────────────────
   var S = window.SIDE_I18N || {};
   var NAV = {
+    discover: [
+      { id:'discover-home', href:'/',          label: S.nav_discover_home || 'Discover',
+        ic:'<path d="M12 2l2.5 7H22l-6 4.5L18.5 22 12 17.5 5.5 22 8 13.5 2 9h7.5z"/>' },
+      { id:'discover',      href:'/discover',   label: S.nav_journeys || 'Journeys',
+        ic:'<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>' },
+    ],
     explore: [
-      { id:'search',      href:'/',               label: S.nav_trace_root   || 'Trace Root',        kbd:'/',
+      { id:'search',      href:'/search',          label: S.nav_trace_root   || 'Trace Root',        kbd:'/',
         ic:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>' },
       { id:'browse',      href:'/browse',          label: S.nav_browse       || 'Browse corpora',
         ic:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
@@ -87,37 +93,64 @@
         +'</a>';
     }
     var SI = window.SIDE_I18N || {};
+
+    // Collapsible-group state (persisted). Analyze + Workspace start collapsed;
+    // a group containing the active page is always shown.
+    function collapseState(){ try{ return JSON.parse(localStorage.getItem('side_collapsed') || '{}'); }catch(e){ return {}; } }
+    function isCollapsed(id, items){
+      if(items.some(function(it){ return it.id === active; })) return false;
+      var s = collapseState();
+      return id in s ? !!s[id] : (id === 'explore' || id === 'analyze' || id === 'workspace');
+    }
+    function group(id, label, items, collapsible){
+      var collapsed = collapsible && isCollapsed(id, items);
+      return '<div class="side-group'+(collapsible?' collapsible':'')+(collapsed?' collapsed':'')+'" id="side-'+id+'" data-group="'+id+'">'
+        +'<div class="side-label"'+(collapsible?' role="button" tabindex="0" aria-expanded="'+(!collapsed)+'"':'')+'>'
+          +'<span>'+label+'</span>'
+          +(collapsible?'<svg class="side-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>':'')
+        +'</div>'
+        +items.map(link).join('')
+      +'</div>';
+    }
+
     side.innerHTML = ''
       +'<a href="'+withLang('/')+'" class="brand">'
         +'<div class="brand-mark">ܐ</div>'
         +'<div class="brand-text"><div class="brand-name">Root Atlas</div>'
         +'<div class="brand-sub">Aramaic Corpora</div></div>'
       +'</a>'
-      +'<div class="side-group" id="side-explore">'
-        +'<div class="side-label">'+(SI.explore||'Explore')+'</div>'
-        +NAV.explore.map(link).join('')
-      +'</div>'
-      +'<div class="side-group" id="side-analyze">'
-        +'<div class="side-label">'+(SI.analyze||'Analyze')+'</div>'
-        +NAV.analyze.map(link).join('')
-      +'</div>'
-      +'<div class="side-group" id="side-workspace">'
-        +'<div class="side-label">'+(SI.workspace||'Workspace')+'</div>'
-        +NAV.workspace.map(link).join('')
-      +'</div>'
+      +group('discover',  (SI.discover||'Discover'),   NAV.discover,  false)
+      +group('explore',   (SI.explore||'Explore'),     NAV.explore,   true)
+      +group('analyze',   (SI.analyze||'Analyze'),     NAV.analyze,   true)
+      +group('workspace', (SI.workspace||'Workspace'), NAV.workspace, true)
       +'<div class="side-group">'
         +NAV.info.map(link).join('')
       +'</div>'
       +'<div class="side-foot">'
         +'<div>By <a href="https://jossifresco.com">Jossi Fresco</a> · '
           +'<a href="https://github.com/Jossifresben/aramaic-root-atlas">GitHub</a></div>'
-        +'<div class="v">v 3.1.1 · DOI 10.5281/zenodo.19358625</div>'
+        +'<div class="v">v 3.2.0 · DOI 10.5281/zenodo.19358625</div>'
         +'<div class="theme-tog" role="group" aria-label="Theme">'
           +'<button data-theme="light" onclick="setTheme(\'light\')">Light</button>'
           +'<button data-theme="dark"  onclick="setTheme(\'dark\')">Dark</button>'
           +'<button data-theme="system" onclick="setTheme(\'system\')">Auto</button>'
         +'</div>'
       +'</div>';
+
+    // Wire collapse toggles
+    side.querySelectorAll('.side-group.collapsible > .side-label').forEach(function(lbl){
+      function toggle(){
+        var g = lbl.closest('.side-group');
+        var nowCollapsed = !g.classList.contains('collapsed');
+        g.classList.toggle('collapsed', nowCollapsed);
+        lbl.setAttribute('aria-expanded', String(!nowCollapsed));
+        var st = collapseState(); st[g.dataset.group] = nowCollapsed;
+        try{ localStorage.setItem('side_collapsed', JSON.stringify(st)); }catch(e){}
+      }
+      lbl.addEventListener('click', toggle);
+      lbl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+    });
+
     syncThemeToggle();
   }
 

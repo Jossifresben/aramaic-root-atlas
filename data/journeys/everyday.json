@@ -1,0 +1,11 @@
+{
+  "id": "everyday",
+  "title": "Everyday Aramaic",
+  "blurb": "The common roots that show up everywhere, once you learn to see them.",
+  "stops": [
+    { "root": "K-TH-B", "note": "To write — scribes, scripture, and the written word itself." },
+    { "root": "SH-L-M", "note": "Peace, wholeness, completion — the most famous root of all." },
+    { "root": "B-Y-TH", "note": "House and household — and the 'b' that begins so many place-names." },
+    { "root": "Y-W-M", "note": "Day. A small word that structures every narrative in the corpus." }
+  ]
+}

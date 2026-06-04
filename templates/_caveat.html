@@ -1,0 +1,7 @@
+{# Shared "exploratory, not citable" banner for analytical tool pages. #}
+{# Links to the (already translated) Limitations section on the About page. #}
+<div class="caveat-banner" role="note">
+  <svg class="caveat-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16v.01"/></svg>
+  <span>{% if lang == 'es' %}Herramienta exploratoria: los resultados son puntos de partida heur&iacute;sticos, no datos citables.{% elif lang == 'he' %}כלי לחקירה: התוצאות הן נקודות מוצא היוריסטיות, לא ממצאים לציטוט.{% elif lang == 'ar' %}أداة استكشافية: النتائج نقاط انطلاق حدسية لا نتائج قابلة للاستشهاد.{% else %}Exploratory tool &mdash; results are heuristic starting points, not citable findings.{% endif %}
+  <a class="caveat-link" href="/about?lang={{ lang }}#limitations">{% if lang == 'es' %}C&oacute;mo funciona{% elif lang == 'he' %}איך זה עובד{% elif lang == 'ar' %}كيف يعمل{% else %}How this works{% endif %} &rsaquo;</a></span>
+</div>

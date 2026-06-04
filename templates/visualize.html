@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block content %}
+{% include '_caveat.html' %}
     <div class="page-head">
         <h1 class="ph-title">{{ t('viz_title', lang) if t else 'Root Visualizer' }} <em>{{ root_key }}</em></h1>
     </div>

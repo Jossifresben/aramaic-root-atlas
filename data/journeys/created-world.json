@@ -1,0 +1,11 @@
+{
+  "id": "created-world",
+  "title": "Heaven, Mountain, and Wind",
+  "blurb": "Roots for the physical world — and one that blurs the line between wind and spirit.",
+  "stops": [
+    { "root": "SH-M-Y", "note": "Heaven, sky — grammatically a plural, as if the heavens were always many." },
+    { "root": "T-W-R", "note": "Mountain: where so many of the decisive scenes take place." },
+    { "root": "R-W-KH", "note": "Wind — and spirit, and breath. One skeleton, three senses the translators must choose between." },
+    { "root": "E-Y-N", "note": "Eye — and spring of water. The source you see and the source you drink from share a root." }
+  ]
+}

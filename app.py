@@ -1,5 +1,6 @@
 """Aramaic Root Atlas — a cross-corpus triliteral root explorer."""
 
+import datetime
 import json
 import os
 import threading
@@ -45,6 +46,7 @@ _glosser: WordGlosser | None = None
 _sedra = None
 _i18n: dict = {}
 _cognates_raw: dict = {}
+_featured: dict = {}
 _initialized = False
 _init_lock = threading.Lock()
 
@@ -57,7 +59,7 @@ TRANSLATIONS_DIR = os.path.join(DATA_DIR, 'translations')
 
 def _init():
     global _corpus, _extractor, _cognate_lookup, _glosser
-    global _i18n, _cognates_raw, _initialized, _semantic_fields
+    global _i18n, _cognates_raw, _featured, _initialized, _semantic_fields
 
     if _initialized:
         return
@@ -71,6 +73,13 @@ def _init():
         if os.path.exists(i18n_path):
             with open(i18n_path, 'r', encoding='utf-8') as f:
                 _i18n = json.load(f)
+
+        # Load curated discovery content
+        _featured = {'hero': [], 'root_of_day': []}
+        feat_path = os.path.join(DATA_DIR, 'discovery', 'featured_roots.json')
+        if os.path.exists(feat_path):
+            with open(feat_path, 'r', encoding='utf-8') as f:
+                _featured = json.load(f)
 
         # Load raw cognates JSON
         cog_path = os.path.join(ROOTS_DIR, 'cognates.json')
@@ -142,6 +151,53 @@ def _get_lang() -> str:
     return request.args.get('lang', 'en')
 
 
+def _root_of_the_day():
+    """Deterministic daily pick from the curated pool (reproducible, no RNG)."""
+    pool = _featured.get('root_of_day') or []
+    if not pool:
+        return None
+    idx = datetime.date.today().toordinal() % len(pool)
+    return pool[idx]
+
+
+def _root_card(root_input):
+    """Build a compact display card for a root, or None if not attested.
+
+    Uses only existing engine calls; no extraction logic added.
+    """
+    root_syriac = parse_root_input(root_input)
+    if not root_syriac:
+        return None
+    entry = _extractor.lookup_root(root_syriac)
+    if not entry:
+        return None
+    display = _extractor.get_root_display(root_syriac)
+    gloss = _extractor.get_root_gloss(root_syriac)
+    cog = _cognate_lookup.lookup(root_syriac)
+    if cog and not gloss:
+        gloss = cog.gloss_en
+    return {
+        'key': _translit_to_dash(root_syriac),
+        'syriac': display.get('syriac', root_syriac),
+        'hebrew': display.get('hebrew', ''),
+        'gloss': gloss or '',
+        'total': entry.total_occurrences,
+    }
+
+
+def _load_journeys():
+    """Load guided-journey definitions from data/journeys/*.json, sorted by title."""
+    out = []
+    jdir = os.path.join(DATA_DIR, 'journeys')
+    if os.path.isdir(jdir):
+        for fn in sorted(os.listdir(jdir)):
+            if fn.endswith('.json'):
+                with open(os.path.join(jdir, fn), 'r', encoding='utf-8') as f:
+                    out.append(json.load(f))
+    out.sort(key=lambda j: j.get('title', ''))
+    return out
+
+
 def _get_script() -> str:
     s = request.args.get('script', 'latin')
     return s if s in VALID_SCRIPTS else 'latin'
@@ -201,6 +257,28 @@ def ensure_initialized():
 
 
 @app.route('/')
+def home():
+    _init()
+    lang = _get_lang()
+    rotd_key = _root_of_the_day()
+    rotd = _root_card(rotd_key) if rotd_key else None
+    hero = [c for c in (_root_card(k) for k in _featured.get('hero', [])) if c]
+    return render_template('home.html',
+                           lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t_proxy, bn=_bn, rotd=rotd, hero=hero, page_id='discover-home')
+
+
+@app.route('/discover')
+def discover():
+    _init()
+    lang = _get_lang()
+    journeys = _load_journeys()
+    return render_template('discovery.html',
+                           lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t_proxy, bn=_bn, journeys=journeys, page_id='discover')
+
+
+@app.route('/search')
 def index():
     lang = _get_lang()
     corpora_info = []
@@ -513,6 +591,19 @@ def browse():
                            corpus_groups=corpus_groups,
                            corpus_filter=corpus_filter,
                            page_id='browse')
+
+
+@app.route('/journey/<path:root_key>')
+def journey(root_key):
+    _init()
+    lang = _get_lang()
+    card = _root_card(root_key)
+    if card is None:
+        from flask import abort
+        abort(404)
+    return render_template('journey.html',
+                           lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t_proxy, bn=_bn, card=card, page_id='discover')
 
 
 @app.route('/read/<path:book>/<int:chapter>')

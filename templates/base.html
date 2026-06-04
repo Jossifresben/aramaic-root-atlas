@@ -271,6 +271,9 @@ window.TOUR_IS_RTL = {{ 'true' if lang in ('he', 'ar') else 'false' }};
 </script>
 <script>
 window.SIDE_I18N = {
+    discover:         "{{ t('side_discover',     lang)|e if t else 'Discover' }}",
+    nav_discover_home:"{{ t('nav_discover_home', lang)|e if t else 'Discover' }}",
+    nav_journeys:     "{{ t('nav_journeys',      lang)|e if t else 'Journeys' }}",
     explore:        "{{ t('side_explore',        lang)|e if t else 'Explore' }}",
     analyze:        "{{ t('side_analyze',        lang)|e if t else 'Analyze' }}",
     workspace:      "{{ t('side_workspace',      lang)|e if t else 'Workspace' }}",

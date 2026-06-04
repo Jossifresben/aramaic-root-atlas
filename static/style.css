@@ -2067,3 +2067,75 @@ h3.subhead{
   /* Sidebar nav: tap targets generous */
   .side .side-link{padding:10px 12px;font-size:14.5px}
 }
+
+/* ── Discovery front-end ─────────────────────────────────────── */
+.home-wrap, .journey-wrap, .discover-wrap { max-width: 880px; margin: 1.5rem auto 4rem; padding: 0 1rem; }
+.home-title { font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.15; margin: 0 0 .4rem; }
+.home-sub { font-size: 1.15rem; color: var(--muted, #6b7280); margin: 0 0 1.5rem; }
+.home-search { display: flex; gap: .5rem; max-width: 560px; }
+.home-search input { flex: 1; padding: .7rem .9rem; font-size: 1rem; border: 1px solid var(--border, #d1d5db); border-radius: 8px; }
+.home-search button { padding: .7rem 1.2rem; border: none; border-radius: 8px; background: var(--accent, #3a6bc4); color: #fff; cursor: pointer; }
+.home-search-hint { font-size: .82rem; color: var(--muted, #6b7280); margin: .4rem 0 0; }
+.home-rotd { margin: 2.2rem 0; }
+.home-rotd-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted, #6b7280); margin-bottom: .4rem; }
+.home-rotd-card { display: flex; align-items: baseline; gap: 1rem; padding: 1rem 1.2rem; border: 1px solid var(--border, #e5e7eb); border-radius: 10px; text-decoration: none; color: inherit; }
+.rotd-syriac { font-size: 2rem; }
+.rotd-gloss { flex: 1; color: var(--muted, #6b7280); }
+.home-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .8rem; }
+.home-card { display: flex; flex-direction: column; gap: .25rem; padding: 1rem; border: 1px solid var(--border, #e5e7eb); border-radius: 10px; text-decoration: none; color: inherit; transition: box-shadow .15s; }
+.home-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+.card-syriac { font-size: 1.8rem; }
+.card-key { font-size: .78rem; color: var(--muted, #6b7280); letter-spacing: .04em; }
+.card-gloss { font-size: .9rem; }
+.home-explore-link { margin-top: 2.5rem; font-size: .9rem; }
+
+.journey-scripts { font-size: 1.1rem; display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
+.jr-syriac { font-size: 2.6rem; } .jr-hebrew { font-size: 2.2rem; } .jr-sep { color: var(--muted, #9ca3af); }
+.jr-key { font-family: monospace; font-size: 1rem; color: var(--muted, #6b7280); }
+.journey-gloss { font-size: 1.25rem; margin: .3rem 0; }
+.journey-note { color: var(--muted, #6b7280); font-size: .95rem; }
+.journey-timeline, .journey-panel, .journey-cousins, .journey-verse { margin: 2rem 0; }
+.jr-bar-row { display: flex; align-items: center; gap: .6rem; margin: .3rem 0; }
+.jr-bar-label { width: 140px; font-size: .85rem; }
+.jr-bar { flex: 1; background: var(--bg-subtle, #f3f4f6); border-radius: 4px; height: 14px; overflow: hidden; }
+.jr-bar-fill { display: block; height: 100%; background: var(--accent, #3a6bc4); }
+.jr-bar-count { width: 48px; text-align: right; font-size: .82rem; color: var(--muted, #6b7280); }
+.journey-panel { background: var(--bg-subtle, #f7f8fa); border-radius: 10px; padding: 1rem 1.25rem; }
+.jr-pill { display: inline-block; margin: .2rem; padding: .25rem .55rem; background: var(--bg-subtle, #f3f4f6); border-radius: 999px; font-size: .85rem; }
+.jr-cousin-lang { font-weight: 600; margin-right: .4rem; }
+.journey-disclaimer { font-size: .82rem; font-style: italic; color: var(--muted, #6b7280); }
+.journey-verse blockquote { font-size: 1.4rem; margin: 0 0 .4rem; }
+.journey-more { display: flex; gap: .6rem; margin-top: 2rem; }
+.journey-more .btn { padding: .5rem 1rem; border: 1px solid var(--border, #d1d5db); border-radius: 8px; text-decoration: none; background: transparent; color: var(--ink); }
+.journey-more .btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.discover-shelf { display: grid; gap: 1.2rem; }
+.discover-journey { border: 1px solid var(--border, #e5e7eb); border-radius: 10px; padding: 1.1rem 1.3rem; }
+.discover-journey h2 { margin: 0 0 .3rem; }
+.discover-blurb { color: var(--muted, #6b7280); margin: 0 0 .7rem; }
+.discover-stops { margin: 0; padding-left: 1.2rem; }
+.discover-stops li { margin: .3rem 0; }
+.discover-stop-root { font-family: monospace; font-weight: 600; }
+.discover-stop-note { color: var(--muted, #6b7280); margin-left: .4rem; }
+
+/* ── Collapsible sidebar groups ──────────────────────────────── */
+.side-group.collapsible > .side-label{
+  display:flex; align-items:center; justify-content:space-between;
+  cursor:pointer; user-select:none;
+}
+.side-group.collapsible > .side-label:hover{ color:var(--ink-2); }
+.side-caret{ width:13px; height:13px; stroke-width:2; transition:transform .15s ease; flex-shrink:0; }
+.side-group.collapsed > .side-label .side-caret{ transform:rotate(-90deg); }
+.side-group.collapsed > .side-link{ display:none; }
+
+/* ── Exploratory-tool caveat banner ──────────────────────────── */
+.caveat-banner{
+  display:flex; align-items:flex-start; gap:8px;
+  margin:0 0 18px; padding:9px 13px;
+  font-family:var(--sans); font-size:12.5px; line-height:1.5;
+  color:var(--ink-2);
+  background:var(--bg-3); border:1px solid var(--rule);
+  border-radius:6px;
+}
+.caveat-banner .caveat-ic{ width:15px; height:15px; flex-shrink:0; margin-top:1px; color:var(--gold-mark, var(--accent)); }
+.caveat-banner .caveat-link{ color:var(--link); white-space:nowrap; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:2px; margin-inline-start:4px; }

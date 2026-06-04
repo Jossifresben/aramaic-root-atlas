@@ -16,3 +16,6 @@ venv/
 .claude/
 .worktrees/
 .lighthouse/
+
+# Working drafts of the Zenodo paper — not for version control
+docs/paper/
