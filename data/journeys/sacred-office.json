@@ -1,0 +1,11 @@
+{
+  "id": "sacred-office",
+  "title": "Priests and Prophets",
+  "blurb": "The vocabulary of those who stood between the people and the holy.",
+  "stops": [
+    { "root": "K-H-N", "note": "Priest — one who serves at the altar; the office before the message." },
+    { "root": "N-B-Y", "note": "Prophet, to prophesy. The one who speaks for another voice." },
+    { "root": "Q-R-B", "note": "To approach — and to offer. You draw near in order to give." },
+    { "root": "SH-B-KH", "note": "To praise, to glorify: the work of the sanctuary set to words." }
+  ]
+}
