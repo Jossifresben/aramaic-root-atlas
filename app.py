@@ -244,6 +244,17 @@ def ensure_initialized():
     _init()
 
 
+@app.route('/')
+def home():
+    _init()
+    lang = _get_lang()
+    rotd = _root_card(_root_of_the_day()) if _root_of_the_day() else None
+    hero = [c for c in (_root_card(k) for k in _featured.get('hero', [])) if c]
+    return render_template('home.html',
+                           lang=lang, script=_get_script(), trans=_get_trans(),
+                           t=_t_proxy, bn=_bn, rotd=rotd, hero=hero, page_id='discover-home')
+
+
 @app.route('/search')
 def index():
     lang = _get_lang()

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Triliteral Aramaic Atlas — Discover{% endblock %}
+{% block content %}
+<div class="home-wrap">
+
+  <!-- Hook + meaning search -->
+  <section class="home-hero">
+    <h1 class="home-title">Every Aramaic word grows from a three-letter root.</h1>
+    <p class="home-sub">Pick one and watch it travel across 1,500 years and two scripts.</p>
+    <form class="home-search" action="/api/reverse-search" method="get" id="home-search-form" onsubmit="return homeSearch(event)">
+      <input type="text" id="home-search-input" name="q" placeholder="Type a word you know — peace, king, write, bless" aria-label="Search by meaning">
+      <button type="submit">Explore</button>
+    </form>
+    <p class="home-search-hint">We'll guess the closest root — a starting point, not the final word.</p>
+  </section>
+
+  <!-- Root of the day -->
+  {% if rotd %}
+  <section class="home-rotd">
+    <div class="home-rotd-label">Root of the day</div>
+    <a class="home-rotd-card" href="/journey/{{ rotd.key }}?lang={{ lang }}">
+      <span class="rotd-syriac">{{ rotd.syriac }}</span>
+      <span class="rotd-gloss">{{ rotd.gloss }}</span>
+      <span class="rotd-go">See its journey →</span>
+    </a>
+  </section>
+  {% endif %}
+
+  <!-- Curated hero grid -->
+  <section class="home-grid-wrap">
+    <h2>Start with a famous root</h2>
+    <div class="home-grid">
+      {% for c in hero %}
+      <a class="home-card" href="/journey/{{ c.key }}?lang={{ lang }}">
+        <span class="card-syriac">{{ c.syriac }}</span>
+        <span class="card-key">{{ c.key }}</span>
+        <span class="card-gloss">{{ c.gloss }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <p class="home-explore-link"><a href="/search?lang={{ lang }}">Looking for the research tools? → Explore</a></p>
+</div>
+
+<script>
+function homeSearch(e){
+  e.preventDefault();
+  var q = document.getElementById('home-search-input').value.trim();
+  if(!q) return false;
+  fetch('/api/reverse-search?q=' + encodeURIComponent(q) + '&lang=' + (document.documentElement.lang||'en'))
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var first = (d.results && d.results[0]) || (Array.isArray(d) && d[0]) || null;
+      var key = first && (first.root_key || first.key || first.root);
+      if(key){ window.location = '/journey/' + encodeURIComponent(key) + '?lang=' + (document.documentElement.lang||'en'); }
+      else { alert('No close root found — try another word.'); }
+    });
+  return false;
+}
+</script>
+{% endblock %}

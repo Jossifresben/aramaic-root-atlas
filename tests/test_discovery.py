@@ -48,3 +48,11 @@ def test_journey_known_root_renders(client):
 def test_journey_unknown_root_404(client):
     r = client.get('/journey/ZZZZ')
     assert r.status_code == 404
+
+
+def test_home_renders_with_featured(client):
+    r = client.get('/')
+    assert r.status_code == 200
+    body = r.data.decode('utf-8')
+    assert '/journey/' in body          # at least one journey link (hero grid)
+    assert 'root of the day' in body.lower()
