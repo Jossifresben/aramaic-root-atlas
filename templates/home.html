@@ -5,30 +5,30 @@
 
   <!-- Hook + meaning search -->
   <section class="home-hero">
-    <h1 class="home-title">Every Aramaic word grows from a three-letter root.</h1>
-    <p class="home-sub">Pick one and watch it travel across 1,500 years and two scripts.</p>
+    <h1 class="home-title">{% if lang == 'es' %}Cada palabra aramea nace de una ra&iacute;z de tres letras.{% elif lang == 'he' %}כל מילה ארמית צומחת משורש בן שלוש אותיות.{% elif lang == 'ar' %}كل كلمة آرامية تنمو من جذر من ثلاثة أحرف.{% else %}Every Aramaic word grows from a three-letter root.{% endif %}</h1>
+    <p class="home-sub">{% if lang == 'es' %}Elija una y v&eacute;ala viajar por 1.500 a&ntilde;os y dos escrituras.{% elif lang == 'he' %}בחרו אחד וראו אותו נודד דרך 1,500 שנה ושתי מערכות כתב.{% elif lang == 'ar' %}اختاروا واحداً وشاهدوه يسافر عبر 1500 عام ونظامَي كتابة.{% else %}Pick one and watch it travel across 1,500 years and two scripts.{% endif %}</p>
     <form class="home-search" action="/api/reverse-search" method="get" id="home-search-form" onsubmit="return homeSearch(event)">
-      <input type="text" id="home-search-input" name="q" placeholder="Type a word you know — peace, king, write, bless" aria-label="Search by meaning">
-      <button type="submit">Explore</button>
+      <input type="text" id="home-search-input" name="q" placeholder="{% if lang == 'es' %}Escriba una palabra que conozca: paz, rey, escribir, bendecir{% elif lang == 'he' %}הקלידו מילה שאתם מכירים — שלום, מלך, לכתוב, לברך{% elif lang == 'ar' %}اكتبوا كلمة تعرفونها — سلام، ملك، كتابة، بركة{% else %}Type a word you know — peace, king, write, bless{% endif %}" aria-label="{% if lang == 'es' %}Buscar por significado{% elif lang == 'he' %}חיפוש לפי משמעות{% elif lang == 'ar' %}البحث بالمعنى{% else %}Search by meaning{% endif %}">
+      <button type="submit">{% if lang == 'es' %}Explorar{% elif lang == 'he' %}חקרו{% elif lang == 'ar' %}استكشاف{% else %}Explore{% endif %}</button>
     </form>
-    <p class="home-search-hint">We'll guess the closest root — a starting point, not the final word.</p>
+    <p class="home-search-hint">{% if lang == 'es' %}Adivinaremos la ra&iacute;z m&aacute;s cercana: un punto de partida, no la &uacute;ltima palabra.{% elif lang == 'he' %}ננחש את השורש הקרוב ביותר — נקודת מוצא, לא המילה האחרונה.{% elif lang == 'ar' %}سنخمّن أقرب جذر — نقطة انطلاق لا الكلمة الأخيرة.{% else %}We&rsquo;ll guess the closest root &mdash; a starting point, not the final word.{% endif %}</p>
   </section>
 
   <!-- Root of the day -->
   {% if rotd %}
   <section class="home-rotd">
-    <div class="home-rotd-label">Root of the day</div>
+    <div class="home-rotd-label">{% if lang == 'es' %}Ra&iacute;z del d&iacute;a{% elif lang == 'he' %}שורש היום{% elif lang == 'ar' %}جذر اليوم{% else %}Root of the day{% endif %}</div>
     <a class="home-rotd-card" href="/journey/{{ rotd.key }}?lang={{ lang }}">
       <span class="rotd-syriac">{{ rotd.syriac }}</span>
       <span class="rotd-gloss">{{ rotd.gloss }}</span>
-      <span class="rotd-go">See its journey →</span>
+      <span class="rotd-go">{% if lang == 'es' %}Ver su viaje{% elif lang == 'he' %}צפו במסע{% elif lang == 'ar' %}شاهدوا رحلته{% else %}See its journey{% endif %} {% if lang in ('he','ar') %}&larr;{% else %}&rarr;{% endif %}</span>
     </a>
   </section>
   {% endif %}
 
   <!-- Curated hero grid -->
   <section class="home-grid-wrap">
-    <h2>Start with a famous root</h2>
+    <h2>{% if lang == 'es' %}Comience con una ra&iacute;z famosa{% elif lang == 'he' %}התחילו עם שורש מפורסם{% elif lang == 'ar' %}ابدؤوا بجذر مشهور{% else %}Start with a famous root{% endif %}</h2>
     <div class="home-grid">
       {% for c in hero %}
       <a class="home-card" href="/journey/{{ c.key }}?lang={{ lang }}">
@@ -40,10 +40,11 @@
     </div>
   </section>
 
-  <p class="home-explore-link"><a href="/search?lang={{ lang }}">Looking for the research tools? → Explore</a></p>
+  <p class="home-explore-link"><a href="/search?lang={{ lang }}">{% if lang == 'es' %}&iquest;Busca las herramientas de investigaci&oacute;n? &rarr; Explorar{% elif lang == 'he' %}מחפשים את כלי המחקר? &larr; עיון{% elif lang == 'ar' %}تبحثون عن أدوات البحث؟ &larr; استكشاف{% else %}Looking for the research tools? &rarr; Explore{% endif %}</a></p>
 </div>
 
 <script>
+var HOME_NO_ROOT = "{% if lang == 'es' %}No se encontró una raíz cercana: pruebe otra palabra.{% elif lang == 'he' %}לא נמצא שורש קרוב — נסו מילה אחרת.{% elif lang == 'ar' %}لم يُعثر على جذر قريب — جرّبوا كلمة أخرى.{% else %}No close root found — try another word.{% endif %}";
 function homeSearch(e){
   e.preventDefault();
   var q = document.getElementById('home-search-input').value.trim();
@@ -54,7 +55,7 @@ function homeSearch(e){
       var first = (d.results && d.results[0]) || (Array.isArray(d) && d[0]) || null;
       var key = first && (first.root_key || first.key || first.root);
       if(key){ window.location = '/journey/' + encodeURIComponent(key) + '?lang=' + (document.documentElement.lang||'en'); }
-      else { alert('No close root found — try another word.'); }
+      else { alert(HOME_NO_ROOT); }
     });
   return false;
 }

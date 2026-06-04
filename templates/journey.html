@@ -11,45 +11,60 @@
       <span class="jr-sep">·</span><span class="jr-key">{{ card.key }}</span>
     </div>
     <p class="journey-gloss">{{ card.gloss }}</p>
-    {% if card.hebrew %}<p class="journey-note">Two scripts, one root — Syriac and Hebrew square resolve to the same three-letter skeleton.</p>{% endif %}
+    {% if card.hebrew %}<p class="journey-note">{% if lang == 'es' %}Dos escrituras, una ra&iacute;z: el siríaco y el hebreo cuadrado se resuelven en el mismo esqueleto de tres letras.{% elif lang == 'he' %}שתי מערכות כתב, שורש אחד — הסורית והעברית המרובעת מתלכדות לאותו שלד בן שלוש אותיות.{% elif lang == 'ar' %}نظاما كتابة، جذر واحد — السريانية والعبرية المربّعة تؤولان إلى الهيكل نفسه من ثلاثة أحرف.{% else %}Two scripts, one root &mdash; Syriac and Hebrew square resolve to the same three-letter skeleton.{% endif %}</p>{% endif %}
   </header>
 
   <!-- 2. Timeline strip (filled by JS from /api/diachronic/root) -->
   <section class="journey-timeline">
-    <h2>Across 1,500 years</h2>
-    <div id="jr-timeline" class="jr-timeline">Loading the journey…</div>
+    <h2>{% if lang == 'es' %}A lo largo de 1.500 a&ntilde;os{% elif lang == 'he' %}לאורך 1,500 שנה{% elif lang == 'ar' %}عبر 1500 عام{% else %}Across 1,500 years{% endif %}</h2>
+    <div id="jr-timeline" class="jr-timeline">{% if lang == 'es' %}Cargando el viaje&hellip;{% elif lang == 'he' %}טוען את המסע&hellip;{% elif lang == 'ar' %}جارٍ تحميل الرحلة&hellip;{% else %}Loading the journey&hellip;{% endif %}</div>
   </section>
 
   <!-- 3. One skeleton, several meanings (homograph lesson) -->
   <section class="journey-panel">
-    <h2>One skeleton, several meanings</h2>
+    <h2>{% if lang == 'es' %}Un esqueleto, varios significados{% elif lang == 'he' %}שלד אחד, כמה משמעויות{% elif lang == 'ar' %}هيكل واحد، معانٍ عدة{% else %}One skeleton, several meanings{% endif %}</h2>
+    {% if lang == 'es' %}
+    <p>Una ra&iacute;z de tres letras es un <em>esqueleto</em>, no una sola palabra. Las mismas consonantes pueden llevar sentidos relacionados &mdash;a veces bastante distintos&mdash;. Este atlas agrupa las palabras por su esqueleto; un diccionario separa los sentidos individuales. Tome lo que ve aqu&iacute; como un punto de partida para explorar, no como una definici&oacute;n final.</p>
+    {% elif lang == 'he' %}
+    <p>שורש בן שלוש אותיות הוא <em>שלד</em>, לא מילה אחת. אותם עיצורים יכולים לשאת משמעויות קרובות &mdash; לעתים שונות למדי. האטלס הזה מקבץ מילים לפי השלד שלהן; מילון מפריד בין המשמעויות הבודדות. ראו את שמוצג כאן כנקודת מוצא לחקירה, לא כהגדרה סופית.</p>
+    {% elif lang == 'ar' %}
+    <p>الجذر من ثلاثة أحرف <em>هيكل</em> لا كلمة واحدة. الحروف نفسها قد تحمل معاني متقاربة &mdash; ومختلفة أحياناً. يجمع هذا الأطلس الكلمات بحسب هيكلها؛ أما المعجم فيفصل المعاني المفردة. اعتبروا ما ترونه هنا نقطة انطلاق للاستكشاف لا تعريفاً نهائياً.</p>
+    {% else %}
     <p>A three-letter root is a <em>skeleton</em>, not a single word. The same consonants can carry
-    related — sometimes quite different — senses. This atlas groups words by their skeleton; a
+    related &mdash; sometimes quite different &mdash; senses. This atlas groups words by their skeleton; a
     dictionary separates the individual senses. Treat what you see here as a starting point for
     exploration, not a final definition.</p>
+    {% endif %}
   </section>
 
   <!-- 4. Cousins across languages (filled by JS from /api/root-family) -->
   <section class="journey-cousins">
-    <h2>Cousins in sister languages</h2>
+    <h2>{% if lang == 'es' %}Primas en lenguas hermanas{% elif lang == 'he' %}בנות דודות בלשונות אחיות{% elif lang == 'ar' %}أبناء عمومة في لغات شقيقة{% else %}Cousins in sister languages{% endif %}</h2>
     <div id="jr-cousins" class="jr-cousins"></div>
-    <p class="journey-disclaimer">Fascinating connections — explorers' leads, not dictionary-grade etymology.</p>
+    <p class="journey-disclaimer">{% if lang == 'es' %}Conexiones fascinantes: pistas para el explorador, no etimolog&iacute;a de diccionario.{% elif lang == 'he' %}קשרים מרתקים — רמזים לחוקר, לא אטימולוגיה ברמת מילון.{% elif lang == 'ar' %}روابط آسرة — إشارات للمستكشف لا اشتقاق بمستوى المعاجم.{% else %}Fascinating connections &mdash; an explorer&rsquo;s leads, not dictionary-grade etymology.{% endif %}</p>
   </section>
 
   <!-- 5. One real verse, decoded (filled by JS) -->
   <section class="journey-verse">
-    <h2>Seen in the wild</h2>
+    <h2>{% if lang == 'es' %}Visto en su contexto{% elif lang == 'he' %}כפי שזה מופיע{% elif lang == 'ar' %}كما يظهر في النص{% else %}Seen in the wild{% endif %}</h2>
     <div id="jr-verse" class="jr-verse"></div>
   </section>
 
   <!-- 6. Keep exploring -->
   <nav class="journey-more">
-    <a class="btn" href="/visualize/{{ card.key }}?lang={{ lang }}">Full visualizer</a>
-    <a class="btn" href="/discover?lang={{ lang }}">More journeys</a>
+    <a class="btn" href="/visualize/{{ card.key }}?lang={{ lang }}">{% if lang == 'es' %}Visualizador completo{% elif lang == 'he' %}ויזואליזר מלא{% elif lang == 'ar' %}المصوّر الكامل{% else %}Full visualizer{% endif %}</a>
+    <a class="btn" href="/discover?lang={{ lang }}">{% if lang == 'es' %}M&aacute;s recorridos{% elif lang == 'he' %}עוד מסעות{% elif lang == 'ar' %}المزيد من الرحلات{% else %}More journeys{% endif %}</a>
   </nav>
 </div>
 
 <script>
+var JR_I18N = {
+  noTimeline:  "{% if lang == 'es' %}Sin datos de línea de tiempo.{% elif lang == 'he' %}אין נתוני ציר זמן.{% elif lang == 'ar' %}لا توجد بيانات للخط الزمني.{% else %}No timeline data.{% endif %}",
+  tlUnavail:   "{% if lang == 'es' %}Línea de tiempo no disponible.{% elif lang == 'he' %}ציר הזמן אינו זמין.{% elif lang == 'ar' %}الخط الزمني غير متاح.{% else %}Timeline unavailable.{% endif %}",
+  noCousins:   "{% if lang == 'es' %}Aún no hay primas registradas.{% elif lang == 'he' %}עדיין לא נרשמו בנות דודות.{% elif lang == 'ar' %}لا أبناء عمومة مسجّلون بعد.{% else %}No cousins recorded yet.{% endif %}",
+  hebrew:      "{% if lang == 'es' %}Hebreo{% elif lang == 'he' %}עברית{% elif lang == 'ar' %}العبرية{% else %}Hebrew{% endif %}",
+  arabic:      "{% if lang == 'es' %}Árabe{% elif lang == 'he' %}ערבית{% elif lang == 'ar' %}العربية{% else %}Arabic{% endif %}"
+};
 (function(){
   var wrap = document.querySelector('.journey-wrap');
   var root = wrap && wrap.dataset.root;
@@ -60,7 +75,7 @@
   // API returns: { corpora: [{label, raw_count, ...}, ...] }
   fetch('/api/diachronic/root?root=' + q).then(function(r){return r.json();}).then(function(d){
     var el = document.getElementById('jr-timeline');
-    if(!d.corpora){ el.textContent = 'No timeline data.'; return; }
+    if(!d.corpora){ el.textContent = JR_I18N.noTimeline; return; }
     var max = Math.max.apply(null, d.corpora.map(function(c){return c.raw_count;}).concat([1]));
     el.innerHTML = d.corpora.map(function(c){
       var pct = Math.round((c.raw_count / max) * 100);
@@ -68,7 +83,7 @@
         + '<span class="jr-bar"><span class="jr-bar-fill" style="width:' + pct + '%"></span></span>'
         + '<span class="jr-bar-count">' + c.raw_count + '</span></div>';
     }).join('');
-  }).catch(function(){ document.getElementById('jr-timeline').textContent = 'Timeline unavailable.'; });
+  }).catch(function(){ document.getElementById('jr-timeline').textContent = JR_I18N.tlUnavail; });
 
   // Cousins + key verse from existing root-family endpoint
   // API returns: { hebrew: [{word, translit, meaning}, ...], arabic: [...],
@@ -84,7 +99,7 @@
             return '<span class="jr-pill">' + (c.word||'') + ' <em>' + (c.meaning||'') + '</em></span>';
           }).join('') + '</div>';
     }
-    cousins.innerHTML = pills(heb, 'Hebrew') + pills(ar, 'Arabic') || '<p>No cousins recorded yet.</p>';
+    cousins.innerHTML = pills(heb, JR_I18N.hebrew) + pills(ar, JR_I18N.arabic) || '<p>' + JR_I18N.noCousins + '</p>';
 
     var verse = document.getElementById('jr-verse');
     if(d.paradigmatic_ref){
