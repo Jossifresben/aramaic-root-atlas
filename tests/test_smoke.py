@@ -12,6 +12,8 @@ import pytest
 PAGES = [
     '/',
     '/search',
+    '/discover',
+    '/journey/SH-L-M',
     '/about',
     '/browse',
     '/parallel',

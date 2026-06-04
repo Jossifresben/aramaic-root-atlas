@@ -28,8 +28,14 @@
   // ── Sidebar nav data — Flask URL routing ────────────────
   var S = window.SIDE_I18N || {};
   var NAV = {
+    discover: [
+      { id:'discover-home', href:'/',          label: S.nav_discover_home || 'Discover',
+        ic:'<path d="M12 2l2.5 7H22l-6 4.5L18.5 22 12 17.5 5.5 22 8 13.5 2 9h7.5z"/>' },
+      { id:'discover',      href:'/discover',   label: S.nav_journeys || 'Journeys',
+        ic:'<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>' },
+    ],
     explore: [
-      { id:'search',      href:'/',               label: S.nav_trace_root   || 'Trace Root',        kbd:'/',
+      { id:'search',      href:'/search',          label: S.nav_trace_root   || 'Trace Root',        kbd:'/',
         ic:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>' },
       { id:'browse',      href:'/browse',          label: S.nav_browse       || 'Browse corpora',
         ic:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
@@ -93,6 +99,10 @@
         +'<div class="brand-text"><div class="brand-name">Root Atlas</div>'
         +'<div class="brand-sub">Aramaic Corpora</div></div>'
       +'</a>'
+      +'<div class="side-group" id="side-discover">'
+        +'<div class="side-label">'+(SI.discover||'Discover')+'</div>'
+        +NAV.discover.map(link).join('')
+      +'</div>'
       +'<div class="side-group" id="side-explore">'
         +'<div class="side-label">'+(SI.explore||'Explore')+'</div>'
         +NAV.explore.map(link).join('')
