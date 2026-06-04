@@ -1,5 +1,6 @@
 """Aramaic Root Atlas — a cross-corpus triliteral root explorer."""
 
+import datetime
 import json
 import os
 import threading
@@ -45,6 +46,7 @@ _glosser: WordGlosser | None = None
 _sedra = None
 _i18n: dict = {}
 _cognates_raw: dict = {}
+_featured: dict = {}
 _initialized = False
 _init_lock = threading.Lock()
 
@@ -57,7 +59,7 @@ TRANSLATIONS_DIR = os.path.join(DATA_DIR, 'translations')
 
 def _init():
     global _corpus, _extractor, _cognate_lookup, _glosser
-    global _i18n, _cognates_raw, _initialized, _semantic_fields
+    global _i18n, _cognates_raw, _featured, _initialized, _semantic_fields
 
     if _initialized:
         return
@@ -71,6 +73,14 @@ def _init():
         if os.path.exists(i18n_path):
             with open(i18n_path, 'r', encoding='utf-8') as f:
                 _i18n = json.load(f)
+
+        # Load curated discovery content
+        global _featured
+        _featured = {'hero': [], 'root_of_day': []}
+        feat_path = os.path.join(DATA_DIR, 'discovery', 'featured_roots.json')
+        if os.path.exists(feat_path):
+            with open(feat_path, 'r', encoding='utf-8') as f:
+                _featured = json.load(f)
 
         # Load raw cognates JSON
         cog_path = os.path.join(ROOTS_DIR, 'cognates.json')
@@ -140,6 +150,15 @@ VALID_TRANS = ('en', 'es', 'he', 'ar', 'el')
 
 def _get_lang() -> str:
     return request.args.get('lang', 'en')
+
+
+def _root_of_the_day():
+    """Deterministic daily pick from the curated pool (reproducible, no RNG)."""
+    pool = _featured.get('root_of_day') or []
+    if not pool:
+        return None
+    idx = datetime.date.today().toordinal() % len(pool)
+    return pool[idx]
 
 
 def _get_script() -> str:
