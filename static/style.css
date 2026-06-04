@@ -2117,3 +2117,13 @@ h3.subhead{
 .discover-stops li { margin: .3rem 0; }
 .discover-stop-root { font-family: monospace; font-weight: 600; }
 .discover-stop-note { color: var(--muted, #6b7280); margin-left: .4rem; }
+
+/* ── Collapsible sidebar groups ──────────────────────────────── */
+.side-group.collapsible > .side-label{
+  display:flex; align-items:center; justify-content:space-between;
+  cursor:pointer; user-select:none;
+}
+.side-group.collapsible > .side-label:hover{ color:var(--ink-2); }
+.side-caret{ width:13px; height:13px; stroke-width:2; transition:transform .15s ease; flex-shrink:0; }
+.side-group.collapsed > .side-label .side-caret{ transform:rotate(-90deg); }
+.side-group.collapsed > .side-link{ display:none; }

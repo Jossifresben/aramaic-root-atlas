@@ -93,28 +93,36 @@
         +'</a>';
     }
     var SI = window.SIDE_I18N || {};
+
+    // Collapsible-group state (persisted). Analyze + Workspace start collapsed;
+    // a group containing the active page is always shown.
+    function collapseState(){ try{ return JSON.parse(localStorage.getItem('side_collapsed') || '{}'); }catch(e){ return {}; } }
+    function isCollapsed(id, items){
+      if(items.some(function(it){ return it.id === active; })) return false;
+      var s = collapseState();
+      return id in s ? !!s[id] : (id === 'analyze' || id === 'workspace');
+    }
+    function group(id, label, items, collapsible){
+      var collapsed = collapsible && isCollapsed(id, items);
+      return '<div class="side-group'+(collapsible?' collapsible':'')+(collapsed?' collapsed':'')+'" id="side-'+id+'" data-group="'+id+'">'
+        +'<div class="side-label"'+(collapsible?' role="button" tabindex="0" aria-expanded="'+(!collapsed)+'"':'')+'>'
+          +'<span>'+label+'</span>'
+          +(collapsible?'<svg class="side-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>':'')
+        +'</div>'
+        +items.map(link).join('')
+      +'</div>';
+    }
+
     side.innerHTML = ''
       +'<a href="'+withLang('/')+'" class="brand">'
         +'<div class="brand-mark">ܐ</div>'
         +'<div class="brand-text"><div class="brand-name">Root Atlas</div>'
         +'<div class="brand-sub">Aramaic Corpora</div></div>'
       +'</a>'
-      +'<div class="side-group" id="side-discover">'
-        +'<div class="side-label">'+(SI.discover||'Discover')+'</div>'
-        +NAV.discover.map(link).join('')
-      +'</div>'
-      +'<div class="side-group" id="side-explore">'
-        +'<div class="side-label">'+(SI.explore||'Explore')+'</div>'
-        +NAV.explore.map(link).join('')
-      +'</div>'
-      +'<div class="side-group" id="side-analyze">'
-        +'<div class="side-label">'+(SI.analyze||'Analyze')+'</div>'
-        +NAV.analyze.map(link).join('')
-      +'</div>'
-      +'<div class="side-group" id="side-workspace">'
-        +'<div class="side-label">'+(SI.workspace||'Workspace')+'</div>'
-        +NAV.workspace.map(link).join('')
-      +'</div>'
+      +group('discover',  (SI.discover||'Discover'),   NAV.discover,  false)
+      +group('explore',   (SI.explore||'Explore'),     NAV.explore,   true)
+      +group('analyze',   (SI.analyze||'Analyze'),     NAV.analyze,   true)
+      +group('workspace', (SI.workspace||'Workspace'), NAV.workspace, true)
       +'<div class="side-group">'
         +NAV.info.map(link).join('')
       +'</div>'
@@ -128,6 +136,21 @@
           +'<button data-theme="system" onclick="setTheme(\'system\')">Auto</button>'
         +'</div>'
       +'</div>';
+
+    // Wire collapse toggles
+    side.querySelectorAll('.side-group.collapsible > .side-label').forEach(function(lbl){
+      function toggle(){
+        var g = lbl.closest('.side-group');
+        var nowCollapsed = !g.classList.contains('collapsed');
+        g.classList.toggle('collapsed', nowCollapsed);
+        lbl.setAttribute('aria-expanded', String(!nowCollapsed));
+        var st = collapseState(); st[g.dataset.group] = nowCollapsed;
+        try{ localStorage.setItem('side_collapsed', JSON.stringify(st)); }catch(e){}
+      }
+      lbl.addEventListener('click', toggle);
+      lbl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+    });
+
     syncThemeToggle();
   }
 
