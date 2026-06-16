@@ -22,7 +22,7 @@ authors:
     given-names: Jose
     website: https://jossifresco.com
     orcid: https://orcid.org/0009-0000-2026-0836
-version: "3.2.0"
+version: "3.2.1"
 date-released: "2026-06-04"
 doi: 10.5281/zenodo.19358625
 license: Apache-2.0

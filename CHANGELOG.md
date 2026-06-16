@@ -10,6 +10,25 @@ indexed corpora, glosses, cognates, or extraction outputs (information
 researchers need when deciding whether re-runs of cited analyses are
 reproducible).
 
+## [v3.2.1] — 2026-06-04
+
+Patch release. Two fixes to the v3.2.0 Discovery surfaces.
+
+### Fixed
+- **Root-card glosses ignored the UI language.** The Discover home and Root
+  Journey cards always showed the English gloss even in Spanish/Hebrew/Arabic.
+  `_root_card` now selects the cognate gloss matching the UI language
+  (`gloss_es`/`gloss_he`/`gloss_ar`, which existed in the data but were unused)
+  with English fallback; `home()` and `journey()` pass the language through.
+- **Social-share (Open Graph) card was a single stale English image.** The
+  `og:image`/`twitter:image` now switch by UI language, using four cards
+  (`og-en/es/he/ar.png`) captured from the new Discover home. The previous
+  `og-image.png` was a screenshot of the pre-Discovery homepage with outdated
+  statistics.
+
+### Data Changes
+- None.
+
 ## [v3.2.0] — 2026-06-04
 
 Feature release. Repositions the Atlas as a **discovery tool for students and

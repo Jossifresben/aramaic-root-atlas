@@ -9,7 +9,7 @@ Zenodo's description sanitizer strips h1–h6, so section headings use
 """
 import json, os
 
-VERSION = "3.2.0"
+VERSION = "3.2.1"
 
 description = """
 <p><strong>Aramaic Root Atlas</strong> is an open-access web application for cross-corpus analysis of triliteral roots across approximately 1,500 years of Aramaic literary history. Version 3.2 indexes <strong>5,666 roots</strong> across <strong>47,358 verses</strong> and <strong>685,848 words</strong> from <strong>six corpora</strong> spanning the Achaemenid, Roman, and Late Antique periods, unified under a single consonantal root index with cross-script (Syriac &harr; Hebrew square) normalization. With v3.2 the Atlas adds a <strong>discovery-first front door</strong> aimed at students and curious minds, alongside the existing scholarly tools.</p>
@@ -63,6 +63,7 @@ description = """
 <li><strong>Repositioned as a discovery tool, honestly</strong> &mdash; every analytical surface now carries an "exploratory, not citable" notice linking to the limitations; the About page's applications section is reframed around exploration; root extraction and cognates are openly flagged as heuristic, not validated findings.</li>
 <li><strong>UI</strong> &mdash; a collapsible sidebar (Explore/Analyze/Workspace collapse by default; Discover stays open), full English/Spanish/Hebrew/Arabic localization of the new surfaces, and corrected on-page statistics.</li>
 <li>The linguistic engine, data, and corpora are <strong>unchanged</strong> from v3.1.1 (six corpora; 5,666 roots; 1,604 cognate entries) &mdash; this release is a front-end and positioning reframe.</li>
+<li><strong>v3.2.1 patch:</strong> root-card glosses on the Discover home and Root Journey now follow the selected UI language (es/he/ar) instead of always showing English; social-share (Open Graph) cards are generated per language and refreshed to the new Discover home.</li>
 </ul>
 
 <p><strong>What's New in v3.1.0</strong></p>
@@ -82,7 +83,7 @@ description = """
 <p>Corpus data is drawn from the ETCBC Peshitta corpus (Eep Talstra Centre for Bible and Computer, Vrije Universiteit Amsterdam), the Westminster Leningrad Codex, Targum Onkelos, and Targum Jonathan via Sefaria, and the Digital Syriac Corpus for Ephrem's Hymns of Nisibis. Translations are sourced from bible.helloao.org. The SEDRA lexicon is provided by the Beth Mardutho Syriac Institute. Cognate data was generated and curated with the Anthropic Claude API. Curated root-card seed data is drawn from the companion project Peshitta Constellations.</p>
 
 <p><strong>How to Cite</strong></p>
-<p>Fresco Benaim, Jose. (2026). <em>Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer</em> (v3.2.0). Zenodo. <a href="https://doi.org/10.5281/zenodo.19358625">https://doi.org/10.5281/zenodo.19358625</a></p>
+<p>Fresco Benaim, Jose. (2026). <em>Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer</em> (v3.2.1). Zenodo. <a href="https://doi.org/10.5281/zenodo.19358625">https://doi.org/10.5281/zenodo.19358625</a></p>
 <p>The concept DOI <a href="https://doi.org/10.5281/zenodo.19358625">10.5281/zenodo.19358625</a> always resolves to the latest version. BibTeX, Chicago, MLA, APA, and SBL formats are available with one click on every analysis page in the live application and via the <code>CITATION.cff</code> in the repository.</p>
 
 <p><strong>License and Source</strong></p>
