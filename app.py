@@ -160,10 +160,12 @@ def _root_of_the_day():
     return pool[idx]
 
 
-def _root_card(root_input):
+def _root_card(root_input, lang='en'):
     """Build a compact display card for a root, or None if not attested.
 
-    Uses only existing engine calls; no extraction logic added.
+    Gloss follows the UI language where a localized cognate gloss exists
+    (es/he/ar), falling back to the English known-root gloss. Uses only
+    existing engine calls; no extraction logic added.
     """
     root_syriac = parse_root_input(root_input)
     if not root_syriac:
@@ -172,10 +174,14 @@ def _root_card(root_input):
     if not entry:
         return None
     display = _extractor.get_root_display(root_syriac)
-    gloss = _extractor.get_root_gloss(root_syriac)
     cog = _cognate_lookup.lookup(root_syriac)
-    if cog and not gloss:
-        gloss = cog.gloss_en
+    gloss = ''
+    if lang != 'en' and cog:
+        gloss = ({'es': cog.gloss_es,
+                  'he': getattr(cog, 'gloss_he', ''),
+                  'ar': getattr(cog, 'gloss_ar', '')}.get(lang) or '').strip()
+    if not gloss:
+        gloss = _extractor.get_root_gloss(root_syriac) or (cog.gloss_en if cog else '')
     return {
         'key': _translit_to_dash(root_syriac),
         'syriac': display.get('syriac', root_syriac),
@@ -261,8 +267,8 @@ def home():
     _init()
     lang = _get_lang()
     rotd_key = _root_of_the_day()
-    rotd = _root_card(rotd_key) if rotd_key else None
-    hero = [c for c in (_root_card(k) for k in _featured.get('hero', [])) if c]
+    rotd = _root_card(rotd_key, lang) if rotd_key else None
+    hero = [c for c in (_root_card(k, lang) for k in _featured.get('hero', [])) if c]
     return render_template('home.html',
                            lang=lang, script=_get_script(), trans=_get_trans(),
                            t=_t_proxy, bn=_bn, rotd=rotd, hero=hero, page_id='discover-home')
@@ -597,7 +603,7 @@ def browse():
 def journey(root_key):
     _init()
     lang = _get_lang()
-    card = _root_card(root_key)
+    card = _root_card(root_key, lang)
     if card is None:
         from flask import abort
         abort(404)
