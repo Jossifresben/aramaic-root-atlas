@@ -57,14 +57,51 @@ This document lists all data sources, licenses, and third-party resources used b
 - **Fetch script:** `scripts/fetch_targum_onkelos.py`
 - **Notes:** Targum Onkelos is the authoritative Jewish Aramaic translation of the Torah. Dating is debated: traditional dates place it in the 1st-3rd c. CE, but some scholars place the final redaction as late as the 5th c. CE. The text was fetched from the Sefaria API; the underlying critical edition basis is *not* fully documented by Sefaria, and this should be regularized in a future release (target: replace with Sperber's critical edition). Stored in Hebrew square script.
 
+### Targum Jonathan
+
+- **Content:** 9,296 verses, 157,449 words (Former and Latter Prophets, 21
+  books: Joshua–II Kings, Isaiah, Jeremiah, Ezekiel, the Twelve)
+- **Source:** Sefaria API
+- **License:** CC-BY-SA (Creative Commons Attribution-ShareAlike)
+- **Script:** Hebrew square (stored consonantally; diacritics stripped at fetch)
+- **Corpus ID:** `targum_jonathan`
+- **File:** `data/corpora/targum_jonathan.csv`
+- **Fetch script:** `scripts/fetch_targum_jonathan.py`
+- **Period:** ~1st–4th c. CE (traditional attribution to Jonathan ben Uzziel;
+  final redaction debated).
+- **Notes:** Added in v3.1 (2026-05-29). Book names use Arabic numerals
+  ("1 Samuel") to align with the Peshitta OT in the parallel viewer.
+
+### Targums to the Writings (Ketuvim)
+
+- **Content:** 7,022 verses, 96,169 words across 10 books: Psalms, Job,
+  Proverbs, Ruth, Lamentations, Ecclesiastes, Song of Songs, Esther
+  (Targum Rishon), 1 Chronicles, 2 Chronicles.
+- **Source:** Sefaria API — indices "Aramaic Targum to {book}" (Mikraot
+  Gedolot version) and "Targum of I/II Chronicles" (Wikisource version).
+- **License:** Public Domain (verified per-version at fetch time; the fetch
+  script aborts on any non-PD/CC license).
+- **Script:** Hebrew square (stored consonantally; niqqud/cantillation and
+  LRM/RLM directionality marks stripped at fetch)
+- **Corpus ID:** `targum_writings`
+- **File:** `data/corpora/targum_writings.csv`
+- **Fetch script:** `scripts/fetch_targum_writings.py`
+- **Period:** ~4th–8th c. CE (composite; per-book datings debated — Targum
+  Song of Songs c. 400–800 CE per Sefaria's own error margins).
+- **Notes:** **Targum Sheni on Esther is deliberately excluded** — its only
+  Sefaria version ("Berlin, 1898") carries license "unknown". No targum to
+  Daniel or Ezra–Nehemiah exists (those books contain the Biblical Aramaic
+  portions). Targum Proverbs is textually close to the Peshitta. Job includes
+  47 verses with inline variant readings marked ת״א (targum acher) as printed
+  in Mikraot Gedolot.
+
 ### Ephrem of Nisibis -- Hymns on Nisibis (Carmina Nisibena)
 
-- **Content:** 1,435 verses, 29,477 words. **Important caveat:** this is *one
-  collection* of Ephrem the Syrian's surviving works (~5% of the total
-  corpus). Other major Ephrem collections (Hymns on Faith, on Heresies, on
-  Paradise, on the Nativity, against Julian, on Virginity, the Letters, and
-  the Commentaries on Genesis, Exodus, and the Diatessaron) are **not**
-  currently indexed.
+- **Content:** 1,435 verses, 29,477 words. **Note:** this is *one collection*
+  of Ephrem the Syrian's surviving works; a further 38 Ephrem documents are
+  indexed as the separate `ephrem_works` corpus (below), and the remaining
+  collections (Hymns on Faith, on Heresies, on Paradise, against Julian, the
+  Letters, and the Commentaries) are **not** currently indexed.
 - **Source:** [Digital Syriac Corpus](https://syriaccorpus.org)
   (`srophe/syriac-corpus` repository), TEI XML.
 - **License:** CC-BY 4.0 (Creative Commons Attribution).
@@ -76,6 +113,30 @@ This document lists all data sources, licenses, and third-party resources used b
 - **Notes:** The TEI source includes textual apparatus (variant readings)
   that is *not* preserved in the CSV; only the main reading is loaded. For
   text-critical work, consult the upstream Digital Syriac Corpus directly.
+
+### Ephrem -- Other Works
+
+- **Content:** 1,330 verses, 76,999 words across 38 documents in 7 "books":
+  *To Hypatius* (5 discourses), *Against Domnus*, *Against Marcion*, *Against
+  Bardaisan*, *On Virginity (Prose)*, *Against Mani* (the prose refutations),
+  and *Nativity* (Hymns on the Nativity 1–28). Together with `ephrem_nisibis`
+  this is everything the Digital Syriac Corpus attributes to Ephrem
+  (111 TEI documents; author ref `syriaca.org/person/13`).
+- **Source:** [Digital Syriac Corpus](https://syriaccorpus.org)
+  (`srophe/syriac-corpus` repository), TEI XML. Underlying editions:
+  Beck, *Hymnen De Nativitate (Epiphania)*, CSCO 186 (1959); Mitchell,
+  *S. Ephraim's Prose Refutations of Mani, Marcion, and Bardaisan*, vols.
+  1–2 (1912/1921); Overbeck, *Opera selecta* (1865) for Hypatius 1.
+- **License:** CC-BY 4.0 (verified programmatically in all 38 TEI headers).
+- **Script:** Syriac (Unicode block U+0710--U+074F)
+- **Corpus ID:** `ephrem_works`
+- **File:** `data/corpora/ephrem_works.csv`
+- **Fetch script:** `scripts/fetch_ephrem_works.py`
+- **Period:** ~337–373 CE, Patristic Syriac.
+- **Notes:** The prose works have no stanza structure; each TEI `<p>` becomes
+  one "verse", so granularity is uneven (To Hypatius 1 has only 3 large
+  paragraphs). *Against Bardaisan* survives on a heavily lacunose palimpsest —
+  short fragmentary paragraphs are genuine source condition, not parse loss.
 
 ---
 
@@ -223,6 +284,10 @@ All translations were fetched from the **bible.helloao.org** API and are stored 
 | Peshitta OT text (ETCBC) | CC-BY-NC | Yes (loaded from CSV) |
 | Biblical Aramaic (WLC via Sefaria) | CC-BY-SA | Yes (loaded from CSV) |
 | Targum Onkelos (Sefaria) | CC-BY-SA | Yes (loaded from CSV) |
+| Targum Jonathan (Sefaria) | CC-BY-SA | Yes (loaded from CSV) |
+| Targums to the Writings (Sefaria) | Public Domain | Yes (loaded from CSV) |
+| Ephrem — Hymns on Nisibis (DSC) | CC-BY 4.0 | Yes (loaded from CSV) |
+| Ephrem — Other Works (DSC) | CC-BY 4.0 | Yes (loaded from CSV) |
 | WEB English translation | Public Domain | Yes (loaded from JSON) |
 | Reina-Valera 1909 Spanish | Public Domain | Yes (loaded from JSON) |
 | Westminster Leningrad Codex Hebrew | Public Domain | Yes (loaded from JSON) |

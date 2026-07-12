@@ -111,9 +111,17 @@ def _init():
         if os.path.exists(tj_path):
             _corpus.add_corpus('targum_jonathan', 'Targum Jonathan', tj_path)
 
+        tw_path = os.path.join(CORPORA_DIR, 'targum_writings.csv')
+        if os.path.exists(tw_path):
+            _corpus.add_corpus('targum_writings', 'Targum Writings', tw_path)
+
         en_path = os.path.join(CORPORA_DIR, 'ephrem_nisibis.csv')
         if os.path.exists(en_path):
             _corpus.add_corpus('ephrem_nisibis', 'Ephrem — Nisibis', en_path)
+
+        ew_path = os.path.join(CORPORA_DIR, 'ephrem_works.csv')
+        if os.path.exists(ew_path):
+            _corpus.add_corpus('ephrem_works', 'Ephrem — Other Works', ew_path)
 
         _corpus.load()
 
@@ -564,7 +572,9 @@ def browse():
         'biblical_aramaic': 'bib',
         'targum_onkelos': 'tar',
         'targum_jonathan': 'tgj',
+        'targum_writings': 'tgw',
         'ephrem_nisibis': 'eph',
+        'ephrem_works': 'epw',
     }
 
     # Build corpus_groups — one entry per corpus (or just the filtered one)
@@ -679,8 +689,8 @@ def read(book, chapter):
         if b_name == book:
             max_ch = b_ch
             break
-    CORPUS_ABBR = {'peshitta_nt':'pnt','peshitta_ot':'pot','biblical_aramaic':'bib','targum_onkelos':'tar','targum_jonathan':'tgj','ephrem_nisibis':'eph'}
-    CORPUS_LABELS = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos','targum_jonathan':'Targum Jonathan','ephrem_nisibis':'Ephrem Nisibis'}
+    CORPUS_ABBR = {'peshitta_nt':'pnt','peshitta_ot':'pot','biblical_aramaic':'bib','targum_onkelos':'tar','targum_jonathan':'tgj','targum_writings':'tgw','ephrem_nisibis':'eph','ephrem_works':'epw'}
+    CORPUS_LABELS = {'peshitta_nt':'Peshitta NT','peshitta_ot':'Peshitta OT','biblical_aramaic':'Biblical Aramaic','targum_onkelos':'Targum Onkelos','targum_jonathan':'Targum Jonathan','targum_writings':'Targum Writings','ephrem_nisibis':'Ephrem Nisibis','ephrem_works':'Ephrem — Other Works'}
     cid = verse_data[0]['corpus_id'] if verse_data else ''
     return render_template('read.html', lang=lang, script=_get_script(), trans=trans,
                            t=_t_proxy, bn=_bn, book=book, chapter=chapter,
@@ -2363,6 +2373,8 @@ CORPUS_CHRONOLOGY = [
     ('peshitta_nt',      'Peshitta NT',      '~2nd–5th c. CE'),
     ('peshitta_ot',      'Peshitta OT',      '~2nd–5th c. CE'),
     ('ephrem_nisibis',   'Ephrem — Nisibis', '~350–363 CE'),
+    ('ephrem_works',     'Ephrem — Other Works', '~337–373 CE'),
+    ('targum_writings',  'Targum Writings',  '~4th–8th c. CE'),
 ]
 
 

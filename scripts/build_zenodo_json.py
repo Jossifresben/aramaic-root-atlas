@@ -9,10 +9,10 @@ Zenodo's description sanitizer strips h1–h6, so section headings use
 """
 import json, os
 
-VERSION = "3.2.1"
+VERSION = "3.3.0"
 
 description = """
-<p><strong>Aramaic Root Atlas</strong> is an open-access web application for cross-corpus analysis of triliteral roots across approximately 1,500 years of Aramaic literary history. Version 3.2 indexes <strong>5,666 roots</strong> across <strong>47,358 verses</strong> and <strong>685,848 words</strong> from <strong>six corpora</strong> spanning the Achaemenid, Roman, and Late Antique periods, unified under a single consonantal root index with cross-script (Syriac &harr; Hebrew square) normalization. With v3.2 the Atlas adds a <strong>discovery-first front door</strong> aimed at students and curious minds, alongside the existing scholarly tools.</p>
+<p><strong>Aramaic Root Atlas</strong> is an open-access web application for cross-corpus analysis of triliteral roots across approximately 1,400 years of Aramaic literary history. Version 3.3 indexes <strong>6,061 roots</strong> across <strong>55,710 verses</strong> and <strong>859,016 words</strong> from <strong>eight corpora</strong> spanning the Achaemenid, Roman, and Late Antique periods, unified under a single consonantal root index with cross-script (Syriac &harr; Hebrew square) normalization. v3.3 adds two corpora: the <strong>Targums to the Writings</strong> and <strong>Ephrem&rsquo;s Nativity hymns and prose refutations</strong>.</p>
 
 <p>The Atlas addresses a structural gap in computational Aramaic studies: existing philological tools provide deep analysis within a single corpus or dialect, but no unified resource lets researchers trace a Semitic root across the major Aramaic literary traditions in a single interface, with diachronic frequency normalization, comparative cognate visualization, and programmatic access. The tool is freely available at <a href="https://aramaic-root-atlas.onrender.com">aramaic-root-atlas.onrender.com</a> and licensed Apache-2.0.</p>
 
@@ -23,7 +23,9 @@ description = """
 <li><strong>Targum Onkelos</strong> &mdash; 5,846 verses, 82,684 words; ~1st&ndash;3rd c. CE Jewish Aramaic; Hebrew square script; Sefaria API (CC-BY-SA). The Targum to the Torah.</li>
 <li><strong>Targum Jonathan</strong> &mdash; 9,296 verses, 157,449 words; ~1st&ndash;4th c. CE Jewish Aramaic; Hebrew square script; Sefaria API (CC-BY-SA). The Targum to the Prophets: Joshua&ndash;II Kings, Isaiah, Jeremiah, Ezekiel, and the Twelve. <em>New in v3.1.</em></li>
 <li><strong>Biblical Aramaic</strong> &mdash; 269 verses, 4,880 words; ~6th&ndash;2nd c. BCE; Hebrew square script; Westminster Leningrad Codex via Sefaria (CC-BY-SA). Daniel 2:4b&ndash;7:28, Ezra 4:8&ndash;6:18, Ezra 7:12&ndash;26, Genesis 31:47, Jeremiah 10:11.</li>
+<li><strong>Targums to the Writings</strong> &mdash; 7,022 verses, 96,169 words; ~4th&ndash;8th c. CE Jewish Aramaic; Hebrew square script; Sefaria API (Public Domain versions). Psalms, Job, Proverbs, Ruth, Lamentations, Ecclesiastes, Song of Songs, Esther (Targum Rishon), and 1&ndash;2 Chronicles. <em>New in v3.3.</em></li>
 <li><strong>Hymns of Ephrem of Nisibis</strong> &mdash; 1,435 verses, 29,477 words; ~4th c. CE Patristic Syriac; Syriac script; Digital Syriac Corpus (CC-BY).</li>
+<li><strong>Ephrem &mdash; Other Works</strong> &mdash; 1,330 verses, 76,999 words; ~337&ndash;373 CE Patristic Syriac; Syriac script; Digital Syriac Corpus (CC-BY). The prose refutations (To Hypatius, Against Domnus/Marcion/Bardaisan/Mani, On Virginity) and Hymns on the Nativity 1&ndash;28. <em>New in v3.3.</em></li>
 </ul>
 
 <p><strong>Research Tools</strong></p>
@@ -31,7 +33,7 @@ description = """
 <li><strong>Root Explorer</strong> &mdash; lookup by Latin transliteration, Syriac Unicode, Hebrew, or Arabic. Returns all attested word forms with frequency, corpus distribution, Hebrew/Arabic cognates, Greek NT equivalents, sister roots, semantic bridges, paradigmatic verse citation, and a D3.js force-directed family visualization.</li>
 <li><strong>Verb Stem (Binyan) Analysis</strong> &mdash; every word form classified into Peal, Ethpeel, Pael, Ethpaal, Aphel, Shafel, Ettaphal. Stem-distribution charts and full paradigm tables per root.</li>
 <li><strong>KWIC Concordance</strong> &mdash; all attestations of any root in a configurable left-context | keyword | right-context layout, groupable by form or stem, exportable as CSV, JSON, plain text, or TEI XML.</li>
-<li><strong>Diachronic Analysis</strong> &mdash; normalized frequency per 1,000 words across the six corpora in chronological order. A "frequency shifts" view ranks roots by the magnitude of cross-corpus change to identify lexical innovation and archaism.</li>
+<li><strong>Diachronic Analysis</strong> &mdash; normalized frequency per 1,000 words across the eight corpora in chronological order. A "frequency shifts" view ranks roots by the magnitude of cross-corpus change to identify lexical innovation and archaism.</li>
 <li><strong>Hapax Legomena Finder</strong> &mdash; filters roots and forms by attestation frequency (1&ndash;5&times;) per corpus or across the full collection.</li>
 <li><strong>Collocations</strong> &mdash; pointwise mutual information (PMI) computed for root co-occurrence at verse or chapter scope, surfacing statistically significant lexical associations.</li>
 <li><strong>Semantic Fields</strong> &mdash; every root classified into 15 semantic domains (legal/covenant, cultic, kinship, war, knowledge, etc.) via large-language-model classification with manual curation.</li>
@@ -44,7 +46,7 @@ description = """
 </ul>
 
 <p><strong>Cognates and Cross-Linguistic Data</strong></p>
-<p>The Atlas indexes <strong>1,604 Hebrew/Arabic cognate root entries</strong> with bilingual glosses, sister-root relationships, and semantic-bridge annotations linking outlier cognates back to their Semitic core. A separate layer of <strong>405 Greek New Testament cognates</strong> maps Aramaic roots onto their Greek equivalents (e.g. SH-L-M &rarr; &epsilon;&iota;&rho;&eta;&nu;&eta; "peace") for translation-technique studies. The SEDRA Syriac lexicon (Beth Mardutho Syriac Institute) is queried as a secondary confidence source for Syriac tokens, rescuing approximately 20% of medium-confidence extractions to high confidence.</p>
+<p>The Atlas indexes <strong>1,642 Hebrew/Arabic cognate root entries</strong> with bilingual glosses, sister-root relationships, and semantic-bridge annotations linking outlier cognates back to their Semitic core. A separate layer of <strong>405 Greek New Testament cognates</strong> maps Aramaic roots onto their Greek equivalents (e.g. SH-L-M &rarr; &epsilon;&iota;&rho;&eta;&nu;&eta; "peace") for translation-technique studies. The SEDRA Syriac lexicon (Beth Mardutho Syriac Institute) is queried as a secondary confidence source for Syriac tokens, rescuing approximately 20% of medium-confidence extractions to high confidence.</p>
 
 <p><strong>Programmatic Access</strong></p>
 <p>A full JSON API exposes every analytical feature: root family data, KWIC concordances, hapax lists, diachronic frequencies, collocations, semantic fields, paradigm tables, word morphology, and passage profiles. REST endpoints are documented in an interactive Swagger UI at <code>/api-docs</code>, with parameter examples, response schemas, and try-it-out, plus a complete OpenAPI 3.0.3 specification at <code>/static/swagger.json</code> for client generation. Every <code>/api/X</code> path is also served at <code>/api/v1/X</code> under a published stability and 12-month deprecation policy, and public endpoints are rate-limited (600 req/min, 60 req/sec per IP) with <code>X-RateLimit-*</code> headers.</p>
@@ -54,6 +56,16 @@ description = """
 
 <p><strong>Methodology</strong></p>
 <p>Triliteral roots are extracted via a rule-based morphological pipeline applied to each corpus's native script, with corpus-specific affix sets for Syriac and Hebrew square script; routing is by per-word script detection, so Hebrew-square corpora share one stripper. Each extraction receives a three-tier confidence score (High &ge; 0.8, Medium 0.5&ndash;0.8, Low &lt; 0.5) based on stem-pattern conformity, prefix/suffix legitimacy, and SEDRA lexicon corroboration where applicable. Cross-script root normalization ensures that Hebrew &#1499;&#1514;&#1489;, Syriac &#1827;&#1817;&#1810;, and Arabic &#1603;&#1578;&#1576; resolve to the same root key, enabling transparent cross-corpus comparison.</p>
+
+<p><strong>What's New in v3.3.0</strong></p>
+<ul>
+<li><strong>New corpus &mdash; Targums to the Writings</strong> (Sefaria, Public Domain): 7,022 verses and 96,169 words across 10 books, completing the Targumic family alongside Onkelos (Torah) and Jonathan (Prophets). Book names align with the Peshitta Old Testament, so the Parallel Viewer compares Peshitta &harr; Targum for Psalms, Job, Proverbs, the Megillot, and Chronicles out of the box. Targum Sheni on Esther is excluded pending license clarity.</li>
+<li><strong>New corpus &mdash; Ephrem, Other Works</strong> (Digital Syriac Corpus, CC-BY 4.0): 38 TEI documents &mdash; the prose refutations of Mani, Marcion, and Bardaisan (Mitchell 1912/1921; Overbeck 1865) and the Hymns on the Nativity (Beck, CSCO 186). Together with the Carmina Nisibena the Atlas now indexes all 111 Ephrem documents the Digital Syriac Corpus holds.</li>
+<li>Root index grows 5,666 &rarr; <strong>6,061</strong>; cognate entries 1,604 &rarr; <strong>1,642</strong> (LLM-generated for corpus-exclusive vocabulary, flagged unverified pending lexicographer review).</li>
+<li>The diachronic timeline now ends with the Targums to the Writings (~4th&ndash;8th c. CE), and the About page corpus/source tables were reconciled (a stale v3.1 omission of Targum Jonathan was fixed).</li>
+<li>12 new automated tests (per-corpus API contracts, parallel alignment, CSV integrity); suite now at 222.</li>
+<li>The Old Syriac Gospels were investigated and deferred: no openly licensed machine-readable transcription exists.</li>
+</ul>
 
 <p><strong>What's New in v3.2.0</strong></p>
 <ul>
@@ -80,10 +92,10 @@ description = """
 <p><strong>Peshitta Constellations</strong> (DOI <a href="https://doi.org/10.5281/zenodo.19358529">10.5281/zenodo.19358529</a>) &mdash; companion project focused on the Peshitta New Testament; supplied curated root-card seed data (paradigmatic verse citations, sister-root and semantic-bridge relationships, root-flavor descriptions) that populate the root family visualizer in this project.</p>
 
 <p><strong>Acknowledgements</strong></p>
-<p>Corpus data is drawn from the ETCBC Peshitta corpus (Eep Talstra Centre for Bible and Computer, Vrije Universiteit Amsterdam), the Westminster Leningrad Codex, Targum Onkelos, and Targum Jonathan via Sefaria, and the Digital Syriac Corpus for Ephrem's Hymns of Nisibis. Translations are sourced from bible.helloao.org. The SEDRA lexicon is provided by the Beth Mardutho Syriac Institute. Cognate data was generated and curated with the Anthropic Claude API. Curated root-card seed data is drawn from the companion project Peshitta Constellations.</p>
+<p>Corpus data is drawn from the ETCBC Peshitta corpus (Eep Talstra Centre for Bible and Computer, Vrije Universiteit Amsterdam), the Westminster Leningrad Codex, Targum Onkelos, and Targum Jonathan via Sefaria, and the Digital Syriac Corpus for Ephrem's works. Translations are sourced from bible.helloao.org. The SEDRA lexicon is provided by the Beth Mardutho Syriac Institute. Cognate data was generated and curated with the Anthropic Claude API. Curated root-card seed data is drawn from the companion project Peshitta Constellations.</p>
 
 <p><strong>How to Cite</strong></p>
-<p>Fresco Benaim, Jose. (2026). <em>Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer</em> (v3.2.1). Zenodo. <a href="https://doi.org/10.5281/zenodo.19358625">https://doi.org/10.5281/zenodo.19358625</a></p>
+<p>Fresco Benaim, Jose. (2026). <em>Aramaic Root Atlas: A Cross-Corpus Triliteral Root Explorer</em> (v3.3.0). Zenodo. <a href="https://doi.org/10.5281/zenodo.19358625">https://doi.org/10.5281/zenodo.19358625</a></p>
 <p>The concept DOI <a href="https://doi.org/10.5281/zenodo.19358625">10.5281/zenodo.19358625</a> always resolves to the latest version. BibTeX, Chicago, MLA, APA, and SBL formats are available with one click on every analysis page in the live application and via the <code>CITATION.cff</code> in the repository.</p>
 
 <p><strong>License and Source</strong></p>

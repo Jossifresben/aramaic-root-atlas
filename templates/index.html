@@ -159,7 +159,9 @@
   {'id':'bib','name':'Biblical Aramaic','corpus_key':'biblical_aramaic','period':'~ 6th–2nd c. BCE · Imperial'},
   {'id':'tar','name':'Targum Onkelos','corpus_key':'targum_onkelos','period':'~ 1st–3rd c. CE · Jewish Aramaic'},
   {'id':'tgj','name':'Targum Jonathan','corpus_key':'targum_jonathan','period':'~ 1st–4th c. CE · Jewish Aramaic'},
+  {'id':'tgw','name':'Targum Writings','corpus_key':'targum_writings','period':'~ 4th–8th c. CE · Jewish Aramaic'},
   {'id':'eph','name':'Ephrem — Nisibis','corpus_key':'ephrem_nisibis','period':'~ 350–363 CE · Patristic Syriac'},
+  {'id':'epw','name':'Ephrem — Other Works','corpus_key':'ephrem_works','period':'~ 337–373 CE · Patristic Syriac'},
 ] %}
 <div class="corpora-grid">
   {% for cm in corpus_meta %}
@@ -179,7 +181,7 @@
   <a href="/diachronic"><div class="ql-num">02</div><div><div class="ql-name">{{ t('ql_diachronic', lang) if t else 'Diachronic frequency' }}</div><div class="ql-desc">{{ t('ql_diachronic_desc', lang) if t else "Plot a root's distribution across periods and corpora." }}</div></div><div class="ql-arr">→</div></a>
   <a href="/interlinear"><div class="ql-num">03</div><div><div class="ql-name">{{ t('ql_interlinear', lang) if t else 'Interlinear word study' }}</div><div class="ql-desc">{{ t('ql_interlinear_desc', lang) if t else 'Word-by-word alignment with root, stem, and morphological gloss.' }}</div></div><div class="ql-arr">→</div></a>
   <a href="/concordance"><div class="ql-num">04</div><div><div class="ql-name">{{ t('ql_concordance', lang) if t else 'Concordance with KWIC' }}</div><div class="ql-desc">{{ t('ql_concordance_desc', lang) if t else 'Keyword-in-context across all 38,062 verses, sortable by context.' }}</div></div><div class="ql-arr">→</div></a>
-  <a href="/browse"><div class="ql-num">05</div><div><div class="ql-name">{{ t('ql_browse', lang) if t else 'Browse 66 books' }}</div><div class="ql-desc">{{ t('ql_browse_desc', lang) if t else 'Direct chapter access across all six corpora.' }}</div></div><div class="ql-arr">→</div></a>
+  <a href="/browse"><div class="ql-num">05</div><div><div class="ql-name">{{ t('ql_browse', lang) if t else 'Browse 66 books' }}</div><div class="ql-desc">{{ t('ql_browse_desc', lang) if t else 'Direct chapter access across all eight corpora.' }}</div></div><div class="ql-arr">→</div></a>
   <a href="/hapax"><div class="ql-num">06</div><div><div class="ql-name">{{ t('ql_hapax', lang) if t else 'Hapax &amp; rare forms' }}</div><div class="ql-desc">{{ t('ql_hapax_desc', lang) if t else 'Words attested only once or twice — useful for textual criticism.' }}</div></div><div class="ql-arr">→</div></a>
 </div>
 {% endblock %}
@@ -323,8 +325,8 @@ async function doRootSearch(noScroll) {
     if (gloss) html += `<div class="root-meaning">${gloss}</div>`;
 
     // Cross-corpus attestation badges
-    const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'targum_jonathan': 'Targum Jonathan', 'ephrem_nisibis': 'Ephrem Nisibis'};
-    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',targum_jonathan:'tgj',ephrem_nisibis:'eph'};
+    const corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'targum_jonathan': 'Targum Jonathan', 'targum_writings': 'Targum Writings', 'ephrem_nisibis': 'Ephrem Nisibis', 'ephrem_works': 'Ephrem — Other Works'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',targum_jonathan:'tgj',targum_writings:'tgw',ephrem_nisibis:'eph',ephrem_works:'epw'};
     const corpusKeys = Object.keys(att);
     if (corpusKeys.length > 0) {
         html += `<div class="corpus-attestation">`;
@@ -809,8 +811,8 @@ document.getElementById('prox-search-btn').addEventListener('click', async funct
     }
     var html = '<div class="proximity-results">';
     html += '<h3>' + data.count + ' co-occurrences: <span class="prox-hl1">' + (data.root1 || r1) + '</span> + <span class="prox-hl2">' + (data.root2 || r2) + '</span> (' + scope + ')</h3>';
-    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'targum_jonathan': 'Targum Jonathan', 'ephrem_nisibis': 'Ephrem Nisibis'};
-    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',targum_jonathan:'tgj',ephrem_nisibis:'eph'};
+    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'targum_jonathan': 'Targum Jonathan', 'targum_writings': 'Targum Writings', 'ephrem_nisibis': 'Ephrem Nisibis', 'ephrem_works': 'Ephrem — Other Works'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',targum_jonathan:'tgj',targum_writings:'tgw',ephrem_nisibis:'eph',ephrem_works:'epw'};
     data.results.forEach(function(r) {
         var ref = r.ref || r.reference || '';
         var refParts = ref.match(/^(.+?)\s+(\d+):(\d+)/);
@@ -951,8 +953,8 @@ document.getElementById('text-search-btn').addEventListener('click', async funct
     var html = '<div class="text-search-results">';
     html += '<h3 class="text-search-header">' + data.count + ' results for "' + q.replace(/</g, '&lt;') + '"</h3>';
 
-    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'targum_jonathan': 'Targum Jonathan', 'ephrem_nisibis': 'Ephrem Nisibis'};
-    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',targum_jonathan:'tgj',ephrem_nisibis:'eph'};
+    var corpusLabels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT', 'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos', 'targum_jonathan': 'Targum Jonathan', 'targum_writings': 'Targum Writings', 'ephrem_nisibis': 'Ephrem Nisibis', 'ephrem_works': 'Ephrem — Other Works'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt',peshitta_ot:'pot',biblical_aramaic:'bib',targum_onkelos:'tar',targum_jonathan:'tgj',targum_writings:'tgw',ephrem_nisibis:'eph',ephrem_works:'epw'};
 
     for (var i = 0; i < data.results.length; i++) {
         var r = data.results[i];

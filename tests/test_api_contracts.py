@@ -51,6 +51,83 @@ def test_targum_jonathan_corpus_present(client):
     assert client.get('/browse?corpus=targum_jonathan').status_code == 200
 
 
+def test_targum_writings_corpus_present(client):
+    """Targum Writings (v3.3 corpus expansion) must load as a distinct
+    corpus with the expected scale, be filterable, and cross-script-
+    normalize its Hebrew roots into the shared root index."""
+    # Present in /api/stats with plausible scale (~7,022 verses)
+    stats = client.get('/api/stats').get_json()
+    by_id = {c['id']: c for c in stats['corpora']}
+    assert 'targum_writings' in by_id, 'targum_writings missing from /api/stats'
+    tgw = by_id['targum_writings']
+    assert tgw['verses'] > 6500
+    assert tgw['words'] > 90000
+
+    # SH-L-M (peace) cross-script normalizes from Hebrew שלם and is attested
+    root = client.get('/api/roots?q=SH-L-M').get_json()
+    attest = root.get('corpus_attestation', {})
+    assert attest.get('targum_writings', 0) > 0, \
+        'SH-L-M not attested in targum_writings (cross-script normalization broken)'
+
+    # Filterable
+    assert client.get('/browse?corpus=targum_writings').status_code == 200
+
+
+def test_ephrem_works_corpus_present(client):
+    """Ephrem — Other Works (v3.3 corpus expansion) must load as a distinct
+    corpus with the expected scale, be filterable, and be indexed into the
+    shared root index."""
+    # Present in /api/stats with plausible scale (~1,330 verses)
+    stats = client.get('/api/stats').get_json()
+    by_id = {c['id']: c for c in stats['corpora']}
+    assert 'ephrem_works' in by_id, 'ephrem_works missing from /api/stats'
+    epw = by_id['ephrem_works']
+    assert epw['verses'] > 1200
+    assert epw['words'] > 70000
+
+    # SH-L-M (peace) is attested
+    root = client.get('/api/roots?q=SH-L-M').get_json()
+    attest = root.get('corpus_attestation', {})
+    assert attest.get('ephrem_works', 0) > 0, \
+        'SH-L-M not attested in ephrem_works'
+
+    # Filterable
+    assert client.get('/browse?corpus=ephrem_works').status_code == 200
+
+
+def test_targum_writings_parallel_alignment(client):
+    """Targum Writings and Peshitta OT share book names (Psalms, Chronicles,
+    etc.), so the parallel viewer must align verses across them for free."""
+    r = client.get('/api/parallel?ref=Psalms+23:1')
+    assert r.status_code == 200
+    data = r.get_json()
+    corpora_ids = {p['corpus_id'] for p in data['parallels']}
+    assert 'peshitta_ot' in corpora_ids
+    assert 'targum_writings' in corpora_ids
+
+    r2 = client.get('/api/parallel?ref=1+Chronicles+1:1')
+    assert r2.status_code == 200
+    data2 = r2.get_json()
+    corpora_ids2 = {p['corpus_id'] for p in data2['parallels']}
+    assert 'peshitta_ot' in corpora_ids2
+    assert 'targum_writings' in corpora_ids2
+
+
+def test_diachronic_root_includes_new_corpora(client):
+    """/api/diachronic/root must include both v3.3 corpora in its series,
+    and CORPUS_CHRONOLOGY must end with targum_writings (its slot per the
+    v3.3 spec: appended last, after ephrem_works)."""
+    r = client.get('/api/diachronic/root?root=SH-L-M')
+    assert r.status_code == 200
+    data = r.get_json()
+    by_id = {c['corpus_id']: c for c in data['corpora']}
+    assert 'targum_writings' in by_id and by_id['targum_writings']['raw_count'] > 0
+    assert 'ephrem_works' in by_id and by_id['ephrem_works']['raw_count'] > 0
+
+    # Chronology order: targum_writings is the last entry
+    assert data['corpora'][-1]['corpus_id'] == 'targum_writings'
+
+
 def test_api_books_no_filter(client):
     r = client.get('/api/books')
     assert r.status_code == 200

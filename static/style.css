@@ -42,6 +42,10 @@
   --c-eph-soft:   #eecece;
   --c-tgj:        #b32a78;          /* Targum Jonathan — rose-magenta */
   --c-tgj-soft:   #f0cce1;
+  --c-tgw:        #0f766e;          /* Targum Writings — deep teal */
+  --c-tgw-soft:   #c8e6e2;
+  --c-epw:        #a14e24;          /* Ephrem Other Works — burnt copper */
+  --c-epw-soft:   #eed8c9;
 
   /* — Type. — */
   --serif: 'Spectral', 'Iowan Old Style', 'Source Serif Pro', Georgia, serif;
@@ -93,6 +97,10 @@
   --c-eph-soft:   #2c1010;
   --c-tgj:        #e070ad;          /* Targum Jonathan — rose-magenta (dark) */
   --c-tgj-soft:   #2e1020;
+  --c-tgw:        #3cb8ac;          /* Targum Writings — teal (dark) */
+  --c-tgw-soft:   #0c2624;
+  --c-epw:        #cf7a4a;          /* Ephrem Other Works — copper (dark) */
+  --c-epw-soft:   #2a160a;
 
   --shadow-1: 0 1px 0 rgba(0,0,0,.3);
   --shadow-2: 0 1px 2px rgba(0,0,0,.4), 0 4px 12px rgba(0,0,0,.25);
@@ -484,12 +492,16 @@ h3.subhead{
 .cbadge.tar{--cb:var(--c-tar);--cb-soft:var(--c-tar-soft);--cb-text:#6e4400}
 .cbadge.eph{--cb:var(--c-eph);--cb-soft:var(--c-eph-soft);--cb-text:#7a1d1d}
 .cbadge.tgj{--cb:var(--c-tgj);--cb-soft:var(--c-tgj-soft);--cb-text:#8a1255}
+.cbadge.tgw{--cb:var(--c-tgw);--cb-soft:var(--c-tgw-soft);--cb-text:#0a4b45}
+.cbadge.epw{--cb:var(--c-epw);--cb-soft:var(--c-epw-soft);--cb-text:#703415}
 [data-theme="dark"] .cbadge.pnt{--cb-text:#a8e3c8}
 [data-theme="dark"] .cbadge.pot{--cb-text:#a8c5e8}
 [data-theme="dark"] .cbadge.bib{--cb-text:#cba6f0}
 [data-theme="dark"] .cbadge.tar{--cb-text:#e8b870}
 [data-theme="dark"] .cbadge.eph{--cb-text:#f0a0a0}
 [data-theme="dark"] .cbadge.tgj{--cb-text:#f0a8d0}
+[data-theme="dark"] .cbadge.tgw{--cb-text:#98dcd2}
+[data-theme="dark"] .cbadge.epw{--cb-text:#eab088}
 
 /* ═══════════════════════════════════════════════════════════════
    CORPUS LEDGER (home)
@@ -515,6 +527,8 @@ h3.subhead{
 .corpus-cell.tar{--cb:var(--c-tar)}
 .corpus-cell.eph{--cb:var(--c-eph)}
 .corpus-cell.tgj{--cb:var(--c-tgj)}
+.corpus-cell.tgw{--cb:var(--c-tgw)}
+.corpus-cell.epw{--cb:var(--c-epw)}
 .corpus-cell:last-child{border-right:0}
 .corpus-cell .nm{
   font-family:var(--sans);font-size:12px;font-weight:600;
@@ -764,6 +778,8 @@ h3.subhead{
 .chip[data-c="tar"]{--cdot:var(--c-tar)}
 .chip[data-c="eph"]{--cdot:var(--c-eph)}
 .chip[data-c="tgj"]{--cdot:var(--c-tgj)}
+.chip[data-c="tgw"]{--cdot:var(--c-tgw)}
+.chip[data-c="epw"]{--cdot:var(--c-epw)}
 .chip.on[data-c]{background:var(--cdot);border-color:var(--cdot);color:#fff}
 .chip.on[data-c]::before{background:#fff}
 
@@ -894,6 +910,8 @@ h3.subhead{
 .dia-bar.tar i{background:var(--c-tar)}
 .dia-bar.eph i{background:var(--c-eph)}
 .dia-bar.tgj i{background:var(--c-tgj)}
+.dia-bar.tgw i{background:var(--c-tgw)}
+.dia-bar.epw i{background:var(--c-epw)}
 .dia-num{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums;text-align:right}
 .dia-rate{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right}
 
@@ -1001,6 +1019,8 @@ h3.subhead{
 .book-card.tar{--cb:var(--c-tar)}
 .book-card.eph{--cb:var(--c-eph)}
 .book-card.tgj{--cb:var(--c-tgj)}
+.book-card.tgw{--cb:var(--c-tgw)}
+.book-card.epw{--cb:var(--c-epw)}
 .book-card .b-name{font-family:var(--serif);font-size:18px;font-weight:500;letter-spacing:-.005em;color:var(--ink);margin-bottom:2px}
 .book-card .b-meta{font-family:var(--sans);font-size:12px;color:var(--ink-3);letter-spacing:.02em;margin-bottom:14px}
 .book-card .b-meta .cbadge{margin-right:4px}

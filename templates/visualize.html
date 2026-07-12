@@ -165,7 +165,7 @@
         var LANG = {{ lang|tojson }};
         var SCRIPT = {{ script|tojson }};
         var TRANS = {{ trans|tojson }};
-        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', targum_jonathan:'tgj', ephrem_nisibis:'eph'};
+        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', targum_jonathan:'tgj', targum_writings:'tgw', ephrem_nisibis:'eph', ephrem_works:'epw'};
 
         // Colors
         var COLOR_CENTER = '#8B4513';
@@ -292,7 +292,9 @@
                 var labels = {'peshitta_nt': 'Peshitta NT', 'peshitta_ot': 'Peshitta OT',
                               'biblical_aramaic': 'Biblical Aramaic', 'targum_onkelos': 'Targum Onkelos',
                               'targum_jonathan': 'Targum Jonathan',
-                              'ephrem_nisibis': 'Ephrem Nisibis'};
+                              'targum_writings': 'Targum Writings',
+                              'ephrem_nisibis': 'Ephrem Nisibis',
+                              'ephrem_works': 'Ephrem — Other Works'};
                 for (var cid in data.corpus_attestation) {
                     var badge = document.createElement('span');
                     badge.className = 'cbadge ' + (CORPUS_ABBR[cid] || cid);

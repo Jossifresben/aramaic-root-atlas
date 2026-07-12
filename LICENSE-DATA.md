@@ -69,14 +69,45 @@ directory from your copy.
 ## `data/corpora/ephrem_nisibis.csv`
 
 - **Content:** Ephrem the Syrian, *Hymns on Nisibis* (*Carmina Nisibena*),
-  1,435 verses, 29,477 words. **Note:** this is one collection (~5%) of
-  Ephrem's surviving works; other collections (Hymns on Faith, on Heresies,
-  on Paradise, on the Nativity, etc.) are not currently indexed.
+  1,435 verses, 29,477 words. **Note:** this is one collection of Ephrem's
+  surviving works; 38 further documents are indexed as `ephrem_works.csv`
+  (below); collections not yet digitized by the Digital Syriac Corpus
+  (Hymns on Faith, on Heresies, on Paradise, etc.) are not indexed.
 - **Upstream source:** [Digital Syriac Corpus](https://syriaccorpus.org)
   (srophe/syriac-corpus), TEI XML.
 - **License:** **CC-BY 4.0**.
 - **Attribution required:** "Ephrem, *Hymns on Nisibis*, via Digital Syriac
   Corpus (CC-BY)."
+
+## `data/corpora/targum_writings.csv`
+
+- **Content:** Targums to the Writings (Ketuvim), 7,022 verses, 96,169 words
+  across 10 books (Psalms, Job, Proverbs, Ruth, Lamentations, Ecclesiastes,
+  Song of Songs, Esther [Targum Rishon], 1–2 Chronicles).
+- **Upstream source:** [Sefaria API](https://www.sefaria.org) — Mikraot
+  Gedolot versions ("Aramaic Targum to …") and the Wikisource version for
+  the two Chronicles targums.
+- **License:** **Public Domain** (each version's `license` field verified at
+  fetch time; `scripts/fetch_targum_writings.py` aborts on any non-PD/CC
+  license).
+- **Deliberate exclusion:** *Targum Sheni on Esther* — its only Sefaria
+  version ("Berlin, 1898") carries license "unknown"; excluded until
+  clarified.
+- **Attribution:** not legally required; "Targums to the Writings via
+  Sefaria" is requested as a courtesy.
+
+## `data/corpora/ephrem_works.csv`
+
+- **Content:** Ephrem the Syrian, 38 documents beyond the Carmina Nisibena:
+  the prose refutations (*To Hypatius* 1–5, *Against Domnus*, *Against
+  Marcion*, *Against Bardaisan*, *On Virginity (Prose)*, *Against Mani*) and
+  *Hymns on the Nativity* 1–28. 1,330 verses, 76,999 words.
+- **Upstream source:** [Digital Syriac Corpus](https://syriaccorpus.org)
+  (srophe/syriac-corpus), TEI XML. Editions: Beck CSCO 186 (1959); Mitchell
+  *Prose Refutations* vols. 1–2 (1912/1921); Overbeck (1865).
+- **License:** **CC-BY 4.0** (verified programmatically in all 38 TEI
+  headers).
+- **Attribution required:** "Ephrem via Digital Syriac Corpus (CC-BY)."
 
 ## `data/translations/translations_*.json`
 
@@ -92,11 +123,11 @@ directory from your copy.
 
 ## `data/roots/cognates.json`
 
-- **Content:** 1,584 cognate root entries (Hebrew and/or Arabic — 4,599
-  Hebrew cognate words, 4,633 Arabic cognate words across the entries)
+- **Content:** 1,642 cognate root entries (Hebrew and/or Arabic)
   and 405 Greek NT parallel entries.
-- **Provenance:** Initial set extracted from scholarly sources; **493 additional
-  entries generated via the Anthropic Claude API and partially curated.** Not
+- **Provenance:** Initial set extracted from scholarly sources; **the rest
+  generated via the Anthropic Claude API and partially curated** (493 in
+  Phase 1, 84 for Targum Jonathan in v3.1, 38 for the v3.3 corpora). Not
   yet systematically validated against authoritative lexicons (HALOT, BDB,
   Sokoloff, Brockelmann, Lane, Wehr).
 - **License:** Apache-2.0 (the same license as the source code), with the
@@ -130,6 +161,8 @@ directory from your copy.
 | `targum_onkelos.csv` | CC-BY-SA 4.0 | ✅ Yes | required | required |
 | `targum_jonathan.csv` | CC-BY-SA 4.0 | ✅ Yes | required | required |
 | `ephrem_nisibis.csv` | CC-BY 4.0 | ✅ Yes | n/a | required |
+| `targum_writings.csv` | Public Domain | ✅ Yes | n/a | requested |
+| `ephrem_works.csv` | CC-BY 4.0 | ✅ Yes | n/a | required |
 | `translations_*.json` (mixed) | mostly PD; SBLGNT is CC-BY-SA | ✅ mostly | mixed | mixed |
 | `cognates.json` | Apache-2.0 | ✅ Yes | n/a | requested |
 | `sedra_cache.json` | SEDRA terms | see Beth Mardutho | n/a | required |

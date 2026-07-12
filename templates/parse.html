@@ -217,12 +217,14 @@
         }
 
         // Corpus attestations — use .cbadge classes
-        var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos', 'targum_jonathan', 'ephrem_nisibis'];
+        var CORPUS_ORDER = ['peshitta_nt', 'peshitta_ot', 'biblical_aramaic', 'targum_onkelos', 'targum_jonathan', 'targum_writings', 'ephrem_nisibis', 'ephrem_works'];
         var CORPUS_LABELS = {peshitta_nt: 'Pesh. NT', peshitta_ot: 'Pesh. OT',
                              biblical_aramaic: 'Bibl. Aram.', targum_onkelos: 'Targ. Onk.',
                              targum_jonathan: 'Targ. Jon.',
-                             ephrem_nisibis: 'Ephrem Nis.'};
-        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', targum_jonathan:'tgj', ephrem_nisibis:'eph'};
+                             targum_writings: 'Targ. Wri.',
+                             ephrem_nisibis: 'Ephrem Nis.',
+                             ephrem_works: 'Ephrem Oth.'};
+        var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', targum_jonathan:'tgj', targum_writings:'tgw', ephrem_nisibis:'eph', ephrem_works:'epw'};
         var corpEl = document.getElementById('parse-corpus');
         corpEl.innerHTML = '';
         var hasCorpus = false;

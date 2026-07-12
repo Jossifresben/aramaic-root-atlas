@@ -10,6 +10,62 @@ indexed corpora, glosses, cognates, or extraction outputs (information
 researchers need when deciding whether re-runs of cited analyses are
 reproducible).
 
+## [v3.3.0] — 2026-07-12
+
+Corpus expansion release: **6 → 8 corpora**. Completes Phase 6A of
+`docs/CORPUS-EXPANSION-PLAN.md` (rest of Ephrem) and adds the Targums to the
+Writings, a gap the original plan had missed. Totals grow from 47,358 to
+**55,710 verses**, 685,848 to **859,016 words**, 5,666 to **6,061 roots**.
+Full spec: `docs/SPEC-v3.3-corpus-expansion.md`.
+
+### Added
+- **Targums to the Writings** (`targum_writings`, abbr `tgw`, teal) — 7,022
+  verses / 96,169 words across 10 books (Psalms, Job, Proverbs, Ruth,
+  Lamentations, Ecclesiastes, Song of Songs, Esther [Targum Rishon],
+  1–2 Chronicles) from the Sefaria API; every version license verified
+  Public Domain at fetch time. Book names match the Peshitta OT, so the
+  parallel viewer aligns Peshitta ↔ Targum for the Writings automatically.
+  *Targum Sheni on Esther excluded* (license "unknown" on Sefaria). New
+  script: `scripts/fetch_targum_writings.py`.
+- **Ephrem — Other Works** (`ephrem_works`, abbr `epw`, copper) — 1,330
+  verses / 76,999 words across 38 Digital Syriac Corpus TEI documents
+  (CC-BY 4.0, verified in every header): the prose refutations (*To
+  Hypatius* 1–5, *Against Domnus/Marcion/Bardaisan/Mani*, *On Virginity*)
+  and *Hymns on the Nativity* 1–28. With `ephrem_nisibis` this indexes all
+  111 Ephrem documents the DSC currently holds. New script:
+  `scripts/fetch_ephrem_works.py` (tarball/local-dir/network modes).
+- 12 new tests (per-corpus API contracts, parallel alignment, diachronic
+  inclusion, CSV sanity) — suite now **222 passing**.
+
+### Changed
+- Diachronic chronology gains both corpora (`ephrem_works` ~337–373 CE;
+  `targum_writings` ~4th–8th c. CE, now the latest corpus).
+- About page: corpus/data-source tables now list all 8 corpora — this also
+  fixed **stale v3.1 omissions** (Targum Jonathan was missing from both
+  tables and the diachronic legend; Onkelos/Nisibis word counts were off by
+  ±100). `docs/SOURCES.md` had the same gap; a Targum Jonathan section was
+  added there too.
+- i18n (EN/ES/HE/AR): new corpus labels; "six corpora" prose and stale
+  "38,062 verses" / "66 books" quick-link counts updated.
+
+### Data Changes
+- New `data/corpora/targum_writings.csv` and `data/corpora/ephrem_works.csv`.
+- `data/roots/cognates.json`: 1,604 → **1,642 entries** (+34 Targum Writings
+  exclusive roots, +4 Ephrem-works exclusive roots; generated with Opus 4.8
+  at ~$1.21 actual API cost, ~26% yield over 164 candidates — the remainder
+  were extraction artifacts filtered by the model).
+- Root inventory: 5,666 → 6,061 (+395).
+
+### Notes
+- **Old Syriac Gospels (Vetus Syra) investigated and deferred** — no
+  openly-licensed machine-readable transcription exists (Kiraz CESG is
+  copyrighted; CAL restricted; Lewis/Burkitt are unreliable OCR). See
+  CORPUS-EXPANSION-PLAN.md.
+- Memory (Render sizing gate): fully-loaded app with heavy endpoints
+  exercised peaks at **279 MB RSS** (was 233 MB at 6 corpora) — far inside
+  the current Render plan; earlier ~900 MB projections in the expansion plan
+  were overestimates.
+
 ## [v3.2.1] — 2026-06-04
 
 Patch release. Two fixes to the v3.2.0 Discovery surfaces.

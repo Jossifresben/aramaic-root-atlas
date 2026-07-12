@@ -53,7 +53,14 @@ affix module, DSC TEI parser. No new alphabet, no new dialect module.
 | # | Add | Source | Why first |
 |---|---|---|---|
 | 6A.1 ✅ | **Targum Jonathan to the Prophets** *(done 2026-05-29: 9,296v / 157,449w; roots 5,249→5,666; cognates 1,584→1,604 via Opus 4.8, ~$2)* | Sefaria API | Doubles Targum coverage; closes the most obvious gap |
-| 6A.2 | **Rest of Ephrem** (~95% of his surviving works) | Digital Syriac Corpus | Removes the "Ephrem ≈ Carmina Nisibena" misnomer |
+| 6A.2 ✅ | **Rest of Ephrem** *(done 2026-07-12 as `ephrem_works`, v3.3.0: 38 docs / 1,330v / 76,999w — To Hypatius 1–5, the five prose refutations, Nativity 1–28; see `docs/SPEC-v3.3-corpus-expansion.md`)*. **Scale correction:** DSC holds 111 Ephrem TEI docs total, 73 of which are the Nisibis hymns we already had — the ~500k-word estimate above assumed DSC had all 400+ surviving hymns; it doesn't. | Digital Syriac Corpus (CC-BY 4.0, `srophe/syriac-corpus`) | Removes the "Ephrem ≈ Carmina Nisibena" misnomer |
+| 6A.3 ✅ | **Targums to the Writings (Ketuvim)** *(done 2026-07-12 as `targum_writings`, v3.3.0 — not in the original plan)*: 10 Sefaria indices (Psalms, Job, Proverbs, Ruth, Lamentations, Ecclesiastes, Song of Songs, Esther Rishon, I–II Chronicles), all versions license-verified Public Domain at fetch. **Actuals: 7,022 vv / 96,169 words** — far below the 300–450k estimate (the Writings targums run ~13.7 w/v and Chronicles is largely name lists). Targum Sheni on Esther excluded (license "unknown" on Sefaria). No targum to Daniel/Ezra exists. | Sefaria API | Completes the Targumic family; same pipeline as 6A.1 |
+
+> **Old Syriac Gospels (Vetus Syra) — investigated 2026-07-12, deferred.** No
+> openly-licensed machine-readable transcription exists: Kiraz CESG is under
+> Brill/Gorgias copyright; CAL has it but restricted + transliterated; the
+> public-domain Lewis 1910 / Burkitt 1904 editions are unreliable OCR only.
+> Revisit via CAL permission request or a keying project.
 
 **Outcome:** 5 → 6 corpora (or 7 if we keep Ephrem-rest separate from
 Carmina Nisibena). Words 528k → ~1,300k. Roots ~5,250 → ~6,800.
@@ -284,6 +291,9 @@ minimal risk and forms the template for 6B–6E.
 
 ---
 
-*Living document. Update as phases ship. Last reviewed 2026-05-10
-(cost section revised: prompt caching now an explicit assumption,
-Expected vs Risk-adjusted columns added).*
+*Living document. Update as phases ship. Last reviewed 2026-07-12
+(Phase 6A complete as v3.3.0: 6A.2 + new 6A.3 shipped; roots 5,666 → 6,061;
+cognates 1,604 → 1,642 at $1.21 actual API cost — far under the $35–50
+expected budget. Memory reality check: fully-loaded app peaks at 279 MB RSS
+at 8 corpora / 859k words, so the hosting table above overestimates RAM by
+~3×; Bavli-era projections should be rebased on ~0.3 MB per 1k words.)*

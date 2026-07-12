@@ -33,7 +33,7 @@
   </summary>
   <div style="margin-top:10px;color:var(--ink-2)">
   {% if lang == 'es' %}
-    <p>El gráfico compara la frecuencia normalizada de una raíz a través de seis corpus en orden cronológico. <strong>Esto no aísla el cambio diacrónico</strong> porque los corpus difieren simultáneamente en género (narrativa, traducción literal, poesía litúrgica), registro, dialecto y fuente de traducción. Una frecuencia que parece "subir" o "bajar" puede reflejar cualquiera de estos factores, no necesariamente cambio histórico.</p>
+    <p>El gráfico compara la frecuencia normalizada de una raíz a través de ocho corpus en orden cronológico. <strong>Esto no aísla el cambio diacrónico</strong> porque los corpus difieren simultáneamente en género (narrativa, traducción literal, poesía litúrgica), registro, dialecto y fuente de traducción. Una frecuencia que parece "subir" o "bajar" puede reflejar cualquiera de estos factores, no necesariamente cambio histórico.</p>
     <p>El orden cronológico (Arameo bíblico → Targum → Efrén → Peshitta NT → AT) es una decisión editorial. La datación de Targum Onkelos en particular es debatida (algunos especialistas lo sitúan tan tarde como el siglo V).</p>
     <p>Use estos gráficos como puntos de partida sugestivos, no como evidencia para reclamaciones diacrónicas. Vea <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md#3-diachronic-comparisons-confound-genre-with-chronology" target="_blank" rel="noopener">docs/VALIDATION.md §3-4</a> para detalles.</p>
   {% elif lang == 'he' %}
@@ -45,7 +45,7 @@
     <p>الترتيب الزمني (الآرامية التوراتية ← الترجوم ← أفرام ← الپشيطتا ع.ج. ← ع.ق.) خيار تحريري. تأريخ ترجوم أونكيلوس على وجه الخصوص محلّ خلاف (يضعه بعض الباحثين في القرن الخامس).</p>
     <p>استخدم هذه الرسوم كنقاط انطلاق مُحفِّزة، لا أدلّة على ادعاءات زمنية. انظر <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md#3-diachronic-comparisons-confound-genre-with-chronology" target="_blank" rel="noopener">docs/VALIDATION.md §3-4</a> للتفاصيل.</p>
   {% else %}
-    <p>The chart compares normalised frequency of a root across six corpora in chronological order. <strong>This does not isolate diachronic change</strong> because the corpora differ simultaneously on genre (narrative, literal translation, liturgical poetry), register, dialect, and translation source. A frequency that appears to "rise" or "fall" may reflect any of these factors, not necessarily historical change.</p>
+    <p>The chart compares normalised frequency of a root across eight corpora in chronological order. <strong>This does not isolate diachronic change</strong> because the corpora differ simultaneously on genre (narrative, literal translation, liturgical poetry), register, dialect, and translation source. A frequency that appears to "rise" or "fall" may reflect any of these factors, not necessarily historical change.</p>
     <p>The chronological ordering (Biblical Aramaic → Targum → Ephrem → Peshitta NT → OT) is an editorial choice. Targum Onkelos's date in particular is debated (some scholars place it as late as the 5th c. CE, later than the Peshitta NT).</p>
     <p>Use these charts as suggestive starting points, not as evidence for diachronic claims. See <a href="https://github.com/Jossifresben/aramaic-root-atlas/blob/main/docs/VALIDATION.md#3-diachronic-comparisons-confound-genre-with-chronology" target="_blank" rel="noopener">docs/VALIDATION.md §3-4</a> for full caveats.</p>
   {% endif %}
@@ -164,8 +164,10 @@
         'peshitta_nt':      '#1a4d6b',
         'peshitta_ot':      '#6b5a1a',
         'ephrem_nisibis':   '#7c3a1a',
+        'ephrem_works':     '#a14e24',
+        'targum_writings':  '#0f766e',
     };
-    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', targum_jonathan:'tgj', ephrem_nisibis:'eph'};
+    var CORPUS_ABBR = {peshitta_nt:'pnt', peshitta_ot:'pot', biblical_aramaic:'bib', targum_onkelos:'tar', targum_jonathan:'tgj', targum_writings:'tgw', ephrem_nisibis:'eph', ephrem_works:'epw'};
 
     function escHtml(s) {
         return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');

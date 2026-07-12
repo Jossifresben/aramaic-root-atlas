@@ -2,11 +2,11 @@
 
 **[Live App](https://aramaic-root-atlas.onrender.com)** &nbsp; [![DOI](https://zenodo.org/badge/1190998648.svg)](https://doi.org/10.5281/zenodo.19358625)
 
-The Aramaic Root Atlas is an open-access tool for exploring triliteral roots across the major corpora of Aramaic literature. It spans approximately 1,500 years of literary history — from the Biblical Aramaic passages of Daniel and Ezra (~6th–2nd c. BCE) through the Targums Onkelos and Jonathan (~1st–4th c. CE) to the Peshitta Old and New Testaments (~2nd–5th c. CE) and the Hymns of Ephrem the Syrian (~4th c. CE) — indexing 5,666 roots across 47,358 verses and 685,848 words.
+The Aramaic Root Atlas is an open-access tool for exploring triliteral roots across the major corpora of Aramaic literature. It spans approximately 1,400 years of literary history — from the Biblical Aramaic passages of Daniel and Ezra (~6th–2nd c. BCE) through the Targums Onkelos and Jonathan (~1st–4th c. CE), the Peshitta Old and New Testaments (~2nd–5th c. CE), and the works of Ephrem the Syrian (~4th c. CE), to the Targums to the Writings (~4th–8th c. CE) — indexing 6,061 roots across 55,710 verses and 859,016 words.
 
 The tool is designed for scholars, students, and linguists who want to study Aramaic vocabulary across time and tradition: tracing how a root is used in different dialects and genres, finding rare or unique attestations, comparing parallel passages, or analyzing verb stem distributions. Every word form in the corpus is linked to its extracted root, gloss, confidence score, and verb stem, accessible directly from the verse reader.
 
-**47,358 verses** · **685,848 words** · **5,666 roots** · **1,604 cognate root entries** · **6 corpora**
+**55,710 verses** · **859,016 words** · **6,061 roots** · **1,642 cognate root entries** · **8 corpora**
 
 ---
 
@@ -16,7 +16,7 @@ The tool is designed for scholars, students, and linguists who want to study Ara
 - **Verb Stem (Binyan) Analysis** -- classifies every word form into Peal/Ethpeel/Pael/Ethpaal/Aphel/Shafel/Ettaphal; stem badge in word popover; stem distribution chart + paradigm table in root card; `/api/paradigm` endpoint
 - **Hapax Legomena Finder** -- `/hapax` page surfaces roots and forms with 1–5 occurrences across any corpus; frequency slider, corpus filter, scope toggle, CSV/JSON export
 - **KWIC Concordance with Export** -- `/concordance` page shows all attestations in traditional left-context | keyword | right-context layout; group by form or stem; export as CSV, JSON, plain text, or TEI XML
-- **Diachronic Root Analysis** -- `/diachronic` page compares root usage across six corpora in chronological order (Biblical Aramaic → Targum Onkelos → Targum Jonathan → Peshitta NT → Peshitta OT → Ephrem Nisibis) as normalized frequency; Shifts View ranks roots by frequency change magnitude with color-coded corpus dots
+- **Diachronic Root Analysis** -- `/diachronic` page compares root usage across eight corpora in chronological order (Biblical Aramaic → Targum Onkelos → Targum Jonathan → Peshitta NT → Peshitta OT → Ephrem Nisibis → Ephrem Other Works → Targum Writings) as normalized frequency; Shifts View ranks roots by frequency change magnitude with color-coded corpus dots
 - **Collocations** -- `/collocations` page computes Pointwise Mutual Information (PMI) between roots co-occurring in the same verse or chapter; filter by corpus and minimum co-occurrence count to surface statistically significant lexical associations; CSV/JSON export
 - **Semantic Fields** -- `/semantic-fields` page organizes all roots into 15 semantic domains (legal/covenant, cultic, kinship, war, knowledge, etc.) via AI classification; each domain lists roots sorted by frequency with corpus badges and links to the visualizer
 - **Researcher Annotations** -- `/annotations` page for inline notes on verses and roots, stored in localStorage; tag-based filtering, export as JSON/CSV/Markdown; inline note icons in the verse reader and root card
@@ -84,8 +84,10 @@ The app starts on **http://localhost:5001**.
 | Biblical Aramaic | 269 | 4,880 | Hebrew square | Sefaria (Westminster Leningrad Codex) | CC-BY-SA |
 | Targum Onkelos | 5,846 | 82,684 | Hebrew square | Sefaria | CC-BY-SA |
 | Targum Jonathan | 9,296 | 157,449 | Hebrew square | Sefaria | CC-BY-SA |
+| Targum Writings | 7,022 | 96,169 | Hebrew square | Sefaria | Public domain |
 | Ephrem Nisibis | 1,435 | 29,477 | Syriac | Digital Syriac Corpus (srophe) | CC-BY |
-| **Total** | **47,358** | **685,848** | | | |
+| Ephrem — Other Works | 1,330 | 76,999 | Syriac | Digital Syriac Corpus (srophe) | CC-BY |
+| **Total** | **55,710** | **859,016** | | | |
 
 Cross-script root normalization ensures that Syriac and Hebrew square script resolve to the same root key.
 

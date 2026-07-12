@@ -30,16 +30,17 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 - **docs/PRD.md** — Full product requirements document with 4-phase roadmap
 
 ## Current State (All Phases Complete)
+- **v3.3.0 — Corpus expansion (2026-07-12):** 6 → 8 corpora. Added **Targum Writings** (`targum_writings`, abbr `tgw`, teal; 7,022v/96,169w; 10 Ketuvim books from Sefaria, all versions license-verified Public Domain at fetch; Targum Sheni on Esther excluded — license "unknown"; book names match Peshitta OT so the parallel viewer aligns automatically) and **Ephrem — Other Works** (`ephrem_works`, abbr `epw`, copper; 1,330v/76,999w; 38 DSC TEI docs CC-BY 4.0: To Hypatius 1–5, Against Domnus/Marcion/Bardaisan/Mani, On Virginity (Prose), Nativity 1–28 — with ephrem_nisibis this is all 111 Ephrem docs the DSC holds). New scripts: `fetch_targum_writings.py`, `fetch_ephrem_works.py` (tarball/local/network modes), `generate_cognates_{targum_writings,ephrem_works}.py`. Old Syriac Gospels investigated and deferred (no open machine-readable source; see CORPUS-EXPANSION-PLAN.md). Test suite 222 (12 new). Memory gate: 279 MB peak RSS fully loaded (was 233 MB). Spec: `docs/SPEC-v3.3-corpus-expansion.md`.
 - **v3.2.1 — Discovery repositioning (2026-06-04):** repositioned as a *discovery tool for students and curious minds* with a "Discover" front door, alongside the existing scholarly tools (now framed as exploratory, not citable). New: Discover home at `/` (curated hero roots, deterministic daily root, "search by a word you know"); Root Journey at `/journey/<root>` (cross-corpus time-travel timeline, "one skeleton, several meanings" panel, cognate cousins, key verse); guided journeys at `/discover` (`data/journeys/*.json`); the old search page moved to `/search`. Collapsible sidebar (Discover open; Explore/Analyze/Workspace collapse by default). "Exploratory, not citable" caveat banners on all analytical tools (`templates/_caveat.html`). About "Research Applications" reframed as "Ways to Explore". Per-language root-card glosses + per-language OG cards (`og-{en,es,he,ar}.png`). Engine/data unchanged. New routes are reuse-only over existing APIs. New helpers in app.py: `_root_card(root_input, lang)`, `_root_of_the_day()`, `_load_journeys()`; curated content in `data/discovery/featured_roots.json`.
-- **6 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v), Targum Jonathan (9,296v), Ephrem Nisibis (1,435v)
-- **Total**: 47,358 verses, 685,848 words, 105,237 unique forms
-- **5,666 roots** indexed across all corpora (5,249 before Targum Jonathan was added 2026-05-29; verified against `/api/stats`)
-- **1,604 cognate root entries** with Hebrew and/or Arabic cognates (4,572 Hebrew + 4,580 Arabic individual cognate words)
+- **8 corpora**: Peshitta NT (7,440v), Peshitta OT (23,072v), Biblical Aramaic (269v), Targum Onkelos (5,846v), Targum Jonathan (9,296v), Targum Writings (7,022v), Ephrem Nisibis (1,435v), Ephrem — Other Works (1,330v)
+- **Total**: 55,710 verses, 859,016 words, 136,467 unique forms
+- **6,061 roots** indexed across all corpora (5,666 before v3.3.0; verified against `/api/stats`)
+- **1,642 cognate root entries** with Hebrew and/or Arabic cognates (+38 in v3.3.0 via Opus 4.8, ~$1.21)
 - **405 Greek NT parallels** linking Aramaic roots to single Greek equivalents in the visualizer (NOT 2,192 — earlier docs overcounted)
 - Greek NT translation track (SBLGNT) — 7,939 verses from bible.helloao.org (grc_sbl)
 - SEDRA lexicon cache (12,534 entries) boosts root confidence for Syriac tokens
 - Quadrilingual UI (EN/ES/HE/AR) with 5 translation tracks
-- Corpus filtering on all API endpoints (?corpus=peshitta_nt|peshitta_ot|biblical_aramaic|targum_onkelos|targum_jonathan|ephrem_nisibis)
+- Corpus filtering on all API endpoints (?corpus=peshitta_nt|peshitta_ot|biblical_aramaic|targum_onkelos|targum_jonathan|targum_writings|ephrem_nisibis|ephrem_works)
 - Root family visualizer (D3.js force graph + root card)
 - Parallel viewer (Peshitta OT ↔ Targum Onkelos / Biblical Aramaic)
 - Root frequency heat map with filter and CSV/JSON export

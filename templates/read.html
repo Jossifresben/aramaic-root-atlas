@@ -43,7 +43,7 @@
 </div>
 
 {% set hl_form = request.args.get('hl', '') %}
-{% set is_hebrew_script = corpus_abbr in ('bib', 'tar', 'tgj') %}
+{% set is_hebrew_script = corpus_abbr in ('bib', 'tar', 'tgj', 'tgw') %}
 {% set script_class = 'v-heb' if is_hebrew_script else 'v-syr' %}
 {% for v in verses %}
 <div class="verse" id="v{{ v.verse }}" data-ref="{{ book }} {{ chapter }}:{{ v.verse }}">

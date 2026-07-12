@@ -15,7 +15,7 @@
 <div class="page-head">
   <div>
     <h1 class="ph-title">{{ t('nav_browse_title', lang) if t else 'Browse corpora' }}</h1>
-    <p class="ph-sub">{{ t('browse_corpora_subtitle', lang) if t else 'Direct chapter access across all six corpora.' }}</p>
+    <p class="ph-sub">{{ t('browse_corpora_subtitle', lang) if t else 'Direct chapter access across all eight corpora.' }}</p>
   </div>
 </div>
 
@@ -27,7 +27,9 @@
   <a class="chip{% if corpus_filter == 'biblical_aramaic' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=biblical_aramaic">{{ t('corpus_biblical_aramaic', lang) if t else 'Biblical Aramaic' }}</a>
   <a class="chip{% if corpus_filter == 'targum_onkelos' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=targum_onkelos">{{ t('corpus_targum_onkelos', lang) if t else 'Targum Onkelos' }}</a>
   <a class="chip{% if corpus_filter == 'targum_jonathan' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=targum_jonathan">{{ t('corpus_targum_jonathan', lang) if t else 'Targum Jonathan' }}</a>
+  <a class="chip{% if corpus_filter == 'targum_writings' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=targum_writings">{{ t('corpus_targum_writings', lang) if t else 'Targum Writings' }}</a>
   <a class="chip{% if corpus_filter == 'ephrem_nisibis' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=ephrem_nisibis">{{ t('corpus_ephrem_nisibis', lang) if t else 'Ephrem Nisibis' }}</a>
+  <a class="chip{% if corpus_filter == 'ephrem_works' %} on{% endif %}" href="/browse?lang={{ lang }}&corpus=ephrem_works">{{ t('corpus_ephrem_works', lang) if t else 'Ephrem — Other Works' }}</a>
 </div>
 
 {% for group in corpus_groups %}

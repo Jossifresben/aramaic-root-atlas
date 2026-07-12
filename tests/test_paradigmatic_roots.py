@@ -46,7 +46,7 @@ def test_root_resolves_via_api(client, root, expected_syriac, gloss_substr, expe
     assert 'matches' in data
     if expect_attested:
         assert len(data['matches']) > 0, \
-            f'{root} has zero word-form matches across all 5 corpora — likely an extraction bug'
+            f'{root} has zero word-form matches across all corpora — likely an extraction bug'
 
 
 @pytest.mark.parametrize('root,expected_syriac,_,__', PARADIGMATIC_ROOTS)
