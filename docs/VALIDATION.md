@@ -304,10 +304,12 @@ keys that survived extraction across the 5 corpora. It is:
 The number is a **fact about the index**, not a claim about Aramaic.
 Treat as such.
 
-> **Note (2026-05-29 reconciliation):** earlier release docs cited
-> "5,039 roots" — that number was from the v3.0 release. By v3.0.3 the
-> live count was 5,249; as of v3.1.0, with Targum Jonathan added, live
-> `/api/stats` returns 5,666 roots across six corpora. Earlier docs also
+> **Note (2026-05-29 reconciliation, extended 2026-07-12):** earlier
+> release docs cited "5,039 roots" — that number was from the v3.0
+> release. By v3.0.3 the live count was 5,249; v3.1.0 (Targum Jonathan)
+> brought it to 5,666; as of v3.3.0, with the Targums to the Writings
+> and Ephrem's other works added, live `/api/stats` returns 6,061 roots
+> across eight corpora. Earlier docs also
 > overcounted Greek NT cognates as "2,192" — actual count is 405 (one
 > Greek word per root at most). All current-state references have been
 > corrected.

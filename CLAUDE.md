@@ -13,12 +13,12 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
   - `cognates.py` — `CognateLookup`: Hebrew, Arabic & Greek cognate lookup
   - `glosser.py` — `WordGlosser`: compositional word-level glossing (EN/ES)
   - `sedra_lookup.py` — `SedraLookup`: SEDRA lexicon cache for boosting root confidence
-- **app.py** — Flask app (port 5001)
+- **app.py** — Flask app (port 5002)
 - **templates/** — Jinja2 templates (base, index, browse, read, about, hapax, concordance, diachronic)
 - **static/style.css** — CSS with corpus-coded color variables and stem-badge palette
 - **static/autocomplete.js** — Shared root autocomplete widget (`initRootAutocomplete`)
 - **data/** — Organized subdirectories:
-  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv, targum_onkelos.csv, targum_jonathan.csv, ephrem_nisibis.csv)
+  - `corpora/` — CSV files (peshitta_nt.csv, peshitta_ot.csv, biblical_aramaic.csv, targum_onkelos.csv, targum_jonathan.csv, targum_writings.csv, ephrem_nisibis.csv, ephrem_works.csv)
   - `roots/` — cognates.json, known_roots.json, stopwords.json, word_glosses_override.json, sedra_cache.json
   - `translations/` — translations_{en,es,he,ar}.json
 - **scripts/** — Data pipeline scripts
@@ -88,7 +88,7 @@ A cross-corpus triliteral root explorer for Aramaic literature. Evolved from the
 
 ## Run
 ```bash
-python3 app.py  # starts on port 5001
+python3 app.py  # starts on port 5002
 ```
 
 ## Relationship to Peshitta Root Finder

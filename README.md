@@ -73,7 +73,7 @@ pip install -r requirements.txt
 python3 app.py
 ```
 
-The app starts on **http://localhost:5001**.
+The app starts on **http://localhost:5002**.
 
 ## Corpora
 
